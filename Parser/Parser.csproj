@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B7E772C7-3968-4D93-8667-6605A7B5B6B8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Parser</RootNamespace>
+    <AssemblyName>Parser</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Exceptions\DeclarationSource.cs" />
+    <Compile Include="Exceptions\IDeclarationSource.cs" />
+    <Compile Include="Exceptions\IParsingSource.cs" />
+    <Compile Include="Exceptions\ParsingSource.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentCheckbox.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentCollection.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponent.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentContainerList.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentPasswordEdit.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentPopup.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentArea.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentButton.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentEdit.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentImage.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentIndex.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentSelector.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentContainer.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentText.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentCheckbox.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentCollection.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponent.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentContainerList.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentPasswordEdit.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentPopup.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentArea.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentButton.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentEdit.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentImage.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentIndex.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentSelector.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentContainer.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentText.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorColorScheme.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorFormCollection.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorObject.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorLayout.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorDesign.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorArea.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorBackground.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorResource.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorColorScheme.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorForm.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorFormCollection.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorObject.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorLayout.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorDesign.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorArea.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorPage.cs" />
+    <Compile Include="Generating\IGeneratorDomain.cs" />
+    <Compile Include="Generating\GeneratorDomain.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorPage.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorBackground.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorResource.cs" />
+    <Compile Include="Generating\Types\IGeneratorPageNavigation.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorDecoration.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorEmpty.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorGrid.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorStatePanel.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorDecoration.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorEmpty.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorGrid.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorStatePanel.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorStackPanel.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorDockPanel.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorControl.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorControl.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorDockPanel.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorPanel.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorLayoutElement.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorLayoutElement.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorPanel.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorStackPanel.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorLayoutElementCollection.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorLayoutElementCollection.cs" />
+    <Compile Include="Generating\Types\ObjectEvent\GeneratorObjectEvent.cs" />
+    <Compile Include="Generating\Types\ObjectEvent\IGeneratorObjectEvent.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyBoolean.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyIndex.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyItemList.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyItem.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyState.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyReadonlyString.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyStringList.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectProperty.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyBoolean.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyIndex.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyItemList.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyItem.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyState.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyInteger.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyReadonlyString.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyString.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyStringList.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyStringDictionary.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectProperty.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyInteger.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyString.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyStringDictionary.cs" />
+    <Compile Include="Generating\Types\GeneratorPageNavigation.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyCollection.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyCollection.cs" />
+    <Compile Include="Parsing\ParserColorScheme.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentCheckbox.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentCollection.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentContainerList.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentContainer.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentPasswordEdit.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentIndex.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentCheckbox.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentCollection.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentContainerList.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentContainer.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentPasswordEdit.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentIndex.cs" />
+    <Compile Include="Parsing\Types\Form\ColorScheme.cs" />
+    <Compile Include="Parsing\Types\Form\FormCollection.cs" />
+    <Compile Include="Parsing\Types\Form\IColorScheme.cs" />
+    <Compile Include="Parsing\Types\Form\Parser\IFormParserCollection.cs" />
+    <Compile Include="Parsing\Types\Form\Parser\FormParserCollection.cs" />
+    <Compile Include="Parsing\Types\Form\IFormCollection.cs" />
+    <Compile Include="Parsing\Types\IComponentEvent.cs" />
+    <Compile Include="Parsing\Types\IComponentProperty.cs" />
+    <Compile Include="Parsing\Types\IPageNavigation.cs" />
+    <Compile Include="Parsing\Types\Layout\Decoration.cs" />
+    <Compile Include="Parsing\Types\Layout\Empty.cs" />
+    <Compile Include="Parsing\Types\Layout\IDecoration.cs" />
+    <Compile Include="Parsing\Types\Layout\IEmpty.cs" />
+    <Compile Include="Parsing\Types\Layout\IGrid.cs" />
+    <Compile Include="Parsing\Types\Layout\IStatePanel.cs" />
+    <Compile Include="Parsing\Types\Layout\LayoutElementCollection.cs" />
+    <Compile Include="Parsing\Types\Layout\ILayoutElementCollection.cs" />
+    <Compile Include="Parsing\Types\Layout\Grid.cs" />
+    <Compile Include="Parsing\Types\Layout\StatePanel.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyBoolean.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyIndex.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyItemList.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyItem.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyState.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyReadonlyString.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyCollection.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyCollection.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyBoolean.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyIndex.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyItemList.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyItem.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyState.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyReadonlyString.cs" />
+    <Compile Include="Parsing\Types\PageNavigation.cs" />
+    <Compile Include="Generating\Types\Transition\IGeneratorTransition.cs" />
+    <Compile Include="Generating\Types\Transition\GeneratorTransition.cs" />
+    <Compile Include="NamespaceReference.cs" />
+    <Compile Include="Parsing\ParserDomain.cs" />
+    <Compile Include="Parsing\ParserPage.cs" />
+    <Compile Include="Parsing\ParserLayout.cs" />
+    <Compile Include="Parsing\ParserDesign.cs" />
+    <Compile Include="Parsing\ParserObject.cs" />
+    <Compile Include="Parsing\ParserArea.cs" />
+    <Compile Include="Parsing\ParserBackground.cs" />
+    <Compile Include="Parsing\ParserResource.cs" />
+    <Compile Include="Exceptions\ParsingException.cs" />
+    <Compile Include="Parsing\Types\ComponentEvent.cs" />
+    <Compile Include="Parsing\Types\ComponentInfo.cs" />
+    <Compile Include="Parsing\Types\ComponentProperty.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentPopup.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentPopup.cs" />
+    <Compile Include="Parsing\Types\Form\Background.cs" />
+    <Compile Include="Parsing\Types\Form\IBackground.cs" />
+    <Compile Include="Parsing\Types\Form\IResource.cs" />
+    <Compile Include="Parsing\Types\Form\Parser\FormParser.cs" />
+    <Compile Include="Parsing\IConnectable.cs" />
+    <Compile Include="Parsing\Types\Form\Parser\IFormParser.cs" />
+    <Compile Include="Parsing\Types\Form\Resource.cs" />
+    <Compile Include="Parsing\Types\Layout\IDockPanel.cs" />
+    <Compile Include="Parsing\Types\Layout\IControl.cs" />
+    <Compile Include="Parsing\Types\Layout\ILayoutElement.cs" />
+    <Compile Include="Parsing\Types\Layout\IPanel.cs" />
+    <Compile Include="Parsing\Types\Layout\IStackPanel.cs" />
+    <Compile Include="Parsing\Types\ObjectEvent\IObjectEvent.cs" />
+    <Compile Include="Parsing\Types\ObjectEvent\ObjectEvent.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyStringList.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyStringDictionary.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyStringList.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyStringDictionary.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentArea.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentSelector.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentArea.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentSelector.cs" />
+    <Compile Include="Parsing\Types\IDomain.cs" />
+    <Compile Include="Parsing\Types\Domain.cs" />
+    <Compile Include="Parsing\Types\Form\IForm.cs" />
+    <Compile Include="Parsing\Types\Form\Page.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentEdit.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentImage.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentText.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentButton.cs" />
+    <Compile Include="Parsing\Types\Component\IComponent.cs" />
+    <Compile Include="Parsing\Types\Form\IPage.cs" />
+    <Compile Include="Parsing\Types\Form\Layout.cs" />
+    <Compile Include="Parsing\Types\Form\Design.cs" />
+    <Compile Include="Parsing\Types\Form\IArea.cs" />
+    <Compile Include="Parsing\Types\Form\Area.cs" />
+    <Compile Include="Parsing\Types\Component\Component.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentButton.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentEdit.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentImage.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentText.cs" />
+    <Compile Include="Parsing\Types\Form\ILayout.cs" />
+    <Compile Include="Parsing\Types\Form\IDesign.cs" />
+    <Compile Include="Parsing\Types\Form\IObject.cs" />
+    <Compile Include="Parsing\Types\Layout\Control.cs" />
+    <Compile Include="Parsing\Types\Layout\DockPanel.cs" />
+    <Compile Include="Parsing\Types\Layout\LayoutElement.cs" />
+    <Compile Include="Parsing\Types\Layout\Panel.cs" />
+    <Compile Include="Parsing\Types\Layout\StackPanel.cs" />
+    <Compile Include="Parsing\Types\Form\Object.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectProperty.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectProperty.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyString.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyInteger.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyInteger.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyString.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyStringCategory.cs" />
+    <Compile Include="Parsing\Types\Transition\ITransition.cs" />
+    <Compile Include="Parsing\Types\Transition\Transition.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XmlnsTest\XmlnsTest.csproj">
+      <Project>{55d50e72-9125-4a7d-b7c6-b1ec7e6f93c1}</Project>
+      <Name>XmlnsTest</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

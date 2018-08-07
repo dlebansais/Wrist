@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/Button.xaml"/>
+    <ResourceDictionary Source="/ButtonBasic.xaml"/>
+    <ResourceDictionary Source="/ButtonLogin.xaml"/>
+    <ResourceDictionary Source="/ButtonSimpleLink.xaml"/>
+    <ResourceDictionary Source="/ButtonTextLink.xaml"/>
+    <ResourceDictionary Source="/TextBlock.xaml"/>
+    <ResourceDictionary Source="/TextBlockArchiveTitle.xaml"/>
+    <ResourceDictionary Source="/TextBlockPageTitle.xaml"/>
+    <ResourceDictionary Source="/TextBlockTitle.xaml"/>
+    <ResourceDictionary Source="/Others.xaml"/>
+  </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

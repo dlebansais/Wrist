@@ -1,0 +1,248 @@
+﻿using Database;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+
+namespace AppCSHtml5
+{
+    public class Login : ILogin
+    {
+        public LoginStates State { get; set; } = LoginStates.LoggedOff;
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string NewPassword { get; set; }
+        public string ConfirmPassword { get; set; }
+        public string RecoveryQuestion { get; set; }
+        public string RecoveryAnswer { get; set; }
+        public bool Remember { get; set; }
+
+        #region Login
+        public void On_Login(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            if (string.IsNullOrEmpty(Name))
+                destinationPageName = "login failed";
+
+            else if (string.IsNullOrEmpty(Password))
+                destinationPageName = "login failed";
+
+            else
+            {
+                StartLogin(Name, Password);
+                destinationPageName = null;
+            }
+
+            Password = null;
+        }
+
+        private void StartLogin(string name, string testPassword)
+        {
+            EncryptPassword(testPassword, (bool encryptSuccess, object encryptResult) => Login_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name));
+        }
+
+        private void Login_OnTestPasswordEncrypted(bool success, object result, string name)
+        {
+            if (success)
+            {
+                string EncryptedTestPassword = (string)result;
+                CheckPassword(name, (bool checkSuccess, object checkResult) => Login_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword));
+            }
+            else
+                (App.Current as App).GoTo("login failed");
+        }
+
+        private void Login_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword)
+        {
+            if (success)
+            {
+                Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
+                string EncryptedCurrentPassword = CheckPasswordResult["password"];
+
+                if (encryptedTestPassword == EncryptedCurrentPassword)
+                {
+                    State = LoginStates.SignedIn;
+                    Email = CheckPasswordResult["email"];
+                    RecoveryQuestion = CheckPasswordResult["question"];
+                    (App.Current as App).GoTo("account");
+                }
+                else
+                    (App.Current as App).GoTo("login failed");
+            }
+            else
+                (App.Current as App).GoTo("login failed");
+        }
+        #endregion
+
+        #region Logout
+        public void On_Logout(string pageName, string sourceName, string sourceContent)
+        {
+            State = LoginStates.LoggedOff;
+            Name = null;
+            Email = null;
+            RecoveryQuestion = null;
+        }
+        #endregion
+
+        #region Change Password
+        public void On_ChangePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            if (string.IsNullOrEmpty(Password))
+                destinationPageName = "change password failed #1";
+
+            else if (string.IsNullOrEmpty(NewPassword) || string.IsNullOrEmpty(ConfirmPassword))
+                destinationPageName = "change password failed #2";
+
+            else if (NewPassword != ConfirmPassword)
+                destinationPageName = "change password failed #3";
+
+            else
+            {
+                StartUpdatePassword(Name, Password, NewPassword);
+                destinationPageName = null;
+            }
+
+            Password = null;
+            NewPassword = null;
+            ConfirmPassword = null;
+        }
+
+        private void StartUpdatePassword(string name, string testPassword, string newPassword)
+        {
+            EncryptPassword(testPassword, (bool encryptSuccess, object encryptResult) => ChangePassword_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, newPassword));
+        }
+
+        private void ChangePassword_OnTestPasswordEncrypted(bool success, object result, string name, string newPassword)
+        {
+            if (success)
+            {
+                string EncryptedTestPassword = (string)result;
+                CheckPassword(name, (bool checkSuccess, object checkResult) => ChangePassword_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, name, newPassword));
+            }
+            else
+                (App.Current as App).GoTo("change password failed #4");
+        }
+
+        private void ChangePassword_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, string name, string newPassword)
+        {
+            if (success)
+            {
+                Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
+                string EncryptedCurrentPassword = CheckPasswordResult["password"];
+                
+                if (encryptedTestPassword == EncryptedCurrentPassword)
+                    EncryptPassword(newPassword, (bool encryptSuccess, object encryptResult) => ChangePassword_OnNewPasswordEncrypted(encryptSuccess, encryptResult, name));
+                else
+                    (App.Current as App).GoTo("change password failed #5");
+            }
+            else
+                (App.Current as App).GoTo("change password failed #4");
+        }
+
+        private void ChangePassword_OnNewPasswordEncrypted(bool success, object result, string name)
+        {
+            if (success)
+            {
+                string EncryptedNewPassword = (string)result;
+                ChangePassword(name, EncryptedNewPassword, ChangePassword_OnPasswordChanged);
+            }
+            else
+                (App.Current as App).GoTo("change password failed #4");
+        }
+
+        private void ChangePassword_OnPasswordChanged(bool success, object result)
+        {
+            if (success)
+                (App.Current as App).GoTo("change password success");
+            else
+                (App.Current as App).GoTo("change password failed #4");
+        }
+        #endregion
+
+        #region Operations
+        private void CheckPassword(string name, Action<bool, object> callback)
+        {
+            Database.Completed += OnCheckPasswordCompleted;
+            Database.Query(new DatabaseQueryOperation("check password", "numbatso_accounts", Database.HtmlString($"id, password, email, question FROM accounts WHERE id = '{name}'"), callback));
+        }
+
+        private void OnCheckPasswordCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnCheckPasswordCompleted notified");
+            Database.Completed -= OnCheckPasswordCompleted;
+
+            Database.DebugWriteState();
+
+            Action<bool, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "id", "password", "email", "question" })) != null)
+            {
+                string Id = Result["id"];
+                string EncryptedPassword = Result["password"];
+                string Email = Result["email"];
+                string RecoveryQuestion = Result["question"];
+                Debug.WriteLine($"Account {Id}: password={EncryptedPassword}, email={Email}, question={RecoveryQuestion}");
+
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(true, Result));
+            }
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+
+        private void EncryptPassword(string plainText, Action<bool, object> callback)
+        {
+            Database.Completed += OnEncryptPasswordCompleted;
+            Database.Encrypt(new DatabaseEncryptOperation("encrypt password", plainText, callback));
+        }
+
+        private void OnEncryptPasswordCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnEncryptPasswordCompleted notified");
+            Database.Completed -= OnEncryptPasswordCompleted;
+
+            Database.DebugWriteState();
+
+            Action<bool, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "encrypted" })) != null)
+            {
+                string EncryptedPassword = Result["encrypted"];
+                Debug.WriteLine($"Encrypted Password: {EncryptedPassword}");
+
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(true, EncryptedPassword));
+            }
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+
+        private void ChangePassword(string name, string encryptedNewPassword, Action<bool, object> callback)
+        {
+            Database.Completed += OnChangePasswordCompleted;
+            Database.Update(new DatabaseUpdateOperation("change password", "numbatso_accounts", Database.HtmlString($"accounts SET password = '{encryptedNewPassword}' WHERE id = '{name}'"), callback));
+        }
+
+        private void OnChangePasswordCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnChangePasswordCompleted notified");
+            Database.Completed -= OnChangePasswordCompleted;
+
+            Database.DebugWriteState();
+
+            Action<bool, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
+            {
+                string ChangePasswordResult = Result["result"];
+
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangePasswordResult == "1", null));
+            }
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+        #endregion
+
+        private Database.Database Database = new Database.Database();
+    }
+}

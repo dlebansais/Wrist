@@ -1,0 +1,18 @@
+﻿using System.Collections.Generic;
+using System.IO;
+
+namespace Parser
+{
+    public interface IGeneratorLayoutElement
+    {
+        string Style { get; }
+        string Background { get; }
+        string Width { get; }
+        string Height { get; }
+        string Margin { get; }
+        string HorizontalAlignment { get; }
+        string VerticalAlignment { get; }
+        bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components);
+        void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding);
+    }
+}

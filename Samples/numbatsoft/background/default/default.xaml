@@ -1,0 +1,12 @@
+﻿<SolidColorBrush x:Key="BackgroundBrush1" Color="LigthGray"/>
+<LinearGradientBrush x:Key="BackgroundBrush2" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="Brown" Offset="0"/>
+    <GradientStop Color="LightBrown" Offset="1"/>
+</LinearGradientBrush>
+<ControlTemplate>
+    <StackPanel>
+        <Grid Background="{StaticResource BackgroundBrush1}" Height="275"/>
+        <Grid Background="Black" Height="5"/>
+        <Grid Background="{StaticResource BackgroundBrush2}" Height="620"/>
+    </StackPanel>
+</ControlTemplate>
