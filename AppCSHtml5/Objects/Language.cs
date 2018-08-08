@@ -1,4 +1,5 @@
 ﻿using Database;
+using Presentation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -158,6 +159,8 @@ namespace AppCSHtml5
             LanguagePageStrings[LanguageStates.French].Add("change-password-failed-#5", "Gestion du compte");
             LanguagePageStrings[LanguageStates.English].Add("change-password-success", "Account management");
             LanguagePageStrings[LanguageStates.French].Add("change-password-success", "Gestion du compte");
+
+            State = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
         }
 
         public LanguageStates State { get; set; } = LanguageStates.English;
@@ -169,8 +172,8 @@ namespace AppCSHtml5
             {
                 GetNews();
 
-                if (AllNews.Count > 0)
-                    return AllNews[0];
+                if (_AllNews.Count > 0)
+                    return _AllNews[0];
 
                 return null;
             }
@@ -182,14 +185,23 @@ namespace AppCSHtml5
             {
                 GetNews();
 
-                if (AllNews.Count > 1)
-                    return AllNews[1];
+                if (_AllNews.Count > 1)
+                    return _AllNews[1];
 
                 return null;
             }
         }
 
-        public IList<INewsEntry> AllNews { get; } = new ObservableCollection<INewsEntry>();
+        public IList<INewsEntry> AllNews
+        {
+            get
+            {
+                GetNews();
+                return _AllNews;
+            }
+        }
+        private IList<INewsEntry> _AllNews = new ObservableCollection<INewsEntry>();
+
         private bool IsAllNewsParsed;
 
         private Dictionary<LanguageStates, Dictionary<string, string>> LanguageStrings { get; } = new Dictionary<LanguageStates, Dictionary<string, string>>()
@@ -207,8 +219,11 @@ namespace AppCSHtml5
         public void On_Switch(string pageName, string sourceName, string sourceContent)
         {
             State = (State == LanguageStates.English) ? LanguageStates.French : LanguageStates.English;
-            foreach (NewsEntry Item in AllNews)
+            foreach (NewsEntry Item in _AllNews)
                 Item.SelectLanguage(State);
+
+            Persistent.SetValue("language", State.ToString().ToLower());
+
             NotifyPropertyChanged(nameof(State));
             NotifyPropertyChanged(nameof(Strings));
             NotifyPropertyChanged(nameof(PageStrings));
@@ -229,13 +244,14 @@ namespace AppCSHtml5
                 return;
 
             List<Dictionary<string, string>> NewsList = (List<Dictionary<string, string>>)result;
+            Debug.WriteLine($"{NewsList.Count} news entries received");
+
             foreach (Dictionary<string, string> Item in NewsList)
             {
                 NewsEntry NewEntry = new NewsEntry(State, Item["enu_summary"], Item["enu_content"], Item["fra_summary"], Item["fra_content"]);
-                AllNews.Add(NewEntry);
+                _AllNews.Add(NewEntry);
             }
 
-            Debug.WriteLine($"{AllNews.Count} news entries received");
             NotifyPropertyChanged(nameof(LastNews));
             NotifyPropertyChanged(nameof(ArchiveNews));
         }

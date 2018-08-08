@@ -70,10 +70,10 @@ namespace Parser
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
             string Properties = $" Style=\"{{StaticResource {design.XamlName}CheckBox{StyleProperty}}}\"";
-            string Value = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, true);
-            string CheckedProperty = "";
+            string Content = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
+            string IsCheckedBinding = GetComponentValue(currentPage, currentObject, null, CheckedObject, CheckedObjectProperty, null, true);
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<CheckBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{CheckedProperty} Content=\"{Value}\"/>");
+            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<CheckBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{Content}\"/>");
         }
     }
 }

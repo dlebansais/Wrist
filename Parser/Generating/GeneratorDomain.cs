@@ -171,6 +171,7 @@ namespace Parser
 
         private void GenerateAppCSharp(string rootFolderName, string appNamespace, StreamWriter cSharpWriter)
         {
+            cSharpWriter.WriteLine("using Presentation;");
             cSharpWriter.WriteLine("using Windows.UI.Xaml;");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
@@ -180,8 +181,7 @@ namespace Parser
             cSharpWriter.WriteLine($"        public App()");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine($"            Window.Current.Content = new {HomePage.XamlName}();");
+            cSharpWriter.WriteLine($"            GoTo(Persistent.GetValue(\"page\", \"{HomePage.XamlName}\"));");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
 
@@ -191,19 +191,27 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void GoTo(string pageName)");
             cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine($"            if (pageName == null)");
+            cSharpWriter.WriteLine($"                return;");
 
             for (int i = 0; i < Pages.Count; i++)
             {
                 IGeneratorPage Page = Pages[i];
 
-                if (i == 0)
-                    cSharpWriter.WriteLine($"            if (pageName == \"{Page.Name}\")");
-                else
+                if (Page != HomePage)
+                {
                     cSharpWriter.WriteLine($"            else if (pageName == \"{Page.Name}\")");
-
-                cSharpWriter.WriteLine($"                Window.Current.Content = new {Page.XamlName}();");
+                    cSharpWriter.WriteLine($"                Window.Current.Content = new {Page.XamlName}();");
+                }
             }
 
+            cSharpWriter.WriteLine($"            else");
+            cSharpWriter.WriteLine("            {");
+            cSharpWriter.WriteLine($"                pageName = \"{HomePage.Name}\";");
+            cSharpWriter.WriteLine($"                Window.Current.Content = new {HomePage.XamlName}();");
+            cSharpWriter.WriteLine("            }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine($"            Persistent.SetValue(\"page\", pageName);");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");
@@ -288,8 +296,6 @@ namespace Parser
             projectWriter.WriteLine("    <Compile Include=\"App.xaml.cs\">");
             projectWriter.WriteLine("      <DependentUpon>App.xaml</DependentUpon>");
             projectWriter.WriteLine("    </Compile>");
-            projectWriter.WriteLine("    <Compile Include=\"Converters\\KeyToValueConverter.cs\"/>");
-            projectWriter.WriteLine("    <Compile Include=\"Converters\\IndexToVisibilityConverter.cs\"/>");
             projectWriter.WriteLine("    <Compile Include=\"Properties\\AssemblyInfo.cs\"/>");
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");

@@ -56,6 +56,12 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bookkeeping.cs" />
+    <Compile Include="Converters\IndexToVisibilityConverter.cs" />
+    <Compile Include="Converters\KeyToValueConverter.cs" />
+    <Compile Include="FileBitmapImage.cs" />
+    <Compile Include="FileTools.cs" />
+    <Compile Include="Persistent.cs" />
     <Compile Include="Popup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

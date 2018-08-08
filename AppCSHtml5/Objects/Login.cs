@@ -1,13 +1,26 @@
 ﻿using Database;
+using Presentation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class Login : ILogin
+    public class Login : ILogin, INotifyPropertyChanged
     {
-        public LoginStates State { get; set; } = LoginStates.LoggedOff;
+        public Login()
+        {
+            Name = Persistent.GetValue("name", null);
+            Email = Persistent.GetValue("email", null);
+            RecoveryQuestion = Persistent.GetValue("question", null);
+            Remember = (Persistent.GetValue("remember", null) != null);
+            State = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
+        }
+
+        public LoginStates State { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -20,6 +33,14 @@ namespace AppCSHtml5
         #region Login
         public void On_Login(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
+            if (!Remember)
+            {
+                Persistent.SetValue("name", null);
+                Persistent.SetValue("email", null);
+                Persistent.SetValue("question", null);
+                Persistent.SetValue("remember", null);
+            }
+
             if (string.IsNullOrEmpty(Name))
                 destinationPageName = "login failed";
 
@@ -28,30 +49,30 @@ namespace AppCSHtml5
 
             else
             {
-                StartLogin(Name, Password);
+                StartLogin(Name, Password, Remember);
                 destinationPageName = null;
             }
 
             Password = null;
         }
 
-        private void StartLogin(string name, string testPassword)
+        private void StartLogin(string name, string testPassword, bool remember)
         {
-            EncryptPassword(testPassword, (bool encryptSuccess, object encryptResult) => Login_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name));
+            EncryptPassword(testPassword, (bool encryptSuccess, object encryptResult) => Login_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, remember));
         }
 
-        private void Login_OnTestPasswordEncrypted(bool success, object result, string name)
+        private void Login_OnTestPasswordEncrypted(bool success, object result, string name, bool remember)
         {
             if (success)
             {
                 string EncryptedTestPassword = (string)result;
-                CheckPassword(name, (bool checkSuccess, object checkResult) => Login_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword));
+                CheckPassword(name, (bool checkSuccess, object checkResult) => Login_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, remember));
             }
             else
                 (App.Current as App).GoTo("login failed");
         }
 
-        private void Login_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword)
+        private void Login_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, bool remember)
         {
             if (success)
             {
@@ -60,9 +81,23 @@ namespace AppCSHtml5
 
                 if (encryptedTestPassword == EncryptedCurrentPassword)
                 {
-                    State = LoginStates.SignedIn;
                     Email = CheckPasswordResult["email"];
                     RecoveryQuestion = CheckPasswordResult["question"];
+
+                    if (remember)
+                    {
+                        Persistent.SetValue("name", Name);
+                        Persistent.SetValue("email", Email);
+                        Persistent.SetValue("question", RecoveryQuestion);
+                        Persistent.SetValue("remember", "1");
+                    }
+
+                    State = LoginStates.SignedIn;
+
+                    NotifyPropertyChanged(nameof(Email));
+                    NotifyPropertyChanged(nameof(RecoveryQuestion));
+                    NotifyPropertyChanged(nameof(State));
+
                     (App.Current as App).GoTo("account");
                 }
                 else
@@ -71,6 +106,8 @@ namespace AppCSHtml5
             else
                 (App.Current as App).GoTo("login failed");
         }
+
+        private Database.Database Database = new Database.Database();
         #endregion
 
         #region Logout
@@ -80,6 +117,10 @@ namespace AppCSHtml5
             Name = null;
             Email = null;
             RecoveryQuestion = null;
+
+            Persistent.SetValue("name", null);
+            Persistent.SetValue("email", null);
+            Persistent.SetValue("question", null);
         }
         #endregion
 
@@ -243,6 +284,22 @@ namespace AppCSHtml5
         }
         #endregion
 
-        private Database.Database Database = new Database.Database();
+        #region Implementation of INotifyPropertyChanged
+        /// <summary>
+        ///     Implements the PropertyChanged event.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        internal void NotifyPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Default parameter is mandatory with [CallerMemberName]")]
+        internal void NotifyThisPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }
