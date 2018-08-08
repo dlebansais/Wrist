@@ -12,9 +12,9 @@ namespace Database
     public class Database
     {
         public bool DebugWriteResponse { get; set; } = true;
-        public string QueryScriptPath { get; set; } = "/query/query.php";
-        public string UpdateScriptPath { get; set; } = "/query/update.php";
-        public string EncryptScriptPath { get; set; } = "/query/encrypt.php";
+        public string QueryScriptPath { get; set; } = "/query/";
+        public string UpdateScriptPath { get; set; } = "/query/";
+        public string EncryptScriptPath { get; set; } = "/query/";
 
         public event CompletionEventHandler Completed;
         public Dictionary<DatabaseOperation, List<Dictionary<string, object>>> RequestResultTable { get; } = new Dictionary<DatabaseOperation, List<Dictionary<string, object>>>();
@@ -22,50 +22,36 @@ namespace Database
 #if HTTP
         public void Query(DatabaseQueryOperation operation)
         {
-            operation.DebugStart();
-
-            string AddressString = $"{QueryScriptPath}?sn={operation.SchemaName}&qt={operation.QueryText}";
-            if (!DownloadClientTable.ContainsKey(AddressString))
-            {
-                DownloadClientTable.Add(AddressString, new KeyValuePair<DatabaseOperation, WebClient>(operation, new WebClient()));
-                Debug.WriteLine("Get added");
-
-                PopRequest();
-            }
-            else
-                Debug.WriteLine("An identical get request is already queued");
+            //string AddressString = $"{QueryScriptPath}?sn={operation.SchemaName}&qt={operation.QueryText}";
+            StartRequest(operation);
         }
 
         public void Update(DatabaseUpdateOperation operation)
         {
-            operation.DebugStart();
-
-            string AddressString = $"{UpdateScriptPath}?sn={operation.SchemaName}&ut={operation.UpdateText}";
-            if (!DownloadClientTable.ContainsKey(AddressString))
-            {
-                DownloadClientTable.Add(AddressString, new KeyValuePair<DatabaseOperation, WebClient>(operation, new WebClient()));
-                Debug.WriteLine("Set added");
-
-                PopRequest();
-            }
-            else
-                Debug.WriteLine("An identical update request is already queued");
+            //string AddressString = $"{UpdateScriptPath}?sn={operation.SchemaName}&ut={operation.UpdateText}";
+            StartRequest(operation);
         }
 
         public void Encrypt(DatabaseEncryptOperation operation)
         {
+            //string AddressString = $"{EncryptScriptPath}?pt={operation.PlainText}";
+            StartRequest(operation);
+        }
+
+        private void StartRequest(DatabaseOperation operation)
+        {
             operation.DebugStart();
 
-            string AddressString = $"{EncryptScriptPath}?pt={operation.PlainText}";
+            string AddressString = operation.RequestString(QueryScriptPath);
             if (!DownloadClientTable.ContainsKey(AddressString))
             {
                 DownloadClientTable.Add(AddressString, new KeyValuePair<DatabaseOperation, WebClient>(operation, new WebClient()));
-                Debug.WriteLine("Encrypt added");
+                Debug.WriteLine($"{operation.TypeName} added");
 
                 PopRequest();
             }
             else
-                Debug.WriteLine("An identical encrypt request is already queued");
+                Debug.WriteLine($"An identical {operation.TypeName} request is already queued");
         }
 
         private void PopRequest()
@@ -211,13 +197,6 @@ namespace Database
             }
 
             return Result;
-        }
-
-        public string HtmlString(string s)
-        {
-            s = s.Replace(" ", " ");
-
-            return s;
         }
 
         public void DebugWriteState()

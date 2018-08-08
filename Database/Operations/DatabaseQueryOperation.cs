@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Database
 {
     public class DatabaseQueryOperation : DatabaseOperation
     {
-        public DatabaseQueryOperation(string name, string schemaName, string queryText, Action<bool, object> callback)
-            : base(name, callback)
+        public DatabaseQueryOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<bool, object> callback)
+            : base(name, scriptName, parameters, callback)
         {
-            SchemaName = schemaName;
-            QueryText = queryText;
         }
 
-        public string SchemaName { get; private set; }
-        public string QueryText { get; private set; }
-
-        public override void DebugStart()
-        {
-            Debug.WriteLine($"Get {Name}, sn={SchemaName}, qt={QueryText}");
-        }
+        public override string TypeName { get { return "Query"; } }
     }
 }

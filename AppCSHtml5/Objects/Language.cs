@@ -260,7 +260,7 @@ namespace AppCSHtml5
         private void GetNews(Action<bool, object> callback)
         {
             Database.Completed += OnGetNewsCompleted;
-            Database.Query(new DatabaseQueryOperation("get news entries", "numbatso_news", Database.HtmlString("* FROM news ORDER BY created DESC"), callback));
+            Database.Query(new DatabaseQueryOperation("get news entries", "query_2.php", new Dictionary<string, string>(), callback));
         }
 
         private void OnGetNewsCompleted(object sender, CompletionEventArgs e)

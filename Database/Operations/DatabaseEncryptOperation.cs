@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Database
 {
     public class DatabaseEncryptOperation : DatabaseOperation
     {
-        public DatabaseEncryptOperation(string name, string plainText, Action<bool, object> callback)
-            : base(name, callback)
+        public DatabaseEncryptOperation(string name, string scriptName, string parameterName, string parameterValue, Action<bool, object> callback)
+            : base(name, scriptName, new Dictionary<string, string>() { { parameterName, parameterValue } }, callback)
         {
-            PlainText = plainText;
         }
 
-        public string PlainText { get; private set; }
-
-        public override void DebugStart()
-        {
-            Debug.WriteLine($"Encrypt {Name}, pt={PlainText}");
-        }
+        public override string TypeName { get { return "Encrypt"; } }
     }
 }

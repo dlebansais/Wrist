@@ -1,18 +1,51 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Database
 {
     public abstract class DatabaseOperation
     {
-        public DatabaseOperation(string name, Action<bool, object> callback)
+        public DatabaseOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<bool, object> callback)
         {
             Name = name;
+            ScriptName = scriptName;
+            Parameters = parameters;
             Callback = callback;
         }
 
         public string Name { get; private set; }
+        public string ScriptName { get; private set; }
+        public Dictionary<string, string> Parameters { get; private set; }
         public Action<bool, object> Callback { get; private set; }
 
-        public abstract void DebugStart();
+        public virtual string RequestString(string requestScriptPath)
+        {
+            string ParameterString = "";
+            foreach (KeyValuePair<string, string> Entry in Parameters)
+            {
+                if (ParameterString.Length == 0)
+                    ParameterString += "?";
+                else
+                    ParameterString += "&";
+                ParameterString += $"{Entry.Key}={Entry.Value}";
+            }
+
+            string Request = $"{requestScriptPath}{ScriptName}{ParameterString}";
+
+            return Request;
+        }
+
+        public abstract string TypeName { get; }
+
+        public virtual void DebugStart()
+        {
+            string Line = $"{TypeName} {Name}, script={ScriptName}";
+
+            foreach (KeyValuePair<string, string> Entry in Parameters)
+                Line += $", {Entry.Key}={Entry.Value}";
+
+            Debug.WriteLine(Line);
+        }
     }
 }

@@ -203,7 +203,7 @@ namespace AppCSHtml5
         private void CheckPassword(string name, Action<bool, object> callback)
         {
             Database.Completed += OnCheckPasswordCompleted;
-            Database.Query(new DatabaseQueryOperation("check password", "numbatso_accounts", Database.HtmlString($"id, password, email, question FROM accounts WHERE id = '{name}'"), callback));
+            Database.Query(new DatabaseQueryOperation("check password", "query_1.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) } }, callback));
         }
 
         private void OnCheckPasswordCompleted(object sender, CompletionEventArgs e)
@@ -233,7 +233,7 @@ namespace AppCSHtml5
         private void EncryptPassword(string plainText, Action<bool, object> callback)
         {
             Database.Completed += OnEncryptPasswordCompleted;
-            Database.Encrypt(new DatabaseEncryptOperation("encrypt password", plainText, callback));
+            Database.Encrypt(new DatabaseEncryptOperation("encrypt password", "encrypt.php", "pt", plainText, callback));
         }
 
         private void OnEncryptPasswordCompleted(object sender, CompletionEventArgs e)
@@ -260,7 +260,7 @@ namespace AppCSHtml5
         private void ChangePassword(string name, string encryptedNewPassword, Action<bool, object> callback)
         {
             Database.Completed += OnChangePasswordCompleted;
-            Database.Update(new DatabaseUpdateOperation("change password", "numbatso_accounts", Database.HtmlString($"accounts SET password = '{encryptedNewPassword}' WHERE id = '{name}'"), callback));
+            Database.Update(new DatabaseUpdateOperation("change password", "update_1.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "password", HtmlString.Entities(encryptedNewPassword) } }, callback));
         }
 
         private void OnChangePasswordCompleted(object sender, CompletionEventArgs e)

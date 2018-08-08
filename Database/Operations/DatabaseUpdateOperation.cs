@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Database
 {
     public class DatabaseUpdateOperation : DatabaseOperation
     {
-        public DatabaseUpdateOperation(string name, string schemaName, string updateText, Action<bool, object> callback)
-            : base(name, callback)
+        public DatabaseUpdateOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<bool, object> callback)
+            : base(name, scriptName, parameters, callback)
         {
-            SchemaName = schemaName;
-            UpdateText = updateText;
         }
 
-        public string SchemaName { get; private set; }
-        public string UpdateText { get; private set; }
-
-        public override void DebugStart()
-        {
-            Debug.WriteLine($"Set {Name}, sn={SchemaName}, ut={UpdateText}");
-        }
+        public override string TypeName { get { return "Update"; } }
     }
 }
