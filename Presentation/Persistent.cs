@@ -8,7 +8,9 @@ namespace Presentation
     public static class Persistent
     {
         #region Persistent State
-        private static readonly string PersistentStatePath = "persistent.txt";
+        private static readonly string PersistentStatePath = "17661044A27741D982897CF15F6EC1C3.txt";
+
+        public static bool DebugTrace { get; set; } = false;
 
         public static string GetValue(string key, string defaultValue)
         {
@@ -21,7 +23,9 @@ namespace Presentation
             else
                 Result = defaultValue;
 
-            Debug.WriteLine($"GetValue(\"{key}\") <- {Result}");
+            if (DebugTrace)
+                Debug.WriteLine($"GetValue(\"{key}\") <- {Result}");
+
             return Result;
         }
 
@@ -32,12 +36,16 @@ namespace Presentation
 
             if (StateTable.ContainsKey(key))
             {
-                Debug.WriteLine($"SetValue(\"{key}\") -> {value}");
+                if (DebugTrace)
+                    Debug.WriteLine($"SetValue(\"{key}\") -> {value}");
+
                 StateTable[key] = value;
             }
             else
             {
-                Debug.WriteLine($"[{key}, {value}] added");
+                if (DebugTrace)
+                    Debug.WriteLine($"[{key}, {value}] added");
+
                 StateTable.Add(key, value);
             }
 
@@ -72,7 +80,9 @@ namespace Presentation
                 Value = Value.Trim();
 
                 StateTable.Add(Key, Value);
-                Debug.WriteLine($"{Key}={Value}");
+
+                if (DebugTrace)
+                    Debug.WriteLine($"{Key}={Value}");
             }
         }
 

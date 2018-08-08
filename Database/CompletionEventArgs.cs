@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Database
+namespace DatabaseManager
 {
     public class CompletionEventArgs : EventArgs
     {

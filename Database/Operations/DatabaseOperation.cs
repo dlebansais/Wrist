@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Database
+namespace DatabaseManager
 {
     public abstract class DatabaseOperation
     {

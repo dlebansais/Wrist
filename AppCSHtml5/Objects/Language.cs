@@ -1,4 +1,4 @@
-﻿using Database;
+﻿using DatabaseManager;
 using Presentation;
 using System;
 using System.Collections.Generic;
@@ -286,7 +286,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private Database.Database Database = new Database.Database();
+        private Database Database = Database.Current;
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>

@@ -3,18 +3,23 @@ using System.Diagnostics;
 #if HTTP
 using System;
 using System.Net;
-using Windows.UI.Xaml;
 #else
 #endif
 
-namespace Database
+namespace DatabaseManager
 {
     public class Database
     {
-        public bool DebugWriteResponse { get; set; } = true;
-        public string QueryScriptPath { get; set; } = "/query/";
-        public string UpdateScriptPath { get; set; } = "/query/";
-        public string EncryptScriptPath { get; set; } = "/query/";
+        public static Database Current = new Database();
+
+        private Database()
+        {
+        }
+
+        public bool DebugWriteResponse { get; set; } = false;
+        public string QueryScriptPath { get; set; } = "/request/";
+        public string UpdateScriptPath { get; set; } = "/request/";
+        public string EncryptScriptPath { get; set; } = "/request/";
 
         public event CompletionEventHandler Completed;
         public Dictionary<DatabaseOperation, List<Dictionary<string, object>>> RequestResultTable { get; } = new Dictionary<DatabaseOperation, List<Dictionary<string, object>>>();
@@ -22,19 +27,16 @@ namespace Database
 #if HTTP
         public void Query(DatabaseQueryOperation operation)
         {
-            //string AddressString = $"{QueryScriptPath}?sn={operation.SchemaName}&qt={operation.QueryText}";
             StartRequest(operation);
         }
 
         public void Update(DatabaseUpdateOperation operation)
         {
-            //string AddressString = $"{UpdateScriptPath}?sn={operation.SchemaName}&ut={operation.UpdateText}";
             StartRequest(operation);
         }
 
         public void Encrypt(DatabaseEncryptOperation operation)
         {
-            //string AddressString = $"{EncryptScriptPath}?pt={operation.PlainText}";
             StartRequest(operation);
         }
 

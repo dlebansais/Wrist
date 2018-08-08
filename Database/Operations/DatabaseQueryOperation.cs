@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Database
+namespace DatabaseManager
 {
     public class DatabaseQueryOperation : DatabaseOperation
     {

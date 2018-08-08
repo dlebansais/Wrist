@@ -1,4 +1,4 @@
-﻿using Database;
+﻿using DatabaseManager;
 using Presentation;
 using System;
 using System.Collections.Generic;
@@ -106,8 +106,6 @@ namespace AppCSHtml5
             else
                 (App.Current as App).GoTo("login failed");
         }
-
-        private Database.Database Database = new Database.Database();
         #endregion
 
         #region Logout
@@ -211,8 +209,6 @@ namespace AppCSHtml5
             Debug.WriteLine("OnCheckPasswordCompleted notified");
             Database.Completed -= OnCheckPasswordCompleted;
 
-            Database.DebugWriteState();
-
             Action<bool, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
@@ -241,8 +237,6 @@ namespace AppCSHtml5
             Debug.WriteLine("OnEncryptPasswordCompleted notified");
             Database.Completed -= OnEncryptPasswordCompleted;
 
-            Database.DebugWriteState();
-
             Action<bool, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
@@ -268,8 +262,6 @@ namespace AppCSHtml5
             Debug.WriteLine("OnChangePasswordCompleted notified");
             Database.Completed -= OnChangePasswordCompleted;
 
-            Database.DebugWriteState();
-
             Action<bool, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
@@ -282,6 +274,8 @@ namespace AppCSHtml5
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
         }
+
+        private Database Database = Database.Current;
         #endregion
 
         #region Implementation of INotifyPropertyChanged
