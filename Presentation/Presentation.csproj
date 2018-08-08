@@ -59,6 +59,7 @@
     <Compile Include="Bookkeeping.cs" />
     <Compile Include="Converters\IndexToVisibilityConverter.cs" />
     <Compile Include="Converters\KeyToValueConverter.cs" />
+    <Compile Include="DragDropItemsControl.cs" />
     <Compile Include="FileBitmapImage.cs" />
     <Compile Include="FileTools.cs" />
     <Compile Include="HtmlString.cs" />
