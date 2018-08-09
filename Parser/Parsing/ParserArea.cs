@@ -109,6 +109,8 @@ namespace Parser
                 return ParseComponentContainer(NameSource, source, InfoList);
             else if (ComponentTypeName == "container list")
                 return ParseComponentContainerList(NameSource, source, InfoList);
+            else if (ComponentTypeName == "radio button")
+                return ParseComponentRadioButton(NameSource, source, InfoList);
             else
                 throw new ParsingException(source, "Unknown component type");
         }
@@ -524,12 +526,59 @@ namespace Parser
 
             if (ItemListProperty == null)
                 throw new ParsingException(source, "Item list not specified");
+
             if (AreaProperty == null)
                 throw new ParsingException(source, "Area not specified");
             if (AreaProperty.FixedValueSource == null)
                 throw new ParsingException(source, "Area name can only be a static name");
 
             return new ComponentContainerList(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "ContainerList"), ItemListProperty, AreaProperty.FixedValueSource);
+        }
+
+        private IComponentRadioButton ParseComponentRadioButton(IDeclarationSource nameSource, IParsingSource source, List<ComponentInfo> infoList)
+        {
+            IComponentProperty ContentProperty = null;
+            IComponentProperty IndexProperty = null;
+            IComponentProperty GroupNameProperty = null;
+            IComponentProperty GroupIndexProperty = null;
+
+            foreach (ComponentInfo Info in infoList)
+                if (Info.NameSource.Name == "content" && ContentProperty == null)
+                    ContentProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name == "index" && IndexProperty == null)
+                    IndexProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name == "group name" && GroupNameProperty == null)
+                    GroupNameProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name == "group index" && GroupIndexProperty == null)
+                    GroupIndexProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name != "content" && Info.NameSource.Name != "index" && Info.NameSource.Name != "group name" && Info.NameSource.Name != "group index")
+                    throw new ParsingException(source, $"Unknown token {Info.NameSource.Name}");
+                else
+                    throw new ParsingException(source, $"Repeated: {Info.NameSource.Name}");
+
+            if (ContentProperty == null)
+                throw new ParsingException(source, "CheckBox content not specified");
+
+            if (IndexProperty == null)
+                throw new ParsingException(source, "Index not specified");
+            if (IndexProperty.FixedValueSource != null || IndexProperty.ObjectPropertyKey != null)
+                throw new ParsingException(source, "Index must be an integer, state or boolean property");
+
+            if (GroupNameProperty == null)
+                throw new ParsingException(source, "Group name not specified");
+            if (GroupNameProperty.FixedValueSource == null)
+                throw new ParsingException(source, "Group name can only be a static name");
+
+            if (GroupIndexProperty == null)
+                throw new ParsingException(source, "Group index not specified");
+            if (GroupIndexProperty.FixedValueSource == null)
+                throw new ParsingException(source, "Group index can only be a static value");
+
+            int GroupIndex;
+            if (!int.TryParse(GroupIndexProperty.FixedValueSource.Name, out GroupIndex))
+                throw new ParsingException(source, "Group index must be an integer");
+
+            return new ComponentRadioButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "RadioButton"), ContentProperty, IndexProperty, GroupNameProperty.FixedValueSource.Name, GroupIndex);
         }
     }
 }

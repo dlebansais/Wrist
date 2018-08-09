@@ -11,8 +11,9 @@ namespace Parser
         public GeneratorComponentRadioButton(IComponentRadioButton radioButton)
             : base(radioButton)
         {
-            GroupName = radioButton.GroupName;
             ContentKey = radioButton.ContentKey;
+            GroupName = radioButton.GroupName;
+            GroupIndex = radioButton.GroupIndex;
             BaseRadioButton = radioButton;
 
             GeneratorComponentRadioButtonMap.Add(BaseRadioButton, this);
@@ -24,7 +25,10 @@ namespace Parser
         public IGeneratorObject ContentObject { get; private set; }
         public IGeneratorObjectProperty ContentObjectProperty { get; private set; }
         public IDeclarationSource ContentKey { get; private set; }
+        public IGeneratorObject IndexObject { get; private set; }
+        public IGeneratorObjectPropertyIndex IndexObjectProperty { get; private set; }
         public string GroupName { get; private set; }
+        public int GroupIndex { get; private set; }
         public ICollection<IGeneratorComponentRadioButton> Group { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain)
@@ -32,6 +36,7 @@ namespace Parser
             bool IsConnected = false;
 
             ConnectContent(domain, ref IsConnected);
+            ConnectIndex(domain, ref IsConnected);
             ConnectGroup(domain, ref IsConnected);
 
             return IsConnected;
@@ -59,6 +64,19 @@ namespace Parser
             }
         }
 
+        public void ConnectIndex(IGeneratorDomain domain, ref bool IsConnected)
+        {
+            if (IndexObject == null || IndexObjectProperty == null)
+            {
+                IsConnected = true;
+
+                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseRadioButton.IndexObject))
+                    IndexObject = GeneratorObject.GeneratorObjectMap[BaseRadioButton.IndexObject];
+                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseRadioButton.IndexObjectProperty))
+                    IndexObjectProperty = (IGeneratorObjectPropertyIndex)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseRadioButton.IndexObjectProperty];
+            }
+        }
+
         public void ConnectGroup(IGeneratorDomain domain, ref bool IsConnected)
         {
             if (Group == null)
@@ -76,9 +94,17 @@ namespace Parser
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
             string Properties = $" Style=\"{{StaticResource {design.XamlName}RadioButton{StyleProperty}}}\" GroupName=\"{GroupName}\"";
-            string Value = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
+            string ContentValue = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{attachedProperties}{visibilityBinding}{Properties}{elementProperties} Content=\"{Value}\"/>");
+            string IndexValue;
+            if (currentObject == IndexObject)
+                IndexValue = IndexObjectProperty.CSharpName;
+            else
+                IndexValue = $"{IndexObject.CSharpName}{IndexObjectProperty.CSharpName}";
+
+            string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=TwoWay, Converter={{StaticResource convIndexToChecked}}, ConverterParameter={GroupIndex}}}";
+
+            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{ContentValue}\"/>");
         }
     }
 }
