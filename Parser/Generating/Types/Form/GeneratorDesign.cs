@@ -29,9 +29,9 @@ namespace Parser
             return false;
         }
 
-        public void Generate(IGeneratorDomain domain, string rootFolderName, IGeneratorColorScheme colorScheme)
+        public void Generate(IGeneratorDomain domain, string outputFolderName, IGeneratorColorScheme colorScheme)
         {
-            string XamlFileName = GeneratorDomain.GetFilePath(rootFolderName, Name);
+            string XamlFileName = GeneratorDomain.GetFilePath(outputFolderName, Name);
             string XamlFolderName = Path.GetDirectoryName(XamlFileName);
 
             if (!Directory.Exists(XamlFolderName))

@@ -8,6 +8,6 @@ namespace Parser
         string XamlName { get; }
         string FilePath { get; }
         void GenerateResourceLine(StreamWriter xamlWriter);
-        void Generate(IGeneratorDomain domain, string rootFolderName);
+        void Generate(IGeneratorDomain domain, string outputFolderName);
     }
 }

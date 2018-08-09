@@ -11,6 +11,6 @@ namespace Parser
         IReadOnlyCollection<IGeneratorTransition> Transitions { get; }
         IReadOnlyCollection<IGeneratorObjectEvent> Events { get; }
         bool Connect(IGeneratorDomain domain);
-        void Generate(IGeneratorDomain domain, string rootFolderName, string appNamespace);
+        void Generate(IGeneratorDomain domain, string outputFolderName, string appNamespace);
     }
 }

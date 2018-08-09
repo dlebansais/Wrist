@@ -89,9 +89,9 @@ namespace Parser
             return IsConnected;
         }
 
-        public void Generate(IGeneratorDomain domain, string rootFolderName, string appNamespace, IGeneratorColorScheme colorScheme)
+        public void Generate(IGeneratorDomain domain, string outputFolderName, string appNamespace, IGeneratorColorScheme colorScheme)
         {
-            string PagesFolderName = Path.Combine(rootFolderName, "Pages");
+            string PagesFolderName = Path.Combine(outputFolderName, "Pages");
 
             if (!Directory.Exists(PagesFolderName))
                 Directory.CreateDirectory(PagesFolderName);

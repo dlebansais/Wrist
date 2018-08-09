@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -49,15 +50,16 @@ namespace Parser
             return IsConnected;
         }
 
-        public void Generate(IGeneratorDomain domain, string rootFolderName, string appNamespace)
+        public void Generate(IGeneratorDomain domain, string outputFolderName, string appNamespace)
         {
-            GenerateInterface(domain, rootFolderName, appNamespace);
-            GenerateStates(domain, rootFolderName, appNamespace);
+            GenerateInterface(domain, outputFolderName, appNamespace);
+            GenerateStates(domain, outputFolderName, appNamespace);
+            CopyImplementation(domain, outputFolderName, appNamespace);
         }
 
-        public void GenerateInterface(IGeneratorDomain domain, string rootFolderName, string appNamespace)
+        public void GenerateInterface(IGeneratorDomain domain, string outputFolderName, string appNamespace)
         {
-            string ObjectsFolderName = Path.Combine(rootFolderName, "Objects");
+            string ObjectsFolderName = Path.Combine(outputFolderName, "Objects");
 
             if (!Directory.Exists(ObjectsFolderName))
                 Directory.CreateDirectory(ObjectsFolderName);
@@ -92,9 +94,9 @@ namespace Parser
             cSharpWriter.WriteLine("}");
         }
 
-        public void GenerateStates(IGeneratorDomain domain, string rootFolderName, string appNamespace)
+        public void GenerateStates(IGeneratorDomain domain, string outputFolderName, string appNamespace)
         {
-            string CSharpFileName = Path.Combine(rootFolderName, $"Objects/{CSharpName}States.cs");
+            string CSharpFileName = Path.Combine(outputFolderName, $"Objects/{CSharpName}States.cs");
 
             using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
@@ -117,6 +119,33 @@ namespace Parser
 
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");
+        }
+
+        public void CopyImplementation(IGeneratorDomain domain, string outputFolderName, string appNamespace)
+        {
+            string ObjectsInputFolderName = Path.Combine(domain.InputFolderName, "Objects");
+            string ObjectsOutputFolderName = Path.Combine(outputFolderName, "Objects");
+
+            if (!Directory.Exists(ObjectsOutputFolderName))
+                Directory.CreateDirectory(ObjectsOutputFolderName);
+
+            string InputCSharpFileName = Path.Combine(ObjectsInputFolderName, Path.Combine(Name, $"{CSharpName}.cs"));
+            string OutputCSharpFileName = Path.Combine(ObjectsOutputFolderName, $"{CSharpName}.cs");
+
+            DateTime InputWriteTime;
+            if (File.Exists(InputCSharpFileName))
+                InputWriteTime = File.GetLastWriteTimeUtc(InputCSharpFileName);
+            else
+                InputWriteTime = DateTime.MinValue;
+
+            DateTime OutputWriteTime;
+            if (File.Exists(OutputCSharpFileName))
+                OutputWriteTime = File.GetLastWriteTimeUtc(OutputCSharpFileName);
+            else
+                OutputWriteTime = DateTime.MinValue;
+
+            if (InputWriteTime > OutputWriteTime)
+                File.Copy(InputCSharpFileName, OutputCSharpFileName, true);
         }
 
         public override string ToString()

@@ -35,9 +35,9 @@ namespace Parser
             return $"{{StaticResource {XamlName}}}";
         }
 
-        public void Generate(IGeneratorDomain domain, string rootFolderName)
+        public void Generate(IGeneratorDomain domain, string outputFolderName)
         {
-            string ResourcesFolderName = Path.Combine(rootFolderName, "Resources");
+            string ResourcesFolderName = Path.Combine(outputFolderName, "Resources");
 
             if (!Directory.Exists(ResourcesFolderName))
                 Directory.CreateDirectory(ResourcesFolderName);

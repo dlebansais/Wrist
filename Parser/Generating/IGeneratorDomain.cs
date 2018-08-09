@@ -4,6 +4,8 @@ namespace Parser
 {
     public interface IGeneratorDomain
     {
+        string AppNamespace { get; }
+        string InputFolderName { get; }
         List<IGeneratorArea> Areas { get; }
         List<IGeneratorDesign> Designs { get; }
         List<IGeneratorLayout> Layouts { get; }
@@ -14,6 +16,6 @@ namespace Parser
         List<IGeneratorColorScheme> ColorSchemes { get; }
         IGeneratorPage HomePage { get; }
         IGeneratorColorScheme SelectedColorScheme { get; }
-        void Generate(string rootFolderName);
+        void Generate(string outputFolderName);
     }
 }

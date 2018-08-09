@@ -2,6 +2,7 @@
 {
     public interface IDomain
     {
+        string InputFolderName { get; }
         IFormCollection<IArea> Areas { get; }
         IFormCollection<IDesign> Designs { get; }
         IFormCollection<ILayout> Layouts { get; }

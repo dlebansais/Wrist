@@ -15,6 +15,7 @@ namespace Parser
         public GeneratorDomain(string appNamespace, IDomain domain)
         {
             AppNamespace = appNamespace;
+            InputFolderName = domain.InputFolderName;
 
             Areas = new List<IGeneratorArea>();
             foreach (IArea Area in domain.Areas)
@@ -69,6 +70,7 @@ namespace Parser
         }
 
         public string AppNamespace { get; private set; }
+        public string InputFolderName { get; private set; }
         public List<IGeneratorArea> Areas { get; private set; }
         public List<IGeneratorDesign> Designs { get; private set; }
         public List<IGeneratorLayout> Layouts { get; private set; }
@@ -80,54 +82,54 @@ namespace Parser
         public IGeneratorPage HomePage { get; private set; }
         public IGeneratorColorScheme SelectedColorScheme { get; private set; }
 
-        public void Generate(string rootFolderName)
+        public void Generate(string outputFolderName)
         {
-            if (!Directory.Exists(rootFolderName))
-                Directory.CreateDirectory(rootFolderName);
+            if (!Directory.Exists(outputFolderName))
+                Directory.CreateDirectory(outputFolderName);
 
-            string AppNamespace = Path.GetFileName(rootFolderName);
+            string AppNamespace = Path.GetFileName(outputFolderName);
 
             foreach (IGeneratorPage Page in Pages)
-                Page.Generate(this, rootFolderName, AppNamespace, SelectedColorScheme);
+                Page.Generate(this, outputFolderName, AppNamespace, SelectedColorScheme);
 
             foreach (IGeneratorObject Object in Objects)
-                Object.Generate(this, rootFolderName, AppNamespace);
+                Object.Generate(this, outputFolderName, AppNamespace);
 
             foreach (IGeneratorResource Resource in Resources)
-                Resource.Generate(this, rootFolderName);
+                Resource.Generate(this, outputFolderName);
 
-            GenerateAppXaml(rootFolderName, AppNamespace, SelectedColorScheme);
-            GenerateAppCSharp(rootFolderName, AppNamespace);
-            GenerateAppProject(rootFolderName, AppNamespace);
+            GenerateAppXaml(outputFolderName, AppNamespace, SelectedColorScheme);
+            GenerateAppCSharp(outputFolderName, AppNamespace);
+            GenerateAppProject(outputFolderName, AppNamespace);
         }
 
-        private void GenerateAppXaml(string rootFolderName, string appNamespace, IGeneratorColorScheme colorScheme)
+        private void GenerateAppXaml(string outputFolderName, string appNamespace, IGeneratorColorScheme colorScheme)
         {
-            string XamlFileName = Path.Combine(rootFolderName, "App.xaml");
+            string XamlFileName = Path.Combine(outputFolderName, "App.xaml");
 
             using (FileStream XamlFile = new FileStream(XamlFileName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 using (StreamWriter XamlWriter = new StreamWriter(XamlFile, Encoding.UTF8))
                 {
-                    GenerateAppXaml(rootFolderName, appNamespace, XamlWriter, colorScheme);
+                    GenerateAppXaml(outputFolderName, appNamespace, XamlWriter, colorScheme);
                 }
             }
         }
 
-        private void GenerateAppCSharp(string rootFolderName, string appNamespace)
+        private void GenerateAppCSharp(string outputFolderName, string appNamespace)
         {
-            string CSharpFileName = Path.Combine(rootFolderName, "App.xaml.cs");
+            string CSharpFileName = Path.Combine(outputFolderName, "App.xaml.cs");
 
             using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 using (StreamWriter CSharpWriter = new StreamWriter(CSharpFile, Encoding.UTF8))
                 {
-                    GenerateAppCSharp(rootFolderName, appNamespace, CSharpWriter);
+                    GenerateAppCSharp(outputFolderName, appNamespace, CSharpWriter);
                 }
             }
         }
 
-        private void GenerateAppXaml(string rootFolderName, string appNamespace, StreamWriter xamlWriter, IGeneratorColorScheme colorScheme)
+        private void GenerateAppXaml(string outputFolderName, string appNamespace, StreamWriter xamlWriter, IGeneratorColorScheme colorScheme)
         {
             List<XmlnsContentPair> ResourceList = new List<XmlnsContentPair>();
 
@@ -169,7 +171,7 @@ namespace Parser
             xamlWriter.WriteLine("</Application>");
         }
 
-        private void GenerateAppCSharp(string rootFolderName, string appNamespace, StreamWriter cSharpWriter)
+        private void GenerateAppCSharp(string outputFolderName, string appNamespace, StreamWriter cSharpWriter)
         {
             cSharpWriter.WriteLine("using Presentation;");
             cSharpWriter.WriteLine("using Windows.UI.Xaml;");
@@ -217,20 +219,20 @@ namespace Parser
             cSharpWriter.WriteLine("}");
         }
 
-        private void GenerateAppProject(string rootFolderName, string appNamespace)
+        private void GenerateAppProject(string outputFolderName, string appNamespace)
         {
-            string ProjectFileName = Path.Combine(rootFolderName, $"{appNamespace}.csproj");
+            string ProjectFileName = Path.Combine(outputFolderName, $"{appNamespace}.csproj");
 
             using (FileStream ProjectFile = new FileStream(ProjectFileName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 using (StreamWriter ProjectWriter = new StreamWriter(ProjectFile, Encoding.UTF8))
                 {
-                    GenerateAppProject(rootFolderName, appNamespace, ProjectWriter);
+                    GenerateAppProject(outputFolderName, appNamespace, ProjectWriter);
                 }
             }
         }
 
-        private void GenerateAppProject(string rootFolderName, string appNamespace, StreamWriter projectWriter)
+        private void GenerateAppProject(string outputFolderName, string appNamespace, StreamWriter projectWriter)
         {
             projectWriter.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             projectWriter.WriteLine("<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">");
@@ -466,9 +468,9 @@ namespace Parser
             return line;
         }
 
-        public static string GetFilePath(string rootFolderName, string name)
+        public static string GetFilePath(string outputFolderName, string name)
         {
-            string XamlFolderName = Path.Combine(rootFolderName, "Design");
+            string XamlFolderName = Path.Combine(outputFolderName, "Design");
             string XamlFileName = Path.Combine(XamlFolderName, name + ".xaml");
 
             XamlFileName = XamlFileName.Replace("\\", "/");

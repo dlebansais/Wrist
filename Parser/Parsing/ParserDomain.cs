@@ -7,12 +7,12 @@ namespace Parser
 {
     public static class ParserDomain
     {
-        public static IDomain Parse(string rootFolderName, string homePageName, string colorSchemeName)
+        public static IDomain Parse(string inputFolderName, string homePageName, string colorSchemeName)
         {
-            if (string.IsNullOrEmpty(rootFolderName))
+            if (string.IsNullOrEmpty(inputFolderName))
                 throw new InvalidDataException("Invalid root folder");
 
-            if (!Directory.Exists(rootFolderName))
+            if (!Directory.Exists(inputFolderName))
                 throw new InvalidDataException("Invalid root folder");
 
             if (string.IsNullOrEmpty(homePageName))
@@ -42,11 +42,11 @@ namespace Parser
             string[] FolderNames;
             try
             {
-                FolderNames = Directory.GetDirectories(rootFolderName, "*.*");
+                FolderNames = Directory.GetDirectories(inputFolderName, "*.*");
             }
             catch (Exception e)
             {
-                throw new ParsingException(rootFolderName, e.Message);
+                throw new ParsingException(inputFolderName, e.Message);
             }
 
             foreach (string FullFolderName in FolderNames)
@@ -57,7 +57,7 @@ namespace Parser
                 foreach (IFormParser FormParser in FormParsers)
                     if (FolderName == FormParser.FolderName)
                     {
-                        ParseForm(FormParser, Path.Combine(rootFolderName, FolderName));
+                        ParseForm(FormParser, Path.Combine(inputFolderName, FolderName));
                         Parsed = true;
                         break;
                     }
@@ -68,7 +68,7 @@ namespace Parser
 
             foreach (IFormParser FormParser in FormParsers)
                 if (FormParser.ParsedResult == null)
-                    throw new ParsingException(rootFolderName, $"Missing folder '{FormParser.FolderName}'");
+                    throw new ParsingException(inputFolderName, $"Missing folder '{FormParser.FolderName}'");
 
             IFormCollection<IArea> Areas = (IFormCollection<IArea>)FormParserAreas.ParsedResult;
             IFormCollection<IDesign> Designs = (IFormCollection<IDesign>)FormParserDesigns.ParsedResult;
@@ -99,7 +99,7 @@ namespace Parser
             if (SelectedColorScheme == null)
                 throw new InvalidDataException($"Color scheme {colorSchemeName} not found");
 
-            IDomain NewDomain = new Domain(Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorSchemes, HomePage, SelectedColorScheme);
+            IDomain NewDomain = new Domain(inputFolderName, Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorSchemes, HomePage, SelectedColorScheme);
 
             bool IsConnected;
             do
@@ -124,11 +124,11 @@ namespace Parser
 
                 ListAreas(Page.Area, UsedAreas, SpecifiedAreas);
                 if (UsedAreas.Count > 0)
-                    throw new ParsingException(rootFolderName, $"Layout specified for area {UsedAreas[0].Name} but this area isn't used in page {Page.Name}");
+                    throw new ParsingException(inputFolderName, $"Layout specified for area {UsedAreas[0].Name} but this area isn't used in page {Page.Name}");
 
                 foreach (IArea Area in SpecifiedAreas)
                     if (!Page.AreaLayouts.ContainsKey(Area))
-                        throw new ParsingException(rootFolderName, $"Area {Area.Name} has not layout specified");
+                        throw new ParsingException(inputFolderName, $"Area {Area.Name} has not layout specified");
             }
 
             List<IDockPanel> DockPanels = new List<IDockPanel>();
@@ -151,7 +151,7 @@ namespace Parser
                     }
 
                 if (!Found)
-                    throw new ParsingException(rootFolderName, $"DockPanel.Dock specified for a control not included in a DockPanel.");
+                    throw new ParsingException(inputFolderName, $"DockPanel.Dock specified for a control not included in a DockPanel.");
             }
 
             foreach (KeyValuePair<ILayoutElement, int> Entry in GridColumnTargets)
@@ -165,7 +165,7 @@ namespace Parser
                     }
 
                 if (!Found)
-                    throw new ParsingException(rootFolderName, $"Grid.Column specified for a control not included in a Grid.");
+                    throw new ParsingException(inputFolderName, $"Grid.Column specified for a control not included in a Grid.");
             }
 
             foreach (KeyValuePair<ILayoutElement, int> Entry in GridRowTargets)
@@ -179,7 +179,7 @@ namespace Parser
                     }
 
                 if (!Found)
-                    throw new ParsingException(rootFolderName, $"Grid.Row specified for a control not included in a Grid.");
+                    throw new ParsingException(inputFolderName, $"Grid.Row specified for a control not included in a Grid.");
             }
 
             return NewDomain;
