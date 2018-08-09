@@ -27,7 +27,7 @@ namespace WristConsole
             if (LaunchFolder.ToLower().EndsWith($"\\{ExpectedProjectName.ToLower()}"))
                 LaunchFolder = LaunchFolder.Substring(0, LaunchFolder.Length - ExpectedProjectName.Length - 1);
 
-            string InputFolder = Path.Combine(LaunchFolder, "Samples", "numbatsoft");
+            string InputFolder = Path.Combine(LaunchFolder, "Samples", "comet");
             string OutputFolder = Path.Combine(LaunchFolder, "AppCSHtml5");
 
             try

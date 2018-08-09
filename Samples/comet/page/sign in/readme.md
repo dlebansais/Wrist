@@ -19,7 +19,7 @@ There is a button to go to the sign up page.
 
 There is a validity duration option:
 
-- This session only
+- This session only (until inactive for an hour)
 - Two weeks
 - No limit
 

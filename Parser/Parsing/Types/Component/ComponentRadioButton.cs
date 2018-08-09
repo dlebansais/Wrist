@@ -64,8 +64,8 @@ namespace Parser
             {
                 IsConnected = true;
 
-                if (rootArea != null)
-                    throw new ParsingException(Source.Source, $"Radio button ${Source.Name} no referenced in a page");
+                if (rootArea == null)
+                    throw new ParsingException(Source.Source, $"Radio button {Source.Name} not referenced in a page");
 
                 List<IComponentRadioButton> GroupList = new List<IComponentRadioButton>();
                 rootArea.FindOtherRadioButtons(GroupName, GroupList);

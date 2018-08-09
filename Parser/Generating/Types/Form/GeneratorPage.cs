@@ -79,7 +79,7 @@ namespace Parser
                     Design = GeneratorDesign.GeneratorDesignMap[BasePage.Design];
             }
 
-            if (Background == null)
+            if (Background == null && BasePage.Background != null)
             {
                 IsConnected = true;
                 if (GeneratorBackground.GeneratorBackgroundMap.ContainsKey(BasePage.Background))

@@ -458,7 +458,7 @@ namespace Parser
             if (IndexProperty.FixedValueSource != null || IndexProperty.ObjectPropertyKey != null)
                 throw new ParsingException(source, "Index must be an integer property");
             if (ItemsProperty.FixedValueSource != null || ItemsProperty.ObjectPropertyKey != null)
-                throw new ParsingException(source, "Items must be a string property");
+                throw new ParsingException(source, "Items must be a string list property");
 
             return new ComponentSelector(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Selector"), IndexProperty, ItemsProperty);
         }
