@@ -72,29 +72,28 @@ namespace Parser
             else if (objectValue != null && objectPropertyValue != null)
             {
                 string Mode = isTwoWays ? ", Mode=TwoWay" : "";
+                string ObjectBinding = GetObjectBinding(currentObject, objectValue, objectPropertyValue);
 
-                if (currentObject == objectValue)
-                {
-                    if (key == null)
-                        return $"{{Binding {objectPropertyValue.CSharpName}{Mode}}}";
-                    else if (key.Name == GeneratorPage.CurrentPage.Name)
-                        return $"{{Binding {objectPropertyValue.CSharpName}{Mode}, Converter={{StaticResource convKeyToValue}}, ConverterParameter={ParserDomain.ToKeyName(currentPage.Name)}}}";
-                    else
-                        return $"{{Binding {objectPropertyValue.CSharpName}{Mode}, Converter={{StaticResource convKeyToValue}}, ConverterParameter={key.Name}}}";
-                }
+                if (key == null)
+                    return $"{{Binding {ObjectBinding}{Mode}}}";
+                else if (key.Name == GeneratorPage.CurrentPage.Name)
+                    return $"{{Binding {ObjectBinding}{Mode}, Converter={{StaticResource convKeyToValue}}, ConverterParameter=page-{ParserDomain.ToKeyName(currentPage.Name)}}}";
                 else
-                {
-                    if (key == null)
-                        return $"{{Binding {objectValue.CSharpName}.{objectPropertyValue.CSharpName}{Mode}}}";
-                    else if (key.Name == GeneratorPage.CurrentPage.Name)
-                        return $"{{Binding {objectValue.CSharpName}.{objectPropertyValue.CSharpName}{Mode}, Converter={{StaticResource convKeyToValue}}, ConverterParameter={ParserDomain.ToKeyName(currentPage.Name)}}}";
-                    else
-                        return $"{{Binding {objectValue.CSharpName}.{objectPropertyValue.CSharpName}{Mode}, Converter={{StaticResource convKeyToValue}}, ConverterParameter={key.Name}}}";
-                }
+                    return $"{{Binding {ObjectBinding}{Mode}, Converter={{StaticResource convKeyToValue}}, ConverterParameter={key.Name}}}";
             }
 
             else
                 throw new InvalidOperationException();
+        }
+
+        protected string GetObjectBinding(IGeneratorObject currentObject, IGeneratorObject objectValue, IGeneratorObjectProperty objectPropertyValue)
+        {
+            if (objectValue == GeneratorObject.TranslationObject && objectPropertyValue == GeneratorObjectPropertyStringDictionary.StringsProperty)
+                return "Translation.Strings";
+            else if (objectValue == currentObject)
+                return objectPropertyValue.CSharpName;
+            else
+                return $"{objectValue.CSharpName}.{objectPropertyValue.CSharpName}";
         }
 
         public virtual bool IsReferencing(IGeneratorArea other)

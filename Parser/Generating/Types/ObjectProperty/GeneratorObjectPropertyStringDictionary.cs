@@ -4,9 +4,13 @@ namespace Parser
 {
     public class GeneratorObjectPropertyStringDictionary : GeneratorObjectProperty, IGeneratorObjectPropertyStringDictionary
     {
+        public static GeneratorObjectPropertyStringDictionary StringsProperty = new GeneratorObjectPropertyStringDictionary(ObjectPropertyStringDictionary.StringsProperty, null);
+
         public GeneratorObjectPropertyStringDictionary(IObjectPropertyStringDictionary property, IGeneratorObject obj)
             : base(property, obj)
         {
+            if (property == ObjectPropertyStringDictionary.StringsProperty)
+                GeneratorObjectPropertyMap.Add(property, this);
         }
 
         public override bool Connect(IGeneratorDomain domain)

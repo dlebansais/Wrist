@@ -95,13 +95,7 @@ namespace Parser
             string StyleProperty = (style != null) ? style : "";
             string Properties = $" Style=\"{{StaticResource {design.XamlName}RadioButton{StyleProperty}}}\" GroupName=\"{GroupName}\"";
             string ContentValue = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
-
-            string IndexValue;
-            if (currentObject == IndexObject)
-                IndexValue = IndexObjectProperty.CSharpName;
-            else
-                IndexValue = $"{IndexObject.CSharpName}{IndexObjectProperty.CSharpName}";
-
+            string IndexValue = GetObjectBinding(currentObject, IndexObject, IndexObjectProperty);
             string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=TwoWay, Converter={{StaticResource convIndexToChecked}}, ConverterParameter={GroupIndex}}}";
 
             colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{ContentValue}\"/>");

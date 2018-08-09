@@ -4,6 +4,16 @@ namespace Parser
 {
     public class Object : IObject, IConnectable
     {
+        public static Object TranslationObject = new Object("translation");
+
+        private Object(string name)
+        {
+            Name = name;
+
+            List<IObjectProperty> LocalProperties = new List<IObjectProperty>() { ObjectPropertyStringDictionary.StringsProperty };
+            Properties = LocalProperties.AsReadOnly();
+        }
+
         public Object(string name, string cSharpName, IEnumerable<string> states, IObjectPropertyCollection properties, List<ITransition> transitions, List<IObjectEvent> events)
         {
             Name = name;

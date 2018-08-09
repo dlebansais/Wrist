@@ -14,6 +14,7 @@ namespace Parser
         List<IGeneratorResource> Resources { get; }
         List<IGeneratorBackground> Backgrounds { get; }
         List<IGeneratorColorScheme> ColorSchemes { get; }
+        IGeneratorTranslation Translation { get; }
         IGeneratorPage HomePage { get; }
         IGeneratorColorScheme SelectedColorScheme { get; }
         void Generate(string outputFolderName);

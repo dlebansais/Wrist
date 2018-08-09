@@ -221,6 +221,9 @@ namespace Parser
                 cSharpWriter.WriteLine(ObjectLine);
             }
 
+            if (domain.Translation != null)
+                cSharpWriter.WriteLine("        public Translation Translation { get { return App.Translation; } }");
+
             List<IGeneratorPageNavigation> GoToList = new List<IGeneratorPageNavigation>();
             Area.CollectGoTo(GoToList, this);
 

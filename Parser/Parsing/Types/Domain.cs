@@ -2,7 +2,7 @@
 {
     public class Domain : IDomain
     {
-        public Domain(string inputFolderName, IFormCollection<IArea> areas, IFormCollection<IDesign> designs, IFormCollection<ILayout> layouts, IFormCollection<IObject> objects, IFormCollection<IPage> pages, IFormCollection<IResource> resources, IFormCollection<IBackground> backgrounds, IFormCollection<IColorScheme> colorSchemes, IPage homePage, IColorScheme selectedColorScheme)
+        public Domain(string inputFolderName, IFormCollection<IArea> areas, IFormCollection<IDesign> designs, IFormCollection<ILayout> layouts, IFormCollection<IObject> objects, IFormCollection<IPage> pages, IFormCollection<IResource> resources, IFormCollection<IBackground> backgrounds, IFormCollection<IColorScheme> colorSchemes, ITranslation translation, IPage homePage, IColorScheme selectedColorScheme)
         {
             InputFolderName = inputFolderName;
             Areas = areas;
@@ -13,6 +13,7 @@
             Resources = resources;
             Backgrounds = backgrounds;
             ColorSchemes = colorSchemes;
+            Translation = translation;
             HomePage = homePage;
             SelectedColorScheme = selectedColorScheme;
         }
@@ -26,6 +27,7 @@
         public IFormCollection<IResource> Resources { get; private set; }
         public IFormCollection<IBackground> Backgrounds { get; private set; }
         public IFormCollection<IColorScheme> ColorSchemes { get; private set; }
+        public ITranslation Translation { get; private set; }
         public IPage HomePage { get; private set; }
         public IColorScheme SelectedColorScheme { get; private set; }
     }

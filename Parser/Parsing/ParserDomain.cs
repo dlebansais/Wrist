@@ -79,6 +79,16 @@ namespace Parser
             IFormCollection<IBackground> Backgrounds = (IFormCollection<IBackground>)FormParserBackgrounds.ParsedResult;
             IFormCollection<IColorScheme> ColorSchemes = (IFormCollection<IColorScheme>)FormParserColorSchemes.ParsedResult;
 
+            string TranslationFile = Path.Combine(inputFolderName, "translations.cvs");
+            ITranslation Translation;
+            if (File.Exists(TranslationFile))
+            {
+                Translation = new Translation(TranslationFile, '\t');
+                Translation.Process();
+            }
+            else
+                Translation = null;
+
             IPage HomePage = null;
             foreach (IPage Page in Pages)
                 if (Page.Name == homePageName)
@@ -99,7 +109,7 @@ namespace Parser
             if (SelectedColorScheme == null)
                 throw new InvalidDataException($"Color scheme {colorSchemeName} not found");
 
-            IDomain NewDomain = new Domain(inputFolderName, Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorSchemes, HomePage, SelectedColorScheme);
+            IDomain NewDomain = new Domain(inputFolderName, Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorSchemes, Translation, HomePage, SelectedColorScheme);
 
             bool IsConnected;
             do
@@ -107,8 +117,12 @@ namespace Parser
                 IsConnected = false;
 
                 foreach (IFormParser FormParser in FormParsers)
+                {
                     foreach (IConnectable Connectable in FormParser.ParsedResult)
+                    {
                         IsConnected |= Connectable.Connect(NewDomain);
+                    }
+                }
             }
             while (IsConnected);
 

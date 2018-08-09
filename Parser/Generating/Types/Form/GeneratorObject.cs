@@ -8,6 +8,17 @@ namespace Parser
     public class GeneratorObject : IGeneratorObject
     {
         public static Dictionary<IObject, IGeneratorObject> GeneratorObjectMap { get; } = new Dictionary<IObject, IGeneratorObject>();
+        public static GeneratorObject TranslationObject = new GeneratorObject(Object.TranslationObject.Name);
+
+        private GeneratorObject(string name)
+        {
+            Name = name;
+
+            List<IGeneratorObjectProperty> LocalProperties = new List<IGeneratorObjectProperty>() { GeneratorObjectPropertyStringDictionary.StringsProperty };
+            Properties = LocalProperties.AsReadOnly();
+
+            GeneratorObjectMap.Add(Object.TranslationObject, this);
+        }
 
         public GeneratorObject(IObject obj)
         {
@@ -123,7 +134,7 @@ namespace Parser
 
         public void CopyImplementation(IGeneratorDomain domain, string outputFolderName, string appNamespace)
         {
-            string ObjectsInputFolderName = Path.Combine(domain.InputFolderName, "Objects");
+            string ObjectsInputFolderName = Path.Combine(domain.InputFolderName, "object");
             string ObjectsOutputFolderName = Path.Combine(outputFolderName, "Objects");
 
             if (!Directory.Exists(ObjectsOutputFolderName))

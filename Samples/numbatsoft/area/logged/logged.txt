@@ -1,2 +1,2 @@
-logged text: text, text=language.strings[logged-as]
+logged text: text, text=translation.strings[logged-as]
 account name: button, content=login.name, goto=account

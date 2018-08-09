@@ -17,6 +17,37 @@
         public IDeclarationSource ObjectPropertySource { get; private set; }
         public IDeclarationSource ObjectPropertyKey { get; private set; }
 
+        private static void ConnectToObject(IDomain domain, IDeclarationSource objectSource, IDeclarationSource objectPropertySource, IDeclarationSource objectPropertyKey, ref IObject obj)
+        {
+            if (objectSource.Name == Object.TranslationObject.Name)
+            {
+                if (domain.Translation == null)
+                    throw new ParsingException(objectSource.Source, $"Object {objectSource.Name} is used but no translation file is specified");
+
+                obj = Object.TranslationObject;
+                if (objectPropertySource.Name != ObjectPropertyStringDictionary.StringsProperty.NameSource.Name)
+                    throw new ParsingException(objectPropertySource.Source, $"The only valid property for object {objectSource.Name} is {ObjectPropertyStringDictionary.StringsProperty.NameSource.Name}");
+
+                if (objectPropertyKey == null)
+                    throw new ParsingException(objectSource.Source, $"For object {objectSource.Name} property {ObjectPropertyStringDictionary.StringsProperty.NameSource.Name} a key is required");
+
+                if (!domain.Translation.KeyList.Contains(objectPropertyKey.Name))
+                    throw new ParsingException(objectPropertyKey.Source, $"The translation file doesn't contain key '{objectPropertyKey.Name}'");
+            }
+            else
+            {
+                foreach (IObject Item in domain.Objects)
+                    if (Item.Name == objectSource.Name)
+                    {
+                        obj = Item;
+                        break;
+                    }
+
+                if (obj == null)
+                    throw new ParsingException(objectSource.Source, $"Unknown object {objectSource.Name}");
+            }
+        }
+
         public bool ConnectToResourceOrObject(IDomain domain, IObject currentObject, ref IResource resource, ref IObject obj, ref IObjectProperty objectProperty, ref IDeclarationSource objectPropertyKey)
         {
             bool IsConnected = false;
@@ -38,15 +69,7 @@
 
             else if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -120,15 +143,7 @@
 
             else if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -158,15 +173,7 @@
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -196,15 +203,7 @@
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -234,15 +233,7 @@
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -272,15 +263,7 @@
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -310,15 +293,7 @@
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -358,15 +333,7 @@
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -406,15 +373,7 @@
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                foreach (IObject Item in domain.Objects)
-                    if (Item.Name == ObjectSource.Name)
-                    {
-                        obj = Item;
-                        break;
-                    }
-
-                if (obj == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
