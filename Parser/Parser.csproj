@@ -49,6 +49,7 @@
     <Compile Include="Exceptions\IDeclarationSource.cs" />
     <Compile Include="Exceptions\IParsingSource.cs" />
     <Compile Include="Exceptions\ParsingSource.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentRadioButton.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentCheckbox.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentCollection.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponent.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Generating\Types\Component\GeneratorComponentSelector.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentContainer.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentText.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentRadioButton.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentCheckbox.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentCollection.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponent.cs" />
@@ -147,12 +149,14 @@
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyCollection.cs" />
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyCollection.cs" />
     <Compile Include="Parsing\ParserColorScheme.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentRadioButton.cs" />
     <Compile Include="Parsing\Types\Component\ComponentCheckbox.cs" />
     <Compile Include="Parsing\Types\Component\ComponentCollection.cs" />
     <Compile Include="Parsing\Types\Component\ComponentContainerList.cs" />
     <Compile Include="Parsing\Types\Component\ComponentContainer.cs" />
     <Compile Include="Parsing\Types\Component\ComponentPasswordEdit.cs" />
     <Compile Include="Parsing\Types\Component\ComponentIndex.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentRadioButton.cs" />
     <Compile Include="Parsing\Types\Component\IComponentCheckbox.cs" />
     <Compile Include="Parsing\Types\Component\IComponentCollection.cs" />
     <Compile Include="Parsing\Types\Component\IComponentContainerList.cs" />

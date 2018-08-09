@@ -12,7 +12,7 @@
         public IObject TextObject { get; private set; }
         public IObjectPropertyString TextObjectProperty { get; private set; }
 
-        public override bool Connect(IDomain domain, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
         {
             IObject Object = TextObject;
             IObjectPropertyString ObjectProperty = TextObjectProperty;

@@ -17,7 +17,7 @@
         public IObject ItemsObject { get; private set; }
         public IObjectPropertyStringList ItemsObjectProperty { get; private set; }
 
-        public override bool Connect(IDomain domain, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
         {
             bool IsConnected = false;
 

@@ -1,15 +1,15 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
-    public interface IComponentButton : IComponent
+    public interface IComponentRadioButton : IComponent
     {
         IComponentProperty ContentProperty { get; }
         IResource ContentResource { get; }
         IObject ContentObject { get; }
         IObjectProperty ContentObjectProperty { get; }
         IDeclarationSource ContentKey { get; }
-        IComponentEvent BeforeEvent { get; }
-        string GoToPageName { get; }
-        IPageNavigation GoTo { get; }
-        IComponentEvent AfterEvent { get; }
+        string GroupName { get; }
+        ICollection<IComponentRadioButton> Group { get; }
     }
 }

@@ -19,17 +19,25 @@ namespace Parser
         public bool Connect(IDomain domain)
         {
             bool IsConnected = false;
+            IArea RootArea = null;
             IObject CurrentObject = null;
 
-            foreach (IObject Item in domain.Objects)
-                if (Item.Name == Name)
+            foreach (IPage Page in domain.Pages)
+                if (Page.Area == this)
                 {
-                    CurrentObject = Item;
+                    RootArea = this;
+                    break;
+                }
+
+            foreach (IObject Obj in domain.Objects)
+                if (Obj.Name == Name)
+                {
+                    CurrentObject = Obj;
                     break;
                 }
 
             foreach (IComponent Component in Components)
-                IsConnected |= Component.Connect(domain, CurrentObject);
+                IsConnected |= Component.Connect(domain, RootArea, CurrentObject);
 
             return IsConnected;
         }
@@ -54,6 +62,18 @@ namespace Parser
                     return true;
 
             return false;
+        }
+
+        public void FindOtherRadioButtons(string groupName, ICollection<IComponentRadioButton> group)
+        {
+            foreach (IComponent component in Components)
+                if (component is IComponentArea AsArea)
+                    AsArea.Area.FindOtherRadioButtons(groupName, group);
+                else if (component is IComponentRadioButton AsRadioButton)
+                {
+                    if (AsRadioButton.GroupName == groupName)
+                        group.Add(AsRadioButton);
+                }
         }
 
         public override string ToString()

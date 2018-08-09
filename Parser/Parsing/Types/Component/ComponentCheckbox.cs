@@ -18,7 +18,7 @@
         public IObject CheckedObject { get; private set; }
         public IObjectPropertyBoolean CheckedObjectProperty { get; private set; }
 
-        public override bool Connect(IDomain domain, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
         {
             bool IsConnected = false;
 

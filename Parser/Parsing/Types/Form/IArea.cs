@@ -10,5 +10,6 @@ namespace Parser
         IReadOnlyCollection<IComponent> Components { get; }
         void SetCurrentObject(IDeclarationSource componentSource, IObject currentObject);
         bool IsReferencedBy(IArea other);
+        void FindOtherRadioButtons(string groupName, ICollection<IComponentRadioButton> group);
     }
 }

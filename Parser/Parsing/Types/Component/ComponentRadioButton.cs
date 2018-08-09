@@ -1,14 +1,14 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
-    public class ComponentButton : Component, IComponentButton
+    public class ComponentRadioButton : Component, IComponentRadioButton
     {
-        public ComponentButton(IDeclarationSource source, string xamlName, IComponentProperty contentProperty, IComponentEvent beforeEvent, string goToPageName, IComponentEvent afterEvent)
+        public ComponentRadioButton(IDeclarationSource source, string xamlName, IComponentProperty contentProperty, string groupName)
             : base(source, xamlName)
         {
             ContentProperty = contentProperty;
-            BeforeEvent = beforeEvent;
-            GoToPageName = goToPageName;
-            AfterEvent = afterEvent;
+            GroupName = groupName;
         }
 
         public IComponentProperty ContentProperty { get; private set; }
@@ -16,17 +16,15 @@
         public IObject ContentObject { get; private set; }
         public IObjectProperty ContentObjectProperty { get; private set; }
         public IDeclarationSource ContentKey { get; private set; }
-        public IComponentEvent BeforeEvent { get; private set; }
-        public string GoToPageName { get; private set; }
-        public IPageNavigation GoTo { get; private set; }
-        public IComponentEvent AfterEvent { get; private set; }
+        public string GroupName { get; private set; }
+        public ICollection<IComponentRadioButton> Group { get; private set; }
 
         public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
         {
             bool IsConnected = false;
 
             ConnectContent(domain, currentObject, ref IsConnected);
-            ConnectGoTo(domain, ref IsConnected);
+            ConnectGroup(domain, rootArea, ref IsConnected);
 
             return IsConnected;
         }
@@ -44,12 +42,20 @@
             ContentKey = ObjectPropertyKey;
         }
 
-        private void ConnectGoTo(IDomain domain, ref bool IsConnected)
+        private void ConnectGroup(IDomain domain, IArea rootArea, ref bool IsConnected)
         {
-            if (GoTo == null)
+            if (Group == null && !IsConnected) // Ensure this is checked during the second pass only, when all areas are connected.
             {
-                GoTo = new PageNavigation(Source, domain, BeforeEvent, GoToPageName, AfterEvent);
                 IsConnected = true;
+
+                if (rootArea != null)
+                    throw new ParsingException(Source.Source, $"Radio button ${Source.Name} no referenced in a page");
+
+                Group = new List<IComponentRadioButton>();
+                rootArea.FindOtherRadioButtons(GroupName, Group);
+
+                if (Group.Count < 2)
+                    throw new ParsingException(Source.Source, $"Group name {GroupName} is only referencing one radio button");
             }
         }
     }

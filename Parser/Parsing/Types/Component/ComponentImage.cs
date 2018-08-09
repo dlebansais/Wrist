@@ -17,7 +17,7 @@
         public double Width { get; private set; }
         public double Height { get; private set; }
 
-        public override bool Connect(IDomain domain, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
         {
             IResource Resource = SourceResource;
             bool IsConnected = SourceProperty.ConnectToResource(domain, ref Resource);

@@ -24,7 +24,7 @@
         public string HorizontalScrollBarVisibility { get; private set; }
         public string VerticalScrollBarVisibility { get; private set; }
 
-        public override bool Connect(IDomain domain, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
         {
             IObject Object = TextObject;
             IObjectPropertyString ObjectProperty = TextObjectProperty;

@@ -12,7 +12,7 @@
         public IObject IndexObject { get; private set; }
         public IObjectPropertyIndex IndexObjectProperty { get; private set; }
 
-        public override bool Connect(IDomain domain, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
         {
             bool IsConnected = false;
 

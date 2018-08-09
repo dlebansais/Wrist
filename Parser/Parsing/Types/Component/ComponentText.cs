@@ -16,7 +16,7 @@
         public IDeclarationSource TextKey { get; private set; }
         public string TextDecoration { get; private set; }
 
-        public override bool Connect(IDomain domain, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
         {
             IResource Resource = TextResource;
             IObject Object = TextObject;
