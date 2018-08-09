@@ -10,10 +10,12 @@ namespace Parser
             : base(control)
         {
             Name = control.Name;
+            TextWrapping = control.TextWrapping;
         }
 
         public string Name { get; private set; }
         public IGeneratorComponent Component { get; private set; }
+        public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
         {
@@ -39,7 +41,8 @@ namespace Parser
 
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
         {
-            Component.Generate(design, Style, AttachedProperties(this), ElementProperties(), indentation, currentPage, currentObject, colorScheme, xamlWriter, visibilityBinding);
+            bool IsHorizontalAlignmentStretch = (HorizontalAlignment == Windows.UI.Xaml.HorizontalAlignment.Stretch.ToString());
+            Component.Generate(design, Style, AttachedProperties(this), ElementProperties(), TextWrapping, IsHorizontalAlignmentStretch, indentation, currentPage, currentObject, colorScheme, xamlWriter, visibilityBinding);
         }
 
         public override string ToString()

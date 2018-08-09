@@ -17,6 +17,7 @@ namespace Parser
         public string Margin { get; set; }
         public string HorizontalAlignment { get; set; }
         public string VerticalAlignment { get; set; }
+
         public abstract void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components);
     }
 }

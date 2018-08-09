@@ -35,6 +35,7 @@ namespace WristConsole
                 Console.WriteLine("Building...");
                 MainManager.Build(InputFolder, OutputFolder);
                 Console.WriteLine("Done.");
+                Thread.Sleep(TimeSpan.FromSeconds(2));
             }
             catch (ParsingException e)
             {
@@ -45,6 +46,9 @@ namespace WristConsole
                         e.WriteDiagnostic(ErrorWriter);
                     }
                 }
+
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey(true);
             }
             catch (Exception e)
             {
@@ -56,9 +60,10 @@ namespace WristConsole
                         ErrorWriter.WriteLine(e.StackTrace);
                     }
                 }
-            }
 
-            Thread.Sleep(TimeSpan.FromSeconds(2));
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey(true);
+            }
         }
     }
 }

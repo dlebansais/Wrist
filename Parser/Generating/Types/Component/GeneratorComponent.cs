@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Windows.UI.Xaml;
 
 namespace Parser
 {
@@ -58,7 +59,7 @@ namespace Parser
         public string XamlName { get; private set; }
 
         public abstract bool Connect(IGeneratorDomain domain);
-        public abstract void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding);
+        public abstract void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding);
 
         protected string GetComponentValue(IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorResource resourceValue, IGeneratorObject objectValue, IGeneratorObjectProperty objectPropertyValue, IDeclarationSource key, bool isTwoWays)
         {

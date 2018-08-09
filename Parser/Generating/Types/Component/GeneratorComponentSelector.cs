@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Windows.UI.Xaml;
 
 namespace Parser
 {
@@ -55,7 +56,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";

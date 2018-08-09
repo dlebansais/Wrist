@@ -2,12 +2,10 @@
 {
     public class ComponentText : Component, IComponentText
     {
-        public ComponentText(IDeclarationSource source, string xamlName, IComponentProperty textProperty, string textAlignment, string textWrapping, string textDecoration)
+        public ComponentText(IDeclarationSource source, string xamlName, IComponentProperty textProperty, string textDecoration)
             : base(source, xamlName)
         {
             TextProperty = textProperty;
-            TextAlignment = textAlignment;
-            TextWrapping = textWrapping;
             TextDecoration = textDecoration;
         }
 
@@ -16,8 +14,6 @@
         public IObject TextObject { get; private set; }
         public IObjectProperty TextObjectProperty { get; private set; }
         public IDeclarationSource TextKey { get; private set; }
-        public string TextAlignment { get; private set; }
-        public string TextWrapping { get; private set; }
         public string TextDecoration { get; private set; }
 
         public override bool Connect(IDomain domain, IObject currentObject)

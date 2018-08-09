@@ -228,48 +228,22 @@ namespace Parser
         private IComponentText ParseComponentText(IDeclarationSource nameSource, IParsingSource source, List<ComponentInfo> infoList)
         {
             IComponentProperty TextProperty = null;
-            IComponentProperty TextAlignmentProperty = null;
-            IComponentProperty TextWrappingProperty = null;
             IComponentProperty TextDecorationProperty = null;
 
             foreach (ComponentInfo Info in infoList)
                 if (Info.NameSource.Name == "text" && TextProperty == null)
                     TextProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name == "alignment" && TextAlignmentProperty == null)
-                    TextAlignmentProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name == "wrapping" && TextWrappingProperty == null)
-                    TextWrappingProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "decoration" && TextDecorationProperty == null)
                     TextDecorationProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name != "text" && Info.NameSource.Name != "alignment" && Info.NameSource.Name != "wrapping" && Info.NameSource.Name != "decoration")
+                else if (Info.NameSource.Name != "text" && Info.NameSource.Name != "decoration")
                     throw new ParsingException(source, $"Unknown token {Info.NameSource.Name}");
                 else
                     throw new ParsingException(source, $"Repeated: {Info.NameSource.Name}");
 
             if (TextProperty == null)
                 throw new ParsingException(source, "Text not specified");
-            if (TextAlignmentProperty != null && TextAlignmentProperty.FixedValueSource == null)
-                throw new ParsingException(source, "Alignment can only be a constant");
-            if (TextWrappingProperty != null && TextWrappingProperty.FixedValueSource == null)
-                throw new ParsingException(source, "Wrapping can only be a constant");
             if (TextDecorationProperty != null && TextDecorationProperty.FixedValueSource == null)
                 throw new ParsingException(source, "Decoration can only be a constant");
-
-            string TextAlignment = TextAlignmentProperty != null ? TextAlignmentProperty.FixedValueSource.Name : null;
-
-            if (TextAlignment != null &&
-                TextAlignment != Windows.UI.Xaml.TextAlignment.Center.ToString() &&
-                TextAlignment != Windows.UI.Xaml.TextAlignment.Left.ToString() &&
-                TextAlignment != Windows.UI.Xaml.TextAlignment.Right.ToString() &&
-                TextAlignment != Windows.UI.Xaml.TextAlignment.Justify.ToString())
-                throw new ParsingException(source, $"Invalid alignment for {nameSource.Name}");
-
-            string TextWrapping = TextWrappingProperty != null ? TextWrappingProperty.FixedValueSource.Name : null;
-
-            if (TextWrapping != null &&
-                TextWrapping != Windows.UI.Xaml.TextWrapping.NoWrap.ToString() &&
-                TextWrapping != Windows.UI.Xaml.TextWrapping.Wrap.ToString())
-                throw new ParsingException(source, $"Invalid wrapping for {nameSource.Name}");
 
             string TextDecoration = TextDecorationProperty != null ? TextDecorationProperty.FixedValueSource.Name : null;
 
@@ -279,7 +253,7 @@ namespace Parser
                 TextDecoration != Windows.UI.Text.TextDecorations.Underline.ToString())
                 throw new ParsingException(source, $"Invalid decoration for {nameSource.Name}");
 
-            return new ComponentText(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Text"), TextProperty, TextAlignment, TextWrapping, TextDecoration);
+            return new ComponentText(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Text"), TextProperty, TextDecoration);
         }
 
         private IComponentEdit ParseComponentEdit(IDeclarationSource nameSource, IParsingSource source, List<ComponentInfo> infoList)

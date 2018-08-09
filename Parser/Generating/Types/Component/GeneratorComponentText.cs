@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Windows.UI.Xaml;
 
 namespace Parser
 {
@@ -8,8 +9,6 @@ namespace Parser
             : base(text)
         {
             TextKey = text.TextKey;
-            TextAlignment = text.TextAlignment;
-            TextWrapping = text.TextWrapping;
             TextDecoration = text.TextDecoration;
             BaseText = text;
         }
@@ -20,8 +19,6 @@ namespace Parser
         public IGeneratorObject TextObject { get; private set; }
         public IGeneratorObjectProperty TextObjectProperty { get; private set; }
         public IDeclarationSource TextKey { get; private set; }
-        public string TextAlignment { get; private set; }
-        public string TextWrapping { get; private set; }
         public string TextDecoration { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain)
@@ -50,12 +47,12 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
-            string AlignmentProperty = (TextAlignment != null ? $" TextAlignment=\"{TextAlignment}\"" : "");
-            string WrappingProperty = (TextWrapping != null ? $" TextWrapping=\"{TextWrapping}\"" : " TextWrapping=\"Wrap\"");
+            string AlignmentProperty = (isHorizontalAlignmentStretch ? $" TextAlignment=\"Justify\"" : "");
+            string WrappingProperty = ((textWrapping.HasValue && textWrapping.Value == TextWrapping.NoWrap) ? " TextWrapping=\"NoWrap\"" : " TextWrapping=\"Wrap\"");
             string DecorationProperty = (TextDecoration != null ? $" TextDecorations=\"{TextDecoration}\"" : "");
             string Properties = $" Style=\"{{StaticResource {design.XamlName}Text{StyleProperty}}}\"{AlignmentProperty}{WrappingProperty}{DecorationProperty}";
             string Value = GetComponentValue(currentPage, currentObject, TextResource, TextObject, TextObjectProperty, TextKey, false);

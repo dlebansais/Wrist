@@ -168,7 +168,7 @@
     <Compile Include="Parsing\Types\IComponentEvent.cs" />
     <Compile Include="Parsing\Types\IComponentProperty.cs" />
     <Compile Include="Parsing\Types\IPageNavigation.cs" />
-    <Compile Include="Parsing\Types\Layout\Decoration.cs" />
+    <Compile Include="Parsing\Types\Layout\Control.cs" />
     <Compile Include="Parsing\Types\Layout\Empty.cs" />
     <Compile Include="Parsing\Types\Layout\IDecoration.cs" />
     <Compile Include="Parsing\Types\Layout\IEmpty.cs" />
@@ -255,7 +255,7 @@
     <Compile Include="Parsing\Types\Form\ILayout.cs" />
     <Compile Include="Parsing\Types\Form\IDesign.cs" />
     <Compile Include="Parsing\Types\Form\IObject.cs" />
-    <Compile Include="Parsing\Types\Layout\Control.cs" />
+    <Compile Include="Parsing\Types\Layout\Decoration.cs" />
     <Compile Include="Parsing\Types\Layout\DockPanel.cs" />
     <Compile Include="Parsing\Types\Layout\LayoutElement.cs" />
     <Compile Include="Parsing\Types\Layout\Panel.cs" />
