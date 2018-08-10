@@ -24,8 +24,7 @@ namespace Parser
             ILayoutElement AsElement = (ILayoutElement)target;
             int Column;
 
-            string AsString;
-            if ((AsString = value as string) != null)
+            if (value is string AsString)
             {
                 if (!int.TryParse(AsString, out Column))
                     throw new ParsingException(AsElement.Source, $"Unknown column value {AsString}");
@@ -58,8 +57,7 @@ namespace Parser
             ILayoutElement AsElement = (ILayoutElement)target;
             int Row;
 
-            string AsString;
-            if ((AsString = value as string) != null)
+            if (value is string AsString)
             {
                 if (!int.TryParse(AsString, out Row))
                     throw new ParsingException(AsElement.Source, $"Unknown row value {AsString}");

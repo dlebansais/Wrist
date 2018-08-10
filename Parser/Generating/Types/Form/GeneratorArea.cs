@@ -67,11 +67,7 @@ namespace Parser
         public void CollectGoTo(List<IGeneratorPageNavigation> goToList, IGeneratorPage currentPage)
         {
             foreach (IGeneratorComponent Component in Components)
-            {
-                IGeneratorComponentButton AsButton;
-                IGeneratorComponentArea AsArea;
-
-                if ((AsButton = Component as IGeneratorComponentButton) != null)
+                if (Component is IGeneratorComponentButton AsButton)
                 {
                     bool IsIncluded = false;
                     foreach (IGeneratorPageNavigation Item in goToList)
@@ -87,9 +83,8 @@ namespace Parser
                         goToList.Add(Copy);
                     }
                 }
-                else if ((AsArea = Component as IGeneratorComponentArea) != null)
+                else if (Component is IGeneratorComponentArea AsArea)
                     AsArea.Area.CollectGoTo(goToList, currentPage);
-            }
         }
 
         public override string ToString()

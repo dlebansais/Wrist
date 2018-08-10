@@ -144,13 +144,10 @@ namespace Parser
 
         private string KeyToString(object key)
         {
-            Type AsType;
-            string AsString;
-
-            if ((AsType = key as Type) != null)
+            if (key is Type AsType)
                 return XamlName + AsType.Name + "Style";
 
-            else if ((AsString = key as string) != null)
+            else if (key is string AsString)
                 return AsString;
 
             else

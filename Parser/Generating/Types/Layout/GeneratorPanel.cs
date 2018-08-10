@@ -9,18 +9,13 @@ namespace Parser
 
         public static GeneratorPanel Convert(IPanel panel)
         {
-            DockPanel AsDockPanel;
-            StackPanel AsStackPanel;
-            Grid AsGrid;
-            StatePanel AsStatePanel;
-
-            if ((AsDockPanel = panel as DockPanel) != null)
+            if (panel is DockPanel AsDockPanel)
                 return new GeneratorDockPanel(AsDockPanel);
-            else if ((AsStackPanel = panel as StackPanel) != null)
+            else if (panel is StackPanel AsStackPanel)
                 return new GeneratorStackPanel(AsStackPanel);
-            else if ((AsGrid = panel as Grid) != null)
+            else if (panel is Grid AsGrid)
                 return new GeneratorGrid(AsGrid);
-            else if ((AsStatePanel = panel as StatePanel) != null)
+            else if (panel is StatePanel AsStatePanel)
                 return new GeneratorStatePanel(AsStatePanel);
             else
                 throw new InvalidOperationException();

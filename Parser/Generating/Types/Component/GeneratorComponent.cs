@@ -8,45 +8,31 @@ namespace Parser
     {
         public static IGeneratorComponent Convert(IComponent component)
         {
-            IComponentArea AsComponentArea;
-            IComponentButton AsComponentButton;
-            IComponentCheckBox AsComponentCheckBox;
-            IComponentContainer AsComponentContainer;
-            IComponentContainerList AsComponentContainerList;
-            IComponentEdit AsComponentEdit;
-            IComponentImage AsComponentImage;
-            IComponentIndex AsComponentIndex;
-            IComponentPasswordEdit AsComponentPasswordEdit;
-            IComponentPopup AsComponentPopup;
-            IComponentRadioButton AsComponentRadioButton;
-            IComponentSelector AsComponentSelector;
-            IComponentText AsComponentText;
-
-            if ((AsComponentArea = component as IComponentArea) != null)
+            if (component is IComponentArea AsComponentArea)
                 return new GeneratorComponentArea(AsComponentArea);
-            else if ((AsComponentButton = component as IComponentButton) != null)
+            else if (component is IComponentButton AsComponentButton)
                 return new GeneratorComponentButton(AsComponentButton);
-            else if ((AsComponentCheckBox = component as IComponentCheckBox) != null)
+            else if (component is IComponentCheckBox AsComponentCheckBox)
                 return new GeneratorComponentCheckBox(AsComponentCheckBox);
-            else if ((AsComponentContainer = component as IComponentContainer) != null)
+            else if (component is IComponentContainer AsComponentContainer)
                 return new GeneratorComponentContainer(AsComponentContainer);
-            else if ((AsComponentContainerList = component as IComponentContainerList) != null)
+            else if (component is IComponentContainerList AsComponentContainerList)
                 return new GeneratorComponentContainerList(AsComponentContainerList);
-            else if ((AsComponentEdit = component as IComponentEdit) != null)
+            else if (component is IComponentEdit AsComponentEdit)
                 return new GeneratorComponentEdit(AsComponentEdit);
-            else if ((AsComponentImage = component as IComponentImage) != null)
+            else if (component is IComponentImage AsComponentImage)
                 return new GeneratorComponentImage(AsComponentImage);
-            else if ((AsComponentIndex = component as IComponentIndex) != null)
+            else if (component is IComponentIndex AsComponentIndex)
                 return new GeneratorComponentIndex(AsComponentIndex);
-            else if ((AsComponentPasswordEdit = component as IComponentPasswordEdit) != null)
+            else if (component is IComponentPasswordEdit AsComponentPasswordEdit)
                 return new GeneratorComponentPasswordEdit(AsComponentPasswordEdit);
-            else if ((AsComponentPopup = component as IComponentPopup) != null)
+            else if (component is IComponentPopup AsComponentPopup)
                 return new GeneratorComponentPopup(AsComponentPopup);
-            else if ((AsComponentRadioButton = component as IComponentRadioButton) != null)
+            else if (component is IComponentRadioButton AsComponentRadioButton)
                 return new GeneratorComponentRadioButton(AsComponentRadioButton);
-            else if ((AsComponentSelector = component as IComponentSelector) != null)
+            else if (component is IComponentSelector AsComponentSelector)
                 return new GeneratorComponentSelector(AsComponentSelector);
-            else if ((AsComponentText = component as IComponentText) != null)
+            else if (component is IComponentText AsComponentText)
                 return new GeneratorComponentText(AsComponentText);
             else
                 throw new InvalidOperationException();

@@ -15,11 +15,8 @@ namespace Parser
         public virtual void ReportElementsWithAttachedProperties(List<IDockPanel> dockPanels, List<IGrid> grids)
         {
             foreach (ILayoutElement Item in Items)
-            {
-                IPanel AsPanel;
-                if ((AsPanel = Item as IPanel) != null)
+                if (Item is IPanel AsPanel)
                     AsPanel.ReportElementsWithAttachedProperties(dockPanels, grids);
-            }
         }
 
         public override string ToString()

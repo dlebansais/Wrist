@@ -87,8 +87,7 @@ namespace Parser
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
                     {
-                        IObjectPropertyStringDictionary AsObjectPropertyStringDictionary;
-                        if ((AsObjectPropertyStringDictionary = Property as IObjectPropertyStringDictionary) != null)
+                        if (Property is IObjectPropertyStringDictionary AsObjectPropertyStringDictionary)
                         {
                             if (ObjectPropertyKey == null)
                                 throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be used with a key");
@@ -160,16 +159,13 @@ namespace Parser
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
-                    {
-                        IObjectPropertyStringList AsObjectPropertyStringList;
-                        if ((AsObjectPropertyStringList = Property as IObjectPropertyStringList) != null)
+                        if (Property is IObjectPropertyStringList AsObjectPropertyStringList)
                         {
                             objectProperty = AsObjectPropertyStringList;
                             break;
                         }
                         else
                             throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be a string list property");
-                    }
 
                 if (objectProperty == null)
                     throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
@@ -190,16 +186,13 @@ namespace Parser
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
-                    {
-                        IObjectPropertyInteger AsObjectPropertyInteger;
-                        if ((AsObjectPropertyInteger = Property as IObjectPropertyInteger) != null)
+                        if (Property is IObjectPropertyInteger AsObjectPropertyInteger)
                         {
                             objectProperty = AsObjectPropertyInteger;
                             break;
                         }
                         else
                             throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be an integer property");
-                    }
 
                 if (objectProperty == null)
                     throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
@@ -220,16 +213,13 @@ namespace Parser
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
-                    {
-                        IObjectPropertyBoolean AsObjectPropertyBoolean;
-                        if ((AsObjectPropertyBoolean = Property as IObjectPropertyBoolean) != null)
+                        if (Property is IObjectPropertyBoolean AsObjectPropertyBoolean)
                         {
                             objectProperty = AsObjectPropertyBoolean;
                             break;
                         }
                         else
                             throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be a boolean property");
-                    }
 
                 if (objectProperty == null)
                     throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
@@ -250,16 +240,13 @@ namespace Parser
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
-                    {
-                        IObjectPropertyString AsObjectPropertyString;
-                        if ((AsObjectPropertyString = Property as IObjectPropertyString) != null)
+                        if (Property is IObjectPropertyString AsObjectPropertyString)
                         {
                             objectProperty = AsObjectPropertyString;
                             break;
                         }
                         else
                             throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be a string property");
-                    }
 
                 if (objectProperty == null)
                     throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
@@ -280,16 +267,13 @@ namespace Parser
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
-                    {
-                        IObjectPropertyStringList AsObjectPropertyStringList;
-                        if ((AsObjectPropertyStringList = Property as IObjectPropertyStringList) != null)
+                        if (Property is IObjectPropertyStringList AsObjectPropertyStringList)
                         {
                             objectProperty = AsObjectPropertyStringList;
                             break;
                         }
                         else
                             throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be a string list property");
-                    }
 
                 if (objectProperty == null)
                     throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
@@ -310,16 +294,13 @@ namespace Parser
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
-                    {
-                        IObjectPropertyItem AsObjectPropertyItem;
-                        if ((AsObjectPropertyItem = Property as IObjectPropertyItem) != null)
+                        if (Property is IObjectPropertyItem AsObjectPropertyItem)
                         {
                             objectProperty = AsObjectPropertyItem;
                             break;
                         }
                         else
                             throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be an item property");
-                    }
 
                 if (objectProperty == null)
                     throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
@@ -350,16 +331,13 @@ namespace Parser
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
-                    {
-                        IObjectPropertyItemList AsObjectPropertyItemList;
-                        if ((AsObjectPropertyItemList = Property as IObjectPropertyItemList) != null)
+                        if (Property is IObjectPropertyItemList AsObjectPropertyItemList)
                         {
                             objectProperty = AsObjectPropertyItemList;
                             break;
                         }
                         else
                             throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be an item list property");
-                    }
 
                 if (objectProperty == null)
                     throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
@@ -390,16 +368,13 @@ namespace Parser
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
-                    {
-                        IObjectPropertyIndex AsObjectPropertyIndex;
-                        if ((AsObjectPropertyIndex = Property as IObjectPropertyIndex) != null)
+                        if (Property is IObjectPropertyIndex AsObjectPropertyIndex)
                         {
                             objectProperty = AsObjectPropertyIndex;
                             break;
                         }
                         else
                             throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be an integer, state or boolean property");
-                    }
 
                 if (objectProperty == null)
                     throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");

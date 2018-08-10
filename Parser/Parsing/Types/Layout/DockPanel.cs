@@ -25,8 +25,7 @@ namespace Parser
             ILayoutElement AsElement = (ILayoutElement)target;
             Dock Dock;
 
-            string AsString;
-            if ((AsString = value as string) != null)
+            if (value is string AsString)
             {
                 if (AsString.ToLower() == "left")
                     Dock = Dock.Left;

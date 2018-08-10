@@ -8,18 +8,13 @@ namespace Parser
     {
         public static GeneratorLayoutElement Convert(ILayoutElement element)
         {
-            Empty AsEmpty;
-            Control AsControl;
-            Decoration AsDecoration;
-            Panel AsPanel;
-
-            if ((AsEmpty = element as Empty) != null)
+            if (element is Empty AsEmpty)
                 return new GeneratorEmpty(AsEmpty);
-            else if ((AsControl = element as Control) != null)
+            else if (element is Control AsControl)
                 return new GeneratorControl(AsControl);
-            else if ((AsDecoration = element as Decoration) != null)
+            else if (element is Decoration AsDecoration)
                 return new GeneratorDecoration(AsDecoration);
-            else if ((AsPanel = element as Panel) != null)
+            else if (element is Panel AsPanel)
                 return GeneratorPanel.Convert(AsPanel);
             else
                 throw new InvalidOperationException();

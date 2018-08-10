@@ -259,17 +259,13 @@ namespace Parser
 
             foreach (IComponent Component in rootArea.Components)
             {
-                IComponentArea AsComponentArea;
-                IComponentPopup AsComponentPopup;
-                IComponentContainer AsComponentContainer;
-                IComponentContainerList AsComponentContainerList;
-                if ((AsComponentArea = Component as IComponentArea) != null)
+                if (Component is IComponentArea AsComponentArea)
                     ListAreas(AsComponentArea.Area, usedAreas, specifiedAreas);
-                else if ((AsComponentPopup = Component as IComponentPopup) != null)
+                else if (Component is IComponentPopup AsComponentPopup)
                     ListAreas(AsComponentPopup.Area, usedAreas, specifiedAreas);
-                else if ((AsComponentContainer = Component as IComponentContainer) != null)
+                else if (Component is IComponentContainer AsComponentContainer)
                     ListAreas(AsComponentContainer.ItemNestedArea, usedAreas, specifiedAreas);
-                else if ((AsComponentContainerList = Component as IComponentContainerList) != null)
+                else if (Component is IComponentContainerList AsComponentContainerList)
                     ListAreas(AsComponentContainerList.ItemNestedArea, usedAreas, specifiedAreas);
             }
         }

@@ -11,33 +11,24 @@ namespace Parser
         public static IGeneratorObjectProperty Convert(IObjectProperty property, IGeneratorObject obj)
         {
             IGeneratorObjectProperty Result;
-            IObjectPropertyInteger AsObjectPropertyInteger;
-            IObjectPropertyBoolean AsObjectPropertyBoolean;
-            IObjectPropertyString AsObjectPropertyString;
-            IObjectPropertyReadonlyString AsObjectPropertyReadonlyString;
-            IObjectPropertyStringDictionary AsObjectPropertyStringDictionary;
-            IObjectPropertyStringList AsObjectPropertyStringList;
-            IObjectPropertyState AsObjectPropertyState;
-            IObjectPropertyItem AsObjectPropertyItem;
-            IObjectPropertyItemList AsObjectPropertyItemList;
 
-            if ((AsObjectPropertyInteger = property as IObjectPropertyInteger) != null)
+            if (property is IObjectPropertyInteger AsObjectPropertyInteger)
                 Result = new GeneratorObjectPropertyInteger(AsObjectPropertyInteger, obj);
-            else if ((AsObjectPropertyBoolean = property as IObjectPropertyBoolean) != null)
+            else if (property is IObjectPropertyBoolean AsObjectPropertyBoolean)
                 Result = new GeneratorObjectPropertyBoolean(AsObjectPropertyBoolean, obj);
-            else if ((AsObjectPropertyString = property as IObjectPropertyString) != null)
+            else if (property is IObjectPropertyString AsObjectPropertyString)
                 Result = new GeneratorObjectPropertyString(AsObjectPropertyString, obj);
-            else if ((AsObjectPropertyReadonlyString = property as IObjectPropertyReadonlyString) != null)
+            else if (property is IObjectPropertyReadonlyString AsObjectPropertyReadonlyString)
                 Result = new GeneratorObjectPropertyReadonlyString(AsObjectPropertyReadonlyString, obj);
-            else if ((AsObjectPropertyStringDictionary = property as IObjectPropertyStringDictionary) != null)
+            else if (property is IObjectPropertyStringDictionary AsObjectPropertyStringDictionary)
                 Result = new GeneratorObjectPropertyStringDictionary(AsObjectPropertyStringDictionary, obj);
-            else if ((AsObjectPropertyStringList = property as IObjectPropertyStringList) != null)
+            else if (property is IObjectPropertyStringList AsObjectPropertyStringList)
                 Result = new GeneratorObjectPropertyStringList(AsObjectPropertyStringList, obj);
-            else if ((AsObjectPropertyState = property as IObjectPropertyState) != null)
+            else if (property is IObjectPropertyState AsObjectPropertyState)
                 Result = new GeneratorObjectPropertyState(AsObjectPropertyState, obj);
-            else if ((AsObjectPropertyItem = property as IObjectPropertyItem) != null)
+            else if (property is IObjectPropertyItem AsObjectPropertyItem)
                 Result = new GeneratorObjectPropertyItem(AsObjectPropertyItem, obj);
-            else if ((AsObjectPropertyItemList = property as IObjectPropertyItemList) != null)
+            else if (property is IObjectPropertyItemList AsObjectPropertyItemList)
                 Result = new GeneratorObjectPropertyItemList(AsObjectPropertyItemList, obj);
             else
                 throw new InvalidOperationException();
