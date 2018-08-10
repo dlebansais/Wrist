@@ -24,11 +24,11 @@
         public string HorizontalScrollBarVisibility { get; private set; }
         public string VerticalScrollBarVisibility { get; private set; }
 
-        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
             IObject Object = TextObject;
             IObjectPropertyString ObjectProperty = TextObjectProperty;
-            bool IsConnected = TextProperty.ConnectToObjectStringOnly(domain, currentObject, ref Object, ref ObjectProperty);
+            bool IsConnected = TextProperty.ConnectToObjectStringOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             TextObject = Object;
             TextObjectProperty = ObjectProperty;
 

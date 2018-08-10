@@ -137,8 +137,19 @@ namespace Parser
                     throw new ParsingException(inputFolderName, $"Layout specified for area {UsedAreas[0].Name} but this area isn't used in page {Page.Name}");
 
                 foreach (IArea Area in SpecifiedAreas)
+                {
                     if (!Page.AreaLayouts.ContainsKey(Area))
                         throw new ParsingException(inputFolderName, $"Area {Area.Name} has not layout specified");
+
+                    if (ComponentProperty.AreaWithCurrentPage.Contains(Area))
+                    {
+                        string PageKey = ToKeyName($"page {Page.Name}");
+                        if (Translation == null)
+                            throw new ParsingException(inputFolderName, $"Translation key used in area '{Area.Name}' but no translation file provided");
+                        if (!Translation.KeyList.Contains(PageKey))
+                            throw new ParsingException(inputFolderName, $"Translation key for page '{Page.Name}' used in area '{Area.Name}' not found");
+                    }
+                }
             }
 
             List<IDockPanel> DockPanels = new List<IDockPanel>();

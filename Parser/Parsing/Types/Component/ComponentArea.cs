@@ -11,7 +11,7 @@
         public IDeclarationSource AreaSource { get; private set; }
         public IArea Area { get; private set; }
 
-        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
             bool IsConnected = false;
 

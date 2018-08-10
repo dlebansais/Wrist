@@ -25,35 +25,35 @@ namespace Parser
         public int GroupIndex { get; private set; }
         public ICollection<IComponentRadioButton> Group { get; private set; }
 
-        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
             bool IsConnected = false;
 
-            ConnectContent(domain, currentObject, ref IsConnected);
-            ConnectIndex(domain, currentObject, ref IsConnected);
+            ConnectContent(domain, currentArea, currentObject, ref IsConnected);
+            ConnectIndex(domain, currentArea, currentObject, ref IsConnected);
             ConnectGroup(domain, rootArea, ref IsConnected);
 
             return IsConnected;
         }
 
-        private void ConnectContent(IDomain domain, IObject currentObject, ref bool IsConnected)
+        private void ConnectContent(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
         {
             IResource Resource = ContentResource;
             IObject Object = ContentObject;
             IObjectProperty ObjectProperty = ContentObjectProperty;
             IDeclarationSource ObjectPropertyKey = ContentKey;
-            IsConnected |= ContentProperty.ConnectToResourceOrObject(domain, currentObject, ref Resource, ref Object, ref ObjectProperty, ref ObjectPropertyKey);
+            IsConnected |= ContentProperty.ConnectToResourceOrObject(domain, currentArea, currentObject, ref Resource, ref Object, ref ObjectProperty, ref ObjectPropertyKey);
             ContentResource = Resource;
             ContentObject = Object;
             ContentObjectProperty = ObjectProperty;
             ContentKey = ObjectPropertyKey;
         }
 
-        private void ConnectIndex(IDomain domain, IObject currentObject, ref bool IsConnected)
+        private void ConnectIndex(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
         {
             IObject Object = IndexObject;
             IObjectPropertyIndex ObjectProperty = IndexObjectProperty;
-            IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentObject, ref Object, ref ObjectProperty);
+            IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             IndexObject = Object;
             IndexObjectProperty = ObjectProperty;
         }

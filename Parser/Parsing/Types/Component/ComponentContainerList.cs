@@ -16,22 +16,22 @@
         public IDeclarationSource AreaSource { get; private set; }
         public IArea ItemNestedArea { get; private set; }
 
-        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
             bool IsConnected = false;
 
-            ConnectItem(domain, currentObject, ref IsConnected);
+            ConnectItem(domain, currentArea, currentObject, ref IsConnected);
             ConnectArea(domain, ref IsConnected);
 
             return IsConnected;
         }
 
-        private void ConnectItem(IDomain domain, IObject currentObject, ref bool IsConnected)
+        private void ConnectItem(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
         {
             IObject Object = ItemObject;
             IObjectPropertyItemList ObjectProperty = ItemObjectProperty;
             IObject NestedObject = ItemNestedObject;
-            IsConnected = ItemProperty.ConnectToObjectItemListOnly(domain, currentObject, ref Object, ref ObjectProperty, ref NestedObject);
+            IsConnected = ItemProperty.ConnectToObjectItemListOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty, ref NestedObject);
             ItemObject = Object;
             ItemObjectProperty = ObjectProperty;
             ItemNestedObject = NestedObject;

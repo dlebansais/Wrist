@@ -6,10 +6,11 @@ page-login-failed	Login	Identification
 page-account	Account summary	Sommaire du compte
 page-change-password	Account management	Gestion du compte
 page-change-email	Account management	Gestion du compte
-pagechange-recovery	Account management	Gestion du compte
+page-change-recovery	Account management	Gestion du compte
 page-change-password-failed-1	Account management	Gestion du compte
 page-change-password-failed-2	Account management	Gestion du compte
 page-change-password-failed-3	Account management	Gestion du compte
+page-change-password-failed-4	Account management	Gestion du compte
 page-change-password-failed-5	Account management	Gestion du compte
 page-change-password-success	Account management	Gestion du compte
 home-caps	HOME	ACCUEIL

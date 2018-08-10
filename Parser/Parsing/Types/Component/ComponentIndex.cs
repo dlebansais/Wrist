@@ -12,20 +12,20 @@
         public IObject IndexObject { get; private set; }
         public IObjectPropertyIndex IndexObjectProperty { get; private set; }
 
-        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
             bool IsConnected = false;
 
-            ConnectIndex(domain, currentObject, ref IsConnected);
+            ConnectIndex(domain, currentArea, currentObject, ref IsConnected);
 
             return IsConnected;
         }
 
-        private void ConnectIndex(IDomain domain, IObject currentObject, ref bool IsConnected)
+        private void ConnectIndex(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
         {
             IObject Object = IndexObject;
             IObjectPropertyIndex ObjectProperty = IndexObjectProperty;
-            IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentObject, ref Object, ref ObjectProperty);
+            IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             IndexObject = Object;
             IndexObjectProperty = ObjectProperty;
         }

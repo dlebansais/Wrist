@@ -1,4 +1,6 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
     public class ComponentProperty : IComponentProperty
     {
@@ -17,7 +19,9 @@
         public IDeclarationSource ObjectPropertySource { get; private set; }
         public IDeclarationSource ObjectPropertyKey { get; private set; }
 
-        private static void ConnectToObject(IDomain domain, IDeclarationSource objectSource, IDeclarationSource objectPropertySource, IDeclarationSource objectPropertyKey, ref IObject obj)
+        public static List<IArea> AreaWithCurrentPage { get; } = new List<IArea>();
+
+        private static void ConnectToObject(IDomain domain, IArea currentArea, IDeclarationSource objectSource, IDeclarationSource objectPropertySource, IDeclarationSource objectPropertyKey, ref IObject obj)
         {
             if (objectSource.Name == Object.TranslationObject.Name)
             {
@@ -36,7 +40,12 @@
                     if (!domain.Translation.KeyList.Contains(objectPropertyKey.Name))
                         throw new ParsingException(objectPropertyKey.Source, $"The translation file doesn't contain key '{objectPropertyKey.Name}'");
                 }
-                // TODO verify that the current page name has a translation
+                else
+                {
+                    // Verify it later
+                    if (!AreaWithCurrentPage.Contains(currentArea))
+                        AreaWithCurrentPage.Add(currentArea);
+                }
             }
             else
             {
@@ -52,7 +61,7 @@
             }
         }
 
-        public bool ConnectToResourceOrObject(IDomain domain, IObject currentObject, ref IResource resource, ref IObject obj, ref IObjectProperty objectProperty, ref IDeclarationSource objectPropertyKey)
+        public bool ConnectToResourceOrObject(IDomain domain, IArea currentArea, IObject currentObject, ref IResource resource, ref IObject obj, ref IObjectProperty objectProperty, ref IDeclarationSource objectPropertyKey)
         {
             bool IsConnected = false;
 
@@ -73,7 +82,7 @@
 
             else if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -126,7 +135,7 @@
             return IsConnected;
         }
 
-        public bool ConnectToStringList(IDomain domain, IObject currentObject, ref IResource resource, ref IObject obj, ref IObjectPropertyStringList objectProperty)
+        public bool ConnectToStringList(IDomain domain, IArea currentArea, IObject currentObject, ref IResource resource, ref IObject obj, ref IObjectPropertyStringList objectProperty)
         {
             bool IsConnected = false;
 
@@ -147,7 +156,7 @@
 
             else if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -171,13 +180,13 @@
             return IsConnected;
         }
 
-        public bool ConnectToObjectIntegerOnly(IDomain domain, IObject currentObject, ref IObject obj, ref IObjectPropertyInteger objectProperty)
+        public bool ConnectToObjectIntegerOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyInteger objectProperty)
         {
             bool IsConnected = false;
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -201,13 +210,13 @@
             return IsConnected;
         }
 
-        public bool ConnectToObjectBooleanOnly(IDomain domain, IObject currentObject, ref IObject obj, ref IObjectPropertyBoolean objectProperty)
+        public bool ConnectToObjectBooleanOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyBoolean objectProperty)
         {
             bool IsConnected = false;
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -231,13 +240,13 @@
             return IsConnected;
         }
 
-        public bool ConnectToObjectStringOnly(IDomain domain, IObject currentObject, ref IObject obj, ref IObjectPropertyString objectProperty)
+        public bool ConnectToObjectStringOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyString objectProperty)
         {
             bool IsConnected = false;
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -261,13 +270,13 @@
             return IsConnected;
         }
 
-        public bool ConnectToObjectStringListOnly(IDomain domain, IObject currentObject, ref IObject obj, ref IObjectPropertyStringList objectProperty)
+        public bool ConnectToObjectStringListOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyStringList objectProperty)
         {
             bool IsConnected = false;
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -291,13 +300,13 @@
             return IsConnected;
         }
 
-        public bool ConnectToObjectItemOnly(IDomain domain, IObject currentObject, ref IObject obj, ref IObjectPropertyItem objectProperty, ref IObject ItemObject)
+        public bool ConnectToObjectItemOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItem objectProperty, ref IObject ItemObject)
         {
             bool IsConnected = false;
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -331,13 +340,13 @@
             return IsConnected;
         }
 
-        public bool ConnectToObjectItemListOnly(IDomain domain, IObject currentObject, ref IObject obj, ref IObjectPropertyItemList objectProperty, ref IObject ItemObject)
+        public bool ConnectToObjectItemListOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItemList objectProperty, ref IObject ItemObject)
         {
             bool IsConnected = false;
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)
@@ -371,13 +380,13 @@
             return IsConnected;
         }
 
-        public bool ConnectToObjectIndexOnly(IDomain domain, IObject currentObject, ref IObject obj, ref IObjectPropertyIndex objectProperty)
+        public bool ConnectToObjectIndexOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyIndex objectProperty)
         {
             bool IsConnected = false;
 
             if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
             {
-                ConnectToObject(domain, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
 
                 foreach (IObjectProperty Property in obj.Properties)
                     if (Property.NameSource.Name == ObjectPropertySource.Name)

@@ -5,6 +5,6 @@
         IDeclarationSource Source { get; }
         string XamlName { get; }
         bool IsReferencing(IArea other);
-        bool Connect(IDomain domain, IArea rootArea, IObject currentObject);
+        bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject);
     }
 }

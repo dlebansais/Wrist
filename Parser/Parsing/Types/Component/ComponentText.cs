@@ -16,13 +16,13 @@
         public IDeclarationSource TextKey { get; private set; }
         public string TextDecoration { get; private set; }
 
-        public override bool Connect(IDomain domain, IArea rootArea, IObject currentObject)
+        public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
             IResource Resource = TextResource;
             IObject Object = TextObject;
             IObjectProperty ObjectProperty = TextObjectProperty;
             IDeclarationSource ObjectPropertyKey = TextKey;
-            bool IsConnected = TextProperty.ConnectToResourceOrObject(domain, currentObject, ref Resource, ref Object, ref ObjectProperty, ref ObjectPropertyKey);
+            bool IsConnected = TextProperty.ConnectToResourceOrObject(domain, currentArea, currentObject, ref Resource, ref Object, ref ObjectProperty, ref ObjectPropertyKey);
 
             if (!(ObjectProperty is IObjectPropertyInteger) &&
                 !(ObjectProperty is IObjectPropertyString) &&

@@ -37,7 +37,7 @@ namespace Parser
                 }
 
             foreach (IComponent Component in Components)
-                IsConnected |= Component.Connect(domain, RootArea, CurrentObject);
+                IsConnected |= Component.Connect(domain, RootArea, this, CurrentObject);
 
             return IsConnected;
         }
