@@ -6,7 +6,7 @@ namespace Parser
     {
         public LayoutElement()
         {
-            Source = ParsingSource.GetCurrentSource();
+            Source = ParsingSourceStream.GetCurrentSource();
         }
 
         public IParsingSource Source { get; private set; }

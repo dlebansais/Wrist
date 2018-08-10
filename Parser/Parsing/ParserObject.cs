@@ -15,13 +15,13 @@ namespace Parser
         public override IObject Parse(string fileName)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
-            IParsingSource Source = ParsingSource.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
 
             try
             {
-                using (Source.Open())
+                using (SourceStream.Open())
                 {
-                    return Parse(Name, Source);
+                    return Parse(Name, SourceStream);
                 }
             }
             catch (ParsingException)
@@ -30,11 +30,11 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(Source, e);
+                throw new ParsingException(SourceStream, e);
             }
         }
 
-        private IObject Parse(string name, IParsingSource source)
+        private IObject Parse(string name, IParsingSourceStream sourceStream)
         {
             List<string> StateList;
             IObjectPropertyCollection ObjectPropertyList;
@@ -44,10 +44,10 @@ namespace Parser
 
             try
             {
-                StateList = ParseStates(source, ref Line);
-                ObjectPropertyList = ParseObjectProperties(source, ref Line);
-                TransitionList = ParseTransitions(source, ObjectPropertyList, ref Line);
-                ObjectEventList = ParseEvents(source, ref Line);
+                StateList = ParseStates(sourceStream, ref Line);
+                ObjectPropertyList = ParseObjectProperties(sourceStream, ref Line);
+                TransitionList = ParseTransitions(sourceStream, ObjectPropertyList, ref Line);
+                ObjectEventList = ParseEvents(sourceStream, ref Line);
             }
             catch (ParsingException)
             {
@@ -55,60 +55,61 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(source, e);
+                throw new ParsingException(sourceStream, e);
             }
 
-            return new Object(name, ParserDomain.ToCSharpName(source, name), StateList, ObjectPropertyList, TransitionList, ObjectEventList);
+            string CSharpname = ParserDomain.ToCSharpName(sourceStream, name);
+            return new Object(name, CSharpname, StateList, ObjectPropertyList, TransitionList, ObjectEventList);
         }
 
-        private List<string> ParseStates(IParsingSource source, ref string line)
+        private List<string> ParseStates(IParsingSourceStream sourceStream, ref string line)
         {
             List<string> StateList = new List<string>();
 
-            source.ReadLine();
-            string HeaderLine = source.Line;
+            sourceStream.ReadLine();
+            string HeaderLine = sourceStream.Line;
             if (HeaderLine != "states")
-                throw new ParsingException(source, "Expected: states");
+                throw new ParsingException(sourceStream, "Expected: states");
 
-            while (!source.EndOfStream)
+            while (!sourceStream.EndOfStream)
             {
-                source.ReadLine();
-                if (string.IsNullOrEmpty(source.Line))
+                sourceStream.ReadLine();
+                if (string.IsNullOrEmpty(sourceStream.Line))
                     break;
 
-                string State = ParseState(source);
-                StateList.Add(ParserDomain.ToCSharpName(source, State));
+                string State = ParseState(sourceStream);
+                StateList.Add(ParserDomain.ToCSharpName(sourceStream, State));
             }
 
             return StateList;
         }
 
-        private string ParseState(IParsingSource source)
+        private string ParseState(IParsingSourceStream sourceStream)
         {
-            return source.Line.Trim();
+            return sourceStream.Line.Trim();
         }
 
-        private IObjectPropertyCollection ParseObjectProperties(IParsingSource source, ref string line)
+        private IObjectPropertyCollection ParseObjectProperties(IParsingSourceStream sourceStream, ref string line)
         {
             IObjectPropertyCollection ObjectPropertyList = new ObjectPropertyCollection();
-            ObjectPropertyList.Add(new ObjectPropertyState(new DeclarationSource("state", source), "State"));
+            ObjectPropertyList.Add(new ObjectPropertyState(new DeclarationSource("state", sourceStream), "State"));
 
-            source.ReadLine();
-            string HeaderLine = source.Line;
+            sourceStream.ReadLine();
+            string HeaderLine = sourceStream.Line;
             if (HeaderLine != "properties")
-                throw new ParsingException(source, "Expected: properties");
+                throw new ParsingException(sourceStream, "Expected: properties");
 
-            while (!source.EndOfStream)
+            while (!sourceStream.EndOfStream)
             {
-                source.ReadLine();
-                if (string.IsNullOrEmpty(source.Line))
+                sourceStream.ReadLine();
+                if (string.IsNullOrEmpty(sourceStream.Line))
                     break;
 
-                IObjectProperty NewProperty = ParseProperty(source);
+                IObjectProperty NewProperty = ParseProperty(sourceStream);
 
                 foreach (IObjectProperty ObjectProperty in ObjectPropertyList)
                     if (ObjectProperty.NameSource.Name == NewProperty.NameSource.Name)
-                        throw new ParsingException(source, $"Object already contains a property called {NewProperty.NameSource.Name}");
+                        throw new ParsingException(sourceStream, $"Object already contains a property called {NewProperty.NameSource.Name}");
 
                 ObjectPropertyList.Add(NewProperty);
             }
@@ -116,11 +117,11 @@ namespace Parser
             return ObjectPropertyList;
         }
 
-        private IObjectProperty ParseProperty(IParsingSource source)
+        private IObjectProperty ParseProperty(IParsingSourceStream sourceStream)
         {
             IDeclarationSource NameSource;
             string Details;
-            ParserDomain.ParseStringPair(source, ':', out NameSource, out Details);
+            ParserDomain.ParseStringPair(sourceStream, ':', out NameSource, out Details);
 
             string[] SplittedDetails = Details.Split(',');
             string PropertyTypeName = SplittedDetails[0].Trim();
@@ -140,38 +141,38 @@ namespace Parser
                     if (MaximumLength == int.MaxValue)
                         MaximumLength = ParsedLength;
                     else
-                        throw new ParsingException(source, "Maximum length specified more than once");
+                        throw new ParsingException(sourceStream, "Maximum length specified more than once");
 
                 else if (Detail == "email address")
                     if (Category == ObjectPropertyStringCategory.Normal)
                         Category = ObjectPropertyStringCategory.EmailAddress;
                     else
-                        throw new ParsingException(source, "Email address or password specified more than once");
+                        throw new ParsingException(sourceStream, "Email address or password specified more than once");
 
                 else if (Detail == "password")
                     if (Category == ObjectPropertyStringCategory.Normal)
                         Category = ObjectPropertyStringCategory.Password;
                     else
-                        throw new ParsingException(source, "Email address or password specified more than once");
+                        throw new ParsingException(sourceStream, "Email address or password specified more than once");
 
                 else if (Detail == "encrypted")
                     if (!IsEncrypted)
                         IsEncrypted = true;
                     else
-                        throw new ParsingException(source, "Encrypted specified more than once");
+                        throw new ParsingException(sourceStream, "Encrypted specified more than once");
 
                 else if (SplittedDetail.Length == 2 && SplittedDetail[0].Trim() == "object")
                     if (ObjectSource == null)
                     {
-                        ObjectSource = new DeclarationSource(SplittedDetail[1].Trim(), source);
+                        ObjectSource = new DeclarationSource(SplittedDetail[1].Trim(), sourceStream);
                         if (string.IsNullOrEmpty(ObjectSource.Name))
-                            throw new ParsingException(source, "Invalid empty object name");
+                            throw new ParsingException(sourceStream, "Invalid empty object name");
                     }
                     else
-                        throw new ParsingException(source, "Object name specified more than once");
+                        throw new ParsingException(sourceStream, "Object name specified more than once");
 
                 else
-                    throw new ParsingException(source, $"Unknown specifier {Detail}");
+                    throw new ParsingException(sourceStream, $"Unknown specifier {Detail}");
             }
 
             string CSharpName = ParserDomain.ToCSharpName(NameSource.Source, NameSource.Name);
@@ -185,7 +186,7 @@ namespace Parser
             else if (PropertyTypeName == "string list")
                 return new ObjectPropertyStringList(NameSource, CSharpName);
             else if (MaximumLength != int.MaxValue || Category != ObjectPropertyStringCategory.Normal)
-                throw new ParsingException(source, "Specifiers not valid for this property type");
+                throw new ParsingException(sourceStream, "Specifiers not valid for this property type");
             else if (PropertyTypeName == "integer")
                 return new ObjectPropertyInteger(NameSource, CSharpName);
             else if (PropertyTypeName == "boolean")
@@ -194,28 +195,28 @@ namespace Parser
                 if (ObjectSource != null)
                     return new ObjectPropertyItem(NameSource, CSharpName, ObjectSource);
                 else
-                    throw new ParsingException(source, "Object name not specified for item");
+                    throw new ParsingException(sourceStream, "Object name not specified for item");
             else if (PropertyTypeName == "item list")
                 if (ObjectSource != null)
                     return new ObjectPropertyItemList(NameSource, CSharpName, ObjectSource);
                 else
-                    throw new ParsingException(source, "Object name not specified for item list");
+                    throw new ParsingException(sourceStream, "Object name not specified for item list");
             else
-                throw new ParsingException(source, $"Unknown property type {PropertyTypeName}");
+                throw new ParsingException(sourceStream, $"Unknown property type {PropertyTypeName}");
         }
 
-        private List<ITransition> ParseTransitions(IParsingSource source, IObjectPropertyCollection ObjectPropertyList, ref string line)
+        private List<ITransition> ParseTransitions(IParsingSourceStream sourceStream, IObjectPropertyCollection ObjectPropertyList, ref string line)
         {
             List<ITransition> TransitionList = new List<ITransition>();
 
-            source.ReadLine();
-            string HeaderLine = source.Line;
+            sourceStream.ReadLine();
+            string HeaderLine = sourceStream.Line;
             if (HeaderLine != "transitions")
-                throw new ParsingException(source, "Transitions expected");
+                throw new ParsingException(sourceStream, "Transitions expected");
 
-            while (!source.EndOfStream)
+            while (!sourceStream.EndOfStream)
             {
-                ITransition Transition = ParseTransition(source, ObjectPropertyList, ref line);
+                ITransition Transition = ParseTransition(sourceStream, ObjectPropertyList, ref line);
                 if (Transition == null)
                     break;
 
@@ -225,47 +226,47 @@ namespace Parser
             return TransitionList;
         }
 
-        private ITransition ParseTransition(IParsingSource source, IObjectPropertyCollection ObjectPropertyList, ref string line)
+        private ITransition ParseTransition(IParsingSourceStream sourceStream, IObjectPropertyCollection ObjectPropertyList, ref string line)
         {
-            if (source.EndOfStream)
-                throw new ParsingException(source, "Unexpected end of file");
+            if (sourceStream.EndOfStream)
+                throw new ParsingException(sourceStream, "Unexpected end of file");
 
-            source.ReadLine();
-            line = source.Line;
+            sourceStream.ReadLine();
+            line = sourceStream.Line;
             if (string.IsNullOrEmpty(line) || line == "events")
                 return null;
 
-            string FromState = ParseTransitionState(source, "from", line);
+            string FromState = ParseTransitionState(sourceStream, "from", line);
 
-            source.ReadLine();
-            line = source.Line;
+            sourceStream.ReadLine();
+            line = sourceStream.Line;
             if (string.IsNullOrEmpty(line))
-                throw new ParsingException(source, "Unexpected empty line");
+                throw new ParsingException(sourceStream, "Unexpected empty line");
 
-            string ToState = ParseTransitionState(source, "to", line);
+            string ToState = ParseTransitionState(sourceStream, "to", line);
 
             IObjectPropertyCollection PropertyListProvide = null;
             IObjectPropertyCollection PropertyListUnassign = null;
 
-            while (!source.EndOfStream)
+            while (!sourceStream.EndOfStream)
             {
-                source.ReadLine();
-                line = source.Line;
+                sourceStream.ReadLine();
+                line = sourceStream.Line;
                 if (string.IsNullOrEmpty(line))
                     break;
 
                 string Detail = line.Trim();
                 if (Detail == "provide")
                     if (PropertyListProvide == null)
-                        PropertyListProvide = ParseTransitionPropertyList(source, ObjectPropertyList);
+                        PropertyListProvide = ParseTransitionPropertyList(sourceStream, ObjectPropertyList);
                     else
-                        throw new ParsingException(source, "Provided property list specified more than once");
+                        throw new ParsingException(sourceStream, "Provided property list specified more than once");
 
                 else if (Detail == "unassign")
                     if (PropertyListUnassign == null)
-                        PropertyListUnassign = ParseTransitionPropertyList(source, ObjectPropertyList);
+                        PropertyListUnassign = ParseTransitionPropertyList(sourceStream, ObjectPropertyList);
                     else
-                        throw new ParsingException(source, "Unassigned property list specified more than once");
+                        throw new ParsingException(sourceStream, "Unassigned property list specified more than once");
             }
 
             if (PropertyListProvide == null)
@@ -278,29 +279,29 @@ namespace Parser
             return NewTransition;
         }
 
-        private string ParseTransitionState(IParsingSource source, string prolog, string line)
+        private string ParseTransitionState(IParsingSourceStream sourceStream, string prolog, string line)
         {
             line = line.Trim();
             if (!line.StartsWith(prolog))
-                throw new ParsingException(source, $"Expected: {prolog}");
+                throw new ParsingException(sourceStream, $"Expected: {prolog}");
 
             line = line.Substring(prolog.Length);
             if (line.Length <= 2 || line[0] != ' ')
-                throw new ParsingException(source, $"Expected: property name");
+                throw new ParsingException(sourceStream, $"Expected: property name");
 
             string StateName = line.Trim();
             return StateName;
         }
 
-        private IObjectPropertyCollection ParseTransitionPropertyList(IParsingSource source, IObjectPropertyCollection ObjectPropertyList)
+        private IObjectPropertyCollection ParseTransitionPropertyList(IParsingSourceStream sourceStream, IObjectPropertyCollection ObjectPropertyList)
         {
-            source.ReadLine();
-            if (string.IsNullOrEmpty(source.Line))
-                throw new ParsingException(source, "At least one property name is expected");
+            sourceStream.ReadLine();
+            if (string.IsNullOrEmpty(sourceStream.Line))
+                throw new ParsingException(sourceStream, "At least one property name is expected");
 
             IObjectPropertyCollection PropertyList = new ObjectPropertyCollection();
 
-            string Line = source.Line.Trim();
+            string Line = sourceStream.Line.Trim();
             string[] Splitted = Line.Split(',');
 
             foreach (string Detail in Splitted)
@@ -308,7 +309,7 @@ namespace Parser
                 string PropertyName = Detail.Trim();
 
                 if (PropertyName.Length == 0)
-                    throw new ParsingException(source, "Property name cannot be empty");
+                    throw new ParsingException(sourceStream, "Property name cannot be empty");
                 else
                 {
                     IObjectProperty MatchingObjectProperty = null;
@@ -322,53 +323,53 @@ namespace Parser
                     if (MatchingObjectProperty != null)
                         PropertyList.Add(MatchingObjectProperty);
                     else
-                        throw new ParsingException(source, $"Property name {PropertyName} not found");
+                        throw new ParsingException(sourceStream, $"Property name {PropertyName} not found");
                 }
             }
 
             if (PropertyList.Count == 0)
-                throw new ParsingException(source, "At least one property name is expected");
+                throw new ParsingException(sourceStream, "At least one property name is expected");
 
             return PropertyList;
         }
 
-        private List<IObjectEvent> ParseEvents(IParsingSource source, ref string line)
+        private List<IObjectEvent> ParseEvents(IParsingSourceStream sourceStream, ref string line)
         {
             List<IObjectEvent> ObjectEventList = new List<IObjectEvent>();
 
             if (line != "events")
             {
-                source.ReadLine();
-                string HeaderLine = source.Line;
+                sourceStream.ReadLine();
+                string HeaderLine = sourceStream.Line;
                 if (HeaderLine != "events")
-                    throw new ParsingException(source, "Expected: events");
+                    throw new ParsingException(sourceStream, "Expected: events");
             }
 
-            while (!source.EndOfStream)
+            while (!sourceStream.EndOfStream)
             {
-                source.ReadLine();
-                line = source.Line.Trim();
+                sourceStream.ReadLine();
+                line = sourceStream.Line.Trim();
                 if (string.IsNullOrEmpty(line))
                     break;
 
                 foreach (IObjectEvent ObjectEvent in ObjectEventList)
                     if (ObjectEvent.Name == line)
-                        throw new ParsingException(source, $"Event name {line} specified more than once");
+                        throw new ParsingException(sourceStream, $"Event name {line} specified more than once");
 
-                IObjectEvent NewEvent = ParseEvent(source, line);
+                IObjectEvent NewEvent = ParseEvent(sourceStream, line);
                 ObjectEventList.Add(NewEvent);
             }
 
             return ObjectEventList;
         }
 
-        private IObjectEvent ParseEvent(IParsingSource source, string line)
+        private IObjectEvent ParseEvent(IParsingSourceStream sourceStream, string line)
         {
             string Name = line.Trim();
             if (Name.Length <= 0)
-                throw new ParsingException(source, "Event name cannot be empty");
+                throw new ParsingException(sourceStream, "Event name cannot be empty");
 
-            return new ObjectEvent(Name, ParserDomain.ToCSharpName(source, Name));
+            return new ObjectEvent(Name, ParserDomain.ToCSharpName(sourceStream, Name));
         }
     }
 }

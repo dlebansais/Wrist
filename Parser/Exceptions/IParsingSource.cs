@@ -1,21 +1,9 @@
-﻿using System;
-using System.Xaml;
-
-namespace Parser
+﻿namespace Parser
 {
-    public interface IParsingSource : IDisposable
+    public interface IParsingSource
     {
         string FileName { get; }
         string Line { get; }
         int LineIndex { get; }
-        bool EndOfStream { get; }
-
-        IParsingSource Open();
-        IParsingSource OpenXamlFromFile(XamlSchemaContext context);
-        IParsingSource OpenXamlFromBytes(byte[] contentBytes, XamlSchemaContext context);
-        void Close();
-        void ReadLine();
-        string ReadToEnd();
-        object LoadXaml();
     }
 }

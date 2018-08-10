@@ -2,10 +2,10 @@
 {
     public class DeclarationSource : IDeclarationSource
     {
-        public DeclarationSource(string name, IParsingSource source)
+        public DeclarationSource(string name, IParsingSourceStream sourceStream)
         {
             Name = name;
-            Source = source;
+            Source = sourceStream?.FreezedPosition();
         }
 
         public string Name { get; private set; }
@@ -13,7 +13,10 @@
 
         public override string ToString()
         {
-            return $"{Name} (declared in {Source.FileName}, line {Source.LineIndex})";
+            if (Source != null)
+                return $"{Name} (declared in {Source.FileName}, line {Source.LineIndex})";
+            else
+                return Name;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace WristConsole
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             MainManager MainManager = new MainManager();
 
@@ -27,14 +27,34 @@ namespace WristConsole
             if (LaunchFolder.ToLower().EndsWith($"\\{ExpectedProjectName.ToLower()}"))
                 LaunchFolder = LaunchFolder.Substring(0, LaunchFolder.Length - ExpectedProjectName.Length - 1);
 
-            //string InputFolder = Path.Combine(LaunchFolder, "Samples", "comet");
-            string InputFolder = Path.Combine(LaunchFolder, "Samples", "numbatsoft");
-            string OutputFolder = Path.Combine(LaunchFolder, "AppCSHtml5");
+            string InputFolder;
+            if (Args.Length > 1)
+                InputFolder = Args[1];
+            else
+                InputFolder = Path.Combine(LaunchFolder, "Samples", "numbatsoft");
+
+            string OutputFolder;
+            if (Args.Length > 2)
+                OutputFolder = Args[2];
+            else
+                OutputFolder = Path.Combine(LaunchFolder, "AppCSHtml5");
+
+            string HomePageName;
+            if (Args.Length > 3)
+                HomePageName = Args[3];
+            else
+                HomePageName = "home";
+
+            string ColorThemeName;
+            if (Args.Length > 4)
+                ColorThemeName = Args[4];
+            else
+                ColorThemeName = "default";
 
             try
             {
                 Console.WriteLine("Building...");
-                MainManager.Build(InputFolder, OutputFolder);
+                MainManager.Build(InputFolder, OutputFolder, HomePageName, ColorThemeName);
                 Console.WriteLine("Done.");
                 Thread.Sleep(TimeSpan.FromSeconds(2));
             }

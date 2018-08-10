@@ -14,18 +14,18 @@ namespace Parser
         public override IResource Parse(string fileName)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
-            IParsingSource Source = ParsingSource.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
 
             try
             {
-                using (Source.Open())
+                using (SourceStream.Open())
                 {
-                    return new Resource(Name, ParserDomain.ToXamlName(Source, Name, "Resource"), fileName);
+                    return new Resource(Name, ParserDomain.ToXamlName(SourceStream, Name, "Resource"), fileName);
                 }
             }
             catch (Exception e)
             {
-                throw new ParsingException(Source, e);
+                throw new ParsingException(SourceStream, e);
             }
         }
     }

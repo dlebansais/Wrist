@@ -34,6 +34,7 @@ namespace Parser
         public IArea Area { get; private set; }
         public Dictionary<IDeclarationSource, string> AreaLayoutPairs { get; private set; }
         public Dictionary<IArea, ILayout> AreaLayouts { get; private set; }
+        public Dictionary<IArea, IDeclarationSource> AreaLayoutBacktracks { get; } = new Dictionary<IArea, IDeclarationSource>();
         public IDeclarationSource DesignSource { get; private set; }
         public IDesign Design { get; private set; }
         public IDeclarationSource WidthSource { get; private set; }
@@ -111,6 +112,7 @@ namespace Parser
                         throw new ParsingException(AreaSource.Source, $"Unknown layout {LayoutName}");
 
                     AreaLayouts.Add(EntryArea, EntryLayout);
+                    AreaLayoutBacktracks.Add(EntryArea, AreaSource);
                 }
 
                 foreach (KeyValuePair<IArea, ILayout> Entry in AreaLayouts)

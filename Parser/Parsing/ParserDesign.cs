@@ -17,49 +17,49 @@ namespace Parser
 
         public override IDesign Parse(string fileName)
         {
-            IParsingSource Source = ParsingSource.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
 
             ResourceDictionary Content;
             List<string> FileNames;
-            LoadResourceFile(Source, out Content, out FileNames);
+            LoadResourceFile(SourceStream, out Content, out FileNames);
 
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.Button)))
-                throw new ParsingException(Source, "Missing 'Button' style");
+                throw new ParsingException(SourceStream, "Missing 'Button' style");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.TextBox)))
-                throw new ParsingException(Source, "Missing 'TextBox' style");
+                throw new ParsingException(SourceStream, "Missing 'TextBox' style");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.Image)))
-                throw new ParsingException(Source, "Missing 'Image' style");
+                throw new ParsingException(SourceStream, "Missing 'Image' style");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.ListBox)))
-                throw new ParsingException(Source, "Missing 'ListBox' style");
+                throw new ParsingException(SourceStream, "Missing 'ListBox' style");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.TextBlock)))
-                throw new ParsingException(Source, "Missing 'TextBlock' style");
+                throw new ParsingException(SourceStream, "Missing 'TextBlock' style");
 
             string MainFileName = FileNames[0];
             string Name = Path.GetFileNameWithoutExtension(MainFileName);
-            return new Design(FileNames, ParserDomain.ToXamlName(Source, Name, "Design"), Content);
+            return new Design(FileNames, ParserDomain.ToXamlName(SourceStream, Name, "Design"), Content);
         }
 
-        private void LoadResourceFile(IParsingSource source, out ResourceDictionary content, out List<string> fileNames)
+        private void LoadResourceFile(IParsingSourceStream sourceStream, out ResourceDictionary content, out List<string> fileNames)
         {
             try
             {
-                string FolderName = Path.GetDirectoryName(source.FileName);
+                string FolderName = Path.GetDirectoryName(sourceStream.FileName);
                 FolderName = FolderName.Replace("\\", "/");
 
-                using (source.Open())
+                using (sourceStream.Open())
                 {
-                    string ContentString = source.ReadToEnd();
+                    string ContentString = sourceStream.ReadToEnd();
                     ContentString = ContentString.Replace("Source=\"/", $"Source=\"{FolderName}/");
                     byte[] ContentBytes = Encoding.UTF8.GetBytes(ContentString);
 
-                    XamlSchemaContext Context = GetContext(source);
+                    XamlSchemaContext Context = GetContext(sourceStream);
 
-                    using (source.OpenXamlFromBytes(ContentBytes, Context))
+                    using (sourceStream.OpenXamlFromBytes(ContentBytes, Context))
                     {
                         fileNames = new List<string>();
-                        fileNames.Add(source.FileName);
+                        fileNames.Add(sourceStream.FileName);
 
-                        content = LoadResourceFile(source, fileNames);
+                        content = LoadResourceFile(sourceStream, fileNames);
                     }
                 }
             }
@@ -69,11 +69,11 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(source, e);
+                throw new ParsingException(sourceStream, e);
             }
         }
 
-        private XamlSchemaContext GetContext(IParsingSource source)
+        private XamlSchemaContext GetContext(IParsingSourceStream sourceStream)
         {
             List<Assembly> ReferencedAssemblies = new List<Assembly>();
 
@@ -89,20 +89,20 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(source, e);
+                throw new ParsingException(sourceStream, e);
             }
 
             XamlSchemaContext Result = new XamlSchemaContext(ReferencedAssemblies);
             return Result;
         }
 
-        private ResourceDictionary LoadResourceFile(IParsingSource source, List<string> FileNames)
+        private ResourceDictionary LoadResourceFile(IParsingSourceStream sourceStream, List<string> FileNames)
         {
             Windows.UI.Xaml.ResourceDictionary Root;
 
             try
             {
-                Root = (Windows.UI.Xaml.ResourceDictionary)source.LoadXaml();
+                Root = (Windows.UI.Xaml.ResourceDictionary)sourceStream.LoadXaml();
             }
             catch (ParsingException)
             {
@@ -110,47 +110,47 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(source, e);
+                throw new ParsingException(sourceStream, e);
             }
 
             ResourceDictionary WrappedDictionary = new ResourceDictionary();
-            AddDictionaryContent(source, WrappedDictionary, Root, FileNames);
+            AddDictionaryContent(sourceStream, WrappedDictionary, Root, FileNames);
 
             return WrappedDictionary;
         }
 
-        private void AddDictionaryContent(IParsingSource source, ResourceDictionary wrapped, Windows.UI.Xaml.ResourceDictionary dictionary, List<string> FileNames)
+        private void AddDictionaryContent(IParsingSourceStream sourceStream, ResourceDictionary wrapped, Windows.UI.Xaml.ResourceDictionary dictionary, List<string> FileNames)
         {
             foreach (object Key in dictionary.Keys)
                 if (!wrapped.Contains(Key))
                     wrapped.Add(Key, dictionary[Key]);
                 else
-                    throw new ParsingException(source, $"Key {Key} found multiple times");
+                    throw new ParsingException(sourceStream, $"Key {Key} found multiple times");
 
             foreach (Windows.UI.Xaml.ResourceDictionary Item in dictionary.MergedDictionaries)
                 if (Item.Source != null)
                 {
-                    IParsingSource NestedSource = ParsingSource.CreateFromFileName(Item.Source.AbsolutePath);
+                    IParsingSourceStream NestedSourceStream = ParsingSourceStream.CreateFromFileName(Item.Source.AbsolutePath);
 
                     ResourceDictionary NestedContent;
                     List<string> NestedFileNames;
-                    LoadResourceFile(NestedSource, out NestedContent, out NestedFileNames);
+                    LoadResourceFile(NestedSourceStream, out NestedContent, out NestedFileNames);
 
-                    AddDictionaryContent(NestedSource, wrapped, NestedContent);
+                    AddDictionaryContent(NestedSourceStream, wrapped, NestedContent);
                     FileNames.AddRange(NestedFileNames);
                 }
         }
 
-        private void AddDictionaryContent(IParsingSource source, ResourceDictionary wrapped, ResourceDictionary dictionary)
+        private void AddDictionaryContent(IParsingSourceStream sourceStream, ResourceDictionary wrapped, ResourceDictionary dictionary)
         {
             foreach (object Key in dictionary.Keys)
                 if (!wrapped.Contains(Key))
                     wrapped.Add(Key, dictionary[Key]);
                 else
-                    throw new ParsingException(source, $"Key {Key} found multiple times");
+                    throw new ParsingException(sourceStream, $"Key {Key} found multiple times");
 
             foreach (ResourceDictionary Item in dictionary.MergedDictionaries)
-                AddDictionaryContent(source, wrapped, Item);
+                AddDictionaryContent(sourceStream, wrapped, Item);
         }
 
         private bool IsTypeStyleFound(ResourceDictionary dictionary, Type type)

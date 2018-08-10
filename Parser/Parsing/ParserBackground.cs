@@ -15,32 +15,32 @@ namespace Parser
         public override IBackground Parse(string fileName)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
-            IParsingSource Source = ParsingSource.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
 
             List<string> Lines;
-            LoadResourceFile(Source, out Lines);
+            LoadResourceFile(SourceStream, out Lines);
 
-            return new Background(Name, ParserDomain.ToXamlName(Source, Name, "Background"), Lines);
+            return new Background(Name, ParserDomain.ToXamlName(SourceStream, Name, "Background"), Lines);
         }
 
-        private void LoadResourceFile(IParsingSource source, out List<string> Lines)
+        private void LoadResourceFile(IParsingSourceStream sourceStream, out List<string> Lines)
         {
             try
             {
-                using (source.Open())
+                using (sourceStream.Open())
                 {
                     Lines = new List<string>();
 
-                    while (!source.EndOfStream)
+                    while (!sourceStream.EndOfStream)
                     {
-                        source.ReadLine();
-                        Lines.Add(source.Line);
+                        sourceStream.ReadLine();
+                        Lines.Add(sourceStream.Line);
                     }
                 }
             }
             catch (Exception e)
             {
-                throw new ParsingException(source, e);
+                throw new ParsingException(sourceStream, e);
             }
         }
     }

@@ -9,14 +9,16 @@ namespace Parser
     {
         public static IDomain Parse(string inputFolderName, string homePageName, string colorThemeName)
         {
-            if (string.IsNullOrEmpty(inputFolderName))
-                throw new InvalidDataException("Invalid root folder");
+            if (inputFolderName == null)
+                throw new ArgumentNullException(nameof(inputFolderName));
+            if (homePageName == null)
+                throw new ArgumentNullException(nameof(homePageName));
 
             if (!Directory.Exists(inputFolderName))
-                throw new InvalidDataException("Invalid root folder");
+                throw new ParsingException(1, inputFolderName, "Input folder not found.");
 
-            if (string.IsNullOrEmpty(homePageName))
-                throw new InvalidDataException("Invalid home page name");
+            if (homePageName.Length == 0)
+                throw new ParsingException(2, inputFolderName, "Empty home page name.");
 
             IFormParser FormParserAreas = new ParserArea("area", "txt");
             IFormParser FormParserDesigns = new ParserDesign("design", "xaml");
@@ -46,7 +48,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(inputFolderName, e.Message);
+                throw new ParsingException(3, inputFolderName, e.Message);
             }
 
             foreach (string FullFolderName in FolderNames)
@@ -63,12 +65,12 @@ namespace Parser
                     }
 
                 if (!Parsed)
-                    throw new ParsingException(FullFolderName, $"unexpected folder {FolderName}");
+                    throw new ParsingException(4, FullFolderName, $"Unexpected folder '{FolderName}'.");
             }
 
             foreach (IFormParser FormParser in FormParsers)
                 if (FormParser.ParsedResult == null)
-                    throw new ParsingException(inputFolderName, $"Missing folder '{FormParser.FolderName}'");
+                    throw new ParsingException(5, inputFolderName, $"Missing folder '{FormParser.FolderName}'.");
 
             IFormCollection<IArea> Areas = (IFormCollection<IArea>)FormParserAreas.ParsedResult;
             IFormCollection<IDesign> Designs = (IFormCollection<IDesign>)FormParserDesigns.ParsedResult;
@@ -97,7 +99,7 @@ namespace Parser
                     break;
                 }
             if (HomePage == null)
-                throw new InvalidDataException($"Home page {homePageName} not found");
+                throw new ParsingException(6, inputFolderName, $"Home page '{homePageName}' not found.");
 
             IColorTheme SelectedColorTheme = null;
             foreach (IColorTheme ColorTheme in ColorThemes)
@@ -107,12 +109,12 @@ namespace Parser
                     break;
                 }
             if (SelectedColorTheme == null)
-                throw new InvalidDataException($"Color theme {colorThemeName} not found");
+                throw new ParsingException(7, inputFolderName, $"Color theme '{colorThemeName}' not found.");
 
             IDomain NewDomain = new Domain(inputFolderName, Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorThemes, Translation, HomePage, SelectedColorTheme);
 
-            bool IsConnected;
-            do
+            bool IsConnected = true;
+            for (int i = 0; i < 100 && IsConnected; i++)
             {
                 IsConnected = false;
 
@@ -120,7 +122,8 @@ namespace Parser
                     foreach (IConnectable Connectable in FormParser.ParsedResult)
                         IsConnected |= Connectable.Connect(NewDomain);
             }
-            while (IsConnected);
+            if (IsConnected)
+                throw new ParsingException(8, inputFolderName, $"Unexpected error during processing of the input folder.");
 
             // Make sure areas used by other areas are first
             BubbleSort(Areas);
@@ -134,7 +137,13 @@ namespace Parser
 
                 ListAreas(Page.Area, UsedAreas, SpecifiedAreas);
                 if (UsedAreas.Count > 0)
-                    throw new ParsingException(inputFolderName, $"Layout specified for area {UsedAreas[0].Name} but this area isn't used in page {Page.Name}");
+                {
+                    IArea SpecifiedArea = UsedAreas[0];
+                    if (Page.AreaLayoutBacktracks.ContainsKey(SpecifiedArea))
+                        throw new ParsingException(Page.AreaLayoutBacktracks[SpecifiedArea].Source, $"Layout specified for area '{SpecifiedArea.Name}' but this area isn't used in page '{Page.Name}'");
+                    else
+                        throw new ParsingException(9, inputFolderName, $"Layout specified for area '{SpecifiedArea.Name}' but this area isn't used in page '{Page.Name}'");
+                }
 
                 foreach (IArea Area in SpecifiedAreas)
                 {
@@ -208,6 +217,7 @@ namespace Parser
 
         private static void BubbleSort(IFormCollection<IArea> Areas)
         {
+            // This bubble sort is used instead of a faster algorithm because we want the result to be fully ordered.
             bool IsSorted;
 
             do
@@ -307,6 +317,11 @@ namespace Parser
             return Result;
         }
 
+        public static string ToXamlName(IParsingSourceStream sourceStream, string name, string suffix)
+        {
+            return ToXamlName(sourceStream.FreezedPosition(), name, suffix);
+        }
+
         public static string ToXamlName(IParsingSource source, string name, string suffix)
         {
             if (string.IsNullOrEmpty(name))
@@ -324,6 +339,11 @@ namespace Parser
                 throw new ParsingException(source, "Name only contains invalid characters");
 
             return Result + suffix;
+        }
+
+        public static string ToCSharpName(IParsingSourceStream sourceStream, string name)
+        {
+            return ToCSharpName(sourceStream.FreezedPosition(), name);
         }
 
         public static string ToCSharpName(IParsingSource source, string name)
@@ -354,23 +374,23 @@ namespace Parser
             return Result;
         }
 
-        public static void ParseStringPair(IParsingSource source, char separator, out IDeclarationSource nameSource, out string value)
+        public static void ParseStringPair(IParsingSourceStream sourceStream, char separator, out IDeclarationSource nameSource, out string value)
         {
-            ParseStringPair(source, source.Line, separator, out nameSource, out value);
+            ParseStringPair(sourceStream, sourceStream.Line, separator, out nameSource, out value);
         }
 
-        public static void ParseStringPair(IParsingSource source, string line, char separator, out IDeclarationSource nameSource, out string value)
+        public static void ParseStringPair(IParsingSourceStream sourceStream, string line, char separator, out IDeclarationSource nameSource, out string value)
         {
             if (string.IsNullOrEmpty(line))
-                throw new ParsingException(source, "Unexpected empty line");
+                throw new ParsingException(sourceStream, "Unexpected empty line");
 
             string[] Splitted = line.Split(separator);
             if (Splitted.Length < 2)
-                throw new ParsingException(source, $"<key>{separator}<value> expected");
+                throw new ParsingException(sourceStream, $"<key>{separator}<value> expected");
 
             string Name = Splitted[0].Trim();
             if (string.IsNullOrEmpty(Name))
-                throw new ParsingException(source, $"<key>{separator}<value> expected, found empty key");
+                throw new ParsingException(sourceStream, $"<key>{separator}<value> expected, found empty key");
 
             string Value = Splitted[1];
             for (int i = 2; i < Splitted.Length; i++)
@@ -378,9 +398,9 @@ namespace Parser
 
             value = Value.Trim();
             if (string.IsNullOrEmpty(value))
-                throw new ParsingException(source, $"<key>{separator}<value> expected, found empty value");
+                throw new ParsingException(sourceStream, $"<key>{separator}<value> expected, found empty value");
 
-            nameSource = new DeclarationSource(Name, source);
+            nameSource = new DeclarationSource(Name, sourceStream);
         }
     }
 }

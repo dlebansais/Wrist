@@ -14,13 +14,13 @@ namespace Parser
         public override IColorTheme Parse(string fileName)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
-            IParsingSource Source = ParsingSource.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
 
             try
             {
-                using (Source.Open())
+                using (SourceStream.Open())
                 {
-                    return Parse(Name, Source);
+                    return Parse(Name, SourceStream);
                 }
             }
             catch (ParsingException)
@@ -29,17 +29,17 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(Source, e);
+                throw new ParsingException(SourceStream, e);
             }
         }
 
-        private IColorTheme Parse(string name, IParsingSource source)
+        private IColorTheme Parse(string name, IParsingSourceStream sourceStream)
         {
             Dictionary<IDeclarationSource, string> Colors;
 
             try
             {
-                Colors = ParseColors(source);
+                Colors = ParseColors(sourceStream);
             }
             catch (ParsingException)
             {
@@ -47,27 +47,27 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(source, e);
+                throw new ParsingException(sourceStream, e);
             }
 
             return new ColorTheme(name, Colors);
         }
 
-        private Dictionary<IDeclarationSource, string> ParseColors(IParsingSource source)
+        private Dictionary<IDeclarationSource, string> ParseColors(IParsingSourceStream sourceStream)
         {
             Dictionary<IDeclarationSource, string> Colors = new Dictionary<IDeclarationSource, string>();
 
-            while (!source.EndOfStream)
+            while (!sourceStream.EndOfStream)
             {
-                source.ReadLine();
+                sourceStream.ReadLine();
 
                 IDeclarationSource ColorSource;
                 string ColorValue;
-                ParserDomain.ParseStringPair(source, ':', out ColorSource, out ColorValue);
+                ParserDomain.ParseStringPair(sourceStream, ':', out ColorSource, out ColorValue);
 
                 foreach (KeyValuePair<IDeclarationSource, string> Entry in Colors)
                     if (Entry.Key.Name == ColorSource.Name)
-                        throw new ParsingException(source, $"Color defined more than once: {ColorSource}");
+                        throw new ParsingException(sourceStream, $"Color defined more than once: {ColorSource}");
 
                 Colors.Add(ColorSource, ColorValue);
             }

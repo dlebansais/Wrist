@@ -16,14 +16,14 @@ namespace Parser
         public override ILayout Parse(string fileName)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
-            IParsingSource Source = ParsingSource.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
 
             try
             {
                 XamlSchemaContext Context = GetContext();
-                using (Source.OpenXamlFromFile(Context))
+                using (SourceStream.OpenXamlFromFile(Context))
                 {
-                    return Parse(Name, Source);
+                    return Parse(Name, SourceStream);
                 }
             }
             catch (ParsingException)
@@ -32,7 +32,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(Source, e);
+                throw new ParsingException(SourceStream, e);
             }
         }
 
@@ -44,14 +44,14 @@ namespace Parser
             return new XamlSchemaContext(ReferencedAssemblies);
         }
 
-        private ILayout Parse(string name, IParsingSource source)
+        private ILayout Parse(string name, IParsingSourceStream sourceStream)
         {
             Layout Root;
 
             try
             {
-                Root = (Layout)source.LoadXaml();
-                Root.SetName(name, ParserDomain.ToXamlName(source, name, "Layout"));
+                Root = (Layout)sourceStream.LoadXaml();
+                Root.SetName(name, ParserDomain.ToXamlName(sourceStream, name, "Layout"));
             }
             catch (ParsingException)
             {
@@ -59,7 +59,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(source, e);
+                throw new ParsingException(sourceStream, e);
             }
 
             return Root;

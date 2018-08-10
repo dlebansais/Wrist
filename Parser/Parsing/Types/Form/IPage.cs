@@ -11,6 +11,7 @@ namespace Parser
         IArea Area { get; }
         Dictionary<IDeclarationSource, string> AreaLayoutPairs { get; }
         Dictionary<IArea, ILayout> AreaLayouts { get; }
+        Dictionary<IArea, IDeclarationSource> AreaLayoutBacktracks { get; }
         IDeclarationSource DesignSource { get; }
         IDesign Design { get; }
         IDeclarationSource WidthSource { get; }
