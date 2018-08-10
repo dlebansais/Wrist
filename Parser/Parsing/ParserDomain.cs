@@ -117,12 +117,8 @@ namespace Parser
                 IsConnected = false;
 
                 foreach (IFormParser FormParser in FormParsers)
-                {
                     foreach (IConnectable Connectable in FormParser.ParsedResult)
-                    {
                         IsConnected |= Connectable.Connect(NewDomain);
-                    }
-                }
             }
             while (IsConnected);
 

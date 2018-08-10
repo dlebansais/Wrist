@@ -18,8 +18,7 @@ namespace AppCSHtml5
         }
 
         public LanguageStates State { get; set; } = LanguageStates.English;
-        public Dictionary<string, string> Strings { get { return LanguageStrings[State]; } }
-        public Dictionary<string, string> PageStrings { get { return LanguagePageStrings[State]; } }
+
         public INewsEntry LastNews
         {
             get
@@ -58,18 +57,6 @@ namespace AppCSHtml5
 
         private bool IsAllNewsParsed;
 
-        private Dictionary<LanguageStates, Dictionary<string, string>> LanguageStrings { get; } = new Dictionary<LanguageStates, Dictionary<string, string>>()
-        {
-            { LanguageStates.English, new Dictionary<string, string>() },
-            { LanguageStates.French, new Dictionary<string, string>() },
-        };
-
-        private Dictionary<LanguageStates, Dictionary<string, string>> LanguagePageStrings { get; } = new Dictionary<LanguageStates, Dictionary<string, string>>()
-        {
-            { LanguageStates.English, new Dictionary<string, string>() },
-            { LanguageStates.French, new Dictionary<string, string>() },
-        };
-
         public void On_Switch(string pageName, string sourceName, string sourceContent)
         {
             State = (State == LanguageStates.English) ? LanguageStates.French : LanguageStates.English;
@@ -77,11 +64,16 @@ namespace AppCSHtml5
                 Item.SelectLanguage(State);
 
             Persistent.SetValue("language", State.ToString().ToLower());
+            App.Translation.SetLanguage(StateToLanguage[State]);
 
             NotifyPropertyChanged(nameof(State));
-            NotifyPropertyChanged(nameof(Strings));
-            NotifyPropertyChanged(nameof(PageStrings));
         }
+
+        private Dictionary<LanguageStates, string> StateToLanguage = new Dictionary<LanguageStates, string>()
+        {
+            { LanguageStates.English, "English" },
+            { LanguageStates.French, "Français" },
+        };
 
         private void GetNews()
         {

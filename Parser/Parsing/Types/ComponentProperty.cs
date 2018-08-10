@@ -31,8 +31,12 @@
                 if (objectPropertyKey == null)
                     throw new ParsingException(objectSource.Source, $"For object {objectSource.Name} property {ObjectPropertyStringDictionary.StringsProperty.NameSource.Name} a key is required");
 
-                if (!domain.Translation.KeyList.Contains(objectPropertyKey.Name))
-                    throw new ParsingException(objectPropertyKey.Source, $"The translation file doesn't contain key '{objectPropertyKey.Name}'");
+                if (objectPropertyKey.Name != Page.CurrentPage.Name)
+                {
+                    if (!domain.Translation.KeyList.Contains(objectPropertyKey.Name))
+                        throw new ParsingException(objectPropertyKey.Source, $"The translation file doesn't contain key '{objectPropertyKey.Name}'");
+                }
+                // TODO verify that the current page name has a translation
             }
             else
             {
