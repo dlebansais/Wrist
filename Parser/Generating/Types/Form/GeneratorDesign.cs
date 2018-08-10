@@ -29,7 +29,7 @@ namespace Parser
             return false;
         }
 
-        public void Generate(IGeneratorDomain domain, string outputFolderName, IGeneratorColorScheme colorScheme)
+        public void Generate(IGeneratorDomain domain, string outputFolderName, IGeneratorColorTheme colorTheme)
         {
             string XamlFileName = GeneratorDomain.GetFilePath(outputFolderName, Name);
             string XamlFolderName = Path.GetDirectoryName(XamlFileName);
@@ -41,22 +41,22 @@ namespace Parser
             {
                 using (StreamWriter XamlWriter = new StreamWriter(XamlFile, Encoding.UTF8))
                 {
-                    Generate(domain, XamlWriter, true, 0, colorScheme);
+                    Generate(domain, XamlWriter, true, 0, colorTheme);
                 }
             }
         }
 
-        public void Generate(IGeneratorDomain domain, StreamWriter xamlWriter, bool declareXmlns, int indentation, IGeneratorColorScheme colorScheme)
+        public void Generate(IGeneratorDomain domain, StreamWriter xamlWriter, bool declareXmlns, int indentation, IGeneratorColorTheme colorTheme)
         {
             string s = GeneratorLayout.IndentationString(indentation);
 
             if (declareXmlns)
             {
-                colorScheme.WriteXamlLine(xamlWriter, s + "<ResourceDictionary xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"");
-                colorScheme.WriteXamlLine(xamlWriter, s + "                    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\">");
+                colorTheme.WriteXamlLine(xamlWriter, s + "<ResourceDictionary xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"");
+                colorTheme.WriteXamlLine(xamlWriter, s + "                    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\">");
             }
             else
-                colorScheme.WriteXamlLine(xamlWriter, s + "<ResourceDictionary>");
+                colorTheme.WriteXamlLine(xamlWriter, s + "<ResourceDictionary>");
 
             indentation++;
 
@@ -66,10 +66,10 @@ namespace Parser
                 object Item = Root[Key];
                 string Content = System.Windows.Markup.XamlWriter.Save(Item);
                 Content = CleanupXaml(StyleKey, Content, indentation);
-                colorScheme.WriteXamlLine(xamlWriter, Content);
+                colorTheme.WriteXamlLine(xamlWriter, Content);
             }
 
-            colorScheme.WriteXamlLine(xamlWriter, s + "</ResourceDictionary>");
+            colorTheme.WriteXamlLine(xamlWriter, s + "</ResourceDictionary>");
         }
 
         private string CleanupXaml(string key, string xamlText, int indentation)

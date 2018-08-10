@@ -25,7 +25,7 @@ namespace Parser
             return false;
         }
 
-        public void GenerateResource(StreamWriter xamlWriter, IGeneratorColorScheme colorScheme)
+        public void GenerateResource(StreamWriter xamlWriter, IGeneratorColorTheme colorTheme)
         {
             string Indentation = GeneratorLayout.IndentationString(2);
 
@@ -37,16 +37,16 @@ namespace Parser
                 else
                     ModifiedLine = $"{Indentation}{Line}";
 
-                colorScheme.WriteXamlLine(xamlWriter, ModifiedLine);
+                colorTheme.WriteXamlLine(xamlWriter, ModifiedLine);
             }
         }
 
-        public void Generate(StreamWriter xamlWriter, int indentation, IGeneratorColorScheme colorScheme)
+        public void Generate(StreamWriter xamlWriter, int indentation, IGeneratorColorTheme colorTheme)
         {
             string s = GeneratorLayout.IndentationString(indentation);
             string Properties = $" Template=\"{{StaticResource {XamlName}}}\"";
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{s}<ContentControl{Properties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{s}<ContentControl{Properties}/>");
         }
 
         public override string ToString()

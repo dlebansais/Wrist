@@ -3,16 +3,16 @@ using System.IO;
 
 namespace Parser
 {
-    public class GeneratorColorScheme : IGeneratorColorScheme
+    public class GeneratorColorTheme : IGeneratorColorTheme
     {
-        public static Dictionary<IColorScheme, IGeneratorColorScheme> GeneratorColorSchemeMap { get; } = new Dictionary<IColorScheme, IGeneratorColorScheme>();
+        public static Dictionary<IColorTheme, IGeneratorColorTheme> GeneratorColorThemeMap { get; } = new Dictionary<IColorTheme, IGeneratorColorTheme>();
 
-        public GeneratorColorScheme(IColorScheme background)
+        public GeneratorColorTheme(IColorTheme background)
         {
             Name = background.Name;
             Colors = background.Colors;
 
-            GeneratorColorSchemeMap.Add(background, this);
+            GeneratorColorThemeMap.Add(background, this);
         }
 
         public string Name { get; private set; }

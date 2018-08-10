@@ -31,7 +31,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
@@ -39,7 +39,7 @@ namespace Parser
             string Properties = $" Style=\"{{StaticResource {design.XamlName}PasswordBox{StyleProperty}}}\"{MaximumLengthProperty}";
             string Value = GetComponentValue(currentPage, currentObject, null, TextObject, TextObjectProperty, null, true);
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox{attachedProperties}{visibilityBinding} Password=\"{Value}\"{Properties}{elementProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox{attachedProperties}{visibilityBinding} Password=\"{Value}\"{Properties}{elementProperties}/>");
         }
     }
 }

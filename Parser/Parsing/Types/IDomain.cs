@@ -10,9 +10,9 @@
         IFormCollection<IPage> Pages { get; }
         IFormCollection<IResource> Resources { get; }
         IFormCollection<IBackground> Backgrounds { get; }
-        IFormCollection<IColorScheme> ColorSchemes { get; }
+        IFormCollection<IColorTheme> ColorThemes { get; }
         ITranslation Translation { get; }
         IPage HomePage { get; }
-        IColorScheme SelectedColorScheme { get; }
+        IColorTheme SelectedColorTheme { get; }
     }
 }

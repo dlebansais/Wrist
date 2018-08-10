@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public interface IColorScheme : IForm
+    public interface IColorTheme : IForm
     {
         string Name { get; }
         Dictionary<IDeclarationSource, string> Colors { get; }

@@ -18,13 +18,13 @@ namespace Parser
             return false;
         }
 
-        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (Style != null) ? Style : "";
             string Properties = $" Style=\"{{StaticResource {design.XamlName}Text{StyleProperty}}}\"";
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties(this)}{visibilityBinding} Text=\"{Text}\"{Properties}{ElementProperties()}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties(this)}{visibilityBinding} Text=\"{Text}\"{Properties}{ElementProperties()}/>");
         }
 
         public override string ToString()

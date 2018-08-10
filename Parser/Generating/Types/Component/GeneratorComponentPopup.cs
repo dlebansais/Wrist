@@ -37,7 +37,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string BindingName = $"{XamlName}_Toggle";
@@ -50,21 +50,21 @@ namespace Parser
             string ImageProperties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\" Width=\"16\" Height=\"16\"";
             string ImageSource = $" Source=\"{GetComponentValue(currentPage, currentObject, SourceResource, null, null, null, false)}\"";
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<StackPanel{attachedProperties}{visibilityBinding}{PanelProperties}{elementProperties}>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ContentControl{AreaProperties} Height=\"0\"/>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ToggleButton x:Name=\"{BindingName}\"{ButtonProperties}>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}            <Image{ImageProperties}{ImageSource}/>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}        </ToggleButton>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}    </Grid>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}    <p:Popup{OpeningBinding}{PopupProperties}>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}        <Border>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}            <StackPanel>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}                <ContentControl{AreaProperties}/>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}            </StackPanel>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}        </Border>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}    </p:Popup>");
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}</StackPanel>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<StackPanel{attachedProperties}{visibilityBinding}{PanelProperties}{elementProperties}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ContentControl{AreaProperties} Height=\"0\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ToggleButton x:Name=\"{BindingName}\"{ButtonProperties}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}            <Image{ImageProperties}{ImageSource}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        </ToggleButton>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    </Grid>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    <p:Popup{OpeningBinding}{PopupProperties}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <Border>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}            <StackPanel>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}                <ContentControl{AreaProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}            </StackPanel>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        </Border>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    </p:Popup>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</StackPanel>");
         }
 
         public override bool IsReferencing(IGeneratorArea other)

@@ -56,7 +56,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
@@ -65,7 +65,7 @@ namespace Parser
             string ItemsValue = GetComponentValue(currentPage, currentObject, ItemsResource, ItemsObject, ItemsObjectProperty, null, false);
 
             // SelectedIndex must be first, no clue why.
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} SelectedIndex=\"{IndexValue}\" ItemsSource=\"{ItemsValue}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} SelectedIndex=\"{IndexValue}\" ItemsSource=\"{ItemsValue}\"/>");
         }
     }
 }

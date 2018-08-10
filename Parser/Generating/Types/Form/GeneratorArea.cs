@@ -59,9 +59,9 @@ namespace Parser
             return false;
         }
 
-        public void Generate(IGeneratorLayout layout, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter)
+        public void Generate(IGeneratorLayout layout, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
         {
-            layout.Generate(areaLayouts, design, indentation, currentPage, CurrentObject, colorScheme, xamlWriter);
+            layout.Generate(areaLayouts, design, indentation, currentPage, CurrentObject, colorTheme, xamlWriter);
         }
 
         public void CollectGoTo(List<IGeneratorPageNavigation> goToList, IGeneratorPage currentPage)

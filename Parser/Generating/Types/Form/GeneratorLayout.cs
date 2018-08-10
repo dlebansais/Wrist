@@ -25,9 +25,9 @@ namespace Parser
             return Content.Connect(domain, components);
         }
 
-        public void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter)
+        public void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
         {
-            Content.Generate(areaLayouts, design, indentation, currentPage, currentObject, colorScheme, xamlWriter, "");
+            Content.Generate(areaLayouts, design, indentation, currentPage, currentObject, colorTheme, xamlWriter, "");
         }
 
         public static string IndentationString(int indentation)

@@ -16,7 +16,7 @@ namespace Parser
 
         public Orientation Orientation { get; private set; }
 
-        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string PanelType;
@@ -36,12 +36,12 @@ namespace Parser
                     break;
             }
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<{PanelType}{AttachedProperties(this)}{visibilityBinding}{StackPanelProperties}{ElementProperties()}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<{PanelType}{AttachedProperties(this)}{visibilityBinding}{StackPanelProperties}{ElementProperties()}>");
 
             foreach (IGeneratorLayoutElement element in Items)
-                element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorScheme, xamlWriter, "");
+                element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, "");
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}</{PanelType}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</{PanelType}>");
         }
     }
 }

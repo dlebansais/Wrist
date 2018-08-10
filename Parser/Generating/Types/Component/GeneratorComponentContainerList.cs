@@ -50,7 +50,7 @@ namespace Parser
                 return false;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
@@ -59,7 +59,7 @@ namespace Parser
             string ContentBinding = $" ItemsSource=\"{Value}\"";
             string AreaTemplate = $" ItemTemplate=\"{{StaticResource {ItemNestedArea.XamlName}}}\"";
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<ItemsControl{attachedProperties}{visibilityBinding}{ContentBinding}{AreaTemplate}{Properties}{elementProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<ItemsControl{attachedProperties}{visibilityBinding}{ContentBinding}{AreaTemplate}{Properties}{elementProperties}/>");
         }
     }
 }

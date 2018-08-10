@@ -4,14 +4,14 @@ using System.IO;
 
 namespace Parser
 {
-    public class ParserColorScheme : FormParser<IColorScheme>
+    public class ParserColorTheme : FormParser<IColorTheme>
     {
-        public ParserColorScheme(string folderName, string extension)
+        public ParserColorTheme(string folderName, string extension)
             : base(folderName, extension)
         {
         }
 
-        public override IColorScheme Parse(string fileName)
+        public override IColorTheme Parse(string fileName)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
             IParsingSource Source = ParsingSource.CreateFromFileName(fileName);
@@ -33,7 +33,7 @@ namespace Parser
             }
         }
 
-        private IColorScheme Parse(string name, IParsingSource source)
+        private IColorTheme Parse(string name, IParsingSource source)
         {
             Dictionary<IDeclarationSource, string> Colors;
 
@@ -50,7 +50,7 @@ namespace Parser
                 throw new ParsingException(source, e);
             }
 
-            return new ColorScheme(name, Colors);
+            return new ColorTheme(name, Colors);
         }
 
         private Dictionary<IDeclarationSource, string> ParseColors(IParsingSource source)

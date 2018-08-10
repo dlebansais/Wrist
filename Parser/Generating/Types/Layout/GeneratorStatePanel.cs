@@ -40,12 +40,12 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StatePanelProperties = "";
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{StatePanelProperties}{ElementProperties()}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{StatePanelProperties}{ElementProperties()}>");
 
             List<string> Parameters = new List<string>();
             for (int i = 0; i < Items.Count; i++)
@@ -56,10 +56,10 @@ namespace Parser
             foreach (IGeneratorLayoutElement Element in Items)
             {
                 string VisibilityBinding = $" Visibility=\"{{Binding {IndexComponent.IndexObject.CSharpName}.{IndexComponent.IndexObjectProperty.CSharpName}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter={Parameters[Index++]}}}\"";
-                Element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorScheme, xamlWriter, VisibilityBinding);
+                Element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, VisibilityBinding);
             }
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}</Grid>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</Grid>");
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Parser
         string Name { get; }
         string XamlName { get; }
         List<string> Lines { get; }
-        void GenerateResource(StreamWriter xamlWriter, IGeneratorColorScheme colorScheme);
-        void Generate(StreamWriter xamlWriter, int indentation, IGeneratorColorScheme colorScheme);
+        void GenerateResource(StreamWriter xamlWriter, IGeneratorColorTheme colorTheme);
+        void Generate(StreamWriter xamlWriter, int indentation, IGeneratorColorTheme colorTheme);
     }
 }

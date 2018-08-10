@@ -2,7 +2,7 @@
 {
     public class Domain : IDomain
     {
-        public Domain(string inputFolderName, IFormCollection<IArea> areas, IFormCollection<IDesign> designs, IFormCollection<ILayout> layouts, IFormCollection<IObject> objects, IFormCollection<IPage> pages, IFormCollection<IResource> resources, IFormCollection<IBackground> backgrounds, IFormCollection<IColorScheme> colorSchemes, ITranslation translation, IPage homePage, IColorScheme selectedColorScheme)
+        public Domain(string inputFolderName, IFormCollection<IArea> areas, IFormCollection<IDesign> designs, IFormCollection<ILayout> layouts, IFormCollection<IObject> objects, IFormCollection<IPage> pages, IFormCollection<IResource> resources, IFormCollection<IBackground> backgrounds, IFormCollection<IColorTheme> colorThemes, ITranslation translation, IPage homePage, IColorTheme selectedColorTheme)
         {
             InputFolderName = inputFolderName;
             Areas = areas;
@@ -12,10 +12,10 @@
             Pages = pages;
             Resources = resources;
             Backgrounds = backgrounds;
-            ColorSchemes = colorSchemes;
+            ColorThemes = colorThemes;
             Translation = translation;
             HomePage = homePage;
-            SelectedColorScheme = selectedColorScheme;
+            SelectedColorTheme = selectedColorTheme;
         }
 
         public string InputFolderName { get; private set; }
@@ -26,9 +26,9 @@
         public IFormCollection<IPage> Pages { get; private set; }
         public IFormCollection<IResource> Resources { get; private set; }
         public IFormCollection<IBackground> Backgrounds { get; private set; }
-        public IFormCollection<IColorScheme> ColorSchemes { get; private set; }
+        public IFormCollection<IColorTheme> ColorThemes { get; private set; }
         public ITranslation Translation { get; private set; }
         public IPage HomePage { get; private set; }
-        public IColorScheme SelectedColorScheme { get; private set; }
+        public IColorTheme SelectedColorTheme { get; private set; }
     }
 }

@@ -66,7 +66,7 @@ namespace Parser
             }
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
@@ -74,7 +74,7 @@ namespace Parser
             string Content = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
             string IsCheckedBinding = GetComponentValue(currentPage, currentObject, null, CheckedObject, CheckedObjectProperty, null, true);
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<CheckBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{Content}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<CheckBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{Content}\"/>");
         }
     }
 }

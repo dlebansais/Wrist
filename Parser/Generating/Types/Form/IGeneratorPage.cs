@@ -15,6 +15,6 @@ namespace Parser
         string BackgroundColor { get; }
         Dictionary<IGeneratorArea, IGeneratorLayout> AreaLayouts { get; }
         bool Connect(IGeneratorDomain domain);
-        void Generate(IGeneratorDomain domain, string outputFolderName, string appNamespace, IGeneratorColorScheme colorScheme);
+        void Generate(IGeneratorDomain domain, string outputFolderName, string appNamespace, IGeneratorColorTheme colorTheme);
     }
 }

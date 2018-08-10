@@ -45,43 +45,43 @@ namespace Parser
         public double[] ColumnWidthArray { get; private set; }
         public double[] RowHeightArray { get; private set; }
 
-        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string GridProperties = "";
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{GridProperties}{ElementProperties()}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{GridProperties}{ElementProperties()}>");
 
             if (ColumnCount > 1)
             {
-                colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid.ColumnDefinitions>");
+                colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid.ColumnDefinitions>");
 
                 for (int i = 0; i < ColumnCount; i++)
                 {
                     string WidthProperty = (double.IsNaN(ColumnWidthArray[i]) ? " Width=\"Auto\"" : (ColumnWidthArray[i] > 0 ? $" Width=\"{ColumnWidthArray[i]}\"" : ""));
-                    colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ColumnDefinition{WidthProperty}/>");
+                    colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ColumnDefinition{WidthProperty}/>");
                 }
 
-                colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}    </Grid.ColumnDefinitions>");
+                colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    </Grid.ColumnDefinitions>");
             }
 
             if (RowCount > 1)
             {
-                colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid.RowDefinitions>");
+                colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid.RowDefinitions>");
 
                 for (int i = 0; i < RowCount; i++)
                 {
                     string HeightProperty = (double.IsNaN(RowHeightArray[i]) ? " Height=\"Auto\"" : (RowHeightArray[i] > 0 ? $" Height=\"{RowHeightArray[i]}\"" : ""));
-                    colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}        <RowDefinition{HeightProperty}/>");
+                    colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <RowDefinition{HeightProperty}/>");
                 }
 
-                colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}    </Grid.RowDefinitions>");
+                colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    </Grid.RowDefinitions>");
             }
 
             foreach (IGeneratorLayoutElement element in Items)
-                element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorScheme, xamlWriter, "");
+                element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, "");
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}</Grid>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</Grid>");
         }
     }
 }

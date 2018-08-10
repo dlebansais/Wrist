@@ -29,18 +29,18 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
-            Generate(Area, attachedProperties, elementProperties, indentation, colorScheme, xamlWriter, visibilityBinding, double.NaN);
+            Generate(Area, attachedProperties, elementProperties, indentation, colorTheme, xamlWriter, visibilityBinding, double.NaN);
         }
 
-        public static void Generate(IGeneratorArea area, string attachedProperties, string elementProperties, int indentation, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding, double width)
+        public static void Generate(IGeneratorArea area, string attachedProperties, string elementProperties, int indentation, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding, double width)
         {
             string s = GeneratorLayout.IndentationString(indentation);
             string Properties = $" Template=\"{{StaticResource {area.XamlName}}}\"";
             string WidthProperty = double.IsNaN(width) ? "" : $" HorizontalAlignment=\"Center\" Width=\"{width}\"";
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{s}<ContentControl{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{WidthProperty}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{s}<ContentControl{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{WidthProperty}/>");
         }
 
         public override bool IsReferencing(IGeneratorArea other)

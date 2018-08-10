@@ -25,17 +25,17 @@ namespace Parser
         {
         }
 
-        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string DockPanelProperties = "";
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}<DockPanel{AttachedProperties(this)}{visibilityBinding}{DockPanelProperties}{ElementProperties()}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<DockPanel{AttachedProperties(this)}{visibilityBinding}{DockPanelProperties}{ElementProperties()}>");
 
             foreach (IGeneratorLayoutElement element in Items)
-                element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorScheme, xamlWriter, "");
+                element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, "");
 
-            colorScheme.WriteXamlLine(xamlWriter, $"{Indentation}</DockPanel>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</DockPanel>");
         }
     }
 }

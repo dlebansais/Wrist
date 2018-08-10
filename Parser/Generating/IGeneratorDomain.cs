@@ -13,10 +13,10 @@ namespace Parser
         List<IGeneratorPage> Pages { get; }
         List<IGeneratorResource> Resources { get; }
         List<IGeneratorBackground> Backgrounds { get; }
-        List<IGeneratorColorScheme> ColorSchemes { get; }
+        List<IGeneratorColorTheme> ColorThemes { get; }
         IGeneratorTranslation Translation { get; }
         IGeneratorPage HomePage { get; }
-        IGeneratorColorScheme SelectedColorScheme { get; }
+        IGeneratorColorTheme SelectedColorTheme { get; }
         void Generate(string outputFolderName);
     }
 }

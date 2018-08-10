@@ -45,9 +45,9 @@ namespace Parser
             foreach (IBackground Background in domain.Backgrounds)
                 Backgrounds.Add(new GeneratorBackground(Background));
 
-            ColorSchemes = new List<IGeneratorColorScheme>();
-            foreach (IColorScheme ColorScheme in domain.ColorSchemes)
-                ColorSchemes.Add(new GeneratorColorScheme(ColorScheme));
+            ColorThemes = new List<IGeneratorColorTheme>();
+            foreach (IColorTheme ColorTheme in domain.ColorThemes)
+                ColorThemes.Add(new GeneratorColorTheme(ColorTheme));
 
             bool IsConnected;
             do
@@ -71,7 +71,7 @@ namespace Parser
                 Translation = null;
 
             HomePage = GeneratorPage.GeneratorPageMap[domain.HomePage];
-            SelectedColorScheme = GeneratorColorScheme.GeneratorColorSchemeMap[domain.SelectedColorScheme];
+            SelectedColorTheme = GeneratorColorTheme.GeneratorColorThemeMap[domain.SelectedColorTheme];
         }
 
         public string AppNamespace { get; private set; }
@@ -83,10 +83,10 @@ namespace Parser
         public List<IGeneratorPage> Pages { get; private set; }
         public List<IGeneratorResource> Resources { get; private set; }
         public List<IGeneratorBackground> Backgrounds { get; private set; }
-        public List<IGeneratorColorScheme> ColorSchemes { get; private set; }
+        public List<IGeneratorColorTheme> ColorThemes { get; private set; }
         public IGeneratorTranslation Translation { get; private set; }
         public IGeneratorPage HomePage { get; private set; }
-        public IGeneratorColorScheme SelectedColorScheme { get; private set; }
+        public IGeneratorColorTheme SelectedColorTheme { get; private set; }
 
         public void Generate(string outputFolderName)
         {
@@ -96,7 +96,7 @@ namespace Parser
             string AppNamespace = Path.GetFileName(outputFolderName);
 
             foreach (IGeneratorPage Page in Pages)
-                Page.Generate(this, outputFolderName, AppNamespace, SelectedColorScheme);
+                Page.Generate(this, outputFolderName, AppNamespace, SelectedColorTheme);
 
             foreach (IGeneratorObject Object in Objects)
                 Object.Generate(this, outputFolderName, AppNamespace);
@@ -107,7 +107,7 @@ namespace Parser
             if (Translation != null)
                 GenerateTranslation(outputFolderName, AppNamespace, Translation);
 
-            GenerateAppXaml(outputFolderName, AppNamespace, SelectedColorScheme);
+            GenerateAppXaml(outputFolderName, AppNamespace, SelectedColorTheme);
             GenerateAppCSharp(outputFolderName, AppNamespace);
             GenerateAppProject(outputFolderName, AppNamespace);
         }
@@ -191,7 +191,7 @@ namespace Parser
             cSharpWriter.WriteLine("}");
         }
 
-        private void GenerateAppXaml(string outputFolderName, string appNamespace, IGeneratorColorScheme colorScheme)
+        private void GenerateAppXaml(string outputFolderName, string appNamespace, IGeneratorColorTheme colorTheme)
         {
             string XamlFileName = Path.Combine(outputFolderName, "App.xaml");
 
@@ -199,7 +199,7 @@ namespace Parser
             {
                 using (StreamWriter XamlWriter = new StreamWriter(XamlFile, Encoding.UTF8))
                 {
-                    GenerateAppXaml(outputFolderName, appNamespace, XamlWriter, colorScheme);
+                    GenerateAppXaml(outputFolderName, appNamespace, XamlWriter, colorTheme);
                 }
             }
         }
@@ -217,7 +217,7 @@ namespace Parser
             }
         }
 
-        private void GenerateAppXaml(string outputFolderName, string appNamespace, StreamWriter xamlWriter, IGeneratorColorScheme colorScheme)
+        private void GenerateAppXaml(string outputFolderName, string appNamespace, StreamWriter xamlWriter, IGeneratorColorTheme colorTheme)
         {
             List<XmlnsContentPair> ResourceList = new List<XmlnsContentPair>();
 
@@ -253,7 +253,7 @@ namespace Parser
             xamlWriter.WriteLine("    <Application.Resources>");
 
             foreach (XmlnsContentPair Resource in ResourceList)
-                colorScheme.WriteXamlLine(xamlWriter, Resource.Content);
+                colorTheme.WriteXamlLine(xamlWriter, Resource.Content);
 
             xamlWriter.WriteLine("    </Application.Resources>");
             xamlWriter.WriteLine("</Application>");

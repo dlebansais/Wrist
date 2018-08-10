@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Parser
 {
-    public interface IGeneratorColorScheme : IGeneratorForm
+    public interface IGeneratorColorTheme : IGeneratorForm
     {
         string Name { get; }
         Dictionary<IDeclarationSource, string> Colors { get; }

@@ -9,6 +9,6 @@ namespace Parser
         string XamlName { get; }
         IGeneratorPanel Content { get; }
         bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components);
-        void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter);
+        void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter);
     }
 }

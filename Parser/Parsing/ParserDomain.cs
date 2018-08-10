@@ -7,7 +7,7 @@ namespace Parser
 {
     public static class ParserDomain
     {
-        public static IDomain Parse(string inputFolderName, string homePageName, string colorSchemeName)
+        public static IDomain Parse(string inputFolderName, string homePageName, string colorThemeName)
         {
             if (string.IsNullOrEmpty(inputFolderName))
                 throw new InvalidDataException("Invalid root folder");
@@ -25,7 +25,7 @@ namespace Parser
             IFormParser FormParserPages = new ParserPage("page", "txt");
             IFormParser FormParserResources = new ParserResource("resource", "png");
             IFormParser FormParserBackgrounds = new ParserBackground("background", "xaml");
-            IFormParser FormParserColorSchemes = new ParserColorScheme("color", "txt");
+            IFormParser FormParserColorThemes = new ParserColorTheme("color", "txt");
 
             IFormParserCollection FormParsers = new FormParserCollection()
             {
@@ -36,7 +36,7 @@ namespace Parser
                 FormParserPages,
                 FormParserResources,
                 FormParserBackgrounds,
-                FormParserColorSchemes,
+                FormParserColorThemes,
             };
 
             string[] FolderNames;
@@ -77,7 +77,7 @@ namespace Parser
             IFormCollection<IPage> Pages = (IFormCollection<IPage>)FormParserPages.ParsedResult;
             IFormCollection<IResource> Resources = (IFormCollection<IResource>)FormParserResources.ParsedResult;
             IFormCollection<IBackground> Backgrounds = (IFormCollection<IBackground>)FormParserBackgrounds.ParsedResult;
-            IFormCollection<IColorScheme> ColorSchemes = (IFormCollection<IColorScheme>)FormParserColorSchemes.ParsedResult;
+            IFormCollection<IColorTheme> ColorThemes = (IFormCollection<IColorTheme>)FormParserColorThemes.ParsedResult;
 
             string TranslationFile = Path.Combine(inputFolderName, "translations.cvs");
             ITranslation Translation;
@@ -99,17 +99,17 @@ namespace Parser
             if (HomePage == null)
                 throw new InvalidDataException($"Home page {homePageName} not found");
 
-            IColorScheme SelectedColorScheme = null;
-            foreach (IColorScheme ColorScheme in ColorSchemes)
-                if (ColorScheme.Name == colorSchemeName)
+            IColorTheme SelectedColorTheme = null;
+            foreach (IColorTheme ColorTheme in ColorThemes)
+                if (ColorTheme.Name == colorThemeName)
                 {
-                    SelectedColorScheme = ColorScheme;
+                    SelectedColorTheme = ColorTheme;
                     break;
                 }
-            if (SelectedColorScheme == null)
-                throw new InvalidDataException($"Color scheme {colorSchemeName} not found");
+            if (SelectedColorTheme == null)
+                throw new InvalidDataException($"Color theme {colorThemeName} not found");
 
-            IDomain NewDomain = new Domain(inputFolderName, Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorSchemes, Translation, HomePage, SelectedColorScheme);
+            IDomain NewDomain = new Domain(inputFolderName, Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorThemes, Translation, HomePage, SelectedColorTheme);
 
             bool IsConnected;
             do

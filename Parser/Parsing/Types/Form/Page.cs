@@ -188,7 +188,7 @@ namespace Parser
 
             if (BackgroundColor == null)
             {
-                foreach (IColorScheme Item in domain.ColorSchemes)
+                foreach (IColorTheme Item in domain.ColorThemes)
                 {
                     foreach (KeyValuePair<IDeclarationSource, string> Entry in Item.Colors)
                         if (Entry.Key.Name == BackgroundColorSource.Name)
@@ -198,7 +198,7 @@ namespace Parser
                         }
 
                     if (BackgroundColor == null)
-                        throw new ParsingException(BackgroundColorSource.Source, $"Background color {BackgroundColorSource.Name} not found in color scheme {Item.Name}");
+                        throw new ParsingException(BackgroundColorSource.Source, $"Background color {BackgroundColorSource.Name} not found in color theme {Item.Name}");
                 }
 
                 IsConnected = true;

@@ -89,7 +89,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public void Generate(IGeneratorDomain domain, string outputFolderName, string appNamespace, IGeneratorColorScheme colorScheme)
+        public void Generate(IGeneratorDomain domain, string outputFolderName, string appNamespace, IGeneratorColorTheme colorTheme)
         {
             string PagesFolderName = Path.Combine(outputFolderName, "Pages");
 
@@ -103,7 +103,7 @@ namespace Parser
             {
                 using (StreamWriter XamlWriter = new StreamWriter(XamlFile, Encoding.UTF8))
                 {
-                    GenerateXaml(domain, appNamespace, colorScheme, XamlWriter);
+                    GenerateXaml(domain, appNamespace, colorTheme, XamlWriter);
                 }
             }
 
@@ -116,7 +116,7 @@ namespace Parser
             }
         }
 
-        private void GenerateXaml(IGeneratorDomain domain, string appNamespace, IGeneratorColorScheme colorScheme, StreamWriter xamlWriter)
+        private void GenerateXaml(IGeneratorDomain domain, string appNamespace, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
         {
             xamlWriter.WriteLine($"<Page x:Class=\"{appNamespace}.{XamlName}\"");
             xamlWriter.WriteLine("      xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"");
@@ -150,7 +150,7 @@ namespace Parser
                     xamlWriter.WriteLine($"{s}<DataTemplate x:Key=\"{Area.XamlName}\">");
 
                 IGeneratorLayout Layout = AreaLayouts[Area];
-                Area.Generate(Layout, AreaLayouts, Design, Indentation + 1, this, colorScheme, xamlWriter);
+                Area.Generate(Layout, AreaLayouts, Design, Indentation + 1, this, colorTheme, xamlWriter);
 
                 if (Area.CurrentObject == null)
                     xamlWriter.WriteLine($"{s}</ControlTemplate>");
@@ -159,17 +159,17 @@ namespace Parser
             }
 
             if (Background != null)
-                Background.GenerateResource(xamlWriter, colorScheme);
+                Background.GenerateResource(xamlWriter, colorTheme);
 
             xamlWriter.WriteLine("    </Page.Resources>");
 
             if (IsScrollable)
             {
                 string BackgroundColorProperty = $" Color=\"{BackgroundColor}\"";
-                colorScheme.WriteXamlLine(xamlWriter, $"    <ScrollViewer>");
-                colorScheme.WriteXamlLine(xamlWriter, "        <ScrollViewer.Background>");
-                colorScheme.WriteXamlLine(xamlWriter, $"            <SolidColorBrush{BackgroundColorProperty}/>");
-                colorScheme.WriteXamlLine(xamlWriter, "        </ScrollViewer.Background>");
+                colorTheme.WriteXamlLine(xamlWriter, $"    <ScrollViewer>");
+                colorTheme.WriteXamlLine(xamlWriter, "        <ScrollViewer.Background>");
+                colorTheme.WriteXamlLine(xamlWriter, $"            <SolidColorBrush{BackgroundColorProperty}/>");
+                colorTheme.WriteXamlLine(xamlWriter, "        </ScrollViewer.Background>");
                 Indentation++;
             }
 
@@ -179,13 +179,13 @@ namespace Parser
             {
                 xamlWriter.WriteLine($"{s}<Grid>");
 
-                Background.Generate(xamlWriter, Indentation, colorScheme);
-                GeneratorComponentArea.Generate(Area, "", "", Indentation, colorScheme, xamlWriter, "", Width);
+                Background.Generate(xamlWriter, Indentation, colorTheme);
+                GeneratorComponentArea.Generate(Area, "", "", Indentation, colorTheme, xamlWriter, "", Width);
 
                 xamlWriter.WriteLine($"{s}</Grid>");
             }
             else
-                GeneratorComponentArea.Generate(Area, "", "", Indentation, colorScheme, xamlWriter, "", Width);
+                GeneratorComponentArea.Generate(Area, "", "", Indentation, colorTheme, xamlWriter, "", Width);
 
             if (IsScrollable)
             {
