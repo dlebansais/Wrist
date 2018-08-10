@@ -271,3 +271,6 @@ __pycache__/
 /AppCSHtml5/App.xaml.cs
 /AppCSHtml5/App.xaml
 /AppCSHtml5/Translation.cs
+/AppCSHtml5/Objects/NewsEntry.cs
+/AppCSHtml5/Objects/Login.cs
+/AppCSHtml5/Objects/Language.cs
