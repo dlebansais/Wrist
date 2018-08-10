@@ -259,18 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-/AppCSHtml5/Objects/NewsEntryStates.cs
-/AppCSHtml5/Objects/LoginStates.cs
-/AppCSHtml5/Objects/LanguageStates.cs
-/AppCSHtml5/Objects/INewsEntry.cs
-/AppCSHtml5/Objects/ILogin.cs
-/AppCSHtml5/Objects/ILanguage.cs
-/AppCSHtml5/Pages
-/AppCSHtml5/Resources
-/AppCSHtml5/AppCSHtml5.csproj
-/AppCSHtml5/App.xaml.cs
-/AppCSHtml5/App.xaml
-/AppCSHtml5/Translation.cs
-/AppCSHtml5/Objects/NewsEntry.cs
-/AppCSHtml5/Objects/Login.cs
-/AppCSHtml5/Objects/Language.cs
+
+/AppCSHtml5/*
