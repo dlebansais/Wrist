@@ -79,7 +79,7 @@
     <Compile Include="Generating\Types\Component\IGeneratorComponentSelector.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentContainer.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentText.cs" />
-    <Compile Include="Generating\Types\Form\GeneratorColorScheme.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorColorTheme.cs" />
     <Compile Include="Generating\Types\Form\GeneratorFormCollection.cs" />
     <Compile Include="Generating\Types\Form\GeneratorObject.cs" />
     <Compile Include="Generating\Types\Form\GeneratorLayout.cs" />
@@ -87,7 +87,7 @@
     <Compile Include="Generating\Types\Form\GeneratorArea.cs" />
     <Compile Include="Generating\Types\Form\GeneratorBackground.cs" />
     <Compile Include="Generating\Types\Form\GeneratorResource.cs" />
-    <Compile Include="Generating\Types\Form\IGeneratorColorScheme.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorColorTheme.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorForm.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorFormCollection.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorObject.cs" />
@@ -150,7 +150,7 @@
     <Compile Include="Generating\Types\GeneratorPageNavigation.cs" />
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyCollection.cs" />
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyCollection.cs" />
-    <Compile Include="Parsing\ParserColorScheme.cs" />
+    <Compile Include="Parsing\ParserColorTheme.cs" />
     <Compile Include="Parsing\Types\Component\ComponentRadioButton.cs" />
     <Compile Include="Parsing\Types\Component\ComponentCheckbox.cs" />
     <Compile Include="Parsing\Types\Component\ComponentCollection.cs" />
@@ -165,9 +165,9 @@
     <Compile Include="Parsing\Types\Component\IComponentContainer.cs" />
     <Compile Include="Parsing\Types\Component\IComponentPasswordEdit.cs" />
     <Compile Include="Parsing\Types\Component\IComponentIndex.cs" />
-    <Compile Include="Parsing\Types\Form\ColorScheme.cs" />
+    <Compile Include="Parsing\Types\Form\ColorTheme.cs" />
     <Compile Include="Parsing\Types\Form\FormCollection.cs" />
-    <Compile Include="Parsing\Types\Form\IColorScheme.cs" />
+    <Compile Include="Parsing\Types\Form\IColorTheme.cs" />
     <Compile Include="Parsing\Types\Form\Parser\IFormParserCollection.cs" />
     <Compile Include="Parsing\Types\Form\Parser\FormParserCollection.cs" />
     <Compile Include="Parsing\Types\Form\IFormCollection.cs" />
