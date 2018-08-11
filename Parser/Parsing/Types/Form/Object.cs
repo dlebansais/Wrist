@@ -14,14 +14,13 @@ namespace Parser
             Properties = LocalProperties.AsReadOnly();
         }
 
-        public Object(string name, string cSharpName, IEnumerable<string> states, IObjectPropertyCollection properties, List<ITransition> transitions, List<IObjectEvent> events)
+        public Object(string name, string cSharpName, IEnumerable<string> states, IObjectPropertyCollection properties, List<IObjectEvent> events)
         {
             Name = name;
             CSharpName = cSharpName;
             List<string> StateList = new List<string>(states);
             States = StateList.AsReadOnly();
             Properties = properties.AsReadOnly();
-            Transitions = transitions.AsReadOnly();
             Events = events.AsReadOnly();
         }
 
@@ -29,7 +28,6 @@ namespace Parser
         public string CSharpName { get; private set; }
         public IReadOnlyCollection<string> States { get; private set; }
         public IReadOnlyCollection<IObjectProperty> Properties { get; private set; }
-        public IReadOnlyCollection<ITransition> Transitions { get; private set; }
         public IReadOnlyCollection<IObjectEvent> Events { get; private set; }
 
         public bool Connect(IDomain domain)

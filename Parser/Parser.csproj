@@ -202,8 +202,6 @@
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyState.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyReadonlyString.cs" />
     <Compile Include="Parsing\Types\PageNavigation.cs" />
-    <Compile Include="Generating\Types\Transition\IGeneratorTransition.cs" />
-    <Compile Include="Generating\Types\Transition\GeneratorTransition.cs" />
     <Compile Include="NamespaceReference.cs" />
     <Compile Include="Parsing\ParserDomain.cs" />
     <Compile Include="Parsing\ParserPage.cs" />
@@ -278,8 +276,6 @@
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyInteger.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyString.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyStringCategory.cs" />
-    <Compile Include="Parsing\Types\Transition\ITransition.cs" />
-    <Compile Include="Parsing\Types\Transition\Transition.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XmlnsTest\XmlnsTest.csproj">

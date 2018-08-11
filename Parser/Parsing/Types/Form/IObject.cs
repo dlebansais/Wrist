@@ -8,7 +8,6 @@ namespace Parser
         string CSharpName { get; }
         IReadOnlyCollection<string> States { get; }
         IReadOnlyCollection<IObjectProperty> Properties { get; }
-        IReadOnlyCollection<ITransition> Transitions { get; }
         IReadOnlyCollection<IObjectEvent> Events { get; }
     }
 }

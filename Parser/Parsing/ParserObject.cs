@@ -38,7 +38,6 @@ namespace Parser
         {
             List<string> StateList;
             IObjectPropertyCollection ObjectPropertyList;
-            List<ITransition> TransitionList;
             List<IObjectEvent> ObjectEventList;
             string Line = null;
 
@@ -46,7 +45,6 @@ namespace Parser
             {
                 StateList = ParseStates(sourceStream, ref Line);
                 ObjectPropertyList = ParseObjectProperties(sourceStream, ref Line);
-                TransitionList = ParseTransitions(sourceStream, ObjectPropertyList, ref Line);
                 ObjectEventList = ParseEvents(sourceStream, ref Line);
             }
             catch (ParsingException)
@@ -59,7 +57,7 @@ namespace Parser
             }
 
             string CSharpname = ParserDomain.ToCSharpName(sourceStream, name);
-            return new Object(name, CSharpname, StateList, ObjectPropertyList, TransitionList, ObjectEventList);
+            return new Object(name, CSharpname, StateList, ObjectPropertyList, ObjectEventList);
         }
 
         private List<string> ParseStates(IParsingSourceStream sourceStream, ref string line)
@@ -203,134 +201,6 @@ namespace Parser
                     throw new ParsingException(sourceStream, "Object name not specified for item list");
             else
                 throw new ParsingException(sourceStream, $"Unknown property type {PropertyTypeName}");
-        }
-
-        private List<ITransition> ParseTransitions(IParsingSourceStream sourceStream, IObjectPropertyCollection ObjectPropertyList, ref string line)
-        {
-            List<ITransition> TransitionList = new List<ITransition>();
-
-            sourceStream.ReadLine();
-            string HeaderLine = sourceStream.Line;
-            if (HeaderLine != "transitions")
-                throw new ParsingException(sourceStream, "Transitions expected");
-
-            while (!sourceStream.EndOfStream)
-            {
-                ITransition Transition = ParseTransition(sourceStream, ObjectPropertyList, ref line);
-                if (Transition == null)
-                    break;
-
-                TransitionList.Add(Transition);
-            }
-
-            return TransitionList;
-        }
-
-        private ITransition ParseTransition(IParsingSourceStream sourceStream, IObjectPropertyCollection ObjectPropertyList, ref string line)
-        {
-            if (sourceStream.EndOfStream)
-                throw new ParsingException(sourceStream, "Unexpected end of file");
-
-            sourceStream.ReadLine();
-            line = sourceStream.Line;
-            if (string.IsNullOrEmpty(line) || line == "events")
-                return null;
-
-            string FromState = ParseTransitionState(sourceStream, "from", line);
-
-            sourceStream.ReadLine();
-            line = sourceStream.Line;
-            if (string.IsNullOrEmpty(line))
-                throw new ParsingException(sourceStream, "Unexpected empty line");
-
-            string ToState = ParseTransitionState(sourceStream, "to", line);
-
-            IObjectPropertyCollection PropertyListProvide = null;
-            IObjectPropertyCollection PropertyListUnassign = null;
-
-            while (!sourceStream.EndOfStream)
-            {
-                sourceStream.ReadLine();
-                line = sourceStream.Line;
-                if (string.IsNullOrEmpty(line))
-                    break;
-
-                string Detail = line.Trim();
-                if (Detail == "provide")
-                    if (PropertyListProvide == null)
-                        PropertyListProvide = ParseTransitionPropertyList(sourceStream, ObjectPropertyList);
-                    else
-                        throw new ParsingException(sourceStream, "Provided property list specified more than once");
-
-                else if (Detail == "unassign")
-                    if (PropertyListUnassign == null)
-                        PropertyListUnassign = ParseTransitionPropertyList(sourceStream, ObjectPropertyList);
-                    else
-                        throw new ParsingException(sourceStream, "Unassigned property list specified more than once");
-            }
-
-            if (PropertyListProvide == null)
-                PropertyListProvide = new ObjectPropertyCollection();
-
-            if (PropertyListUnassign == null)
-                PropertyListUnassign = new ObjectPropertyCollection();
-
-            ITransition NewTransition = new Transition(FromState, ToState, PropertyListProvide, PropertyListUnassign);
-            return NewTransition;
-        }
-
-        private string ParseTransitionState(IParsingSourceStream sourceStream, string prolog, string line)
-        {
-            line = line.Trim();
-            if (!line.StartsWith(prolog))
-                throw new ParsingException(sourceStream, $"Expected: {prolog}");
-
-            line = line.Substring(prolog.Length);
-            if (line.Length <= 2 || line[0] != ' ')
-                throw new ParsingException(sourceStream, $"Expected: property name");
-
-            string StateName = line.Trim();
-            return StateName;
-        }
-
-        private IObjectPropertyCollection ParseTransitionPropertyList(IParsingSourceStream sourceStream, IObjectPropertyCollection ObjectPropertyList)
-        {
-            sourceStream.ReadLine();
-            if (string.IsNullOrEmpty(sourceStream.Line))
-                throw new ParsingException(sourceStream, "At least one property name is expected");
-
-            IObjectPropertyCollection PropertyList = new ObjectPropertyCollection();
-
-            string Line = sourceStream.Line.Trim();
-            string[] Splitted = Line.Split(',');
-
-            foreach (string Detail in Splitted)
-            {
-                string PropertyName = Detail.Trim();
-
-                if (PropertyName.Length == 0)
-                    throw new ParsingException(sourceStream, "Property name cannot be empty");
-                else
-                {
-                    IObjectProperty MatchingObjectProperty = null;
-                    foreach (IObjectProperty ObjectProperty in ObjectPropertyList)
-                        if (PropertyName == ObjectProperty.NameSource.Name)
-                        {
-                            MatchingObjectProperty = ObjectProperty;
-                            break;
-                        }
-
-                    if (MatchingObjectProperty != null)
-                        PropertyList.Add(MatchingObjectProperty);
-                    else
-                        throw new ParsingException(sourceStream, $"Property name {PropertyName} not found");
-                }
-            }
-
-            if (PropertyList.Count == 0)
-                throw new ParsingException(sourceStream, "At least one property name is expected");
-
-            return PropertyList;
         }
 
         private List<IObjectEvent> ParseEvents(IParsingSourceStream sourceStream, ref string line)

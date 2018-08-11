@@ -31,11 +31,6 @@ namespace Parser
                 ConvertedProperties.Add(GeneratorObjectProperty.Convert(Property, this));
             Properties = ConvertedProperties.AsReadOnly();
 
-            List<IGeneratorTransition> ConvertedTransitions = new List<IGeneratorTransition>();
-            foreach (ITransition Transition in obj.Transitions)
-                ConvertedTransitions.Add(new GeneratorTransition(Transition));
-            Transitions = ConvertedTransitions;
-
             List<IGeneratorObjectEvent> ConvertedEvents = new List<IGeneratorObjectEvent>();
             foreach (IObjectEvent Event in obj.Events)
                 ConvertedEvents.Add(GeneratorObjectEvent.Convert(Event));
@@ -48,7 +43,6 @@ namespace Parser
         public string CSharpName { get; private set; }
         public IReadOnlyCollection<string> States { get; private set; }
         public IReadOnlyCollection<IGeneratorObjectProperty> Properties { get; private set; }
-        public IReadOnlyCollection<IGeneratorTransition> Transitions { get; private set; }
         public IReadOnlyCollection<IGeneratorObjectEvent> Events { get; private set; }
 
         public bool Connect(IGeneratorDomain domain)
