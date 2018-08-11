@@ -27,7 +27,7 @@
             if (!(ObjectProperty is IObjectPropertyInteger) &&
                 !(ObjectProperty is IObjectPropertyString) &&
                 !(ObjectProperty is IObjectPropertyReadonlyString) &&
-                !(ObjectProperty is IObjectPropertyState) &&
+                !(ObjectProperty is IObjectPropertyEnum) &&
                 !(ObjectProperty is IObjectPropertyStringDictionary))
                 throw new ParsingException(Source.Source, $"Invalid type for property {Source.Name}");
 

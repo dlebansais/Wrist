@@ -90,7 +90,6 @@ namespace Parser
         private IObjectPropertyCollection ParseObjectProperties(IParsingSourceStream sourceStream, ref string line)
         {
             IObjectPropertyCollection ObjectPropertyList = new ObjectPropertyCollection();
-            ObjectPropertyList.Add(new ObjectPropertyState(new DeclarationSource("state", sourceStream), "State"));
 
             sourceStream.ReadLine();
             string HeaderLine = sourceStream.Line;
@@ -167,6 +166,8 @@ namespace Parser
                 throw new ParsingException(sourceStream, "Specifiers not valid for this property type");
             else if (PropertyTypeName == "integer")
                 return new ObjectPropertyInteger(NameSource, CSharpName);
+            else if (PropertyTypeName == "enum")
+                return new ObjectPropertyEnum(NameSource, CSharpName);
             else if (PropertyTypeName == "boolean")
                 return new ObjectPropertyBoolean(NameSource, CSharpName);
             else if (PropertyTypeName == "item")

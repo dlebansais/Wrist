@@ -24,8 +24,8 @@ namespace Parser
                 Result = new GeneratorObjectPropertyStringDictionary(AsObjectPropertyStringDictionary, obj);
             else if (property is IObjectPropertyStringList AsObjectPropertyStringList)
                 Result = new GeneratorObjectPropertyStringList(AsObjectPropertyStringList, obj);
-            else if (property is IObjectPropertyState AsObjectPropertyState)
-                Result = new GeneratorObjectPropertyState(AsObjectPropertyState, obj);
+            else if (property is IObjectPropertyEnum AsObjectPropertyEnum)
+                Result = new GeneratorObjectPropertyEnum(AsObjectPropertyEnum, obj);
             else if (property is IObjectPropertyItem AsObjectPropertyItem)
                 Result = new GeneratorObjectPropertyItem(AsObjectPropertyItem, obj);
             else if (property is IObjectPropertyItemList AsObjectPropertyItemList)

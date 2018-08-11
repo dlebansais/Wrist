@@ -131,7 +131,7 @@
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyIndex.cs" />
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyItemList.cs" />
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyItem.cs" />
-    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyState.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyEnum.cs" />
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyReadonlyString.cs" />
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyStringList.cs" />
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectProperty.cs" />
@@ -139,7 +139,7 @@
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyIndex.cs" />
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyItemList.cs" />
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyItem.cs" />
-    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyState.cs" />
+    <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyEnum.cs" />
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyInteger.cs" />
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyReadonlyString.cs" />
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyString.cs" />
@@ -191,7 +191,7 @@
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyIndex.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyItemList.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyItem.cs" />
-    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyState.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyEnum.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyReadonlyString.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyCollection.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyCollection.cs" />
@@ -199,7 +199,7 @@
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyIndex.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyItemList.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyItem.cs" />
-    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyState.cs" />
+    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyEnum.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyReadonlyString.cs" />
     <Compile Include="Parsing\Types\PageNavigation.cs" />
     <Compile Include="NamespaceReference.cs" />

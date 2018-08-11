@@ -17,10 +17,10 @@ namespace AppCSHtml5
             Email = Persistent.GetValue("email", null);
             RecoveryQuestion = Persistent.GetValue("question", null);
             Remember = (Persistent.GetValue("remember", null) != null);
-            State = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
+            LoginState = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
         }
 
-        public LoginStates State { get; set; }
+        public LoginStates LoginState { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -92,11 +92,11 @@ namespace AppCSHtml5
                         Persistent.SetValue("remember", "1");
                     }
 
-                    State = LoginStates.SignedIn;
+                    LoginState = LoginStates.SignedIn;
 
                     NotifyPropertyChanged(nameof(Email));
                     NotifyPropertyChanged(nameof(RecoveryQuestion));
-                    NotifyPropertyChanged(nameof(State));
+                    NotifyPropertyChanged(nameof(LoginState));
 
                     (App.Current as App).GoTo("account");
                 }
@@ -111,7 +111,7 @@ namespace AppCSHtml5
         #region Logout
         public void On_Logout(string pageName, string sourceName, string sourceContent)
         {
-            State = LoginStates.LoggedOff;
+            LoginState = LoginStates.LoggedOff;
             Name = null;
             Email = null;
             RecoveryQuestion = null;

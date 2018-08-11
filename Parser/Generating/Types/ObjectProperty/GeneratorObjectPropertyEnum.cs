@@ -2,9 +2,9 @@
 
 namespace Parser
 {
-    public class GeneratorObjectPropertyState : GeneratorObjectPropertyIndex, IGeneratorObjectPropertyState
+    public class GeneratorObjectPropertyEnum : GeneratorObjectPropertyIndex, IGeneratorObjectPropertyEnum
     {
-        public GeneratorObjectPropertyState(IObjectPropertyState property, IGeneratorObject obj)
+        public GeneratorObjectPropertyEnum(IObjectPropertyEnum property, IGeneratorObject obj)
             : base(property, obj)
         {
         }
@@ -16,7 +16,7 @@ namespace Parser
 
         public override void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter)
         {
-            cSharpWriter.WriteLine($"        {Object.CSharpName}States {CSharpName} {{ get; set; }}");
+            cSharpWriter.WriteLine($"        {CSharpName}s {CSharpName} {{ get; set; }}");
         }
     }
 }

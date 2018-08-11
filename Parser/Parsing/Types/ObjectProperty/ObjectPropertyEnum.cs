@@ -1,8 +1,8 @@
 ﻿namespace Parser
 {
-    public class ObjectPropertyState : ObjectPropertyIndex, IObjectPropertyState
+    public class ObjectPropertyEnum : ObjectPropertyIndex, IObjectPropertyEnum
     {
-        public ObjectPropertyState(IDeclarationSource nameSource, string cSharpName)
+        public ObjectPropertyEnum(IDeclarationSource nameSource, string cSharpName)
             : base(nameSource, cSharpName)
         {
         }
