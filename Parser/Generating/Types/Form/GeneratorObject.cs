@@ -24,7 +24,6 @@ namespace Parser
         {
             Name = obj.Name;
             CSharpName = obj.CSharpName;
-            States = obj.States;
 
             IGeneratorObjectPropertyCollection ConvertedProperties = new GeneratorObjectPropertyCollection();
             foreach (IObjectProperty Property in obj.Properties)
@@ -41,7 +40,6 @@ namespace Parser
 
         public string Name { get; private set; }
         public string CSharpName { get; private set; }
-        public IReadOnlyCollection<string> States { get; private set; }
         public IReadOnlyCollection<IGeneratorObjectProperty> Properties { get; private set; }
         public IReadOnlyCollection<IGeneratorObjectEvent> Events { get; private set; }
 
@@ -58,8 +56,11 @@ namespace Parser
         public void Generate(IGeneratorDomain domain, string outputFolderName, string appNamespace)
         {
             GenerateInterface(domain, outputFolderName, appNamespace);
-            GenerateStates(domain, outputFolderName, appNamespace);
             CopyImplementation(domain, outputFolderName, appNamespace);
+
+            foreach (IGeneratorObjectProperty Property in Properties)
+                if (Property is IGeneratorObjectPropertyEnum AsPropertyEnum)
+                    CopyEnumImplementation(domain, outputFolderName, appNamespace, AsPropertyEnum.CSharpName);
         }
 
         public void GenerateInterface(IGeneratorDomain domain, string outputFolderName, string appNamespace)
@@ -99,33 +100,6 @@ namespace Parser
             cSharpWriter.WriteLine("}");
         }
 
-        public void GenerateStates(IGeneratorDomain domain, string outputFolderName, string appNamespace)
-        {
-            string CSharpFileName = Path.Combine(outputFolderName, $"Objects/{CSharpName}States.cs");
-
-            using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                using (StreamWriter CSharpWriter = new StreamWriter(CSharpFile, Encoding.UTF8))
-                {
-                    GenerateStates(domain, appNamespace, CSharpWriter);
-                }
-            }
-        }
-
-        private void GenerateStates(IGeneratorDomain domain, string appNamespace, StreamWriter cSharpWriter)
-        {
-            cSharpWriter.WriteLine($"namespace {appNamespace}");
-            cSharpWriter.WriteLine("{");
-            cSharpWriter.WriteLine($"    public enum {CSharpName}States");
-            cSharpWriter.WriteLine("    {");
-
-            foreach (string State in States)
-                cSharpWriter.WriteLine($"        {State},");
-
-            cSharpWriter.WriteLine("    }");
-            cSharpWriter.WriteLine("}");
-        }
-
         public void CopyImplementation(IGeneratorDomain domain, string outputFolderName, string appNamespace)
         {
             string ObjectsInputFolderName = Path.Combine(domain.InputFolderName, "object");
@@ -136,6 +110,33 @@ namespace Parser
 
             string InputCSharpFileName = Path.Combine(ObjectsInputFolderName, Path.Combine(Name, $"{CSharpName}.cs"));
             string OutputCSharpFileName = Path.Combine(ObjectsOutputFolderName, $"{CSharpName}.cs");
+
+            DateTime InputWriteTime;
+            if (File.Exists(InputCSharpFileName))
+                InputWriteTime = File.GetLastWriteTimeUtc(InputCSharpFileName);
+            else
+                InputWriteTime = DateTime.MinValue;
+
+            DateTime OutputWriteTime;
+            if (File.Exists(OutputCSharpFileName))
+                OutputWriteTime = File.GetLastWriteTimeUtc(OutputCSharpFileName);
+            else
+                OutputWriteTime = DateTime.MinValue;
+
+            if (InputWriteTime > OutputWriteTime)
+                File.Copy(InputCSharpFileName, OutputCSharpFileName, true);
+        }
+
+        public void CopyEnumImplementation(IGeneratorDomain domain, string outputFolderName, string appNamespace, string cSharpStateName)
+        {
+            string ObjectsInputFolderName = Path.Combine(domain.InputFolderName, "object");
+            string ObjectsOutputFolderName = Path.Combine(outputFolderName, "Objects");
+
+            if (!Directory.Exists(ObjectsOutputFolderName))
+                Directory.CreateDirectory(ObjectsOutputFolderName);
+
+            string InputCSharpFileName = Path.Combine(ObjectsInputFolderName, Path.Combine(Name, $"{cSharpStateName}s.cs"));
+            string OutputCSharpFileName = Path.Combine(ObjectsOutputFolderName, $"{cSharpStateName}s.cs");
 
             DateTime InputWriteTime;
             if (File.Exists(InputCSharpFileName))

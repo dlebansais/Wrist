@@ -14,10 +14,10 @@ namespace AppCSHtml5
     {
         public Language()
         {
-            State = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
+            LanguageState = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
         }
 
-        public LanguageStates State { get; set; } = LanguageStates.English;
+        public LanguageStates LanguageState { get; set; } = LanguageStates.English;
 
         public INewsEntry LastNews
         {
@@ -59,14 +59,14 @@ namespace AppCSHtml5
 
         public void On_Switch(string pageName, string sourceName, string sourceContent)
         {
-            State = (State == LanguageStates.English) ? LanguageStates.French : LanguageStates.English;
+            LanguageState = (LanguageState == LanguageStates.English) ? LanguageStates.French : LanguageStates.English;
             foreach (NewsEntry Item in _AllNews)
-                Item.SelectLanguage(State);
+                Item.SelectLanguage(LanguageState);
 
-            Persistent.SetValue("language", State.ToString().ToLower());
-            App.Translation.SetLanguage(StateToLanguage[State]);
+            Persistent.SetValue("language", LanguageState.ToString().ToLower());
+            App.Translation.SetLanguage(StateToLanguage[LanguageState]);
 
-            NotifyPropertyChanged(nameof(State));
+            NotifyPropertyChanged(nameof(LanguageState));
         }
 
         private Dictionary<LanguageStates, string> StateToLanguage = new Dictionary<LanguageStates, string>()
@@ -94,7 +94,7 @@ namespace AppCSHtml5
 
             foreach (Dictionary<string, string> Item in NewsList)
             {
-                NewsEntry NewEntry = new NewsEntry(State, Item["enu_summary"], Item["enu_content"], Item["fra_summary"], Item["fra_content"]);
+                NewsEntry NewEntry = new NewsEntry(LanguageState, Item["enu_summary"], Item["enu_content"], Item["fra_summary"], Item["fra_content"]);
                 _AllNews.Add(NewEntry);
             }
 

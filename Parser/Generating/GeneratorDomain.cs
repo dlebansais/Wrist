@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -110,6 +111,7 @@ namespace Parser
             GenerateAppXaml(outputFolderName, AppNamespace, SelectedColorTheme);
             GenerateAppCSharp(outputFolderName, AppNamespace);
             GenerateAppProject(outputFolderName, AppNamespace);
+            CopyAssemblyInfo(outputFolderName);
         }
 
         private void GenerateTranslation(string outputFolderName, string appNamespace, IGeneratorTranslation translation)
@@ -421,7 +423,10 @@ namespace Parser
             {
                 projectWriter.WriteLine($"    <Compile Include=\"Objects\\I{Object.CSharpName}.cs\"/>");
                 projectWriter.WriteLine($"    <Compile Include=\"Objects\\{Object.CSharpName}.cs\"/>");
-                projectWriter.WriteLine($"    <Compile Include=\"Objects\\{Object.CSharpName}States.cs\"/>");
+
+                foreach (IGeneratorObjectProperty Property in Object.Properties)
+                    if (Property is IGeneratorObjectPropertyEnum AsPropertyEnum)
+                        projectWriter.WriteLine($"    <Compile Include=\"Objects\\{AsPropertyEnum.CSharpName}s.cs\"/>");
             }
 
             projectWriter.WriteLine("  </ItemGroup>");
@@ -561,6 +566,33 @@ namespace Parser
             }
 
             return line;
+        }
+
+        public void CopyAssemblyInfo(string outputFolderName)
+        {
+            string ObjectsInputFolderName = Path.Combine(InputFolderName, "object");
+            string ObjectsOutputFolderName = Path.Combine(outputFolderName, "Properties");
+
+            if (!Directory.Exists(ObjectsOutputFolderName))
+                Directory.CreateDirectory(ObjectsOutputFolderName);
+
+            string InputCSharpFileName = Path.Combine(ObjectsInputFolderName, "AssemblyInfo.cs");
+            string OutputCSharpFileName = Path.Combine(ObjectsOutputFolderName, "AssemblyInfo.cs");
+
+            DateTime InputWriteTime;
+            if (File.Exists(InputCSharpFileName))
+                InputWriteTime = File.GetLastWriteTimeUtc(InputCSharpFileName);
+            else
+                InputWriteTime = DateTime.MinValue;
+
+            DateTime OutputWriteTime;
+            if (File.Exists(OutputCSharpFileName))
+                OutputWriteTime = File.GetLastWriteTimeUtc(OutputCSharpFileName);
+            else
+                OutputWriteTime = DateTime.MinValue;
+
+            if (InputWriteTime > OutputWriteTime)
+                File.Copy(InputCSharpFileName, OutputCSharpFileName, true);
         }
 
         public static string GetFilePath(string outputFolderName, string name)

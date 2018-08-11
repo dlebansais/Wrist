@@ -36,14 +36,12 @@ namespace Parser
 
         private IObject Parse(string name, IParsingSourceStream sourceStream)
         {
-            List<string> StateList;
             IObjectPropertyCollection ObjectPropertyList;
             List<IObjectEvent> ObjectEventList;
             string Line = null;
 
             try
             {
-                StateList = ParseStates(sourceStream, ref Line);
                 ObjectPropertyList = ParseObjectProperties(sourceStream, ref Line);
                 ObjectEventList = ParseEvents(sourceStream, ref Line);
             }
@@ -57,34 +55,7 @@ namespace Parser
             }
 
             string CSharpname = ParserDomain.ToCSharpName(sourceStream, name);
-            return new Object(name, CSharpname, StateList, ObjectPropertyList, ObjectEventList);
-        }
-
-        private List<string> ParseStates(IParsingSourceStream sourceStream, ref string line)
-        {
-            List<string> StateList = new List<string>();
-
-            sourceStream.ReadLine();
-            string HeaderLine = sourceStream.Line;
-            if (HeaderLine != "states")
-                throw new ParsingException(sourceStream, "Expected: states");
-
-            while (!sourceStream.EndOfStream)
-            {
-                sourceStream.ReadLine();
-                if (string.IsNullOrEmpty(sourceStream.Line))
-                    break;
-
-                string State = ParseState(sourceStream);
-                StateList.Add(ParserDomain.ToCSharpName(sourceStream, State));
-            }
-
-            return StateList;
-        }
-
-        private string ParseState(IParsingSourceStream sourceStream)
-        {
-            return sourceStream.Line.Trim();
+            return new Object(name, CSharpname, ObjectPropertyList, ObjectEventList);
         }
 
         private IObjectPropertyCollection ParseObjectProperties(IParsingSourceStream sourceStream, ref string line)

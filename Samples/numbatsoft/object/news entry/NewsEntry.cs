@@ -22,7 +22,6 @@ namespace AppCSHtml5
             LanguageState = languageState;
         }
 
-        public NewsEntryStates State { get; set; }
         public string Title { get { return TitleTable[LanguageState]; } }
         public Dictionary<LanguageStates, string> TitleTable { get; } = new Dictionary<LanguageStates, string>();
         public string Text { get { return TextTable[LanguageState]; } }

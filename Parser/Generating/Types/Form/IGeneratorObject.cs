@@ -6,7 +6,6 @@ namespace Parser
     {
         string Name { get; }
         string CSharpName { get; }
-        IReadOnlyCollection<string> States { get; }
         IReadOnlyCollection<IGeneratorObjectProperty> Properties { get; }
         IReadOnlyCollection<IGeneratorObjectEvent> Events { get; }
         bool Connect(IGeneratorDomain domain);
