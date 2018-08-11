@@ -8,11 +8,9 @@ namespace Parser
             : base(property, obj)
         {
             MaximumLength = property.MaximumLength;
-            Category = property.Category;
         }
 
         public int MaximumLength { get; private set; }
-        public ObjectPropertyStringCategory Category { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain)
         {
@@ -27,8 +25,7 @@ namespace Parser
         public override string ToString()
         {
             return base.ToString() +
-                ((MaximumLength != int.MaxValue) ? (", Maximum Length=" + MaximumLength.ToString()) : "") +
-                ((Category != ObjectPropertyStringCategory.Normal) ? (", Category=" + Category.ToString()) : "");
+                ((MaximumLength != int.MaxValue) ? (", Maximum Length=" + MaximumLength.ToString()) : "");
         }
     }
 }

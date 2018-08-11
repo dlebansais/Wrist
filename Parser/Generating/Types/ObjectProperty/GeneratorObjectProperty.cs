@@ -42,20 +42,17 @@ namespace Parser
             NameSource = property.NameSource;
             CSharpName = property.CSharpName;
             Object = obj;
-            IsEncrypted = property.IsEncrypted;
         }
 
         public IDeclarationSource NameSource { get; private set; }
         public string CSharpName { get; private set; }
         public IGeneratorObject Object { get; private set; }
-        public bool IsEncrypted { get; private set; }
 
         public abstract bool Connect(IGeneratorDomain domain);
 
         public override string ToString()
         {
-            string Encrypted = IsEncrypted ? ", Encrypted" : "";
-            return $"{Object.CSharpName}.{NameSource.Name} property{Encrypted}";
+            return $"{Object.CSharpName}.{NameSource.Name} property";
         }
 
         public abstract void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter);

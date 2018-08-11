@@ -20,9 +20,6 @@
             TextObject = Object;
             TextObjectProperty = ObjectProperty;
 
-            if (!ObjectProperty.IsEncrypted || ObjectProperty.Category != ObjectPropertyStringCategory.Password)
-                throw new ParsingException(Source.Source, "A password edit can only be associated to an encrypted string property of category 'password'");
-
             return IsConnected;
         }
     }

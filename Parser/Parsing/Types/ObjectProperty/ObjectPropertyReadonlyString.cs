@@ -2,8 +2,8 @@
 {
     public class ObjectPropertyReadonlyString : ObjectProperty, IObjectPropertyReadonlyString
     {
-        public ObjectPropertyReadonlyString(IDeclarationSource nameSource, string cSharpName, bool isEncrypted)
-            : base(nameSource, cSharpName, isEncrypted)
+        public ObjectPropertyReadonlyString(IDeclarationSource nameSource, string cSharpName)
+            : base(nameSource, cSharpName)
         {
         }
 

@@ -124,9 +124,7 @@ namespace Parser
             string[] SplittedDetails = Details.Split(',');
             string PropertyTypeName = SplittedDetails[0].Trim();
 
-            bool IsEncrypted = false;
             int MaximumLength = int.MaxValue;
-            ObjectPropertyStringCategory Category = ObjectPropertyStringCategory.Normal;
             IDeclarationSource ObjectSource = null;
 
             for (int i = 1; i < SplittedDetails.Length; i++)
@@ -140,24 +138,6 @@ namespace Parser
                         MaximumLength = ParsedLength;
                     else
                         throw new ParsingException(sourceStream, "Maximum length specified more than once");
-
-                else if (Detail == "email address")
-                    if (Category == ObjectPropertyStringCategory.Normal)
-                        Category = ObjectPropertyStringCategory.EmailAddress;
-                    else
-                        throw new ParsingException(sourceStream, "Email address or password specified more than once");
-
-                else if (Detail == "password")
-                    if (Category == ObjectPropertyStringCategory.Normal)
-                        Category = ObjectPropertyStringCategory.Password;
-                    else
-                        throw new ParsingException(sourceStream, "Email address or password specified more than once");
-
-                else if (Detail == "encrypted")
-                    if (!IsEncrypted)
-                        IsEncrypted = true;
-                    else
-                        throw new ParsingException(sourceStream, "Encrypted specified more than once");
 
                 else if (SplittedDetail.Length == 2 && SplittedDetail[0].Trim() == "object")
                     if (ObjectSource == null)
@@ -176,14 +156,14 @@ namespace Parser
             string CSharpName = ParserDomain.ToCSharpName(NameSource.Source, NameSource.Name);
 
             if (PropertyTypeName == "string")
-                return new ObjectPropertyString(NameSource, CSharpName, IsEncrypted, MaximumLength, Category);
+                return new ObjectPropertyString(NameSource, CSharpName, MaximumLength);
             else if (PropertyTypeName == "readonly string")
-                return new ObjectPropertyReadonlyString(NameSource, CSharpName, IsEncrypted);
+                return new ObjectPropertyReadonlyString(NameSource, CSharpName);
             else if (PropertyTypeName == "string dictionary")
                 return new ObjectPropertyStringDictionary(NameSource, CSharpName);
             else if (PropertyTypeName == "string list")
                 return new ObjectPropertyStringList(NameSource, CSharpName);
-            else if (MaximumLength != int.MaxValue || Category != ObjectPropertyStringCategory.Normal)
+            else if (MaximumLength != int.MaxValue)
                 throw new ParsingException(sourceStream, "Specifiers not valid for this property type");
             else if (PropertyTypeName == "integer")
                 return new ObjectPropertyInteger(NameSource, CSharpName);

@@ -5,12 +5,12 @@
         public static ObjectPropertyStringDictionary StringsProperty = new ObjectPropertyStringDictionary("strings");
 
         private ObjectPropertyStringDictionary(string name)
-            : base(new DeclarationSource(name, null), null, false)
+            : base(new DeclarationSource(name, null), null)
         {
         }
 
         public ObjectPropertyStringDictionary(IDeclarationSource nameSource, string cSharpName)
-            : base(nameSource, cSharpName, false)
+            : base(nameSource, cSharpName)
         {
         }
 

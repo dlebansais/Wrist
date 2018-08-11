@@ -275,7 +275,6 @@
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyInteger.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyInteger.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyString.cs" />
-    <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyStringCategory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XmlnsTest\XmlnsTest.csproj">

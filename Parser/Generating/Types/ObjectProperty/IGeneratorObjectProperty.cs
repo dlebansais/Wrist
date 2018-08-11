@@ -7,7 +7,6 @@ namespace Parser
         IDeclarationSource NameSource { get; }
         string CSharpName { get; }
         IGeneratorObject Object { get; }
-        bool IsEncrypted { get; }
         bool Connect(IGeneratorDomain domain);
         void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter);
     }
