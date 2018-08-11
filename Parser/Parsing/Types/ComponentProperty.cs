@@ -19,14 +19,14 @@ namespace Parser
         public IDeclarationSource ObjectPropertySource { get; private set; }
         public IDeclarationSource ObjectPropertyKey { get; private set; }
 
-        public static List<IArea> AreaWithCurrentPage { get; } = new List<IArea>();
+        public static Dictionary<IArea, IDeclarationSource> AreaWithCurrentPage { get; } = new Dictionary<IArea, IDeclarationSource>();
 
         private static void ConnectToObject(IDomain domain, IArea currentArea, IDeclarationSource objectSource, IDeclarationSource objectPropertySource, IDeclarationSource objectPropertyKey, ref IObject obj)
         {
             if (objectSource.Name == Object.TranslationObject.Name)
             {
                 if (domain.Translation == null)
-                    throw new ParsingException(objectSource.Source, $"Object {objectSource.Name} is used but no translation file is specified");
+                    throw new ParsingException(11, objectSource.Source, $"Object '{objectSource.Name}' is used but no translation file is specified.");
 
                 obj = Object.TranslationObject;
                 if (objectPropertySource.Name != ObjectPropertyStringDictionary.StringsProperty.NameSource.Name)
@@ -43,8 +43,8 @@ namespace Parser
                 else
                 {
                     // Verify it later
-                    if (!AreaWithCurrentPage.Contains(currentArea))
-                        AreaWithCurrentPage.Add(currentArea);
+                    if (!AreaWithCurrentPage.ContainsKey(currentArea))
+                        AreaWithCurrentPage.Add(currentArea, objectPropertyKey);
                 }
             }
             else

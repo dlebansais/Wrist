@@ -34,6 +34,20 @@ namespace Parser
             Caller = caller;
         }
 
+        public ParsingException(int code, IParsingSourceStream sourceStream, string message,
+                                [CallerLineNumber] int lineNumber = 0,
+                                [CallerFilePath] string filePath = null,
+                                [CallerMemberName] string caller = null)
+            : base(message)
+        {
+            Code = code;
+            Directory = null;
+            ParsingSource = sourceStream.FreezedPosition();
+            LineNumber = lineNumber;
+            FilePath = ShortFilePath(filePath);
+            Caller = caller;
+        }
+
         public ParsingException(IParsingSourceStream sourceStream, string message,
                                 [CallerLineNumber] int lineNumber = 0,
                                 [CallerFilePath] string filePath = null,
@@ -48,6 +62,20 @@ namespace Parser
             Caller = caller;
         }
 
+        public ParsingException(int code, IParsingSource parsingSource, string message,
+                                [CallerLineNumber] int lineNumber = 0,
+                                [CallerFilePath] string filePath = null,
+                                [CallerMemberName] string caller = null)
+            : base(message)
+        {
+            Code = code;
+            Directory = null;
+            ParsingSource = parsingSource;
+            LineNumber = lineNumber;
+            FilePath = ShortFilePath(filePath);
+            Caller = caller;
+        }
+
         public ParsingException(IParsingSource parsingSource, string message,
                                 [CallerLineNumber] int lineNumber = 0,
                                 [CallerFilePath] string filePath = null,
@@ -57,6 +85,20 @@ namespace Parser
             Code = 0;
             Directory = null;
             ParsingSource = parsingSource;
+            LineNumber = lineNumber;
+            FilePath = ShortFilePath(filePath);
+            Caller = caller;
+        }
+
+        public ParsingException(int code, IParsingSourceStream sourceStream, Exception innerException,
+                                [CallerLineNumber] int lineNumber = 0,
+                                [CallerFilePath] string filePath = null,
+                                [CallerMemberName] string caller = null)
+            : base(innerException.Message, innerException)
+        {
+            Code = code;
+            Directory = null;
+            ParsingSource = sourceStream.FreezedPosition();
             LineNumber = lineNumber;
             FilePath = ShortFilePath(filePath);
             Caller = caller;
@@ -119,8 +161,15 @@ namespace Parser
         {
             writer.WriteLine();
             writer.WriteLine($"WTE{Code.ToString("D5")}");
-            writer.WriteLine($"File:  {ParsingSource.FileName} at line {ParsingSource.LineIndex}");
-            writer.WriteLine($"Line:  {ParsingSource.Line}");
+
+            if (ParsingSource.LineIndex > 0)
+            {
+                writer.WriteLine($"File:  {ParsingSource.FileName} at line {ParsingSource.LineIndex}");
+                writer.WriteLine($"Line:  {ParsingSource.Line}");
+            }
+            else
+                writer.WriteLine($"File:  {ParsingSource.FileName}");
+
             writer.WriteLine($"Error: {Message}");
             writer.WriteLine($"At line {LineNumber} of \"{FilePath}\" in '{Caller}'");
             writer.WriteLine();

@@ -9,8 +9,6 @@ namespace Parser
             : base(edit)
         {
             AcceptsReturn = edit.AcceptsReturn;
-            TextAlignment = edit.TextAlignment;
-            TextWrapping = edit.TextWrapping;
             TextDecoration = edit.TextDecoration;
             HorizontalScrollBarVisibility = edit.HorizontalScrollBarVisibility;
             VerticalScrollBarVisibility = edit.VerticalScrollBarVisibility;
@@ -22,8 +20,6 @@ namespace Parser
         public IGeneratorObject TextObject { get; private set; }
         public IGeneratorObjectPropertyString TextObjectProperty { get; private set; }
         public bool AcceptsReturn { get; private set; }
-        public string TextAlignment { get; private set; }
-        public string TextWrapping { get; private set; }
         public string TextDecoration { get; private set; }
         public string HorizontalScrollBarVisibility { get; private set; }
         public string VerticalScrollBarVisibility { get; private set; }
@@ -49,8 +45,8 @@ namespace Parser
             string StyleProperty = (style != null) ? style : "";
             string MaximumLengthProperty = ((TextObjectProperty != null && TextObjectProperty.MaximumLength > 0) ? $" MaxLength=\"{TextObjectProperty.MaximumLength}\"" : "");
             string AcceptsReturnProperty = (AcceptsReturn ? " AcceptsReturn=\"True\"" : "");
-            string AlignmentProperty = (TextAlignment != null ? $" TextAlignment=\"{TextAlignment}\"" : "");
-            string WrappingProperty = (TextWrapping != null ? $" TextWrapping=\"{TextWrapping}\"" : " TextWrapping=\"NoWrap\"");
+            string AlignmentProperty = (isHorizontalAlignmentStretch ? $" TextAlignment=\"Justify\"" : "");
+            string WrappingProperty = ((textWrapping.HasValue && textWrapping.Value == TextWrapping.Wrap) ? " TextWrapping=\"Wrap\"" : " TextWrapping=\"NoWrap\"");
             string DecorationProperty = (TextDecoration != null ? $" TextDecorations=\"{TextDecoration}\"" : "");
             string HorizontalScrollBarProperty = (HorizontalScrollBarVisibility != null ? $" HorizontalScrollBarVisibility=\"{HorizontalScrollBarVisibility}\"" : "");
             string VerticalScrollBarProperty = (VerticalScrollBarVisibility != null ? $" VerticalScrollBarVisibility=\"{VerticalScrollBarVisibility}\"" : "");

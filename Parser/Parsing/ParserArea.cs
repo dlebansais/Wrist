@@ -30,7 +30,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(SourceStream, e);
+                throw new ParsingException(24, SourceStream, e);
             }
         }
 
@@ -48,7 +48,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(sourceStream, e);
+                throw new ParsingException(24, sourceStream, e);
             }
 
             return new Area(name, ParserDomain.ToXamlName(sourceStream, name, "Area"), ComponentList);
@@ -77,9 +77,11 @@ namespace Parser
 
             string[] SplittedInfo = ComponentInfo.Split(',');
             if (SplittedInfo.Length < 1)
-                throw new ParsingException(sourceStream, "Component type expected");
+                throw new ParsingException(25, sourceStream, "Component type expected.");
 
             string ComponentTypeName = SplittedInfo[0].Trim();
+            if (string.IsNullOrEmpty(ComponentTypeName))
+                throw new ParsingException(25, sourceStream, "Component type expected.");
 
             List<ComponentInfo> InfoList = new List<ComponentInfo>();
             for (int i = 1; i < SplittedInfo.Length; i++)
@@ -112,7 +114,7 @@ namespace Parser
             else if (ComponentTypeName == "radio button")
                 return ParseComponentRadioButton(NameSource, sourceStream, InfoList);
             else
-                throw new ParsingException(sourceStream, "Unknown component type");
+                throw new ParsingException(26, sourceStream, $"Unknown component type '{ComponentTypeName}'.");
         }
 
         private ComponentInfo ParseComponentInfo(IParsingSourceStream sourceStream, string infoText)
@@ -155,14 +157,14 @@ namespace Parser
                 if (Info.NameSource.Name == "name" && AreaProperty == null)
                     AreaProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "name")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (AreaProperty == null)
-                throw new ParsingException(sourceStream, "Area name not specified");
+                throw new ParsingException(29, sourceStream, "Area name not specified.");
             if (AreaProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Area can only be a static name");
+                throw new ParsingException(30, sourceStream, "Area can only be a static name.");
 
             return new ComponentArea(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Area"), AreaProperty.FixedValueSource);
         }
@@ -184,17 +186,17 @@ namespace Parser
                 else if (Info.NameSource.Name == "after" && AfterEvent == null)
                     AfterEvent = new ComponentEvent(Info);
                 else if (Info.NameSource.Name != "content" && Info.NameSource.Name != "before" && Info.NameSource.Name != "goto" && Info.NameSource.Name != "after")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (ContentProperty == null)
-                throw new ParsingException(sourceStream, "Button content not specified");
+                throw new ParsingException(31, sourceStream, "Button content not specified.");
             if (NavigateProperty == null)
-                throw new ParsingException(sourceStream, "Button goto page name not specified");
+                throw new ParsingException(32, sourceStream, "Button goto page name not specified.");
 
             if (NavigateProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Go to page name can only be a static name");
+                throw new ParsingException(33, sourceStream, "Go to page name can only be a static name.");
 
             return new ComponentButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Button"), ContentProperty, BeforeEvent, NavigateProperty.FixedValueSource.Name, AfterEvent);
         }
@@ -210,19 +212,19 @@ namespace Parser
                 else if (Info.NameSource.Name == "checked" && CheckedProperty == null)
                     CheckedProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "content" && Info.NameSource.Name != "checked")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (ContentProperty == null)
-                throw new ParsingException(sourceStream, "CheckBox content not specified");
+                throw new ParsingException(34, sourceStream, "CheckBox content not specified.");
             if (CheckedProperty == null)
-                throw new ParsingException(sourceStream, "CheckBox goto page name not specified");
+                throw new ParsingException(35, sourceStream, "CheckBox checked property not specified.");
 
             if (CheckedProperty.FixedValueSource != null)
-                throw new ParsingException(sourceStream, "Checked property cannot be a static name");
+                throw new ParsingException(36, sourceStream, "Checked property cannot be a static name.");
             if (CheckedProperty.ObjectPropertyKey != null)
-                throw new ParsingException(sourceStream, "Checked property cannot use a key");
+                throw new ParsingException(37, sourceStream, "Checked property cannot use a key.");
 
             return new ComponentCheckBox(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "CheckBox"), ContentProperty, CheckedProperty);
         }
@@ -238,14 +240,14 @@ namespace Parser
                 else if (Info.NameSource.Name == "decoration" && TextDecorationProperty == null)
                     TextDecorationProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "text" && Info.NameSource.Name != "decoration")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (TextProperty == null)
-                throw new ParsingException(sourceStream, "Text not specified");
+                throw new ParsingException(38, sourceStream, "Text not specified.");
             if (TextDecorationProperty != null && TextDecorationProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Decoration can only be a constant");
+                throw new ParsingException(39, sourceStream, "Decoration can only be a constant.");
 
             string TextDecoration = TextDecorationProperty != null ? TextDecorationProperty.FixedValueSource.Name : null;
 
@@ -253,7 +255,7 @@ namespace Parser
                 TextDecoration != Windows.UI.Text.TextDecorations.OverLine.ToString() &&
                 TextDecoration != Windows.UI.Text.TextDecorations.Strikethrough.ToString() &&
                 TextDecoration != Windows.UI.Text.TextDecorations.Underline.ToString())
-                throw new ParsingException(sourceStream, $"Invalid decoration for {nameSource.Name}");
+                throw new ParsingException(40, sourceStream, $"Invalid decoration for '{nameSource.Name}'.");
 
             return new ComponentText(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Text"), TextProperty, TextDecoration);
         }
@@ -262,8 +264,6 @@ namespace Parser
         {
             IComponentProperty TextProperty = null;
             IComponentProperty AcceptsReturnProperty = null;
-            IComponentProperty TextAlignmentProperty = null;
-            IComponentProperty TextWrappingProperty = null;
             IComponentProperty TextDecorationProperty = null;
             IComponentProperty HorizontalScrollBarVisibilityProperty = null;
             IComponentProperty VerticalScrollBarVisibilityProperty = null;
@@ -273,10 +273,6 @@ namespace Parser
                     TextProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "accepts return" && AcceptsReturnProperty == null)
                     AcceptsReturnProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name == "alignment" && TextAlignmentProperty == null)
-                    TextAlignmentProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name == "wrapping" && TextWrappingProperty == null)
-                    TextWrappingProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "decoration" && TextDecorationProperty == null)
                     TextDecorationProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "decoration" && TextDecorationProperty == null)
@@ -286,44 +282,24 @@ namespace Parser
                 else if (Info.NameSource.Name == "vertical scrollbar" && VerticalScrollBarVisibilityProperty == null)
                     VerticalScrollBarVisibilityProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "text" && Info.NameSource.Name != "accepts return" && Info.NameSource.Name != "alignment" && Info.NameSource.Name != "wrapping" && Info.NameSource.Name != "decoration" && Info.NameSource.Name != "horizontal scrollbar" && Info.NameSource.Name != "vertical scrollbar")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (TextProperty == null)
-                throw new ParsingException(sourceStream, "Text not specified");
+                throw new ParsingException(41, sourceStream, "Text not specified.");
             if (TextProperty.FixedValueSource != null || TextProperty.ObjectPropertyKey != null)
-                throw new ParsingException(sourceStream, "Text must be a string property");
+                throw new ParsingException(42, sourceStream, "Text must be a string property.");
             if (AcceptsReturnProperty != null && AcceptsReturnProperty.FixedValueSource.Name != "Yes")
-                throw new ParsingException(sourceStream, "The only valid value for the accepts return property is 'Yes'");
-            if (TextAlignmentProperty != null && TextAlignmentProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Alignment can only be a constant");
-            if (TextWrappingProperty != null && TextWrappingProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Wrapping can only be a constant");
+                throw new ParsingException(43, sourceStream, "The only valid value for the 'accepts return' property is 'Yes'.");
             if (TextDecorationProperty != null && TextDecorationProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Decoration can only be a constant");
+                throw new ParsingException(44, sourceStream, "Decoration can only be a constant.");
             if (HorizontalScrollBarVisibilityProperty != null && HorizontalScrollBarVisibilityProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Horizontal scrollbar can only be a constant");
+                throw new ParsingException(45, sourceStream, "Horizontal scrollbar can only be a constant.");
             if (VerticalScrollBarVisibilityProperty != null && VerticalScrollBarVisibilityProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Vertical scrollbar can only be a constant");
+                throw new ParsingException(46, sourceStream, "Vertical scrollbar can only be a constant.");
 
             bool AcceptsReturn = (AcceptsReturnProperty != null);
-
-            string TextAlignment = TextAlignmentProperty != null ? TextAlignmentProperty.FixedValueSource.Name : null;
-
-            if (TextAlignment != null &&
-                TextAlignment != Windows.UI.Xaml.TextAlignment.Center.ToString() &&
-                TextAlignment != Windows.UI.Xaml.TextAlignment.Left.ToString() &&
-                TextAlignment != Windows.UI.Xaml.TextAlignment.Right.ToString() &&
-                TextAlignment != Windows.UI.Xaml.TextAlignment.Justify.ToString())
-                throw new ParsingException(sourceStream, $"Invalid alignment for {nameSource.Name}");
-
-            string TextWrapping = TextWrappingProperty != null ? TextWrappingProperty.FixedValueSource.Name : null;
-
-            if (TextWrapping != null &&
-                TextWrapping != Windows.UI.Xaml.TextWrapping.NoWrap.ToString() &&
-                TextWrapping != Windows.UI.Xaml.TextWrapping.Wrap.ToString())
-                throw new ParsingException(sourceStream, $"Invalid wrapping for {nameSource.Name}");
 
             string TextDecoration = TextDecorationProperty != null ? TextDecorationProperty.FixedValueSource.Name : null;
 
@@ -331,7 +307,7 @@ namespace Parser
                 TextDecoration != Windows.UI.Text.TextDecorations.OverLine.ToString() &&
                 TextDecoration != Windows.UI.Text.TextDecorations.Strikethrough.ToString() &&
                 TextDecoration != Windows.UI.Text.TextDecorations.Underline.ToString())
-                throw new ParsingException(sourceStream, $"Invalid decoration for {nameSource.Name}");
+                throw new ParsingException(47, sourceStream, $"Invalid decoration for '{nameSource.Name}'.");
 
             string HorizontalScrollBarVisibility = HorizontalScrollBarVisibilityProperty != null ? HorizontalScrollBarVisibilityProperty.FixedValueSource.Name : null;
 
@@ -340,7 +316,7 @@ namespace Parser
                 HorizontalScrollBarVisibility != Windows.UI.Xaml.Controls.ScrollBarVisibility.Auto.ToString() &&
                 HorizontalScrollBarVisibility != Windows.UI.Xaml.Controls.ScrollBarVisibility.Hidden.ToString() &&
                 HorizontalScrollBarVisibility != Windows.UI.Xaml.Controls.ScrollBarVisibility.Visible.ToString())
-                throw new ParsingException(sourceStream, $"Invalid horizontal scrollbar for {nameSource.Name}");
+                throw new ParsingException(48, sourceStream, $"Invalid horizontal scrollbar for '{nameSource.Name}'.");
 
             string VerticalScrollBarVisibility = VerticalScrollBarVisibilityProperty != null ? VerticalScrollBarVisibilityProperty.FixedValueSource.Name : null;
 
@@ -349,9 +325,9 @@ namespace Parser
                 VerticalScrollBarVisibility != Windows.UI.Xaml.Controls.ScrollBarVisibility.Auto.ToString() &&
                 VerticalScrollBarVisibility != Windows.UI.Xaml.Controls.ScrollBarVisibility.Hidden.ToString() &&
                 VerticalScrollBarVisibility != Windows.UI.Xaml.Controls.ScrollBarVisibility.Visible.ToString())
-                throw new ParsingException(sourceStream, $"Invalid vertical scrollbar for {nameSource.Name}");
+                throw new ParsingException(49, sourceStream, $"Invalid vertical scrollbar for '{nameSource.Name}'.");
 
-            return new ComponentEdit(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Edit"), TextProperty, AcceptsReturn, TextAlignment, TextWrapping, TextDecoration, HorizontalScrollBarVisibility, VerticalScrollBarVisibility);
+            return new ComponentEdit(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Edit"), TextProperty, AcceptsReturn, TextDecoration, HorizontalScrollBarVisibility, VerticalScrollBarVisibility);
         }
 
         private IComponentPasswordEdit ParseComponentPasswordEdit(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)
@@ -362,14 +338,14 @@ namespace Parser
                 if (Info.NameSource.Name == "text" && TextProperty == null)
                     TextProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "text")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (TextProperty == null)
-                throw new ParsingException(sourceStream, "Text not specified");
+                throw new ParsingException(50, sourceStream, "Text not specified.");
             if (TextProperty.FixedValueSource != null || TextProperty.ObjectPropertyKey != null)
-                throw new ParsingException(sourceStream, "Text must be a string property");
+                throw new ParsingException(51, sourceStream, "Text must be a string property.");
 
             return new ComponentPasswordEdit(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "PasswordEdit"), TextProperty);
         }
@@ -388,22 +364,22 @@ namespace Parser
                 else if (Info.NameSource.Name == "height" && HeightProperty == null)
                     HeightProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "source" && Info.NameSource.Name != "width" && Info.NameSource.Name != "height")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (SourceProperty == null)
-                throw new ParsingException(sourceStream, "Source not specified");
+                throw new ParsingException(52, sourceStream, "Source not specified.");
 
             if (WidthProperty == null)
-                throw new ParsingException(sourceStream, "Width not specified");
+                throw new ParsingException(53, sourceStream, "Width not specified.");
             if (WidthProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Width only be a static value");
+                throw new ParsingException(54, sourceStream, "Width can only be a static value.");
 
             if (HeightProperty == null)
-                throw new ParsingException(sourceStream, "Height not specified");
+                throw new ParsingException(55, sourceStream, "Height not specified.");
             if (HeightProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Height only be a static value");
+                throw new ParsingException(56, sourceStream, "Height can only be a static value.");
 
             return new ComponentImage(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Image"), SourceProperty, WidthProperty.FixedValueSource.Name, HeightProperty.FixedValueSource.Name);
         }
@@ -419,18 +395,17 @@ namespace Parser
                 else if (Info.NameSource.Name == "area" && AreaProperty == null)
                     AreaProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "source" && Info.NameSource.Name != "area")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (SourceProperty == null)
-                throw new ParsingException(sourceStream, "Source not specified");
+                throw new ParsingException(57, sourceStream, "Source not specified.");
 
             if (AreaProperty == null)
-                throw new ParsingException(sourceStream, "Area not specified");
-
+                throw new ParsingException(58, sourceStream, "Area not specified.");
             if (AreaProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Area name can only be a static name");
+                throw new ParsingException(59, sourceStream, "Area name can only be a static name.");
 
             return new ComponentPopup(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Popup"), SourceProperty, AreaProperty.FixedValueSource);
         }
@@ -446,19 +421,19 @@ namespace Parser
                 else if (Info.NameSource.Name == "items" && ItemsProperty == null)
                     ItemsProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "index" && Info.NameSource.Name != "items")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (IndexProperty == null)
-                throw new ParsingException(sourceStream, "Index not specified");
-            if (ItemsProperty == null)
-                throw new ParsingException(sourceStream, "Items not specified");
-
+                throw new ParsingException(60, sourceStream, "Index not specified.");
             if (IndexProperty.FixedValueSource != null || IndexProperty.ObjectPropertyKey != null)
-                throw new ParsingException(sourceStream, "Index must be an integer property");
+                throw new ParsingException(61, sourceStream, "Index must be an integer property.");
+
+            if (ItemsProperty == null)
+                throw new ParsingException(62, sourceStream, "Items not specified.");
             if (ItemsProperty.FixedValueSource != null || ItemsProperty.ObjectPropertyKey != null)
-                throw new ParsingException(sourceStream, "Items must be a string list property");
+                throw new ParsingException(63, sourceStream, "Items must be a list property.");
 
             return new ComponentSelector(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Selector"), IndexProperty, ItemsProperty);
         }
@@ -471,15 +446,14 @@ namespace Parser
                 if (Info.NameSource.Name == "index" && IndexProperty == null)
                     IndexProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "index")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (IndexProperty == null)
-                throw new ParsingException(sourceStream, "Index not specified");
-
+                throw new ParsingException(64, sourceStream, "Index not specified.");
             if (IndexProperty.FixedValueSource != null || IndexProperty.ObjectPropertyKey != null)
-                throw new ParsingException(sourceStream, "Index must be an integer, state or boolean property");
+                throw new ParsingException(65, sourceStream, "Index must be an integer, state or boolean property.");
 
             return new ComponentIndex(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Index"), IndexProperty);
         }
@@ -495,16 +469,17 @@ namespace Parser
                 else if (Info.NameSource.Name == "area" && AreaProperty == null)
                     AreaProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "item" && Info.NameSource.Name != "area")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (ItemProperty == null)
-                throw new ParsingException(sourceStream, "Item not specified");
+                throw new ParsingException(66, sourceStream, "Item not specified.");
+
             if (AreaProperty == null)
-                throw new ParsingException(sourceStream, "Area not specified");
+                throw new ParsingException(67, sourceStream, "Area not specified.");
             if (AreaProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Area name can only be a static name");
+                throw new ParsingException(68, sourceStream, "Area name can only be a static name.");
 
             return new ComponentContainer(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Container"), ItemProperty, AreaProperty.FixedValueSource);
         }
@@ -515,22 +490,22 @@ namespace Parser
             IComponentProperty AreaProperty = null;
 
             foreach (ComponentInfo Info in infoList)
-                if (Info.NameSource.Name == "item list" && ItemListProperty == null)
+                if (Info.NameSource.Name == "items" && ItemListProperty == null)
                     ItemListProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "area" && AreaProperty == null)
                     AreaProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name != "item list" && Info.NameSource.Name != "area")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                else if (Info.NameSource.Name != "items" && Info.NameSource.Name != "area")
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (ItemListProperty == null)
-                throw new ParsingException(sourceStream, "Item list not specified");
+                throw new ParsingException(69, sourceStream, "Items not specified.");
 
             if (AreaProperty == null)
-                throw new ParsingException(sourceStream, "Area not specified");
+                throw new ParsingException(70, sourceStream, "Area not specified.");
             if (AreaProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Area name can only be a static name");
+                throw new ParsingException(71, sourceStream, "Area name can only be a static name.");
 
             return new ComponentContainerList(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "ContainerList"), ItemListProperty, AreaProperty.FixedValueSource);
         }
@@ -552,31 +527,29 @@ namespace Parser
                 else if (Info.NameSource.Name == "group index" && GroupIndexProperty == null)
                     GroupIndexProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name != "content" && Info.NameSource.Name != "index" && Info.NameSource.Name != "group name" && Info.NameSource.Name != "group index")
-                    throw new ParsingException(sourceStream, $"Unknown token {Info.NameSource.Name}");
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
-                    throw new ParsingException(sourceStream, $"Repeated: {Info.NameSource.Name}");
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
 
             if (ContentProperty == null)
-                throw new ParsingException(sourceStream, "CheckBox content not specified");
+                throw new ParsingException(72, sourceStream, "Radio button content not specified.");
 
             if (IndexProperty == null)
-                throw new ParsingException(sourceStream, "Index not specified");
+                throw new ParsingException(73, sourceStream, "Index not specified.");
             if (IndexProperty.FixedValueSource != null || IndexProperty.ObjectPropertyKey != null)
-                throw new ParsingException(sourceStream, "Index must be an integer, state or boolean property");
+                throw new ParsingException(74, sourceStream, "Index must be an integer, state or boolean property.");
 
             if (GroupNameProperty == null)
-                throw new ParsingException(sourceStream, "Group name not specified");
+                throw new ParsingException(75, sourceStream, "Group name not specified.");
             if (GroupNameProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Group name can only be a static name");
+                throw new ParsingException(76, sourceStream, "Group name can only be a static name.");
 
             if (GroupIndexProperty == null)
-                throw new ParsingException(sourceStream, "Group index not specified");
-            if (GroupIndexProperty.FixedValueSource == null)
-                throw new ParsingException(sourceStream, "Group index can only be a static value");
+                throw new ParsingException(77, sourceStream, "Group index not specified.");
 
             int GroupIndex;
-            if (!int.TryParse(GroupIndexProperty.FixedValueSource.Name, out GroupIndex))
-                throw new ParsingException(sourceStream, "Group index must be an integer");
+            if (GroupIndexProperty.FixedValueSource == null || !int.TryParse(GroupIndexProperty.FixedValueSource.Name, out GroupIndex))
+                throw new ParsingException(78, sourceStream, "Group index must be an integer constant.");
 
             return new ComponentRadioButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "RadioButton"), ContentProperty, IndexProperty, GroupNameProperty.FixedValueSource.Name, GroupIndex);
         }

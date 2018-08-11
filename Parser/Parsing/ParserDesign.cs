@@ -24,15 +24,21 @@ namespace Parser
             LoadResourceFile(SourceStream, out Content, out FileNames);
 
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.Button)))
-                throw new ParsingException(SourceStream, "Missing 'Button' style");
+                throw new ParsingException(82, SourceStream, "Missing 'Button' style.");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.TextBox)))
-                throw new ParsingException(SourceStream, "Missing 'TextBox' style");
+                throw new ParsingException(83, SourceStream, "Missing 'TextBox' style.");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.Image)))
-                throw new ParsingException(SourceStream, "Missing 'Image' style");
+                throw new ParsingException(84, SourceStream, "Missing 'Image' style.");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.ListBox)))
-                throw new ParsingException(SourceStream, "Missing 'ListBox' style");
+                throw new ParsingException(85, SourceStream, "Missing 'ListBox' style.");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.TextBlock)))
-                throw new ParsingException(SourceStream, "Missing 'TextBlock' style");
+                throw new ParsingException(86, SourceStream, "Missing 'TextBlock' style.");
+            if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.RadioButton)))
+                throw new ParsingException(87, SourceStream, "Missing 'RadioButton' style.");
+            if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.CheckBox)))
+                throw new ParsingException(88, SourceStream, "Missing 'CheckBox' style.");
+            if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.PasswordBox)))
+                throw new ParsingException(89, SourceStream, "Missing 'PasswordBox' style.");
 
             string MainFileName = FileNames[0];
             string Name = Path.GetFileNameWithoutExtension(MainFileName);
@@ -69,7 +75,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(sourceStream, e);
+                throw new ParsingException(90, sourceStream, e);
             }
         }
 
@@ -89,7 +95,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(sourceStream, e);
+                throw new ParsingException(91, sourceStream, e);
             }
 
             XamlSchemaContext Result = new XamlSchemaContext(ReferencedAssemblies);
@@ -110,7 +116,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(sourceStream, e);
+                throw new ParsingException(90, sourceStream, e);
             }
 
             ResourceDictionary WrappedDictionary = new ResourceDictionary();
@@ -125,7 +131,7 @@ namespace Parser
                 if (!wrapped.Contains(Key))
                     wrapped.Add(Key, dictionary[Key]);
                 else
-                    throw new ParsingException(sourceStream, $"Key {Key} found multiple times");
+                    throw new ParsingException(92, sourceStream, $"Key '{Key}' found multiple times.");
 
             foreach (Windows.UI.Xaml.ResourceDictionary Item in dictionary.MergedDictionaries)
                 if (Item.Source != null)
@@ -147,7 +153,7 @@ namespace Parser
                 if (!wrapped.Contains(Key))
                     wrapped.Add(Key, dictionary[Key]);
                 else
-                    throw new ParsingException(sourceStream, $"Key {Key} found multiple times");
+                    throw new ParsingException(92, sourceStream, $"Key '{Key}' found multiple times.");
 
             foreach (ResourceDictionary Item in dictionary.MergedDictionaries)
                 AddDictionaryContent(sourceStream, wrapped, Item);

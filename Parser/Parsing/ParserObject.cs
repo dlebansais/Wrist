@@ -30,7 +30,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(SourceStream, e);
+                throw new ParsingException(94, SourceStream, e);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(sourceStream, e);
+                throw new ParsingException(94, sourceStream, e);
             }
 
             string CSharpname = ParserDomain.ToCSharpName(sourceStream, name);

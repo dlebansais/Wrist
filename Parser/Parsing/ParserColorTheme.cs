@@ -29,7 +29,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(SourceStream, e);
+                throw new ParsingException(80, SourceStream, e);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(sourceStream, e);
+                throw new ParsingException(80, sourceStream, e);
             }
 
             return new ColorTheme(name, Colors);
@@ -67,7 +67,7 @@ namespace Parser
 
                 foreach (KeyValuePair<IDeclarationSource, string> Entry in Colors)
                     if (Entry.Key.Name == ColorSource.Name)
-                        throw new ParsingException(sourceStream, $"Color defined more than once: {ColorSource}");
+                        throw new ParsingException(81, sourceStream, $"Color '{ColorSource.Name}' defined more than once.");
 
                 Colors.Add(ColorSource, ColorValue);
             }

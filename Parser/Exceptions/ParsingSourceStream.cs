@@ -115,7 +115,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(this, e);
+                throw new ParsingException(23, this, e);
             }
 
             CurrentSource = null;

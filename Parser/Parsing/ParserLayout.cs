@@ -32,7 +32,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(SourceStream, e);
+                throw new ParsingException(93, SourceStream, e);
             }
         }
 
@@ -59,7 +59,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(sourceStream, e);
+                throw new ParsingException(93, sourceStream, e);
             }
 
             return Root;

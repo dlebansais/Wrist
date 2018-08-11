@@ -131,32 +131,37 @@ namespace Parser
             foreach (IPage Page in Pages)
             {
                 IFormCollection<IArea> UsedAreas = new FormCollection<IArea>();
-                IFormCollection<IArea> SpecifiedAreas = new FormCollection<IArea>();
+                Dictionary<IArea, IDeclarationSource> SpecifiedAreas = new Dictionary<IArea, IDeclarationSource>();
                 foreach (KeyValuePair<IArea, ILayout> Entry in Page.AreaLayouts)
                     UsedAreas.Add(Entry.Key);
 
-                ListAreas(Page.Area, UsedAreas, SpecifiedAreas);
+                ListAreas(Page.Area, Page.AreaSource, UsedAreas, SpecifiedAreas);
+
                 if (UsedAreas.Count > 0)
                 {
                     IArea SpecifiedArea = UsedAreas[0];
                     if (Page.AreaLayoutBacktracks.ContainsKey(SpecifiedArea))
-                        throw new ParsingException(Page.AreaLayoutBacktracks[SpecifiedArea].Source, $"Layout specified for area '{SpecifiedArea.Name}' but this area isn't used in page '{Page.Name}'");
+                        throw new ParsingException(9, Page.AreaLayoutBacktracks[SpecifiedArea].Source, $"Layout specified for area '{SpecifiedArea.Name}' but this area isn't used in page '{Page.Name}'.");
                     else
-                        throw new ParsingException(9, inputFolderName, $"Layout specified for area '{SpecifiedArea.Name}' but this area isn't used in page '{Page.Name}'");
+                        throw new ParsingException(9, inputFolderName, $"Layout specified for area '{SpecifiedArea.Name}' but this area isn't used in page '{Page.Name}'.");
                 }
 
-                foreach (IArea Area in SpecifiedAreas)
+                foreach (KeyValuePair<IArea, IDeclarationSource> Entry in SpecifiedAreas)
                 {
-                    if (!Page.AreaLayouts.ContainsKey(Area))
-                        throw new ParsingException(inputFolderName, $"Area {Area.Name} has not layout specified");
+                    IArea SpecifiedArea = Entry.Key;
 
-                    if (ComponentProperty.AreaWithCurrentPage.Contains(Area))
+                    if (!Page.AreaLayouts.ContainsKey(SpecifiedArea))
+                        throw new ParsingException(10, Entry.Value.Source, $"Area '{SpecifiedArea.Name}' has not layout specified.");
+
+                    if (ComponentProperty.AreaWithCurrentPage.ContainsKey(SpecifiedArea))
                     {
+                        IDeclarationSource Declaration = ComponentProperty.AreaWithCurrentPage[SpecifiedArea];
+
                         string PageKey = ToKeyName($"page {Page.Name}");
                         if (Translation == null)
-                            throw new ParsingException(inputFolderName, $"Translation key used in area '{Area.Name}' but no translation file provided");
+                            throw new ParsingException(11, Declaration.Source, $"Translation key used in area '{SpecifiedArea.Name}' but no translation file provided.");
                         if (!Translation.KeyList.Contains(PageKey))
-                            throw new ParsingException(inputFolderName, $"Translation key for page '{Page.Name}' used in area '{Area.Name}' not found");
+                            throw new ParsingException(12, Declaration.Source, $"Translation key for page '{Page.Name}' used in area '{SpecifiedArea.Name}' not found.");
                     }
                 }
             }
@@ -181,7 +186,7 @@ namespace Parser
                     }
 
                 if (!Found)
-                    throw new ParsingException(inputFolderName, $"DockPanel.Dock specified for a control not included in a DockPanel.");
+                    throw new ParsingException(13, Entry.Key.Source, $"DockPanel.Dock specified for {Entry.Key} not included in a DockPanel.");
             }
 
             foreach (KeyValuePair<ILayoutElement, int> Entry in GridColumnTargets)
@@ -195,7 +200,7 @@ namespace Parser
                     }
 
                 if (!Found)
-                    throw new ParsingException(inputFolderName, $"Grid.Column specified for a control not included in a Grid.");
+                    throw new ParsingException(14, Entry.Key.Source, $"Grid.Column specified for {Entry.Key} not included in a Grid.");
             }
 
             foreach (KeyValuePair<ILayoutElement, int> Entry in GridRowTargets)
@@ -209,7 +214,7 @@ namespace Parser
                     }
 
                 if (!Found)
-                    throw new ParsingException(inputFolderName, $"Grid.Row specified for a control not included in a Grid.");
+                    throw new ParsingException(15, Entry.Key.Source, $"Grid.Row specified for {Entry.Key} not included in a Grid.");
             }
 
             return NewDomain;
@@ -246,10 +251,11 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(formFolderName, e.Message);
+                throw new ParsingException(16, formFolderName, e.Message);
             }
 
             parser.InitResult();
+
             foreach (string FullFolderName in FolderNames)
             {
                 string FolderName = Path.GetFileName(FullFolderName);
@@ -259,24 +265,24 @@ namespace Parser
             }
         }
 
-        private static void ListAreas(IArea rootArea, IFormCollection<IArea> usedAreas, IFormCollection<IArea> specifiedAreas)
+        private static void ListAreas(IArea rootArea, IDeclarationSource declaration, IFormCollection<IArea> usedAreas, Dictionary<IArea, IDeclarationSource> specifiedAreas)
         {
             if (usedAreas.Contains(rootArea))
                 usedAreas.Remove(rootArea);
 
-            if (!specifiedAreas.Contains(rootArea))
-                specifiedAreas.Add(rootArea);
+            if (!specifiedAreas.ContainsKey(rootArea))
+                specifiedAreas.Add(rootArea, declaration);
 
             foreach (IComponent Component in rootArea.Components)
             {
                 if (Component is IComponentArea AsComponentArea)
-                    ListAreas(AsComponentArea.Area, usedAreas, specifiedAreas);
+                    ListAreas(AsComponentArea.Area, AsComponentArea.AreaSource, usedAreas, specifiedAreas);
                 else if (Component is IComponentPopup AsComponentPopup)
-                    ListAreas(AsComponentPopup.Area, usedAreas, specifiedAreas);
+                    ListAreas(AsComponentPopup.Area, AsComponentPopup.AreaSource, usedAreas, specifiedAreas);
                 else if (Component is IComponentContainer AsComponentContainer)
-                    ListAreas(AsComponentContainer.ItemNestedArea, usedAreas, specifiedAreas);
+                    ListAreas(AsComponentContainer.ItemNestedArea, AsComponentContainer.AreaSource, usedAreas, specifiedAreas);
                 else if (Component is IComponentContainerList AsComponentContainerList)
-                    ListAreas(AsComponentContainerList.ItemNestedArea, usedAreas, specifiedAreas);
+                    ListAreas(AsComponentContainerList.ItemNestedArea, AsComponentContainerList.AreaSource, usedAreas, specifiedAreas);
             }
         }
 
@@ -309,10 +315,18 @@ namespace Parser
             string Result = "";
 
             for (int i = 0; i < name.Length; i++)
+            {
+                char c = name[i];
                 if (char.IsWhiteSpace(name[i]))
                     Result += '-';
                 else
-                    Result += name[i];
+                {
+                    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-' || c == '_')
+                        Result += c;
+                    else
+                        Result += '_';
+                }
+            }
 
             return Result;
         }
@@ -325,7 +339,7 @@ namespace Parser
         public static string ToXamlName(IParsingSource source, string name, string suffix)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ParsingException(source, "Empty name not valid");
+                throw new ParsingException(17, source, "Empty name not valid.");
 
             string Result = "";
 
@@ -336,7 +350,7 @@ namespace Parser
                     Result += '_';
 
             if (!IsIdentifierValid(Result))
-                throw new ParsingException(source, "Name only contains invalid characters");
+                throw new ParsingException(18, source, $"'{name}' only contains invalid characters.");
 
             return Result + suffix;
         }
@@ -349,7 +363,7 @@ namespace Parser
         public static string ToCSharpName(IParsingSource source, string name)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ParsingException(source, "Empty name not valid");
+                throw new ParsingException(17, source, "Empty name not valid.");
 
             string Result = "";
             bool SetUpper = true;
@@ -369,7 +383,7 @@ namespace Parser
                     Result += '_';
 
             if (!IsIdentifierValid(Result))
-                throw new ParsingException(source, "Name only contains invalid characters");
+                throw new ParsingException(18, source, $"'{name}' only contains invalid characters.");
 
             return Result;
         }
@@ -382,15 +396,15 @@ namespace Parser
         public static void ParseStringPair(IParsingSourceStream sourceStream, string line, char separator, out IDeclarationSource nameSource, out string value)
         {
             if (string.IsNullOrEmpty(line))
-                throw new ParsingException(sourceStream, "Unexpected empty line");
+                throw new ParsingException(19, sourceStream, "Unexpected empty line.");
 
             string[] Splitted = line.Split(separator);
             if (Splitted.Length < 2)
-                throw new ParsingException(sourceStream, $"<key>{separator}<value> expected");
+                throw new ParsingException(20, sourceStream, $"<key>{separator}<value> expected.");
 
             string Name = Splitted[0].Trim();
             if (string.IsNullOrEmpty(Name))
-                throw new ParsingException(sourceStream, $"<key>{separator}<value> expected, found empty key");
+                throw new ParsingException(21, sourceStream, $"<key>{separator}<value> expected, found empty key.");
 
             string Value = Splitted[1];
             for (int i = 2; i < Splitted.Length; i++)
@@ -398,7 +412,7 @@ namespace Parser
 
             value = Value.Trim();
             if (string.IsNullOrEmpty(value))
-                throw new ParsingException(sourceStream, $"<key>{separator}<value> expected, found empty value");
+                throw new ParsingException(22, sourceStream, $"<key>{separator}<value> expected, found empty value.");
 
             nameSource = new DeclarationSource(Name, sourceStream);
         }
