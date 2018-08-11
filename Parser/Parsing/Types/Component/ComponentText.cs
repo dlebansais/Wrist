@@ -29,7 +29,7 @@
                 !(ObjectProperty is IObjectPropertyReadonlyString) &&
                 !(ObjectProperty is IObjectPropertyEnum) &&
                 !(ObjectProperty is IObjectPropertyStringDictionary))
-                throw new ParsingException(Source.Source, $"Invalid type for property {Source.Name}");
+                throw new ParsingException(133, Source.Source, $"Invalid type for property '{Source.Name}'.");
 
             TextResource = Resource;
             TextObject = Object;

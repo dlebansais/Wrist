@@ -49,7 +49,7 @@
                     }
 
                 if (ItemNestedArea == null)
-                    throw new ParsingException(AreaSource.Source, $"Unknown area {AreaSource}");
+                    throw new ParsingException(117, Source.Source, $"Unknown area '{AreaSource.Name}'.");
 
                 ItemNestedArea.SetCurrentObject(AreaSource, ItemNestedObject);
 

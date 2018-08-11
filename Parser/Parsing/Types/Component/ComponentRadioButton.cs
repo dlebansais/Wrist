@@ -65,13 +65,13 @@ namespace Parser
                 IsConnected = true;
 
                 if (rootArea == null)
-                    throw new ParsingException(Source.Source, $"Radio button {Source.Name} not referenced in a page");
+                    throw new ParsingException(130, Source.Source, $"Radio button '{Source.Name}' not referenced in a page.");
 
                 List<IComponentRadioButton> GroupList = new List<IComponentRadioButton>();
                 rootArea.FindOtherRadioButtons(GroupName, GroupList);
 
                 if (GroupList.Count < 2)
-                    throw new ParsingException(Source.Source, $"Group name {GroupName} is only referencing one radio button");
+                    throw new ParsingException(131, Source.Source, $"Group name '{GroupName}' is only referencing one radio button.");
 
                 int[] Indexes = new int[GroupList.Count];
                 for (int i = 0; i < GroupList.Count; i++)
@@ -79,7 +79,7 @@ namespace Parser
                     Indexes[i] = GroupList[i].GroupIndex;
                     for (int j = 0; j < i; j++)
                         if (Indexes[i] == Indexes[j])
-                            throw new ParsingException(Source.Source, $"Another radio button of the same group name '{GroupName}' is using this index");
+                            throw new ParsingException(132, Source.Source, $"Another radio button of the same group name '{GroupName}' is using this index.");
                 }
 
                 Group = GroupList;

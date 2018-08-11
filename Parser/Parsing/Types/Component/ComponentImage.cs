@@ -25,13 +25,13 @@
 
             double WidthValue;
             if (!double.TryParse(ImageWidth, out WidthValue))
-                throw new ParsingException(Source.Source, $"{ImageWidth} not parsed as a width");
+                throw new ParsingException(128, Source.Source, $"'{ImageWidth}' not parsed as a width.");
 
             Width = WidthValue;
 
             double HeightValue;
             if (!double.TryParse(ImageHeight, out HeightValue))
-                throw new ParsingException(Source.Source, $"{ImageHeight} not parsed as a height");
+                throw new ParsingException(129, Source.Source, $"'{ImageHeight}' not parsed as a height.");
 
             Height = HeightValue;
 

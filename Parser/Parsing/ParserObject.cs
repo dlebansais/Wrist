@@ -65,7 +65,7 @@ namespace Parser
             sourceStream.ReadLine();
             string HeaderLine = sourceStream.Line;
             if (HeaderLine != "properties")
-                throw new ParsingException(sourceStream, "Expected: properties");
+                throw new ParsingException(95, sourceStream, "'properties' expected.");
 
             while (!sourceStream.EndOfStream)
             {
@@ -77,7 +77,7 @@ namespace Parser
 
                 foreach (IObjectProperty ObjectProperty in ObjectPropertyList)
                     if (ObjectProperty.NameSource.Name == NewProperty.NameSource.Name)
-                        throw new ParsingException(sourceStream, $"Object already contains a property called {NewProperty.NameSource.Name}");
+                        throw new ParsingException(96, sourceStream, $"Object already contains a property called '{NewProperty.NameSource.Name}'.");
 
                 ObjectPropertyList.Add(NewProperty);
             }
@@ -107,20 +107,20 @@ namespace Parser
                     if (MaximumLength == int.MaxValue)
                         MaximumLength = ParsedLength;
                     else
-                        throw new ParsingException(sourceStream, "Maximum length specified more than once");
+                        throw new ParsingException(97, sourceStream, "Maximum length specified more than once.");
 
                 else if (SplittedDetail.Length == 2 && SplittedDetail[0].Trim() == "object")
                     if (ObjectSource == null)
                     {
                         ObjectSource = new DeclarationSource(SplittedDetail[1].Trim(), sourceStream);
                         if (string.IsNullOrEmpty(ObjectSource.Name))
-                            throw new ParsingException(sourceStream, "Invalid empty object name");
+                            throw new ParsingException(98, sourceStream, "Invalid empty object name.");
                     }
                     else
-                        throw new ParsingException(sourceStream, "Object name specified more than once");
+                        throw new ParsingException(99, sourceStream, "Object name specified more than once.");
 
                 else
-                    throw new ParsingException(sourceStream, $"Unknown specifier {Detail}");
+                    throw new ParsingException(100, sourceStream, $"Unknown specifier '{Detail}'.");
             }
 
             string CSharpName = ParserDomain.ToCSharpName(NameSource.Source, NameSource.Name);
@@ -134,7 +134,7 @@ namespace Parser
             else if (PropertyTypeName == "string list")
                 return new ObjectPropertyStringList(NameSource, CSharpName);
             else if (MaximumLength != int.MaxValue)
-                throw new ParsingException(sourceStream, "Specifiers not valid for this property type");
+                throw new ParsingException(101, sourceStream, "Specifiers 'maximum length' not valid for this property type.");
             else if (PropertyTypeName == "integer")
                 return new ObjectPropertyInteger(NameSource, CSharpName);
             else if (PropertyTypeName == "enum")
@@ -145,14 +145,14 @@ namespace Parser
                 if (ObjectSource != null)
                     return new ObjectPropertyItem(NameSource, CSharpName, ObjectSource);
                 else
-                    throw new ParsingException(sourceStream, "Object name not specified for item");
-            else if (PropertyTypeName == "item list")
+                    throw new ParsingException(102, sourceStream, "Object name not specified for 'item'.");
+            else if (PropertyTypeName == "items")
                 if (ObjectSource != null)
                     return new ObjectPropertyItemList(NameSource, CSharpName, ObjectSource);
                 else
-                    throw new ParsingException(sourceStream, "Object name not specified for item list");
+                    throw new ParsingException(103, sourceStream, "Object name not specified for 'items'.");
             else
-                throw new ParsingException(sourceStream, $"Unknown property type {PropertyTypeName}");
+                throw new ParsingException(104, sourceStream, $"Unknown property type '{PropertyTypeName}'.");
         }
 
         private List<IObjectEvent> ParseEvents(IParsingSourceStream sourceStream, ref string line)
@@ -164,7 +164,7 @@ namespace Parser
                 sourceStream.ReadLine();
                 string HeaderLine = sourceStream.Line;
                 if (HeaderLine != "events")
-                    throw new ParsingException(sourceStream, "Expected: events");
+                    throw new ParsingException(105, sourceStream, "'events' expected.");
             }
 
             while (!sourceStream.EndOfStream)
@@ -176,7 +176,7 @@ namespace Parser
 
                 foreach (IObjectEvent ObjectEvent in ObjectEventList)
                     if (ObjectEvent.Name == line)
-                        throw new ParsingException(sourceStream, $"Event name {line} specified more than once");
+                        throw new ParsingException(106, sourceStream, $"Event name '{line}' specified more than once.");
 
                 IObjectEvent NewEvent = ParseEvent(sourceStream, line);
                 ObjectEventList.Add(NewEvent);
@@ -189,7 +189,7 @@ namespace Parser
         {
             string Name = line.Trim();
             if (Name.Length <= 0)
-                throw new ParsingException(sourceStream, "Event name cannot be empty");
+                throw new ParsingException(107, sourceStream, "Event name cannot be empty.");
 
             return new ObjectEvent(Name, ParserDomain.ToCSharpName(sourceStream, Name));
         }

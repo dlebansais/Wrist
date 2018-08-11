@@ -71,7 +71,7 @@ namespace Parser
                     }
 
                 if (Area == null)
-                    throw new ParsingException(AreaSource.Source, $"Unknown area {AreaSource.Name}");
+                    throw new ParsingException(118, AreaSource.Source, $"Unknown area '{AreaSource.Name}'.");
 
                 Area.SetCurrentObject(AreaSource, null);
 
@@ -107,9 +107,9 @@ namespace Parser
                         }
 
                     if (EntryArea == null)
-                        throw new ParsingException(AreaSource.Source, $"Unknown area {AreaSource.Name}");
+                        throw new ParsingException(119, AreaSource.Source, $"Unknown area '{AreaSource.Name}'.");
                     else if (EntryLayout == null)
-                        throw new ParsingException(AreaSource.Source, $"Unknown layout {LayoutName}");
+                        throw new ParsingException(120, AreaSource.Source, $"Unknown layout '{LayoutName}'.");
 
                     AreaLayouts.Add(EntryArea, EntryLayout);
                     AreaLayoutBacktracks.Add(EntryArea, AreaSource);
@@ -134,7 +134,7 @@ namespace Parser
                     }
 
                 if (Design == null)
-                    throw new ParsingException(DesignSource.Source, $"Unknown design {DesignSource.Name}");
+                    throw new ParsingException(121, DesignSource.Source, $"Unknown design '{DesignSource.Name}'.");
 
                 IsConnected = true;
             }
@@ -152,11 +152,11 @@ namespace Parser
                     }
 
                 if (Background == null)
-                    throw new ParsingException(BackgroundSource.Source, $"Unknown background {BackgroundSource.Name}");
+                    throw new ParsingException(122, BackgroundSource.Source, $"Unknown background '{BackgroundSource.Name}'.");
 
                 double WidthValue;
                 if (!double.TryParse(WidthSource.Name, out WidthValue))
-                    throw new ParsingException(WidthSource.Source, $"{WidthSource.Name} not parsed as a width");
+                    throw new ParsingException(123, WidthSource.Source, $"'{WidthSource.Name}' not parsed as a width.");
 
                 Width = WidthValue;
 
@@ -165,7 +165,7 @@ namespace Parser
             else if (Width == 0 && BackgroundSource == null)
             {
                 if (WidthSource.Name != "stretch")
-                    throw new ParsingException(WidthSource.Source, "Only valid width when no background is 'stretch'");
+                    throw new ParsingException(124, WidthSource.Source, "Only valid width when no background is 'stretch'.");
 
                 Width = double.NaN;
 
@@ -180,7 +180,7 @@ namespace Parser
                 {
                     double HeightValue;
                     if (!double.TryParse(HeightSource.Name, out HeightValue))
-                        throw new ParsingException(HeightSource.Source, $"{HeightSource.Name} not parsed as a height (only other valid value is 'infinite')");
+                        throw new ParsingException(126, HeightSource.Source, $"'{HeightSource.Name}' not parsed as a height (only valid values are integer constants or 'infinite').");
 
                     Height = HeightValue;
                 }
@@ -200,7 +200,7 @@ namespace Parser
                         }
 
                     if (BackgroundColor == null)
-                        throw new ParsingException(BackgroundColorSource.Source, $"Background color {BackgroundColorSource.Name} not found in color theme {Item.Name}");
+                        throw new ParsingException(127, BackgroundColorSource.Source, $"Background color '{BackgroundColorSource.Name}' not found in color theme '{Item.Name}'.");
                 }
 
                 IsConnected = true;

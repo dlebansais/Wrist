@@ -25,7 +25,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(SourceStream, e);
+                throw new ParsingException(116, SourceStream, e);
             }
         }
     }

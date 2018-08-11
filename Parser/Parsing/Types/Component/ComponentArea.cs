@@ -25,7 +25,7 @@
                     }
 
                 if (Area == null)
-                    throw new ParsingException(Source.Source, $"Unknown area {AreaSource}");
+                    throw new ParsingException(117, Source.Source, $"Unknown area '{AreaSource.Name}'.");
 
                 IsConnected = true;
             }

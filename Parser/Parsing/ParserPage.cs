@@ -30,7 +30,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(SourceStream, e);
+                throw new ParsingException(108, SourceStream, e);
             }
         }
 
@@ -54,22 +54,22 @@ namespace Parser
             }
 
             if (AreaSource == null || string.IsNullOrEmpty(AreaSource.Name))
-                throw new ParsingException(sourceStream, "Missing area name");
+                throw new ParsingException(109, sourceStream, "Missing area name.");
 
             if (AreaLayoutsPairs == null)
-                throw new ParsingException(sourceStream, "Missing default area layout");
+                throw new ParsingException(110, sourceStream, "Missing default area layout.");
 
             if (DesignSource == null || string.IsNullOrEmpty(DesignSource.Name))
-                throw new ParsingException(sourceStream, "Missing design name");
+                throw new ParsingException(111, sourceStream, "Missing design name.");
 
             if (WidthSource == null || string.IsNullOrEmpty(WidthSource.Name))
-                throw new ParsingException(sourceStream, "Missing width");
+                throw new ParsingException(112, sourceStream, "Missing width.");
 
             if (HeightSource == null || string.IsNullOrEmpty(HeightSource.Name))
-                throw new ParsingException(sourceStream, "Missing height");
+                throw new ParsingException(113, sourceStream, "Missing height.");
 
             if (BackgroundColorSource == null || string.IsNullOrEmpty(BackgroundColorSource.Name))
-                throw new ParsingException(sourceStream, "Missing background color");
+                throw new ParsingException(114, sourceStream, "Missing background color.");
 
             return new Page(name, ParserDomain.ToCSharpName(sourceStream, name + "Page"), ParserDomain.ToXamlName(sourceStream, name, "Page"), AreaSource, AreaLayoutsPairs, DesignSource, WidthSource, HeightSource, IsScrollable, BackgroundSource, BackgroundColorSource);
         }
@@ -89,21 +89,42 @@ namespace Parser
             //ComponentValue = ComponentValue.ToLower();
 
             if (ComponentSource.Name == "area")
-                areaSource = new DeclarationSource(ComponentValue, sourceStream);
+                if (areaSource == null)
+                    areaSource = new DeclarationSource(ComponentValue, sourceStream);
+                else
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else if (ComponentSource.Name == "default area layout")
-                areaLayoutsPairs = ParseAreaLayoutsPairs(sourceStream, ComponentValue);
+                if (areaLayoutsPairs == null)
+                    areaLayoutsPairs = ParseAreaLayoutsPairs(sourceStream, ComponentValue);
+                else
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else if (ComponentSource.Name == "design")
-                designSource = new DeclarationSource(ComponentValue, sourceStream);
+                if (designSource == null)
+                    designSource = new DeclarationSource(ComponentValue, sourceStream);
+                else
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else if (ComponentSource.Name == "width")
-                widthSource = new DeclarationSource(ComponentValue, sourceStream);
+                if (widthSource == null)
+                    widthSource = new DeclarationSource(ComponentValue, sourceStream);
+                else
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else if (ComponentSource.Name == "height")
-                heightSource = new DeclarationSource(ComponentValue, sourceStream);
+                if (heightSource == null)
+                    heightSource = new DeclarationSource(ComponentValue, sourceStream);
+                else
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else if (ComponentSource.Name == "background")
-                backgroundSource = new DeclarationSource(ComponentValue, sourceStream);
+                if (backgroundSource == null)
+                    backgroundSource = new DeclarationSource(ComponentValue, sourceStream);
+                else
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else if (ComponentSource.Name == "background color")
-                backgroundColorSource = new DeclarationSource(ComponentValue, sourceStream);
+                if (backgroundColorSource == null)
+                    backgroundColorSource = new DeclarationSource(ComponentValue, sourceStream);
+                else
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else
-                throw new ParsingException(sourceStream, $"Unexpected specifier: {ComponentSource.Name}");
+                throw new ParsingException(115, sourceStream, $"Specifier '{ComponentSource.Name}' was unexpected.");
         }
 
         private Dictionary<IDeclarationSource, string> ParseAreaLayoutsPairs(IParsingSourceStream sourceStream, string line)

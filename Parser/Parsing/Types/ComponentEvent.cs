@@ -9,7 +9,7 @@
             ObjectEventSource = info.MemberSource;
 
             if (info.FixedValueSource != null || info.KeySource != null)
-                throw new ParsingException(EventSource.Source, "Events must use the <Object>.<Event> syntax");
+                throw new ParsingException(134, EventSource.Source, "Events must use the <Object>.<Event> syntax.");
         }
 
         public IDeclarationSource EventSource { get; private set; }
@@ -30,7 +30,7 @@
                     }
 
                 if (Object == null)
-                    throw new ParsingException(ObjectSource.Source, $"Unknown object {ObjectSource.Name}");
+                    throw new ParsingException(135, ObjectSource.Source, $"Unknown object '{ObjectSource.Name}'.");
 
                 IsConnected = true;
             }
@@ -45,7 +45,7 @@
                     }
 
                 if (ObjectEvent == null)
-                    throw new ParsingException(ObjectEventSource.Source, $"Unknown event {ObjectEventSource.Name}");
+                    throw new ParsingException(136, ObjectEventSource.Source, $"Unknown event '{ObjectEventSource.Name}'.");
 
                 IsConnected = true;
             }

@@ -1087,4 +1087,322 @@ The Wrist console must be run with a valid input folder, output folder, the name
 
 This error is issued when the console fails to process one of the object files.
 
+## WTE00095
+
+*'properties' expected.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file doesn't begin with `properties`.
+
+## WTE00096
+
+*Object already contains a property called 'x'.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares two or more properties with the same name.
+
+## WTE00097
+
+*Maximum length specified more than once.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares a property with the `maximum length` specifier more than once.
+
+## WTE00098
+
+*Invalid empty object name.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares a property of the *object* kind, but with an empty object type name.
+
+## WTE00099
+
+*Object name specified more than once.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares a property with the `object` specifier more than once.
+
+## WTE00100
+
+*Unknown specifier 'x'.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares a property but with an unknown specifier.
+
+## WTE00101
+
+*Specifiers 'maximum length' not valid for this property type.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares a property with the `maximum length` specifier, but this specifier is not supported for the property type.
+
+## WTE00102
+
+*Object name not specified for 'item'.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares a property of type *item*, but without the `object` specifier that would provide the item object type.
+
+## WTE00103
+
+*Object name not specified for 'items'.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares a property of type *items*, but without the `object` specifier that would provide the item list object type.
+
+## WTE00104
+
+*Unknown property type 'x'.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares a property of an unknown type.
+
+## WTE00105
+
+*'events' expected.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file doesn't contain a line with `events` after properties have been declared.
+
+## WTE00106
+
+*Event name 'x' specified more than once.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares more than one events with the same name.
+
+## WTE00107
+
+*Event name cannot be empty.*
+
+An object file describes the object properties and events.
+
+This error is issued if the file declares an event with an empty name.
+
+## WTE00108
+
+The Wrist console must be run with a valid input folder, output folder, the name of a home page and that of a color theme. The input folder contains subdirectories such as 'page', 'area'...
+
+This error is issued when the console fails to process one of the page files.
+
+## WTE00109
+
+*Missing area name.*
+
+A page description file must include the name of the root area, a list of layouts to associate to each nested area, the design to use, the page width and height, an optional background style and a background color. 
+
+This error is issued if the file does not specify the root area name.
+
+## WTE00110
+
+*Missing default area layout.*
+
+A page description file must include the name of the root area, a list of layouts to associate to each nested area, the design to use, the page width and height, an optional background style and a background color. 
+
+This error is issued if the file does not specify the list of layouts to associate to each nested area.
+
+## WTE00111
+
+*Missing design name.*
+
+A page description file must include the name of the root area, a list of layouts to associate to each nested area, the design to use, the page width and height, an optional background style and a background color. 
+
+This error is issued if the file does not specify the design to use.
+
+## WTE00112
+
+*Missing width.*
+
+A page description file must include the name of the root area, a list of layouts to associate to each nested area, the design to use, the page width and height, an optional background style and a background color. 
+
+This error is issued if the file does not specify the page width.
+
+## WTE00113
+
+*Missing height.*
+
+A page description file must include the name of the root area, a list of layouts to associate to each nested area, the design to use, the page width and height, an optional background style and a background color. 
+
+This error is issued if the file does not specify the page height.
+
+## WTE00114
+
+*Missing background color.*
+
+A page description file must include the name of the root area, a list of layouts to associate to each nested area, the design to use, the page width and height, an optional background style and a background color. 
+
+This error is issued if the file does not specify the color name for the page background.
+
+## WTE00115
+
+*Specifier 'x' was unexpected.*
+
+A page description file must include the name of the root area, a list of layouts to associate to each nested area, the design to use, the page width and height, an optional background style and a background color. 
+
+This error is issued if the file contains another, unknown specifier.
+
+## WTE00116
+
+The Wrist console must be run with a valid input folder, output folder, the name of a home page and that of a color theme. The input folder contains subdirectories such as 'page', 'area'...
+
+This error is issued when the console fails to process one of the resource files.
+
+## WTE00117
+
+*Unknown area 'x'.*
+
+This error happens when a component refers to an area that has not been declared in area files.
+
+## WTE00118
+
+*Unknown area 'x'.*
+
+This error happens when a page specifies a root area that has not been declared in area files.
+
+## WTE00119
+
+*Unknown area 'x'.*
+
+This error happens when a page specifies the layout for an area, but that area has not been declared in area files.
+
+## WTE00120
+
+*Unknown layout 'x'.*
+
+This error happens when a page specifies the layout for an area, but that layout has not been declared in layout files.
+
+## WTE00121
+
+*Unknown design 'x'.*
+
+This error happens when a page specifies a design that has not been declared in design files.
+
+## WTE00122
+
+*Unknown background 'x'.*
+
+This error happens when a page specifies a background that has not been declared in background files.
+
+## WTE00123
+
+*'x' not parsed as a width.*
+
+This error happens when a page specifies a background and a width that is not an integer constant.
+
+## WTE00124
+
+*Only valid width when no background is 'stretch'.*
+
+This error happens when a page specifies no background but width that is not `stretch`.
+
+## WTE00125
+
+*Specifier 'x' found more than once.*
+
+This error happens when a page contains the same specifier more than once. Remove all but one occurence to fix it.
+
+## WTE00126
+
+*'x' not parsed as a height (only valid values are integer constants or 'infinite').*
+
+This error happens when a page specifies a height that is neither `infinite` or an integer constant.
+
+## WTE00127
+
+*Background color 'x' not found in color theme 'y'.*
+
+This error happens when a page specifies a background color and a color theme that does not contain this color name.
+
+## WTE00128
+
+*'x' not parsed as a width.*
+
+This error happens when an image component specifies a width that is not an integer constant.
+
+## WTE00129
+
+*'x' not parsed as a height.*
+
+This error happens when an image component specifies a height that is not an integer constant.
+
+## WTE00130
+
+*Radio button 'x' not referenced in a page.*
+
+Radio buttons must appear in multiples (a single radio button doesn't make sense) and in the same page. They are grouped using a common group name, and each radio button in a group must have its own unique index.
+ 
+This error happens when a radio button is declared in an area this is not used by any page.
+
+## WTE00130
+
+*Radio button 'x' not referenced in a page.*
+
+Radio buttons must appear in multiples (a single radio button doesn't make sense) and in the same page. They are grouped using a common group name, and each radio button in a group must have its own unique index.
+ 
+This error happens when a radio button is declared in an area this is not used by any page.
+
+## WTE00131
+
+*Group name 'x' is only referencing one radio button.*
+
+Radio buttons must appear in multiples (a single radio button doesn't make sense) and in the same page. They are grouped using a common group name, and each radio button in a group must have its own unique index.
+ 
+In this case, a radio button has a group name that indicates it's the only radio button of its group.
+
+## WTE00132
+
+*Another radio button of the same group name 'x' is using this index.*
+
+Radio buttons must appear in multiples (a single radio button doesn't make sense) and in the same page. They are grouped using a common group name, and each radio button in a group must have its own unique index.
+ 
+In this case, another radio button of the same group is sharing this index.
+
+## WTE00133
+
+*Invalid type for property 'x'.*
+
+This error happens when a text component is referencing an object property but that property is of an incompatible type.
+
+## WTE00134
+
+*Events must use the <Object>.<Event> syntax.*
+
+For components that raise events (such as buttons), the event must be specified for a corresponding object.
+
+In this case, the component doesn't use the proper syntax to declare the event to rise.
+
+## WTE00135
+
+*Unknown object 'x'.*
+
+For components that raise events (such as buttons), the event must be specified for a corresponding object.
+
+In this case, the component declares an event but the corresponding object cannot be found.
+
+## WTE00136
+
+*Unknown event 'x'.*
+
+For components that raise events (such as buttons), the event must be specified for a corresponding object.
+
+In this case, the component declares an event but the corresponding object does not declare it.
+
+
+
+
+
+
+
 
