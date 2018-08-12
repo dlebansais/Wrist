@@ -1,4 +1,4 @@
-#Error codes
+Error codes
 
 Each error when using the Wrist console has an error code, starting with WTE. Please refer to this file for an explanation of the error.
 
@@ -1729,6 +1729,14 @@ A translation file translation.cvs, found at the root of the input folder, shoul
 - Lines of sentences (separated by a tab character), except for the first column that contains a key.
 
 This error is issued when two or more lines have the same key in the first column.
+
+## WTE00185
+
+*Invalid PNG file.*
+
+This error is issued when a .png resource file cannot be process.
+
+
 
 
 

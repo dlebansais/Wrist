@@ -12,6 +12,8 @@ namespace Parser
             Name = resource.Name;
             XamlName = resource.XamlName;
             FilePath = resource.FilePath;
+            Width = resource.Width;
+            Height = resource.Height;
 
             GeneratorResourceMap.Add(resource, this);
         }
@@ -19,6 +21,8 @@ namespace Parser
         public string Name { get; private set; }
         public string XamlName { get; private set; }
         public string FilePath { get; private set; }
+        public double Width { get; private set; }
+        public double Height { get; private set; }
 
         public bool Connect(IGeneratorDomain domain)
         {

@@ -371,17 +371,34 @@ namespace Parser
             if (SourceProperty == null)
                 throw new ParsingException(52, sourceStream, "Source not specified.");
 
-            if (WidthProperty == null)
-                throw new ParsingException(53, sourceStream, "Width not specified.");
-            if (WidthProperty.FixedValueSource == null)
-                throw new ParsingException(54, sourceStream, "Width can only be a static value.");
+            double WidthValue;
+            if (WidthProperty != null)
+            {
+                if (WidthProperty.FixedValueSource == null)
+                    throw new ParsingException(54, sourceStream, "Width can only be a static value.");
 
-            if (HeightProperty == null)
-                throw new ParsingException(55, sourceStream, "Height not specified.");
-            if (HeightProperty.FixedValueSource == null)
-                throw new ParsingException(56, sourceStream, "Height can only be a static value.");
+                string ImageWidth = WidthProperty.FixedValueSource.Name;
+                if (!double.TryParse(ImageWidth, out WidthValue))
+                    throw new ParsingException(128, WidthProperty.FixedValueSource.Source, $"'{ImageWidth}' not parsed as a width.");
+            }
+            else
+                WidthValue = double.NaN;
 
-            return new ComponentImage(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Image"), SourceProperty, WidthProperty.FixedValueSource.Name, HeightProperty.FixedValueSource.Name);
+            double HeightValue;
+            if (HeightProperty != null)
+            {
+                if (HeightProperty.FixedValueSource == null)
+                    throw new ParsingException(56, sourceStream, "Height can only be a static value.");
+
+                string ImageHeight = HeightProperty.FixedValueSource.Name;
+                if (!double.TryParse(ImageHeight, out HeightValue))
+                    throw new ParsingException(129, HeightProperty.FixedValueSource.Source, $"'{ImageHeight}' not parsed as a height.");
+            }
+            else
+                HeightValue = double.NaN;
+
+
+            return new ComponentImage(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Image"), SourceProperty, WidthValue, HeightValue);
         }
 
         private IComponentPopup ParseComponentPopup(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)

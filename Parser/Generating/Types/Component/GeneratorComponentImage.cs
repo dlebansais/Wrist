@@ -36,9 +36,12 @@ namespace Parser
 
         public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
+            double LocalWidth = double.IsNaN(Width) ? SourceResource.Width : Width;
+            double LocalHeight = double.IsNaN(Height) ? SourceResource.Height : Height;
+
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\" Width=\"{Width}\" Height=\"{Height}\"";
+            string Properties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\" Width=\"{LocalWidth}\" Height=\"{LocalHeight}\"";
             string Value = GetComponentValue(currentPage, currentObject, SourceResource, null, null, null, false);
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Image{attachedProperties}{visibilityBinding} Source=\"{Value}\"{Properties}{elementProperties}/>");
