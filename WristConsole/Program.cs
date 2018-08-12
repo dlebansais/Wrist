@@ -31,7 +31,7 @@ namespace WristConsole
             if (Args.Length > 1)
                 InputFolder = Args[1];
             else
-                InputFolder = Path.Combine(LaunchFolder, "Samples", "numbatsoft");
+                InputFolder = Path.Combine(LaunchFolder, "Samples", "comet");
 
             string OutputFolder;
             if (Args.Length > 2)
