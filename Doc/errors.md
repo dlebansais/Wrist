@@ -1399,10 +1399,348 @@ For components that raise events (such as buttons), the event must be specified 
 
 In this case, the component declares an event but the corresponding object does not declare it.
 
+## WTE00137
+
+*The only valid property for object 'translation' is 'strings'.*
+
+The *translation* object is a special object with only one string dictionary property, *strings*, and no event.
+
+In this case, a component is trying to use another property than *strings*.
+
+## WTE00138
+
+*The only valid property for object 'translation' is 'strings'.*
+
+The *translation* object is a special object with only one string dictionary property, *strings*, and no event.
+
+In this case, a component is trying to use the *strings* without a dictionary key.
+
+## WTE00139
+
+*The translation file doesn't contain key 'x'.*
+
+The *translation* object is a special object with only one string dictionary property, *strings*, and no event.
+
+In this case, a component is trying to use the *strings* with a dictionary key that is not found in *translation.cvs*.
+
+## WTE00140
+
+*Unknown object '{objectSource.Name}'.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the object could not be found.
+
+## WTE00141
+
+*Unknown property 'x' in object 'y'.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the object doesn't declare a property with this name.
+
+## WTE00142
+
+*Unknown static resource 'x'.*
+
+This error happens when a component refers to a resource, but this resource has not been declared.
+
+## WTE00143
+
+*'x.y' must be used with a key.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is a dictionary and the compontent doesn't use a key.
+
+## WTE00144
+
+*'x.y' cannot be used with a key.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is not a dictionary and the compontent is trying to use a key.
+
+## WTE00145
+
+*'x.y' must be a string list property.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is not a string list and only this type of property is supported by the compontent (a selector *items* property for instance).
+
+## WTE00146
+
+*'x.y' must be an integer property.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is not an integer property and only this type of property is supported by the compontent (a selector *index* property for instance).
+
+## WTE00147
+
+*'x.y' must be a boolean property.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is not a boolean property and only this type of property is supported by the compontent (a checkbox *checked* property for instance).
+
+## WTE00148
+
+*'x.y' must be a string property.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is not a string property and only this type of property is supported by the compontent (an edit *text* property for instance).
+
+## WTE00149
+
+*'x.y' must be an item property.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is not an item property and only this type of property is supported by the compontent (an container *item* property for instance).
+
+## WTE00150
+
+*Unknown object 'x' for item 'y'.*
+
+This error happens when a component refers to an item property but the object for the item type has not been declared.
+
+## WTE00151
+
+*'x.y' must be an item list property.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is not an item list property and only this type of property is supported by the compontent (an container list *items* property for instance).
+
+## WTE00152
+
+*Unknown object 'x' for item list 'y'.*
+
+This error happens when a component refers to an item list property but the object for the item type has not been declared.
+
+## WTE00153
+
+*'x.y' must be an integer, enum or boolean property.*
+
+This error happens when a component refers to a property using the `object`.`property` syntax, but the property is not convertible to an integer and only this type of property is supported by the compontent (a radio button *checked* property for instance).
+
+## WTE00154
+
+*Area 'x' used in two different contexts.*
+
+Areas can be used to specify what's displayed in a page or a part of a page, but also to specify what's displayed in an object, typically within a container or container list component. The same area can only be used in one of these contexts, and not both.
+   
+In this case, both a page and container or container list component try to use the same area.
+
+## WTE00155
+
+*Area 'x' used in two different contexts.*
+
+Areas can be used to specify what's displayed in a page or a part of a page, but also to specify what's displayed in an object, typically within a container or container list component. The same area can only be used in one of these contexts, and not both.
+   
+In this case, two containers or containers list component try to use the same area, but they refer to different objects.
+
+## WTE00156
+
+*Control is referencing 'x' but this name doesn't exist.*
+
+This error is issued when a Control in a layout file refers to the name of a component, but the area associated to this layout doesn't not declare a component with this name.
+
+## WTE00157
+
+*Invalid wrapping for 'x'.*
+
+This error is issued when a Control in a layout file specifies a wrapping that is neither *Wrap* or *NoWrap*.
+
+## WTE00158
+
+*Unknown dock value 'x'.*
+
+This error is issued when a Control in a layout file specifies a docking that is neither *left*, *right*, *top* or *NoWrap*.
+
+## WTE00159
+
+This error should never be issued, please report it as a bug.
+
+## WTE00160
+
+*Dock value already specified for this element.*
+
+This error is issued when a Control in a layout file specifies more than one docking. 
+
+## WTE00161
+
+*Unknown column value 'x'.*
+
+This error is issued when a Control in a layout file specifies a column that is not an integer constant.
+
+## WTE00162
+
+This error should never be issued, please report it as a bug.
+
+## WTE00163
+
+*Column value already specified for this element.*
+
+This error is issued when a Control in a layout file specifies more than one column. 
+
+## WTE00164
+
+*Unknown row value 'x'.*
+
+This error is issued when a Control in a layout file specifies a row that is not an integer constant.
+
+## WTE00165
+
+This error should never be issued, please report it as a bug.
+
+## WTE00166
+
+*Row value already specified for this element.*
+
+This error is issued when a Control in a layout file specifies more than one row. 
+
+## WTE00167
+
+*Invalid column count.*
+
+This error is issued when a Grid in a layout file specifies an invalid ColumnCount. 
+
+## WTE00168
+
+*Invalid row count.*
+
+This error is issued when a Grid in a layout file specifies an invalid RowCount. 
+
+## WTE00169
+
+*Too many values in 'x', expected at most y.*
+
+This error is issued when a Grid in a layout file specifies a set of widths or heights for columns and rows, but it specifies more than the Grid has columns or rows. 
+
+## WTE00170
+
+*'x' not parsed as a column width.*
+
+or
+
+*'x' not parsed as a row height.*
+
+
+This error is issued when a Grid in a layout file specifies a set of widths or heights for columns and rows, but one of the specifiers is neither a number constant or `auto`. 
+
+## WTE00171
+
+*StatePanel is referencing 'x' but this index doesn't exist.*
+
+A StatePanel is used to display one among several controls or panels, based on an indexing component. The indexing component can be for instance a radio button.
+ 
+This error is issued when the indexing component has not been found. 
+
+## WTE00172
+
+*StatePanel is referencing 'x' but this component is not an index.*
+
+A StatePanel is used to display one among several controls or panels, based on an indexing component. The indexing component can be for instance a radio button.
+ 
+This error is issued when the indexing component is of the wrong type. 
+
+## WTE00173
+
+*Incompatible use of event.*
+
+An event is signaled for instance when the user clicks on a button, and is either page-agnostic or provides the name of a page to switch to. These two mods are not compatible.
+ 
+This error is issued when a event is used in both contexts. It can be fixed by having two different events, sharing code. 
+
+## WTE00174
+
+*Object 'x' not found.*
+
+This error is issued when object declares a property of type item, and the name of a object for the item, but this object name is not found.
+
+## WTE00175
+
+*Object 'x' not found.*
+
+This error is issued when object declares a property of type item list, and the name of a object for each item, but this object name is not found.
+
+## WTE00176
+
+*Unknown page name 'x'.*
+
+This error is issued when a button declares a page name to go to on a click, but this page isn't declared.
+
+## WTE00177
+
+*A custom page must be set with a 'before' event.*
+
+This error is issued when a button declares that it will go to a custom page on a click, but doesn't declare a 'before' event to provide the page name.
+
+## WTE00178
+
+*The translation file is expected to have a header.*
+
+A translation file translation.cvs, found at the root of the input folder, should contain:
+- A header, with Key in the first column and the name in subsequent columns, separated by a tab character.
+- Lines of sentences (separated by a tab character), except for the first column that contains a key.
+
+This error is issued when the header is not recognized.
+
+## WTE00179
+
+*The translation file is expected to have a header starting with 'Key' for the first column.*
+
+A translation file translation.cvs, found at the root of the input folder, should contain:
+- A header, with Key in the first column and the name in subsequent columns, separated by a tab character.
+- Lines of sentences (separated by a tab character), except for the first column that contains a key.
+
+This error is issued when the header is recognized but the first column doesn't contain `Key`.
+
+## WTE00180
+
+*The translation file is expected to have the name of a language at the header of column N.*
+
+A translation file translation.cvs, found at the root of the input folder, should contain:
+- A header, with Key in the first column and the name in subsequent columns, separated by a tab character.
+- Lines of sentences (separated by a tab character), except for the first column that contains a key.
+
+This error is issued when the header is recognized but the Nth column doesn't contain a language name.
+
+## WTE00181
+
+*Language 'x' found more than once in the header.*
+
+A translation file translation.cvs, found at the root of the input folder, should contain:
+- A header, with Key in the first column and the name in subsequent columns, separated by a tab character.
+- Lines of sentences (separated by a tab character), except for the first column that contains a key.
+
+This error is issued when the header is recognized but contains a repeated language name.
+
+## WTE00182
+
+*Inconsistent format at line N.*
+
+A translation file translation.cvs, found at the root of the input folder, should contain:
+- A header, with Key in the first column and the name in subsequent columns, separated by a tab character.
+- Lines of sentences (separated by a tab character), except for the first column that contains a key.
+
+This error is issued when a lines contains less, or more, sentences than languages declared in the header.
+
+## WTE00183
+
+*Invalid key 'x' at line N.*
+
+A translation file translation.cvs, found at the root of the input folder, should contain:
+- A header, with Key in the first column and the name in subsequent columns, separated by a tab character.
+- Lines of sentences (separated by a tab character), except for the first column that contains a key.
+
+This error is issued when a lines an invalid key in its first column. Valid characters for a key are `a...z`, `A...Z`, `0...9`, `_` and `-`.
+
+## WTE00184
+
+*Translation for key 'x' found at line N but this key already has an entry.*
+
+A translation file translation.cvs, found at the root of the input folder, should contain:
+- A header, with Key in the first column and the name in subsequent columns, separated by a tab character.
+- Lines of sentences (separated by a tab character), except for the first column that contains a key.
+
+This error is issued when two or more lines have the same key in the first column.
 
 
 
 
 
+
+
+
+
+
+
+
+ 
 
 

@@ -47,20 +47,20 @@ namespace Parser
                 if (TranslationTable.Count == 0)
                 {
                     if (Splitted.Length < 2)
-                        throw new ParsingException(SourceStream, "The translation file is expected to have a header");
+                        throw new ParsingException(178, SourceStream, "The translation file is expected to have a header.");
 
                     string KeyHeader = Splitted[0].Trim();
                     if (KeyHeader != "Key")
-                        throw new ParsingException(SourceStream, "The translation file is expected to have a header starting with 'Key' for the first column");
+                        throw new ParsingException(179, SourceStream, "The translation file is expected to have a header starting with 'Key' for the first column.");
 
                     for (int i = 1; i < Splitted.Length; i++)
                     {
                         string Language = Splitted[i].Trim();
                         if (Language.Length == 0 || Language.Length >= 100)
-                            throw new ParsingException(SourceStream, $"The translation file is expected to have the name of a language at the header of column #{i}");
+                            throw new ParsingException(180, SourceStream, $"The translation file is expected to have the name of a language at the header of column #{i + 1}.");
 
                         if (TranslationTable.ContainsKey(Language))
-                            throw new ParsingException(SourceStream, $"Language {Language} found more than once in the header");
+                            throw new ParsingException(181, SourceStream, $"Language '{Language}' found more than once in the header.");
 
                         LanguageList.Add(Language);
                         TranslationTable.Add(Language, new Dictionary<string, string>());
@@ -68,13 +68,13 @@ namespace Parser
                 }
 
                 else if (Splitted.Length != LanguageList.Count + 1)
-                    throw new ParsingException(SourceStream, $"Inconsistent format at line {LineNumber}");
+                    throw new ParsingException(182, SourceStream, $"Inconsistent format at line {LineNumber + 1}.");
 
                 else
                 {
                     string Key = Splitted[0];
                     if (!IsKeyValid(Key))
-                        throw new ParsingException(SourceStream, $"Invalid key '{Key}' at line {LineNumber}");
+                        throw new ParsingException(183, SourceStream, $"Invalid key '{Key}' at line {LineNumber + 1}.");
 
                     for (int i = 1; i < Splitted.Length; i++)
                     {
@@ -82,7 +82,7 @@ namespace Parser
                         IDictionary<string, string> LanguageTable = TranslationTable[Language];
 
                         if (i == 1 && LanguageTable.ContainsKey(Key))
-                            throw new ParsingException(SourceStream, $"Translation for key '{Key}' found at line {LineNumber} but this key already has an entry");
+                            throw new ParsingException(184, SourceStream, $"Translation for key '{Key}' found at line {LineNumber + 1} but this key already has an entry.");
 
                         LanguageTable.Add(Key, Splitted[i].Trim());
                     }

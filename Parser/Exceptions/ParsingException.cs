@@ -20,20 +20,6 @@ namespace Parser
             Caller = caller;
         }
 
-        public ParsingException(string directory, string message,
-                                [CallerLineNumber] int lineNumber = 0,
-                                [CallerFilePath] string filePath = null,
-                                [CallerMemberName] string caller = null)
-            : base(message)
-        {
-            Code = 0;
-            Directory = directory;
-            ParsingSource = null;
-            LineNumber = lineNumber;
-            FilePath = ShortFilePath(filePath);
-            Caller = caller;
-        }
-
         public ParsingException(int code, IParsingSourceStream sourceStream, string message,
                                 [CallerLineNumber] int lineNumber = 0,
                                 [CallerFilePath] string filePath = null,
@@ -43,48 +29,6 @@ namespace Parser
             Code = code;
             Directory = null;
             ParsingSource = sourceStream.FreezedPosition();
-            LineNumber = lineNumber;
-            FilePath = ShortFilePath(filePath);
-            Caller = caller;
-        }
-
-        public ParsingException(IParsingSourceStream sourceStream, string message,
-                                [CallerLineNumber] int lineNumber = 0,
-                                [CallerFilePath] string filePath = null,
-                                [CallerMemberName] string caller = null)
-            : base(message)
-        {
-            Code = 0;
-            Directory = null;
-            ParsingSource = sourceStream.FreezedPosition();
-            LineNumber = lineNumber;
-            FilePath = ShortFilePath(filePath);
-            Caller = caller;
-        }
-
-        public ParsingException(int code, IParsingSource parsingSource, string message,
-                                [CallerLineNumber] int lineNumber = 0,
-                                [CallerFilePath] string filePath = null,
-                                [CallerMemberName] string caller = null)
-            : base(message)
-        {
-            Code = code;
-            Directory = null;
-            ParsingSource = parsingSource;
-            LineNumber = lineNumber;
-            FilePath = ShortFilePath(filePath);
-            Caller = caller;
-        }
-
-        public ParsingException(IParsingSource parsingSource, string message,
-                                [CallerLineNumber] int lineNumber = 0,
-                                [CallerFilePath] string filePath = null,
-                                [CallerMemberName] string caller = null)
-            : base(message)
-        {
-            Code = 0;
-            Directory = null;
-            ParsingSource = parsingSource;
             LineNumber = lineNumber;
             FilePath = ShortFilePath(filePath);
             Caller = caller;
@@ -104,27 +48,13 @@ namespace Parser
             Caller = caller;
         }
 
-        public ParsingException(IParsingSourceStream sourceStream, Exception innerException,
+        public ParsingException(int code, IParsingSource parsingSource, string message,
                                 [CallerLineNumber] int lineNumber = 0,
                                 [CallerFilePath] string filePath = null,
                                 [CallerMemberName] string caller = null)
-            : base(innerException.Message, innerException)
+            : base(message)
         {
-            Code = 0;
-            Directory = null;
-            ParsingSource = sourceStream.FreezedPosition();
-            LineNumber = lineNumber;
-            FilePath = ShortFilePath(filePath);
-            Caller = caller;
-        }
-
-        public ParsingException(IParsingSource parsingSource, Exception innerException,
-                                [CallerLineNumber] int lineNumber = 0,
-                                [CallerFilePath] string filePath = null,
-                                [CallerMemberName] string caller = null)
-            : base(innerException.Message, innerException)
-        {
-            Code = 0;
+            Code = code;
             Directory = null;
             ParsingSource = parsingSource;
             LineNumber = lineNumber;

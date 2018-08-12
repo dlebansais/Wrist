@@ -47,9 +47,9 @@ namespace Parser
             if (CurrentObject == null && currentObject != null)
                 CurrentObject = currentObject;
             else if (CurrentObject != null && currentObject == null)
-                throw new ParsingException(componentSource.Source, $"Area {Name} used in two different contexts");
+                throw new ParsingException(154, componentSource.Source, $"Area '{Name}' used in two different contexts.");
             else if (CurrentObject != null && currentObject != null && CurrentObject != currentObject)
-                throw new ParsingException(componentSource.Source, $"Area {Name} used for more than one object");
+                throw new ParsingException(155, componentSource.Source, $"Area '{Name}' used for more than one object.");
         }
 
         public bool IsReferencedBy(IArea other)

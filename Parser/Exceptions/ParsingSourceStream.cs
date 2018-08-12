@@ -113,9 +113,16 @@ namespace Parser
             {
                 Result = System.Windows.Markup.XamlReader.Load(xr);
             }
+            catch (ParsingException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
-                throw new ParsingException(23, this, e);
+                if (e.InnerException is ParsingException AsParsingException)
+                    throw AsParsingException;
+                else
+                    throw new ParsingException(23, this, e);
             }
 
             CurrentSource = null;

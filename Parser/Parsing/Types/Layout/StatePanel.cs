@@ -21,9 +21,9 @@ namespace Parser
                 }
 
             if (FoundComponent == null)
-                throw new ParsingException(Source, $"StatePanel is referencing {Index} but this index doesn't exist");
+                throw new ParsingException(171, Source, $"StatePanel is referencing '{Index}' but this index doesn't exist.");
             if (!(FoundComponent is IComponentIndex))
-                throw new ParsingException(Source, $"StatePanel is referencing {Index} but this component is not an index");
+                throw new ParsingException(172, Source, $"StatePanel is referencing '{Index}' but this component is not an index.");
         }
 
         public override string ToString()

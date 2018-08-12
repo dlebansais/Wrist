@@ -17,7 +17,7 @@
             if (!IsProvidingCustomPageName.HasValue)
                 IsProvidingCustomPageName = isSet;
             else if (IsProvidingCustomPageName.Value != isSet)
-                throw new ParsingException(componentSource.Source, "Incompatible use of event");
+                throw new ParsingException(173, componentSource.Source, "Incompatible use of event.");
         }
 
         public override string ToString()

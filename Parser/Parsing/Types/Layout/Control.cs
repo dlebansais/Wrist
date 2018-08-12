@@ -19,7 +19,7 @@ namespace Parser
                 }
 
             if (!IsFound)
-                throw new ParsingException(Source, $"Control is referencing {Name} but this name doesn't exist");
+                throw new ParsingException(156, Source, $"Control is referencing '{Name}' but this name doesn't exist.");
 
             if (Wrapping == null)
                 TextWrapping = null;
@@ -28,7 +28,7 @@ namespace Parser
             else if (Wrapping == Windows.UI.Xaml.TextWrapping.NoWrap.ToString())
                 TextWrapping = Windows.UI.Xaml.TextWrapping.NoWrap;
             else
-                throw new ParsingException(Source, $"Invalid wrapping for {Name}");
+                throw new ParsingException(157, Source, $"Invalid wrapping for '{Name}'.");
         }
 
         public override string ToString()

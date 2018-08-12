@@ -52,9 +52,9 @@
                 BeforeObjectEvent.SetIsProvidingCustomPageName(NavigationSource, GoToPage == Page.AnyPage);
 
             if (GoToPage == null)
-                throw new ParsingException(NavigationSource.Source, $"Unknown page name: {goToPageName}");
+                throw new ParsingException(176, NavigationSource.Source, $"Unknown page name '{goToPageName}'.");
             if (GoToPage == Page.AnyPage && (BeforeObject == null || BeforeObjectEvent == null))
-                throw new ParsingException(NavigationSource.Source, "A custom page must be set with a 'before' event");
+                throw new ParsingException(177, NavigationSource.Source, "A custom page must be set with a 'before' event.");
         }
 
         private void ConnectAfter(IDomain domain, IComponentEvent afterEvent)

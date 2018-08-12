@@ -36,13 +36,13 @@ namespace Parser
                 else if (AsString.ToLower() == "bottom")
                     Dock = Dock.Bottom;
                 else
-                    throw new ParsingException(AsElement.Source, $"Unknown dock value {AsString}");
+                    throw new ParsingException(158, AsElement.Source, $"Unknown dock value '{AsString}'.");
             }
             else
-                throw new ParsingException(AsElement.Source, "Missing or invalid dock value");
+                throw new ParsingException(159, AsElement.Source, "Missing or invalid dock value.");
 
             if (DockTargets.ContainsKey(AsElement))
-                throw new ParsingException(AsElement.Source, "Dock value already specified for this element");
+                throw new ParsingException(160, AsElement.Source, "Dock value already specified for this element.");
             else
                 DockTargets.Add(AsElement, Dock);
         }

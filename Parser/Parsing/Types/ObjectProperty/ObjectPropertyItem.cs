@@ -10,7 +10,7 @@
 
         public IDeclarationSource ObjectSource { get; private set; }
         public IObject NestedObject { get; private set; }
-
+         
         public override bool Connect(IDomain domain)
         {
             bool IsConnected = false;
@@ -25,7 +25,7 @@
                     }
 
                 if (NestedObject == null)
-                    throw new ParsingException(NameSource.Source, $"Object {ObjectSource.Name} not found");
+                    throw new ParsingException(174, NameSource.Source, $"Object '{ObjectSource.Name}' not found.");
             }
 
             return IsConnected;

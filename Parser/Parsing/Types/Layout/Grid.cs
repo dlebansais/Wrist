@@ -27,13 +27,13 @@ namespace Parser
             if (value is string AsString)
             {
                 if (!int.TryParse(AsString, out Column))
-                    throw new ParsingException(AsElement.Source, $"Unknown column value {AsString}");
+                    throw new ParsingException(161, AsElement.Source, $"Unknown column value '{AsString}'.");
             }
             else
-                throw new ParsingException(AsElement.Source, "Missing or invalid column value");
+                throw new ParsingException(162, AsElement.Source, "Missing or invalid column value.");
 
             if (ColumnTargets.ContainsKey(AsElement))
-                throw new ParsingException(AsElement.Source, "Column value already specified for this element");
+                throw new ParsingException(163, AsElement.Source, "Column value already specified for this element.");
             else
                 ColumnTargets.Add(AsElement, Column);
         }
@@ -60,13 +60,13 @@ namespace Parser
             if (value is string AsString)
             {
                 if (!int.TryParse(AsString, out Row))
-                    throw new ParsingException(AsElement.Source, $"Unknown row value {AsString}");
+                    throw new ParsingException(164, AsElement.Source, $"Unknown row value '{AsString}'.");
             }
             else
-                throw new ParsingException(AsElement.Source, "Missing or invalid row value");
+                throw new ParsingException(165, AsElement.Source, "Missing or invalid row value.");
 
             if (RowTargets.ContainsKey(AsElement))
-                throw new ParsingException(AsElement.Source, "Row value already specified for this element");
+                throw new ParsingException(166, AsElement.Source, "Row value already specified for this element.");
             else
                 RowTargets.Add(AsElement, Row);
         }
@@ -84,12 +84,12 @@ namespace Parser
             base.ConnectComponents(domain, components);
 
             if (ColumnCount < 0)
-                throw new ParsingException(Source, $"Invalid column count");
+                throw new ParsingException(167, Source, $"Invalid column count.");
             else if (ColumnCount == 0)
                 ColumnCount = 1;
 
             if (RowCount < 0)
-                throw new ParsingException(Source, $"Invalid column count");
+                throw new ParsingException(168, Source, $"Invalid row count.");
             else if (RowCount == 0)
                 RowCount = 1;
 
@@ -104,7 +104,7 @@ namespace Parser
 
             string[] Splitted = stringList.Split(',');
             if (Splitted.Length > maxCount)
-                throw new ParsingException(Source, $"Too many values in {stringList}, expected at most {maxCount}");
+                throw new ParsingException(169, Source, $"Too many values in '{stringList}', expected at most {maxCount}.");
 
             double[] Result = new double[maxCount];
 
@@ -117,7 +117,7 @@ namespace Parser
                 else if (WidthString.ToLower() == "auto")
                     Result[i] = double.NaN;
                 else if (!double.TryParse(WidthString, out Result[i]))
-                    throw new ParsingException(Source, $"{WidthString} not parsed as a {propertyName}");
+                    throw new ParsingException(170, Source, $"'{WidthString}' not parsed as a {propertyName}.");
             }
             for (; i < maxCount; i++)
                 Result[i] = 0;

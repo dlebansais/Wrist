@@ -30,15 +30,15 @@ namespace Parser
 
                 obj = Object.TranslationObject;
                 if (objectPropertySource.Name != ObjectPropertyStringDictionary.StringsProperty.NameSource.Name)
-                    throw new ParsingException(objectPropertySource.Source, $"The only valid property for object {objectSource.Name} is {ObjectPropertyStringDictionary.StringsProperty.NameSource.Name}");
+                    throw new ParsingException(137, objectPropertySource.Source, $"The only valid property for object '{objectSource.Name}' is '{ObjectPropertyStringDictionary.StringsProperty.NameSource.Name}'.");
 
                 if (objectPropertyKey == null)
-                    throw new ParsingException(objectSource.Source, $"For object {objectSource.Name} property {ObjectPropertyStringDictionary.StringsProperty.NameSource.Name} a key is required");
+                    throw new ParsingException(138, objectSource.Source, $"For object '{objectSource.Name}' property '{ObjectPropertyStringDictionary.StringsProperty.NameSource.Name}' a key is required.");
 
                 if (objectPropertyKey.Name != Page.CurrentPage.Name)
                 {
                     if (!domain.Translation.KeyList.Contains(objectPropertyKey.Name))
-                        throw new ParsingException(objectPropertyKey.Source, $"The translation file doesn't contain key '{objectPropertyKey.Name}'");
+                        throw new ParsingException(139, objectPropertyKey.Source, $"The translation file doesn't contain key '{objectPropertyKey.Name}'.");
                 }
                 else
                 {
@@ -57,7 +57,7 @@ namespace Parser
                     }
 
                 if (obj == null)
-                    throw new ParsingException(objectSource.Source, $"Unknown object {objectSource.Name}");
+                    throw new ParsingException(140, objectSource.Source, $"Unknown object '{objectSource.Name}'.");
             }
         }
 
@@ -75,7 +75,7 @@ namespace Parser
                     }
 
                 if (resource == null)
-                    throw new ParsingException(FixedValueSource.Source, $"Unknown static resource {FixedValueSource.Name}");
+                    throw new ParsingException(142, FixedValueSource.Source, $"Unknown static resource '{FixedValueSource.Name}'.");
 
                 IsConnected = true;
             }
@@ -90,12 +90,12 @@ namespace Parser
                         if (Property is IObjectPropertyStringDictionary AsObjectPropertyStringDictionary)
                         {
                             if (ObjectPropertyKey == null)
-                                throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be used with a key");
+                                throw new ParsingException(143, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be used with a key.");
                         }
                         else
                         {
                             if (ObjectPropertyKey != null)
-                                throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} cannot be used with a key");
+                                throw new ParsingException(144, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' cannot be used with a key.");
                         }
 
                         objectProperty = Property;
@@ -104,7 +104,7 @@ namespace Parser
                     }
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 IsConnected = true;
             }
@@ -126,7 +126,7 @@ namespace Parser
                     }
 
                 if (resource == null)
-                    throw new ParsingException(FixedValueSource.Source, $"Unknown static resource {FixedValueSource.Name}");
+                    throw new ParsingException(142, FixedValueSource.Source, $"Unknown static resource '{FixedValueSource.Name}'.");
 
                 IsConnected = true;
             }
@@ -148,7 +148,7 @@ namespace Parser
                     }
 
                 if (resource == null)
-                    throw new ParsingException(FixedValueSource.Source, $"Unknown static resource {FixedValueSource.Name}");
+                    throw new ParsingException(142, FixedValueSource.Source, $"Unknown static resource '{FixedValueSource.Name}'.");
 
                 IsConnected = true;
             }
@@ -165,10 +165,10 @@ namespace Parser
                             break;
                         }
                         else
-                            throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be a string list property");
+                            throw new ParsingException(145, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be a string list property.");
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 IsConnected = true;
             }
@@ -192,10 +192,10 @@ namespace Parser
                             break;
                         }
                         else
-                            throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be an integer property");
+                            throw new ParsingException(146, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be an integer property.");
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 IsConnected = true;
             }
@@ -219,10 +219,10 @@ namespace Parser
                             break;
                         }
                         else
-                            throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be a boolean property");
+                            throw new ParsingException(147, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be a boolean property.");
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 IsConnected = true;
             }
@@ -246,10 +246,10 @@ namespace Parser
                             break;
                         }
                         else
-                            throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be a string property");
+                            throw new ParsingException(148, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be a string property.");
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 IsConnected = true;
             }
@@ -273,10 +273,10 @@ namespace Parser
                             break;
                         }
                         else
-                            throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be a string list property");
+                            throw new ParsingException(145, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be a string list property.");
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 IsConnected = true;
             }
@@ -300,10 +300,10 @@ namespace Parser
                             break;
                         }
                         else
-                            throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be an item property");
+                            throw new ParsingException(149, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be an item property.");
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 foreach (IObject Item in domain.Objects)
                     if (Item.Name == objectProperty.ObjectSource.Name)
@@ -313,7 +313,7 @@ namespace Parser
                     }
 
                 if (ItemObject == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown object {objectProperty.ObjectSource.Name} for item {ObjectPropertySource.Name}");
+                    throw new ParsingException(150, ObjectPropertySource.Source, $"Unknown object '{objectProperty.ObjectSource.Name}' for item '{ObjectPropertySource.Name}'.");
 
                 IsConnected = true;
             }
@@ -337,10 +337,10 @@ namespace Parser
                             break;
                         }
                         else
-                            throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be an item list property");
+                            throw new ParsingException(151, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be an item list property.");
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 foreach (IObject Item in domain.Objects)
                     if (Item.Name == objectProperty.ObjectSource.Name)
@@ -350,7 +350,7 @@ namespace Parser
                     }
 
                 if (ItemObject == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown object {objectProperty.ObjectSource.Name} for item list {ObjectPropertySource.Name}");
+                    throw new ParsingException(152, ObjectPropertySource.Source, $"Unknown object '{objectProperty.ObjectSource.Name}' for item list '{ObjectPropertySource.Name}'.");
 
                 IsConnected = true;
             }
@@ -374,10 +374,10 @@ namespace Parser
                             break;
                         }
                         else
-                            throw new ParsingException(ObjectPropertySource.Source, $"{obj.Name}.{ObjectPropertySource.Name} must be an integer, state or boolean property");
+                            throw new ParsingException(153, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be an integer, enum or boolean property.");
 
                 if (objectProperty == null)
-                    throw new ParsingException(ObjectPropertySource.Source, $"Unknown property {ObjectPropertySource.Name} in object {obj.Name}");
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 IsConnected = true;
             }
