@@ -5,3 +5,4 @@ LightBrown: #C8700C
 Blue: #DEF2F9
 LigthGray: #E9E9E9
 Gray: #DADADA
+LightBlue: #0A0ABC
