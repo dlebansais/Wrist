@@ -48,3 +48,14 @@ disconnect-title	todo
 disconnect-text	todo
 delete-account-title	todo
 delete-account-text	todo
+feature-1-title	Algorithm
+feature-1-text	Write down your algorithm using a graphic engine or C code..
+feature-2-title	Optimization
+feature-2-text	Let us find the fastest code among thousands of implementations.
+feature-3-title	Benchmark
+feature-3-text	Test the code on live hardware matching your needs.
+feature-4-title	Download
+feature-4-text	Download the result as source and compiled code, ready to integrate in your toolchain.
+feature-5-title	Free
+feature-5-text	This is a free service. No charge, no login, no private info, no adds. 100% free.
+status-colon	Status:

@@ -1,1 +1,1 @@
-﻿home text: text, text=translation.strings[home-text]
+﻿logo: image, source=logo

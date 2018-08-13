@@ -1,1 +1,1 @@
-﻿home text: text, text=translation.strings[home-text]
+﻿status text: text, text=translation.strings[status-colon]
