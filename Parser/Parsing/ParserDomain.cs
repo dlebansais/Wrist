@@ -151,7 +151,7 @@ namespace Parser
                     IArea SpecifiedArea = Entry.Key;
 
                     if (!Page.AreaLayouts.ContainsKey(SpecifiedArea))
-                        throw new ParsingException(10, Entry.Value.Source, $"Area '{SpecifiedArea.Name}' has not layout specified.");
+                        throw new ParsingException(10, Page.AllAreaLayoutsSource, $"Area '{SpecifiedArea.Name}' has not layout specified.");
 
                     if (ComponentProperty.AreaWithCurrentPage.ContainsKey(SpecifiedArea))
                     {

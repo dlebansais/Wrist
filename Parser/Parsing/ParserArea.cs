@@ -418,6 +418,8 @@ namespace Parser
 
             if (SourceProperty == null)
                 throw new ParsingException(57, sourceStream, "Source not specified.");
+            if (SourceProperty.FixedValueSource == null)
+                throw new ParsingException(186, sourceStream, "Source can only be a static name.");
 
             if (AreaProperty == null)
                 throw new ParsingException(58, sourceStream, "Area not specified.");

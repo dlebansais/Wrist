@@ -12,12 +12,13 @@ namespace Parser
             Name = name;
         }
 
-        public Page(string name, string fileName, string xamlName, IDeclarationSource areaSource, Dictionary<IDeclarationSource, string> areaLayoutPairs, IDeclarationSource designSource, IDeclarationSource widthSource, IDeclarationSource heightSource, bool isScrollable, IDeclarationSource backgroundSource, IDeclarationSource backgroundColorSource)
+        public Page(string name, string fileName, string xamlName, IDeclarationSource areaSource, IParsingSource allAreaLayoutsSource, Dictionary<IDeclarationSource, string> areaLayoutPairs, IDeclarationSource designSource, IDeclarationSource widthSource, IDeclarationSource heightSource, bool isScrollable, IDeclarationSource backgroundSource, IDeclarationSource backgroundColorSource)
         {
             Name = name;
             FileName = fileName;
             XamlName = xamlName;
             AreaSource = areaSource;
+            AllAreaLayoutsSource = allAreaLayoutsSource;
             AreaLayoutPairs = areaLayoutPairs;
             DesignSource = designSource;
             WidthSource = widthSource;
@@ -32,6 +33,7 @@ namespace Parser
         public string XamlName { get; private set; }
         public IDeclarationSource AreaSource { get; private set; }
         public IArea Area { get; private set; }
+        public IParsingSource AllAreaLayoutsSource { get; private set; }
         public Dictionary<IDeclarationSource, string> AreaLayoutPairs { get; private set; }
         public Dictionary<IArea, ILayout> AreaLayouts { get; private set; }
         public Dictionary<IArea, IDeclarationSource> AreaLayoutBacktracks { get; } = new Dictionary<IArea, IDeclarationSource>();

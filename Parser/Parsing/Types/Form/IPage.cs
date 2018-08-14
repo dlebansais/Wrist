@@ -9,6 +9,7 @@ namespace Parser
         string XamlName { get; }
         IDeclarationSource AreaSource { get; }
         IArea Area { get; }
+        IParsingSource AllAreaLayoutsSource { get; }
         Dictionary<IDeclarationSource, string> AreaLayoutPairs { get; }
         Dictionary<IArea, ILayout> AreaLayouts { get; }
         Dictionary<IArea, IDeclarationSource> AreaLayoutBacktracks { get; }

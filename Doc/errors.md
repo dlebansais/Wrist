@@ -659,7 +659,7 @@ When processing area files, each line is expected to be in the following format:
 
 where `Name` is the component name, `Type` its type, and there can be zero or more specifiers in the form of `key`=`value` pairs separated by commas.
 
-If `Type` is *popup*, the `source` and `area` keys must be specified, and `area` must be a simple non-empty string.
+If `Type` is *popup*, the `source` and `area` keys must be specified, and must be simple non-empty strings.
 
 In this case, the `source` key was not specified.
 
@@ -673,7 +673,7 @@ When processing area files, each line is expected to be in the following format:
 
 where `Name` is the component name, `Type` its type, and there can be zero or more specifiers in the form of `key`=`value` pairs separated by commas.
 
-If `Type` is *popup*, the `source` and `area` keys must be specified, and `area` must be a simple non-empty string.
+If `Type` is *popup*, the `source` and `area` keys must be specified, and must be simple non-empty strings.
 
 In this case, the `area` key was not specified.
 
@@ -687,7 +687,7 @@ When processing area files, each line is expected to be in the following format:
 
 where `Name` is the component name, `Type` its type, and there can be zero or more specifiers in the form of `key`=`value` pairs separated by commas.
 
-If `Type` is *popup*, the `source` and `area` keys must be specified, and `area` must be a simple non-empty string.
+If `Type` is *popup*, the `source` and `area` keys must be specified, and must be simple non-empty strings.
 
 In this case, the `area` key was specified but is not a simple, non-empty string.
 
@@ -1735,6 +1735,20 @@ This error is issued when two or more lines have the same key in the first colum
 *Invalid PNG file.*
 
 This error is issued when a .png resource file cannot be process.
+
+## WTE00186
+
+*Source can only be a static name.*
+
+When processing area files, each line is expected to be in the following format:
+
+`Name`: `Type` [, optional `key`=`value` pairs, ...]
+
+where `Name` is the component name, `Type` its type, and there can be zero or more specifiers in the form of `key`=`value` pairs separated by commas.
+
+If `Type` is *popup*, the `source` and `area` keys must be specified, and must be simple non-empty strings.
+
+In this case, the `source` key was specified but is not a simple, non-empty string.
 
 
 
