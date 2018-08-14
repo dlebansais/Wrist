@@ -19,6 +19,18 @@ namespace Parser
         }
         #endregion
 
+        #region ColumnSpan Attached Property
+        public static Dictionary<IGeneratorLayoutElement, int> ColumnSpanTargets = new Dictionary<IGeneratorLayoutElement, int>();
+
+        public static string AttachedColumnSpanProperty(IGeneratorLayoutElement element)
+        {
+            if (ColumnSpanTargets.ContainsKey(element))
+                return $" Grid.ColumnSpan=\"{ColumnSpanTargets[element]}\"";
+            else
+                return "";
+        }
+        #endregion
+
         #region Row Attached Property
         public static Dictionary<IGeneratorLayoutElement, int> RowTargets = new Dictionary<IGeneratorLayoutElement, int>();
 
@@ -26,6 +38,18 @@ namespace Parser
         {
             if (RowTargets.ContainsKey(element))
                 return $" Grid.Row=\"{RowTargets[element]}\"";
+            else
+                return "";
+        }
+        #endregion
+
+        #region RowSpan Attached Property
+        public static Dictionary<IGeneratorLayoutElement, int> RowSpanTargets = new Dictionary<IGeneratorLayoutElement, int>();
+
+        public static string AttachedRowSpanProperty(IGeneratorLayoutElement element)
+        {
+            if (RowSpanTargets.ContainsKey(element))
+                return $" Grid.RowSpan=\"{RowSpanTargets[element]}\"";
             else
                 return "";
         }

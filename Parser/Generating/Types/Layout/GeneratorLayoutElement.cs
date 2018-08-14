@@ -36,8 +36,14 @@ namespace Parser
             if (Grid.ColumnTargets.ContainsKey(element))
                 GeneratorGrid.ColumnTargets.Add(this, Grid.ColumnTargets[element]);
 
+            if (Grid.ColumnSpanTargets.ContainsKey(element))
+                GeneratorGrid.ColumnSpanTargets.Add(this, Grid.ColumnSpanTargets[element]);
+
             if (Grid.RowTargets.ContainsKey(element))
                 GeneratorGrid.RowTargets.Add(this, Grid.RowTargets[element]);
+
+            if (Grid.RowSpanTargets.ContainsKey(element))
+                GeneratorGrid.RowSpanTargets.Add(this, Grid.RowSpanTargets[element]);
         }
 
         public string Style { get; private set; }
@@ -54,7 +60,9 @@ namespace Parser
 
             Result += GeneratorDockPanel.AttachedDockProperty(element);
             Result += GeneratorGrid.AttachedColumnProperty(element);
+            Result += GeneratorGrid.AttachedColumnSpanProperty(element);
             Result += GeneratorGrid.AttachedRowProperty(element);
+            Result += GeneratorGrid.AttachedRowSpanProperty(element);
 
             return Result;
         }

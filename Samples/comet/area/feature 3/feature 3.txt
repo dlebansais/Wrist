@@ -1,0 +1,2 @@
+﻿feature title: text, text=translation.strings[feature-3-title]
+feature text: text, text=translation.strings[feature-3-text]

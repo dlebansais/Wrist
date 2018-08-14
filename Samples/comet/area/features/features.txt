@@ -1,10 +1,5 @@
-﻿feature 1 title: text, text=translation.strings[feature-1-title]
-feature 1 text: text, text=translation.strings[feature-1-text]
-feature 2 title: text, text=translation.strings[feature-2-title]
-feature 2 text: text, text=translation.strings[feature-2-text]
-feature 3 title: text, text=translation.strings[feature-3-title]
-feature 3 text: text, text=translation.strings[feature-3-text]
-feature 4 title: text, text=translation.strings[feature-4-title]
-feature 4 text: text, text=translation.strings[feature-4-text]
-feature 5 title: text, text=translation.strings[feature-5-title]
-feature 5 text: text, text=translation.strings[feature-5-text]
+﻿feature 1: area, name=feature 1
+feature 2: area, name=feature 2
+feature 3: area, name=feature 3
+feature 4: area, name=feature 4
+feature 5: area, name=feature 5

@@ -27,15 +27,48 @@ namespace Parser
             if (value is string AsString)
             {
                 if (!int.TryParse(AsString, out Column))
-                    throw new ParsingException(161, AsElement.Source, $"Unknown column value '{AsString}'.");
+                    throw new ParsingException(161, AsElement.Source, $"Unknown Column value '{AsString}'.");
             }
             else
-                throw new ParsingException(162, AsElement.Source, "Missing or invalid column value.");
+                throw new ParsingException(162, AsElement.Source, "Missing or invalid Column value.");
 
             if (ColumnTargets.ContainsKey(AsElement))
                 throw new ParsingException(163, AsElement.Source, "Column value already specified for this element.");
             else
                 ColumnTargets.Add(AsElement, Column);
+        }
+        #endregion
+
+        #region ColumnSpan Attached Property
+        public static Dictionary<ILayoutElement, int> ColumnSpanTargets = new Dictionary<ILayoutElement, int>();
+
+        public static object GetColumnSpan(object target)
+        {
+            ILayoutElement AsElement = (ILayoutElement)target;
+
+            if (ColumnSpanTargets.ContainsKey(AsElement))
+                return ColumnSpanTargets[AsElement];
+            else
+                return 0;
+        }
+
+        public static void SetColumnSpan(object target, object value)
+        {
+            ILayoutElement AsElement = (ILayoutElement)target;
+            int ColumnSpan;
+
+            if (value is string AsString)
+            {
+                if (!int.TryParse(AsString, out ColumnSpan))
+                    throw new ParsingException(187, AsElement.Source, $"Unknown ColumnSpan value '{AsString}'.");
+            }
+            else
+                throw new ParsingException(188, AsElement.Source, "Missing or invalid ColumnSpan value.");
+
+            if (ColumnSpanTargets.ContainsKey(AsElement))
+                throw new ParsingException(189, AsElement.Source, "ColumnSpan value already specified for this element.");
+            else
+                ColumnSpanTargets.Add(AsElement, ColumnSpan);
         }
         #endregion
 
@@ -60,15 +93,48 @@ namespace Parser
             if (value is string AsString)
             {
                 if (!int.TryParse(AsString, out Row))
-                    throw new ParsingException(164, AsElement.Source, $"Unknown row value '{AsString}'.");
+                    throw new ParsingException(164, AsElement.Source, $"Unknown Row value '{AsString}'.");
             }
             else
-                throw new ParsingException(165, AsElement.Source, "Missing or invalid row value.");
+                throw new ParsingException(165, AsElement.Source, "Missing or invalid Row value.");
 
             if (RowTargets.ContainsKey(AsElement))
                 throw new ParsingException(166, AsElement.Source, "Row value already specified for this element.");
             else
                 RowTargets.Add(AsElement, Row);
+        }
+        #endregion
+
+        #region RowSpan Attached Property
+        public static Dictionary<ILayoutElement, int> RowSpanTargets = new Dictionary<ILayoutElement, int>();
+
+        public static object GetRowSpan(object target)
+        {
+            ILayoutElement AsElement = (ILayoutElement)target;
+
+            if (RowSpanTargets.ContainsKey(AsElement))
+                return RowSpanTargets[AsElement];
+            else
+                return 0;
+        }
+
+        public static void SetRowSpan(object target, object value)
+        {
+            ILayoutElement AsElement = (ILayoutElement)target;
+            int RowSpan;
+
+            if (value is string AsString)
+            {
+                if (!int.TryParse(AsString, out RowSpan))
+                    throw new ParsingException(190, AsElement.Source, $"Unknown RowSpan value '{AsString}'.");
+            }
+            else
+                throw new ParsingException(191, AsElement.Source, "Missing or invalid RowSpan value.");
+
+            if (RowSpanTargets.ContainsKey(AsElement))
+                throw new ParsingException(192, AsElement.Source, "RowSpan value already specified for this element.");
+            else
+                RowSpanTargets.Add(AsElement, RowSpan);
         }
         #endregion
 

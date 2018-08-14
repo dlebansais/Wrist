@@ -1553,7 +1553,7 @@ This error is issued when a Control in a layout file specifies more than one doc
 
 ## WTE00161
 
-*Unknown column value 'x'.*
+*Unknown Column value 'x'.*
 
 This error is issued when a Control in a layout file specifies a column that is not an integer constant.
 
@@ -1569,7 +1569,7 @@ This error is issued when a Control in a layout file specifies more than one col
 
 ## WTE00164
 
-*Unknown row value 'x'.*
+*Unknown Row value 'x'.*
 
 This error is issued when a Control in a layout file specifies a row that is not an integer constant.
 
@@ -1583,7 +1583,7 @@ This error should never be issued, please report it as a bug.
 
 This error is issued when a Control in a layout file specifies more than one row. 
 
-## WTE00167
+## WTE0016
 
 *Invalid column count.*
 
@@ -1750,19 +1750,34 @@ If `Type` is *popup*, the `source` and `area` keys must be specified, and must b
 
 In this case, the `source` key was specified but is not a simple, non-empty string.
 
+## WTE00187
 
+*Unknown ColumnSpan value 'x'.*
 
+This error is issued when a Control in a layout file specifies a column span that is not an integer constant.
 
+## WTE00188
 
+This error should never be issued, please report it as a bug.
 
+## WTE00189
 
+*ColumnSpan value already specified for this element.*
 
+This error is issued when a Control in a layout file specifies more than one column span. 
 
+## WTE00190
 
+*Unknown RowSpan value 'x'.*
 
+This error is issued when a Control in a layout file specifies a row span that is not an integer constant.
 
+## WTE00191
 
+This error should never be issued, please report it as a bug.
 
- 
+## WTE00192
 
+*RowSpan value already specified for this element.*
 
+This error is issued when a Control in a layout file specifies more than one row span. 
