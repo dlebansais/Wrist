@@ -41,7 +41,10 @@ namespace Parser
 
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\" Width=\"{LocalWidth}\" Height=\"{LocalHeight}\"";
+            string WidthProperty = double.IsNaN(Width) ? "" : $" Width=\"{Width}\"";
+            string HeightProperty = double.IsNaN(Height) ? "" : $" Height=\"{Height}\"";
+            string StretchProperty = (double.IsNaN(Width) && double.IsNaN(Height)) ? " Stretch=\"Uniform\"" : "";
+            string Properties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\"{StretchProperty}{WidthProperty}{HeightProperty}";
             string Value = GetComponentValue(currentPage, currentObject, SourceResource, null, null, null, false);
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Image{attachedProperties}{visibilityBinding} Source=\"{Value}\"{Properties}{elementProperties}/>");

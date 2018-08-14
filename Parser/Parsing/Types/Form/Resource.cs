@@ -68,8 +68,8 @@ namespace Parser
 
             byte[] ChunkData = br.ReadBytes(13);
 
-            Width = ((ChunkData[3] << 256 + ChunkData[2]) << 256 + ChunkData[1]) << 256 + ChunkData[0];
-            Height = ((ChunkData[7] << 256 + ChunkData[6]) << 256 + ChunkData[5]) << 256 + ChunkData[4];
+            Width =  (((((ChunkData[0] << 8) + ChunkData[1]) << 8) + ChunkData[2]) << 8) + ChunkData[3];
+            Height = (((((ChunkData[4] << 8) + ChunkData[5]) << 8) + ChunkData[6]) << 8) + ChunkData[7];
 
             if (Width <= 0 || Height <= 0)
                 throw new ParsingException(185, source, "Invalid PNG file.");

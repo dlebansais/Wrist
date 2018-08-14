@@ -1329,13 +1329,13 @@ This error happens when a page specifies a background color and a color theme th
 
 *'x' not parsed as a width.*
 
-This error happens when an image component specifies a width that is not an integer constant.
+This error happens when an image component specifies a width that is not an integer constant or `resource`.
 
 ## WTE00129
 
 *'x' not parsed as a height.*
 
-This error happens when an image component specifies a height that is not an integer constant.
+This error happens when an image component specifies a height that is not an integer constant or `resource`.
 
 ## WTE00130
 

@@ -371,6 +371,7 @@ namespace Parser
             if (SourceProperty == null)
                 throw new ParsingException(52, sourceStream, "Source not specified.");
 
+            bool IsResourceWidth;
             double WidthValue;
             if (WidthProperty != null)
             {
@@ -378,12 +379,23 @@ namespace Parser
                     throw new ParsingException(54, sourceStream, "Width can only be a static value.");
 
                 string ImageWidth = WidthProperty.FixedValueSource.Name;
-                if (!double.TryParse(ImageWidth, out WidthValue))
+                if (ImageWidth == "resource")
+                {
+                    IsResourceWidth = true;
+                    WidthValue = double.NaN;
+                }
+                else if (double.TryParse(ImageWidth, out WidthValue))
+                    IsResourceWidth = false;
+                else
                     throw new ParsingException(128, WidthProperty.FixedValueSource.Source, $"'{ImageWidth}' not parsed as a width.");
             }
             else
+            {
+                IsResourceWidth = false;
                 WidthValue = double.NaN;
+            }
 
+            bool IsResourceHeight;
             double HeightValue;
             if (HeightProperty != null)
             {
@@ -391,14 +403,23 @@ namespace Parser
                     throw new ParsingException(56, sourceStream, "Height can only be a static value.");
 
                 string ImageHeight = HeightProperty.FixedValueSource.Name;
-                if (!double.TryParse(ImageHeight, out HeightValue))
+                if (ImageHeight == "resource")
+                {
+                    IsResourceHeight = true;
+                    HeightValue = double.NaN;
+                }
+                else if (double.TryParse(ImageHeight, out HeightValue))
+                    IsResourceHeight = false;
+                else
                     throw new ParsingException(129, HeightProperty.FixedValueSource.Source, $"'{ImageHeight}' not parsed as a height.");
             }
             else
+            {
+                IsResourceHeight = false;
                 HeightValue = double.NaN;
+            }
 
-
-            return new ComponentImage(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Image"), SourceProperty, WidthValue, HeightValue);
+            return new ComponentImage(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Image"), SourceProperty, IsResourceWidth, WidthValue, IsResourceHeight, HeightValue);
         }
 
         private IComponentPopup ParseComponentPopup(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)
