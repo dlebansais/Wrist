@@ -15,5 +15,7 @@ namespace Parser
         string GroupName { get; }
         int GroupIndex { get; }
         ICollection<IComponentRadioButton> Group { get; }
+        bool IsController { get; }
+        void SetController();
     }
 }

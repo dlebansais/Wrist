@@ -10,6 +10,8 @@ namespace Parser
 
         public override void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
         {
+            base.ConnectComponents(domain, components);
+
             bool IsFound = false;
             foreach (IComponent Component in components)
                 if (Component.Source.Name == Name)

@@ -1781,3 +1781,59 @@ This error should never be issued, please report it as a bug.
 *RowSpan value already specified for this element.*
 
 This error is issued when a Control in a layout file specifies more than one row span. 
+
+## WTE00193
+
+*Invalid width.*
+
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+
+In this case, the specified width is invalid.
+
+## WTE00194
+
+*Invalid height.*
+
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+
+In this case, the specified height is invalid.
+
+## WTE00195
+
+*Invalid margin.*
+
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+
+In this case, the specified margin is invalid.
+
+## WTE00196
+
+*Invalid horizontal alignment.*
+
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+
+In this case, the specified horizontal alignment is invalid.
+
+## WTE00197
+
+*Invalid vertical alignment.*
+
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+
+In this case, the specified vertical alignment is invalid.
+
+## WTE00198
+
+*Element 'x' not found.*
+
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+
+In this case, the element name specified is not found among other elements in the page.
+
+## WTE00199
+
+*Element 'x' is neither a CheckBox or RadioButton.*
+
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+
+In this case, the element name specified is found, but doesn't have a *IsChecked* property.

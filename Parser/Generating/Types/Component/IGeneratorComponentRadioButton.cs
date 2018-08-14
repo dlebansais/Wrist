@@ -13,5 +13,6 @@ namespace Parser
         string GroupName { get; }
         int GroupIndex { get; }
         ICollection<IGeneratorComponentRadioButton> Group { get; }
+        bool IsController { get; }
     }
 }

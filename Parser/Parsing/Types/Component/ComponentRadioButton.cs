@@ -11,6 +11,7 @@ namespace Parser
             IndexProperty = indexProperty;
             GroupName = groupName;
             GroupIndex = groupIndex;
+            IsController = false;
         }
 
         public IComponentProperty ContentProperty { get; private set; }
@@ -24,6 +25,7 @@ namespace Parser
         public string GroupName { get; private set; }
         public int GroupIndex { get; private set; }
         public ICollection<IComponentRadioButton> Group { get; private set; }
+        public bool IsController { get; private set; }
 
         public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
@@ -84,6 +86,11 @@ namespace Parser
 
                 Group = GroupList;
             }
+        }
+
+        public void SetController()
+        {
+            IsController = true;
         }
     }
 }

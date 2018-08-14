@@ -8,6 +8,8 @@ namespace Parser
 
         public override void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
         {
+            base.ConnectComponents(domain, components);
+
             foreach (ILayoutElement Item in Items)
                 Item.ConnectComponents(domain, components);
         }

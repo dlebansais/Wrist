@@ -10,5 +10,7 @@
         IComponentProperty CheckedProperty { get; }
         IObject CheckedObject { get; }
         IObjectPropertyBoolean CheckedObjectProperty { get; }
+        bool IsController { get; }
+        void SetController();
     }
 }

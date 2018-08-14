@@ -29,6 +29,8 @@ namespace Parser
             Margin = element.Margin;
             HorizontalAlignment = element.HorizontalAlignment;
             VerticalAlignment = element.VerticalAlignment;
+            ElementEnable = element.ElementEnable;
+            ControllerElement = element.ControllerElement;
 
             if (DockPanel.DockTargets.ContainsKey(element))
                 GeneratorDockPanel.DockTargets.Add(this, DockPanel.DockTargets[element]);
@@ -52,7 +54,9 @@ namespace Parser
         public string Height { get; private set; }
         public string Margin { get; private set; }
         public string HorizontalAlignment { get; private set; }
+        public string ElementEnable { get; private set; }
         public string VerticalAlignment { get; private set; }
+        public IComponent ControllerElement { get; private set; }
 
         public static string AttachedProperties(IGeneratorLayoutElement element)
         {
@@ -88,6 +92,25 @@ namespace Parser
 
             if (!string.IsNullOrEmpty(Height))
                 Result += $" Height=\"{Height}\""; ;
+
+            if (ControllerElement != null)
+            {
+                string ControllerName = null;
+
+                if (ControllerElement is IComponentRadioButton AsRadioButton)
+                {
+                    IGeneratorComponentRadioButton ControllerControl = GeneratorComponentRadioButton.GeneratorComponentRadioButtonMap[AsRadioButton];
+                    ControllerName = ControllerControl.XamlName;
+                }
+
+                else if (ControllerElement is IComponentCheckBox AsCheckBox)
+                {
+                    IGeneratorComponentCheckBox ControllerControl = GeneratorComponentCheckBox.GeneratorComponentCheckBoxMap[AsCheckBox];
+                    ControllerName = ControllerControl.XamlName;
+                }
+
+                Result += $" IsEnabled=\"{{Binding IsChecked, Mode=OneWay, ElementName={ControllerName}}}\"";
+            }
 
             return Result;
         }

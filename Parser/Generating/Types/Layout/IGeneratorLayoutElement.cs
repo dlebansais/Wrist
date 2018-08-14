@@ -12,6 +12,8 @@ namespace Parser
         string Margin { get; }
         string HorizontalAlignment { get; }
         string VerticalAlignment { get; }
+        string ElementEnable { get; }
+        IComponent ControllerElement { get; }
         bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components);
         void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);
     }

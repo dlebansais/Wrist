@@ -6,10 +6,6 @@ namespace Parser
     {
         public string Text { get; set; }
 
-        public override void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
-        {
-        }
-
         public override string ToString()
         {
             return $"{GetType().Name} \"{Text}\"";
