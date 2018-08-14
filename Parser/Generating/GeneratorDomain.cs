@@ -273,7 +273,7 @@ namespace Parser
             cSharpWriter.WriteLine("        public App()");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
-            cSharpWriter.WriteLine($"            GoTo(Persistent.GetValue(\"page\", \"{HomePage.XamlName}\"));");
+            cSharpWriter.WriteLine($"            GoTo(Persistent.GetValue(\"page\", \"{HomePage.Name}\"));");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
 

@@ -61,7 +61,7 @@ namespace Parser
 
         public void Generate(IGeneratorLayout layout, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
         {
-            layout.Generate(areaLayouts, design, indentation, currentPage, CurrentObject, colorTheme, xamlWriter);
+            layout.Generate(this, areaLayouts, design, indentation, currentPage, CurrentObject, colorTheme, xamlWriter);
         }
 
         public void CollectGoTo(List<IGeneratorPageNavigation> goToList, IGeneratorPage currentPage)

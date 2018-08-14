@@ -6,6 +6,7 @@ namespace Parser
     {
         string Name { get; }
         string XamlName { get; }
+        string FileName { get; }
         IPanel Content { get; }
         void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components);
         void ReportElementsWithAttachedProperties(List<IDockPanel> dockPanels, List<IGrid> grids);

@@ -7,8 +7,9 @@ namespace Parser
     {
         string Name { get; }
         string XamlName { get; }
-        IGeneratorPanel Content { get; }
-        bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components);
-        void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter);
+        string FileName { get; }
+        Dictionary<IGeneratorArea, IGeneratorPanel> ContentTable { get; }
+        bool Connect(IGeneratorDomain domain, IGeneratorArea area);
+        void Generate(IGeneratorArea area, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter);
     }
 }

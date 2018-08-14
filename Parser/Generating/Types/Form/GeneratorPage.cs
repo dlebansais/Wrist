@@ -66,9 +66,8 @@ namespace Parser
 
                 foreach (KeyValuePair<IGeneratorArea, IGeneratorLayout> Entry in AreaLayouts)
                 {
-                    IReadOnlyCollection<IGeneratorComponent> Components = Entry.Key.Components;
                     IGeneratorLayout Layout = Entry.Value;
-                    IsConnected |= Layout.Connect(domain, Components);
+                    IsConnected |= Layout.Connect(domain, Entry.Key);
                 }
             }
 

@@ -11,22 +11,41 @@ namespace Parser
         {
             Name = layout.Name;
             XamlName = layout.XamlName;
-            Content = (IGeneratorPanel)GeneratorPanel.Convert(layout.Content);
+            FileName = layout.FileName;
+            LayoutBase = layout;
 
             GeneratorLayoutMap.Add(layout, this);
         }
 
         public string Name { get; private set; }
         public string XamlName { get; private set; }
-        public IGeneratorPanel Content { get; private set; }
+        public string FileName { get; private set; }
+        public Dictionary<IGeneratorArea, IGeneratorPanel> ContentTable { get; } = new Dictionary<IGeneratorArea, IGeneratorPanel>();
+        private ILayout LayoutBase;
 
-        public bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
+        public bool Connect(IGeneratorDomain domain, IGeneratorArea area)
         {
-            return Content.Connect(domain, components);
+            bool IsConnected = false;
+
+            IGeneratorPanel Content;
+            if (!ContentTable.ContainsKey(area))
+            {
+                IsConnected = true;
+                Content = (IGeneratorPanel)GeneratorPanel.Convert(LayoutBase.Content);
+
+                ContentTable.Add(area, Content);
+            }
+            else
+                Content = ContentTable[area];
+
+            IsConnected |= Content.Connect(domain, area.Components);
+
+            return IsConnected;
         }
 
-        public void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
+        public void Generate(IGeneratorArea area, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
         {
+            IGeneratorPanel Content = ContentTable[area];
             Content.Generate(areaLayouts, design, indentation, currentPage, currentObject, colorTheme, xamlWriter, "");
         }
 

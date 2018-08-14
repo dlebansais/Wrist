@@ -6,14 +6,16 @@ namespace Parser
     [ContentProperty("Content")]
     public class Layout : ILayout, IConnectable
     {
-        public void SetName(string name, string xamlName)
+        public void SetName(string name, string xamlName, string fileName)
         {
             Name = name;
             XamlName = xamlName;
+            FileName = fileName;
         }
 
         public string Name { get; private set; }
         public string XamlName { get; private set; }
+        public string FileName { get; private set; }
         public IPanel Content { get; set; } = new DockPanel();
 
         public bool Connect(IDomain domain)
