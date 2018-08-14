@@ -126,6 +126,7 @@ namespace Parser
             xamlWriter.WriteLine("    <Page.Resources>");
             xamlWriter.WriteLine("        <conv:KeyToValueConverter x:Key=\"convKeyToValue\"/>");
             xamlWriter.WriteLine("        <conv:IndexToVisibilityConverter x:Key=\"convIndexToVisibility\"/>");
+            xamlWriter.WriteLine("        <conv:IndexToCheckedConverter x:Key=\"convIndexToChecked\"/>");
 
             foreach (IGeneratorResource Resource in domain.Resources)
                 Resource.GenerateResourceLine(xamlWriter);

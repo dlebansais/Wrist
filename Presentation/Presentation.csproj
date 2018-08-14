@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Bookkeeping.cs" />
     <Compile Include="Converters\IndexToVisibilityConverter.cs" />
+    <Compile Include="Converters\IndexToCheckedConverter.cs" />
     <Compile Include="Converters\KeyToValueConverter.cs" />
     <Compile Include="DragDropItemsControl.cs" />
     <Compile Include="FileBitmapImage.cs" />

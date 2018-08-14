@@ -8,13 +8,21 @@ namespace AppCSHtml5
 {
     public class Language : ILanguage, INotifyPropertyChanged
     {
-        public Language()
+        public List<string> KeepActiveOptions
         {
+            get
+            {
+                List<string> Result = new List<string>();
+
+                Translation Translation = App.Translation;
+                IDictionary<string, string> Strings = Translation.Strings;
+                Result.Add(Strings["keep-active-option-1"]);
+                Result.Add(Strings["keep-active-option-2"]);
+                Result.Add(Strings["keep-active-option-3"]);
+
+                return Result;
+            }
         }
-
-        public List<string> KeepActiveOptions { get; } = new List<string>();
-
-        private Database Database = Database.Current;
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>
