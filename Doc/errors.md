@@ -1837,3 +1837,11 @@ In this case, the element name specified is not found among other elements in th
 A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
 
 In this case, the element name specified is found, but it cannot be used to enable the control or panel.
+
+## WTE00200
+
+*StatePanel has no index.*
+
+A StatePanel is used to display one among several controls or panels, based on an indexing component. The indexing component can be for instance a radio button.
+ 
+This error is issued when there is no indexing component declared. 

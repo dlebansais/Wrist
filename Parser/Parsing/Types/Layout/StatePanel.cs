@@ -12,6 +12,9 @@ namespace Parser
         {
             base.ConnectComponents(domain, components);
 
+            if (Index == null)
+                throw new ParsingException(200, Source, $"StatePanel has no index.");
+
             IComponent FoundComponent = null;
             foreach (IComponent Component in components)
                 if (Component.Source.Name == Index)
