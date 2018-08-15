@@ -11,8 +11,35 @@ namespace AppCSHtml5
         {
         }
 
-        public string Name { get; set; }
-        public string Password { get; set; }
+        public string Name
+        {
+            get { return _Name; }
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
+                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
+                }
+            }
+        }
+        private string _Name;
+
+        public string Password
+        {
+            get { return _Password; }
+            set
+            {
+                if (_Password != value)
+                {
+                    _Password = value;
+                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
+                }
+            }
+        }
+        private string _Password;
+
         public string ConfirmPassword { get; set; }
         public string NewPassword { get; set; }
         public bool IsSignedIn { get; set; }

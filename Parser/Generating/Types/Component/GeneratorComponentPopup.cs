@@ -42,7 +42,7 @@ namespace Parser
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string BindingName = $"{XamlName}_Toggle";
             string OpeningBinding = $" IsOpen=\"{{Binding IsChecked, ElementName={BindingName}}}\"";
-            string PanelProperties = " VerticalAlignment=\"Bottom\"";
+            string PanelProperties = " VerticalAlignment=\"Bottom\" HorizontalAlignment=\"Right\"";
             string ButtonProperties = " Padding=\"0\" BorderThickness=\"0\" HorizontalAlignment=\"Right\"";
             string PopupProperties = " HorizontalOffset=\"0\" VerticalOffset=\"0\"";
             string AreaProperties = $" Template=\"{{StaticResource {Area.XamlName}}}\"";
