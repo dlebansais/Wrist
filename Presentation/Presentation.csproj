@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bookkeeping.cs" />
+    <Compile Include="ControlTools.cs" />
     <Compile Include="Converters\IndexToVisibilityConverter.cs" />
     <Compile Include="Converters\IndexToCheckedConverter.cs" />
     <Compile Include="Converters\KeyToValueConverter.cs" />

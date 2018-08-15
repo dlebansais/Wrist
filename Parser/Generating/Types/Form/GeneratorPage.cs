@@ -254,6 +254,11 @@ namespace Parser
                 cSharpWriter.WriteLine("        }");
             }
 
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            (App.Current as App).OnIsEnabledChanged(sender, e);");
+            cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");
         }

@@ -23,7 +23,6 @@ namespace Parser
         public GeneratorLayoutElement(ILayoutElement element)
         {
             Style = element.Style;
-            Background = element.Background;
             Width = element.Width;
             Height = element.Height;
             Margin = element.Margin;
@@ -49,7 +48,6 @@ namespace Parser
         }
 
         public string Style { get; private set; }
-        public string Background { get; private set; }
         public string Width { get; private set; }
         public string Height { get; private set; }
         public string Margin { get; private set; }
@@ -74,9 +72,6 @@ namespace Parser
         protected string ElementProperties()
         {
             string Result = "";
-
-            if (!string.IsNullOrEmpty(Background))
-                Result += $" Background=\"{Background}\""; ;
 
             if (!string.IsNullOrEmpty(Margin))
                 Result += $" Margin=\"{Margin}\""; ;
@@ -109,7 +104,7 @@ namespace Parser
                     ControllerName = ControllerControl.XamlName;
                 }
 
-                Result += $" IsEnabled=\"{{Binding IsChecked, Mode=OneWay, ElementName={ControllerName}}}\"";
+                Result += $" IsEnabled=\"{{Binding IsChecked, Mode=OneWay, ElementName={ControllerName}}}\" IsEnabledChanged=\"OnIsEnabledChanged\"";
             }
 
             return Result;

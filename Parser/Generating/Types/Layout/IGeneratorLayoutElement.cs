@@ -6,7 +6,6 @@ namespace Parser
     public interface IGeneratorLayoutElement
     {
         string Style { get; }
-        string Background { get; }
         string Width { get; }
         string Height { get; }
         string Margin { get; }

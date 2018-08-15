@@ -247,24 +247,32 @@ namespace Parser
                         LineList.Add($"             xmlns:{Entry.Key}={Entry.Value}");
                     }
 
-            if (LineList.Count > 0)
-                LineList[LineList.Count - 1] = LineList[LineList.Count - 1] + ">";
+            if (!PrefixList.Contains("x"))
+            {
+                PrefixList.Add("x");
+                LineList.Add($"             xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"");
+            }
+
+            LineList[LineList.Count - 1] = LineList[LineList.Count - 1] + ">";
 
             foreach (string Line in LineList)
                 xamlWriter.WriteLine(Line);
-            xamlWriter.WriteLine("    <Application.Resources>");
+            xamlWriter.WriteLine("  <Application.Resources>");
 
             foreach (XmlnsContentPair Resource in ResourceList)
                 colorTheme.WriteXamlLine(xamlWriter, Resource.Content);
 
-            xamlWriter.WriteLine("    </Application.Resources>");
+            xamlWriter.WriteLine("  </Application.Resources>");
             xamlWriter.WriteLine("</Application>");
         }
 
         private void GenerateAppCSharp(string outputFolderName, string appNamespace, StreamWriter cSharpWriter)
         {
             cSharpWriter.WriteLine("using Presentation;");
+            cSharpWriter.WriteLine("using System.Collections.Generic;");
             cSharpWriter.WriteLine("using Windows.UI.Xaml;");
+            cSharpWriter.WriteLine("using Windows.UI.Xaml.Controls;");
+            cSharpWriter.WriteLine("using Windows.UI.Xaml.Media;");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");
@@ -307,6 +315,15 @@ namespace Parser
             cSharpWriter.WriteLine("            }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("            Persistent.SetValue(\"page\", pageName);");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        private Dictionary<Control, Brush> BrushTable = new Dictionary<Control, Brush>();");
+            cSharpWriter.WriteLine("        private Dictionary<Control, Style> StyleTable = new Dictionary<Control, Style>();");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        public void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            if ((sender is Control AsControl) && (e.OldValue is bool IsOldEnabled) && (e.NewValue is bool IsNewEnabled) && (IsOldEnabled != IsNewEnabled))");
+            cSharpWriter.WriteLine("                ControlTools.ChangeEnabledStyleOrColor(AsControl, IsNewEnabled, BrushTable, StyleTable, Resources);");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");

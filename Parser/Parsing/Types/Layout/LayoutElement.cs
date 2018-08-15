@@ -11,7 +11,6 @@ namespace Parser
 
         public IParsingSource Source { get; private set; }
         public string Style { get; set; }
-        public string Background { get; set; }
         public string Width { get; set; }
         public string Height { get; set; }
         public string Margin { get; set; }
