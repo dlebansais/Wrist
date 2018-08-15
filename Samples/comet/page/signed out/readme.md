@@ -1,4 +1,4 @@
-# Sign out
+# Signed out
 
 This page is displayed when the user tried to sign out, successfully or not.
 
