@@ -11,7 +11,6 @@ namespace Parser
         public GeneratorComponentIndex(IComponentIndex index)
             : base(index)
         {
-            IsController = index.IsController;
             BaseIndex = index;
 
             GeneratorComponentIndexMap.Add(BaseIndex, this);
@@ -21,7 +20,6 @@ namespace Parser
 
         public IGeneratorObject IndexObject { get; private set; }
         public IGeneratorObjectPropertyIndex IndexObjectProperty { get; private set; }
-        public bool IsController { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain)
         {

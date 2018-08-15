@@ -68,13 +68,7 @@ namespace Parser
 
                 if (ControllerElement == null)
                     throw new ParsingException(198, Source, $"Element '{ElementEnable}' not found.");
-                else if (ControllerElement is IComponentRadioButton AsRadioButton)
-                    AsRadioButton.SetController();
-                else if (ControllerElement is IComponentCheckBox AsCheckBox)
-                    AsCheckBox.SetController();
-                else if (ControllerElement is IComponentIndex AsIndex)
-                    AsIndex.SetController();
-                else
+                else if (!(ControllerElement is IComponentRadioButton) && !(ControllerElement is IComponentCheckBox) && !(ControllerElement is IComponentIndex))
                     throw new ParsingException(199, Source, $"Element '{ElementEnable}' is neither a CheckBox, RadioButton or Index.");
             }
         }

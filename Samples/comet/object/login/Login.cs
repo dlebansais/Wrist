@@ -13,8 +13,8 @@ namespace AppCSHtml5
 
         public string Name { get; set; }
         public string Password { get; set; }
-        public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }
+        public string NewPassword { get; set; }
         public bool IsSignedIn { get; set; }
 
         public string Email
@@ -26,6 +26,8 @@ namespace AppCSHtml5
                 {
                     _Email = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
+                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
+                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
                 }
             }
         }
@@ -40,6 +42,8 @@ namespace AppCSHtml5
                 {
                     _Confirm1 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
+                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
+                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
                 }
             }
         }
@@ -54,6 +58,8 @@ namespace AppCSHtml5
                 {
                     _Confirm2 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
+                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
+                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
                 }
             }
         }
@@ -68,6 +74,8 @@ namespace AppCSHtml5
                 {
                     _Confirm3 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
+                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
+                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
                 }
             }
         }
@@ -89,6 +97,8 @@ namespace AppCSHtml5
                     NotifyPropertyChanged(nameof(IsSignInMethod2));
                     NotifyPropertyChanged(nameof(IsSignInMethod3));
                     NotifyPropertyChanged(nameof(IsSignInMethod4));
+                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
+                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
                 }
             }
         }
@@ -114,9 +124,17 @@ namespace AppCSHtml5
 
         public bool IsProfileReady { get { return Confirm1 && Confirm2 && Confirm3 && !string.IsNullOrEmpty(Email); } set { } }
 
+        public bool IsSignInMethod1Possible { get { return SignInMethod == 1 && IsProfileReady && !string.IsNullOrEmpty(Name); } set { } }
+        public bool IsSignInMethod2Possible { get { return SignInMethod == 2 && IsProfileReady && !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword); } set { } }
+
         public void On_SignIn(string pageName, string sourceName, string sourceContent)
         {
-
+            IsSignedIn = true;
+            Password = null;
+            ConfirmPassword = null;
+            NotifyPropertyChanged(nameof(IsSignedIn));
+            NotifyPropertyChanged(nameof(Password));
+            NotifyPropertyChanged(nameof(ConfirmPassword));
         }
 
         public void On_ChangeEmail(string pageName, string sourceName, string sourceContent, out string destinationPageName)
@@ -136,11 +154,30 @@ namespace AppCSHtml5
 
         public void On_SignOut(string pageName, string sourceName, string sourceContent)
         {
+            Name = null;
+            IsSignedIn = false;
+            Email = null;
+            Confirm1 = false;
+            Confirm2 = false;
+            Confirm3 = false;
+            KeepActiveIndex = 0;
+            FullName = null;
+            Location = null;
+            SignInMethod = 0;
+            NotifyPropertyChanged(nameof(Name));
+            NotifyPropertyChanged(nameof(IsSignedIn));
+            NotifyPropertyChanged(nameof(Email));
+            NotifyPropertyChanged(nameof(Confirm1));
+            NotifyPropertyChanged(nameof(Confirm2));
+            NotifyPropertyChanged(nameof(Confirm3));
+            NotifyPropertyChanged(nameof(KeepActiveIndex));
+            NotifyPropertyChanged(nameof(FullName));
+            NotifyPropertyChanged(nameof(Location));
+            NotifyPropertyChanged(nameof(SignInMethod));
         }
 
-        public void On_Disconnect(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_Disconnect(string pageName, string sourceName, string sourceContent)
         {
-            destinationPageName = null;
         }
 
         public void On_Delete(string pageName, string sourceName, string sourceContent, out string destinationPageName)

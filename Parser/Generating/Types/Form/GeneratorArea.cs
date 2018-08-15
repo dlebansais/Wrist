@@ -83,6 +83,8 @@ namespace Parser
                         goToList.Add(Copy);
                     }
                 }
+                else if (Component is IGeneratorComponentPopup AsPopup)
+                    AsPopup.Area.CollectGoTo(goToList, currentPage);
                 else if (Component is IGeneratorComponentArea AsArea)
                     AsArea.Area.CollectGoTo(goToList, currentPage);
         }

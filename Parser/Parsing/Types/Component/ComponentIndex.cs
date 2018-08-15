@@ -11,7 +11,6 @@
         public IComponentProperty IndexProperty { get; private set; }
         public IObject IndexObject { get; private set; }
         public IObjectPropertyIndex IndexObjectProperty { get; private set; }
-        public bool IsController { get; private set; }
 
         public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
@@ -29,11 +28,6 @@
             IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             IndexObject = Object;
             IndexObjectProperty = ObjectProperty;
-        }
-
-        public void SetController()
-        {
-            IsController = true;
         }
     }
 }

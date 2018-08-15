@@ -14,7 +14,6 @@ namespace Parser
             ContentKey = radioButton.ContentKey;
             GroupName = radioButton.GroupName;
             GroupIndex = radioButton.GroupIndex;
-            IsController = radioButton.IsController;
             BaseRadioButton = radioButton;
 
             GeneratorComponentRadioButtonMap.Add(BaseRadioButton, this);
@@ -31,7 +30,6 @@ namespace Parser
         public string GroupName { get; private set; }
         public int GroupIndex { get; private set; }
         public ICollection<IGeneratorComponentRadioButton> Group { get; private set; }
-        public bool IsController { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain)
         {
@@ -95,13 +93,12 @@ namespace Parser
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
-            string NameProperty = IsController ? $" x:Name=\"{XamlName}\"" : "";
             string Properties = $" Style=\"{{StaticResource {design.XamlName}RadioButton{StyleProperty}}}\" GroupName=\"{GroupName}\"";
             string ContentValue = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
             string IndexValue = GetObjectBinding(currentObject, IndexObject, IndexObjectProperty);
             string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=TwoWay, Converter={{StaticResource convIndexToChecked}}, ConverterParameter={GroupIndex}}}";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{NameProperty}{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{ContentValue}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{ContentValue}\"/>");
         }
     }
 }

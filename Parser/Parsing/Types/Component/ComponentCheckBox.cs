@@ -7,7 +7,6 @@
         {
             ContentProperty = contentProperty;
             CheckedProperty = checkedProperty;
-            IsController = false;
         }
 
         public IComponentProperty ContentProperty { get; private set; }
@@ -18,7 +17,6 @@
         public IComponentProperty CheckedProperty { get; private set; }
         public IObject CheckedObject { get; private set; }
         public IObjectPropertyBoolean CheckedObjectProperty { get; private set; }
-        public bool IsController { get; private set; }
 
         public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
@@ -50,11 +48,6 @@
             IsConnected |= CheckedProperty.ConnectToObjectBooleanOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             CheckedObject = Object;
             CheckedObjectProperty = ObjectProperty;
-        }
-
-        public void SetController()
-        {
-            IsController = true;
         }
     }
 }

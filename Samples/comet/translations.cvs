@@ -33,19 +33,17 @@ sign-in-text	Choose a sign in method and enter your info.
 keep-active	Keep this session logged for
 password-colon	Password:
 other-platform	Click one of these buttons to go to the sign in page.
-profile-title	todo
-profile-text	todo
-change-email	todo
-change-password	todo
-disconnect	todo
-certificate-password	todo
-optional	todo
-full-name-colon	todo
-location-colon	todo
-delete-account	todo
+profile-title	Your profile
+profile-text	Find your profile info here.
+change-email	Change your email address
+change-password	Change your password
+disconnect	Sign out
+certificate-password	Manage certificates
+optional	Fill your private info here (optional)
+full-name-colon	Full name:
+location-colon	Location:
+delete-account	Delete Account
 sign-in	Sign in
-disconnect-title	todo
-disconnect-text	todo
 delete-account-title	todo
 delete-account-text	todo
 feature-1-title	Algorithm
