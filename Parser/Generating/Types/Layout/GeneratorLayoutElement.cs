@@ -69,7 +69,7 @@ namespace Parser
             return Result;
         }
 
-        protected string ElementProperties()
+        protected string ElementProperties(IGeneratorPage currentPage, IGeneratorObject currentObject)
         {
             string Result = "";
 
@@ -90,21 +90,34 @@ namespace Parser
 
             if (ControllerElement != null)
             {
-                string ControllerName = null;
-
                 if (ControllerElement is IComponentRadioButton AsRadioButton)
                 {
                     IGeneratorComponentRadioButton ControllerControl = GeneratorComponentRadioButton.GeneratorComponentRadioButtonMap[AsRadioButton];
-                    ControllerName = ControllerControl.XamlName;
+                    string IndexValue = ControllerControl.GetObjectBinding(currentObject, ControllerControl.IndexObject, ControllerControl.IndexObjectProperty);
+                    string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=OneWay, Converter={{StaticResource convIndexToChecked}}, ConverterParameter={ControllerControl.GroupIndex}}}";
+
+                    Result += $" IsEnabled=\"{IsCheckedBinding}\"";
                 }
 
                 else if (ControllerElement is IComponentCheckBox AsCheckBox)
                 {
                     IGeneratorComponentCheckBox ControllerControl = GeneratorComponentCheckBox.GeneratorComponentCheckBoxMap[AsCheckBox];
-                    ControllerName = ControllerControl.XamlName;
+                    string IndexValue = ControllerControl.GetObjectBinding(currentObject, ControllerControl.CheckedObject, ControllerControl.CheckedObjectProperty);
+                    string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=OneWay}}";
+
+                    Result += $" IsEnabled=\"{IsCheckedBinding}\"";
                 }
 
-                Result += $" IsEnabled=\"{{Binding IsChecked, Mode=OneWay, ElementName={ControllerName}}}\" IsEnabledChanged=\"OnIsEnabledChanged\"";
+                else if (ControllerElement is IComponentIndex AsIndex)
+                {
+                    IGeneratorComponentIndex ControllerControl = GeneratorComponentIndex.GeneratorComponentIndexMap[AsIndex];
+                    string IndexValue = ControllerControl.GetObjectBinding(currentObject, ControllerControl.IndexObject, ControllerControl.IndexObjectProperty);
+                    string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=OneWay}}";
+
+                    Result += $" IsEnabled=\"{IsCheckedBinding}\"";
+                }
+
+                Result += " IsEnabledChanged=\"OnIsEnabledChanged\"";
             }
 
             return Result;

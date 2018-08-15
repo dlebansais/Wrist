@@ -1,6 +1,6 @@
 # Sign up
 
-This page is used to record information about a new user. A user is brought here if they never signed in and try to sign in in the start page, or if they select the sign up button in the sign in page or the sign in popup.
+This page is used to record information about a new user. A user is brought here if they never signed in and try to sign in in the start page, or if they select the sign up button in the start page or the sign in popup.
 
 # Info
 
@@ -18,13 +18,10 @@ The sign up page allows users to select one of the following methods for signing
 - Login id only
 - Login id and password, with a confirmation
 - Use the login information from another platform
-- Certificate login, this will redirect to the certificate creation page
 
-The method is chosen with a radio button.
+The method is chosen with a radio button. Using a certificate to sign in later czan be done from the profile page.
 
-There is a button to go to the sign in page.
-
-There is a validity duration option:
+For login id or login & password methods, There is a validity duration option:
 
 - This session only
 - Two weeks

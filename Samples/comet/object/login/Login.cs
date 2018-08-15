@@ -12,17 +12,106 @@ namespace AppCSHtml5
         }
 
         public string Name { get; set; }
-        public string Email { get; set; }
-        public int SignInMethod { get; set; }
         public string Password { get; set; }
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }
-        public bool Confirm1 { get; set; }
-        public bool Confirm2 { get; set; }
-        public bool Confirm3 { get; set; }
+
+        public string Email
+        {
+            get { return _Email; }
+            set
+            {
+                if (_Email != value)
+                {
+                    _Email = value;
+                    NotifyPropertyChanged(nameof(IsProfileReady));
+                }
+            }
+        }
+        private string _Email;
+
+        public bool Confirm1
+        {
+            get { return _Confirm1; }
+            set
+            {
+                if (_Confirm1 != value)
+                {
+                    _Confirm1 = value;
+                    NotifyPropertyChanged(nameof(IsProfileReady));
+                }
+            }
+        }
+        private bool _Confirm1;
+
+        public bool Confirm2
+        {
+            get { return _Confirm2; }
+            set
+            {
+                if (_Confirm2 != value)
+                {
+                    _Confirm2 = value;
+                    NotifyPropertyChanged(nameof(IsProfileReady));
+                }
+            }
+        }
+        private bool _Confirm2;
+
+        public bool Confirm3
+        {
+            get { return _Confirm3; }
+            set
+            {
+                if (_Confirm3 != value)
+                {
+                    _Confirm3 = value;
+                    NotifyPropertyChanged(nameof(IsProfileReady));
+                }
+            }
+        }
+        private bool _Confirm3;
+
         public int KeepActiveIndex { get; set; }
         public string FullName { get; set; }
         public string Location { get; set; }
+
+        public int SignInMethod
+        {
+            get { return _SignInMethod; }
+            set
+            {
+                if (value > 0 && value < 4 && _SignInMethod != value)
+                {
+                    _SignInMethod = value;
+                    NotifyPropertyChanged(nameof(IsSignInMethod1));
+                    NotifyPropertyChanged(nameof(IsSignInMethod2));
+                    NotifyPropertyChanged(nameof(IsSignInMethod3));
+                    NotifyPropertyChanged(nameof(IsSignInMethod4));
+                }
+            }
+        }
+        public bool IsSignInMethod1 { get { return SignInMethod == 1; } set { } }
+        public bool IsSignInMethod2 { get { return SignInMethod == 2; } set { } }
+        public bool IsSignInMethod3 { get { return SignInMethod == 3; } set { } }
+        public bool IsSignInMethod4 { get { return SignInMethod == 4; } set { } }
+        private int _SignInMethod;
+
+        public bool Ready
+        {
+            get { return _Ready; }
+            set
+            {
+                if (_Ready != value)
+                {
+                    _Ready = value;
+                    NotifyPropertyChanged(nameof(Ready));
+                }
+            }
+        }
+        private bool _Ready;
+
+        public bool IsProfileReady { get { return Confirm1 && Confirm2 && Confirm3 && !string.IsNullOrEmpty(Email); } set { } }
 
         public void On_SignIn(string pageName, string sourceName, string sourceContent)
         {

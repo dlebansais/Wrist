@@ -23,8 +23,9 @@ namespace Parser
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (Style != null) ? Style : "";
             string Properties = $" Style=\"{{StaticResource {design.XamlName}Text{StyleProperty}}}\"";
+            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties(this)}{visibilityBinding} Text=\"{Text}\"{Properties}{ElementProperties()}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties(this)}{visibilityBinding} Text=\"{Text}\"{Properties}{ElementPropertiesString}/>");
         }
 
         public override string ToString()

@@ -1,4 +1,4 @@
-﻿header sign in: area, name=header sign in
+﻿header sign in only: area, name=header sign in only
 home title: text, text=translation.strings[home-title]
 home text: text, text=translation.strings[home-text]
 start: button, content=translation.strings[start], goto=start

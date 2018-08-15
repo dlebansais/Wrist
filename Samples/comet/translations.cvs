@@ -12,14 +12,14 @@ change-password-title	todo
 change-password-text	todo
 current-password-colon	todo
 confirm-password-colon	todo
-start-title	todo
-start-text	todo
-sign-up-title	todo
-sign-up-text	todo
-email-colon	todo
-confirm-check-1	todo
-confirm-check-2	todo
-confirm-check-3	todo
+start-title	Start your project
+start-text	Start your own project here. When you run your first project, you will be able to save your work (require a valid email address).
+sign-up-title	Sign up to the service and record your work
+sign-up-text	By signing up you ensure your project data can be recovered at all times.
+email-colon	Email:
+confirm-check-1	I'm responsible for keeping my sign in info secure, and remembering my email address.
+confirm-check-2	My data can be examined (for statistic purpose only).
+confirm-check-3	We can ban you any time we wish (data still available to recover).
 sign-in-method-1	Login name only.
 name-colon	Name:
 sign-in-method-2	Login and password.
@@ -64,3 +64,5 @@ keep-active-option-1	This session only (until inactive for an hour)
 keep-active-option-2	Two weeks
 keep-active-option-3	No limit
 other	Other
+sign-up	Sign up
+ready	Ready

@@ -73,8 +73,9 @@ namespace Parser
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string GridProperties = "";
+            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{GridProperties}{ElementProperties()}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{GridProperties}{ElementPropertiesString}>");
 
             if (ColumnCount > 1)
             {

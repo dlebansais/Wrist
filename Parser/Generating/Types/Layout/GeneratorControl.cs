@@ -43,7 +43,7 @@ namespace Parser
         {
             bool IsHorizontalAlignmentStretch = (HorizontalAlignment == Windows.UI.Xaml.HorizontalAlignment.Stretch.ToString());
             string AttachedPropertiesString = AttachedProperties(this);
-            string ElementPropertiesString = ElementProperties();
+            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
 
             Component.Generate(design, Style, AttachedPropertiesString, ElementPropertiesString, TextWrapping, IsHorizontalAlignmentStretch, indentation, currentPage, currentObject, colorTheme, xamlWriter, visibilityBinding);
         }

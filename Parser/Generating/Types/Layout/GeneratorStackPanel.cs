@@ -19,6 +19,7 @@ namespace Parser
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
+            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
             string PanelType;
             string StackPanelProperties = "";
 
@@ -36,7 +37,7 @@ namespace Parser
                     break;
             }
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<{PanelType}{AttachedProperties(this)}{visibilityBinding}{StackPanelProperties}{ElementProperties()}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<{PanelType}{AttachedProperties(this)}{visibilityBinding}{StackPanelProperties}{ElementPropertiesString}>");
 
             foreach (IGeneratorLayoutElement element in Items)
                 element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, "");

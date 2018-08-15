@@ -15,9 +15,7 @@ The sign in page allows users to sign in using one of the following methods:
 
 The method is chosen with a radio button.
 
-There is a button to go to the sign up page.
-
-There is a validity duration option:
+For the login and login+password options there is a validity duration option:
 
 - This session only (until inactive for an hour)
 - Two weeks
@@ -25,6 +23,6 @@ There is a validity duration option:
 
 If the method is "login" or "login & password", there is a "sign in" button. If successful, it sends them back to the start page. In case of error, there is an error message.
 
-If the method is "other plaform" there is a button that sends them to the sign page of that platform.
+If the method is "other plaform" there is a button that sends them to the sign in page of that platform.
 
 If the method is certificate, it shows instructions to install the certificate and a retry button.

@@ -1,20 +1,27 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Windows.UI.Xaml;
 
 namespace Parser
 {
     public class GeneratorComponentIndex : GeneratorComponent, IGeneratorComponentIndex
     {
-        public GeneratorComponentIndex(IComponentIndex selector)
-            : base(selector)
+        public static Dictionary<IComponentIndex, IGeneratorComponentIndex> GeneratorComponentIndexMap { get; } = new Dictionary<IComponentIndex, IGeneratorComponentIndex>();
+
+        public GeneratorComponentIndex(IComponentIndex index)
+            : base(index)
         {
-            BaseIndex = selector;
+            IsController = index.IsController;
+            BaseIndex = index;
+
+            GeneratorComponentIndexMap.Add(BaseIndex, this);
         }
 
         IComponentIndex BaseIndex;
 
         public IGeneratorObject IndexObject { get; private set; }
         public IGeneratorObjectPropertyIndex IndexObjectProperty { get; private set; }
+        public bool IsController { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain)
         {

@@ -44,8 +44,9 @@ namespace Parser
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StatePanelProperties = "";
+            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{StatePanelProperties}{ElementProperties()}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{StatePanelProperties}{ElementPropertiesString}>");
 
             List<string> Parameters = new List<string>();
             for (int i = 0; i < Items.Count; i++)

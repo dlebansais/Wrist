@@ -29,8 +29,9 @@ namespace Parser
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string DockPanelProperties = "";
+            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<DockPanel{AttachedProperties(this)}{visibilityBinding}{DockPanelProperties}{ElementProperties()}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<DockPanel{AttachedProperties(this)}{visibilityBinding}{DockPanelProperties}{ElementPropertiesString}>");
 
             foreach (IGeneratorLayoutElement element in Items)
                 element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, "");

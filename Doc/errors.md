@@ -1832,8 +1832,8 @@ In this case, the element name specified is not found among other elements in th
 
 ## WTE00199
 
-*Element 'x' is neither a CheckBox or RadioButton.*
+*Element 'x' is neither a CheckBox, RadioButton or Index.*
 
 A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
 
-In this case, the element name specified is found, but doesn't have a *IsChecked* property.
+In this case, the element name specified is found, but it cannot be used to enable the control or panel.
