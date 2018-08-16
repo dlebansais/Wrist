@@ -34,6 +34,8 @@
             IsConnected |= IndexProperty.ConnectToObjectIntegerOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             IndexObject = Object;
             IndexObjectProperty = ObjectProperty;
+
+            IndexObjectProperty?.SetIsReadWrite();
         }
 
         private void ConnectItems(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
@@ -45,6 +47,8 @@
             ItemsResource = Resource;
             ItemsObject = Object;
             ItemsObjectProperty = ObjectProperty;
+
+            ItemsObjectProperty?.SetIsRead();
         }
     }
 }

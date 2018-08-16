@@ -39,6 +39,8 @@
             ContentObject = Object;
             ContentObjectProperty = ObjectProperty;
             ContentKey = ObjectPropertyKey;
+
+            ContentObjectProperty?.SetIsRead();
         }
 
         private void ConnectChecked(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
@@ -48,6 +50,8 @@
             IsConnected |= CheckedProperty.ConnectToObjectBooleanOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             CheckedObject = Object;
             CheckedObjectProperty = ObjectProperty;
+
+            CheckedObjectProperty?.SetIsReadWrite();
         }
     }
 }

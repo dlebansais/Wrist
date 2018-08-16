@@ -3,7 +3,7 @@
     public class ObjectPropertyStringList : ObjectProperty, IObjectPropertyStringList
     {
         public ObjectPropertyStringList(IDeclarationSource nameSource, string cSharpName)
-            : base(nameSource, cSharpName)
+            : base(nameSource, cSharpName, false, false)
         {
         }
 

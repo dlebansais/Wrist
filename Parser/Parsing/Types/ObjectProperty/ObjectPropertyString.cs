@@ -3,7 +3,7 @@
     public class ObjectPropertyString : ObjectProperty, IObjectPropertyString
     {
         public ObjectPropertyString(IDeclarationSource nameSource, string cSharpName, int maximumLength)
-            : base(nameSource, cSharpName)
+            : base(nameSource, cSharpName, false, false)
         {
             MaximumLength = maximumLength;
         }

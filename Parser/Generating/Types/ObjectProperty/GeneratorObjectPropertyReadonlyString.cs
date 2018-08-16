@@ -16,7 +16,7 @@ namespace Parser
 
         public override void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter)
         {
-            cSharpWriter.WriteLine($"        string {CSharpName} {{ get; }}");
+            GenerateDeclaration(domain, cSharpWriter, "string");
         }
     }
 }

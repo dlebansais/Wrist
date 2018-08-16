@@ -41,20 +41,37 @@ namespace Parser
         {
             NameSource = property.NameSource;
             CSharpName = property.CSharpName;
+            IsRead = property.IsRead;
+            IsWrite = property.IsWrite;
             Object = obj;
         }
 
         public IDeclarationSource NameSource { get; private set; }
         public string CSharpName { get; private set; }
+        public bool IsRead { get; private set; }
+        public bool IsWrite { get; private set; }
         public IGeneratorObject Object { get; private set; }
 
         public abstract bool Connect(IGeneratorDomain domain);
 
         public override string ToString()
         {
-            return $"{Object.CSharpName}.{NameSource.Name} property";
+            string Access = (IsRead ? "R" : "") + (IsWrite ? "W" : "");
+            return $"{Object.CSharpName}.{NameSource.Name} {Access} property";
         }
 
         public abstract void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter);
+
+        protected void GenerateDeclaration(IGeneratorDomain domain, StreamWriter cSharpWriter, string typeName)
+        {
+            string Indentation = "        ";
+
+            if (IsRead && IsWrite)
+                cSharpWriter.WriteLine($"{Indentation}{typeName} {CSharpName} {{ get; set; }}");
+            else if (IsRead)
+                cSharpWriter.WriteLine($"{Indentation}{typeName} {CSharpName} {{ get; }}");
+            else if (IsWrite)
+                cSharpWriter.WriteLine($"{Indentation}{typeName} {CSharpName} {{ set; }}");
+        }
     }
 }

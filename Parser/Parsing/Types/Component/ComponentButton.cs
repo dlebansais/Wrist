@@ -42,6 +42,8 @@
             ContentObject = Object;
             ContentObjectProperty = ObjectProperty;
             ContentKey = ObjectPropertyKey;
+
+            ContentObjectProperty?.SetIsRead();
         }
 
         private void ConnectGoTo(IDomain domain, ref bool IsConnected)

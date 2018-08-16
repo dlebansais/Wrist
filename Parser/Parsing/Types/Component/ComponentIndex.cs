@@ -28,6 +28,8 @@
             IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             IndexObject = Object;
             IndexObjectProperty = ObjectProperty;
+
+            IndexObjectProperty?.SetIsRead();
         }
     }
 }

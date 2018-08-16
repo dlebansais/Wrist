@@ -31,7 +31,7 @@ namespace Parser
 
         public override void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter)
         {
-            cSharpWriter.WriteLine($"        IList<I{NestedObject.CSharpName}> {CSharpName} {{ get; }}");
+            GenerateDeclaration(domain, cSharpWriter, $"IList<I{NestedObject.CSharpName}>");
         }
     }
 }

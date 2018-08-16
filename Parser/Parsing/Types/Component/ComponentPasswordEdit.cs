@@ -20,6 +20,8 @@
             TextObject = Object;
             TextObjectProperty = ObjectProperty;
 
+            TextObjectProperty?.SetIsReadWrite();
+
             return IsConnected;
         }
     }

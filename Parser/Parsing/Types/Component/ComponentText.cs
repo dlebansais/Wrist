@@ -36,6 +36,8 @@
             TextObjectProperty = ObjectProperty;
             TextKey = ObjectPropertyKey;
 
+            TextObjectProperty?.SetIsRead();
+
             return IsConnected;
         }
     }

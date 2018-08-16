@@ -3,7 +3,7 @@
     public class ObjectPropertyItemList : ObjectProperty, IObjectPropertyItemList
     {
         public ObjectPropertyItemList(IDeclarationSource nameSource, string cSharpName, IDeclarationSource objectSource)
-            : base(nameSource, cSharpName)
+            : base(nameSource, cSharpName, true, false)
         {
             ObjectSource = objectSource;
         }

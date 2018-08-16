@@ -35,6 +35,8 @@
             ItemObject = Object;
             ItemObjectProperty = ObjectProperty;
             ItemNestedObject = NestedObject;
+
+            ItemObjectProperty?.SetIsRead();
         }
 
         private void ConnectArea(IDomain domain, ref bool IsConnected)

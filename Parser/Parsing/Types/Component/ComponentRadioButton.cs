@@ -47,6 +47,8 @@ namespace Parser
             ContentObject = Object;
             ContentObjectProperty = ObjectProperty;
             ContentKey = ObjectPropertyKey;
+
+            ContentObjectProperty?.SetIsRead();
         }
 
         private void ConnectIndex(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
@@ -56,6 +58,8 @@ namespace Parser
             IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             IndexObject = Object;
             IndexObjectProperty = ObjectProperty;
+
+            IndexObjectProperty?.SetIsReadWrite();
         }
 
         private void ConnectGroup(IDomain domain, IArea rootArea, ref bool IsConnected)
