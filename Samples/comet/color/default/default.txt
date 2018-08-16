@@ -6,3 +6,4 @@ Blue: #DEF2F9
 LigthGray: #E9E9E9
 Gray: #DADADA
 LightBlue: #F0F0FF
+DarkBlue: #3EAAAF

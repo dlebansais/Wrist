@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style x:Key="defaultDesignTextPageSubtitle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+    <Setter Property="FontFamily" Value="SourceSansPro-Light.ttf"/>
+    <Setter Property="FontSize" Value="22"/>
+    <Setter Property="Foreground" Value="Black"/>
+  </Style>
+
+  <Style x:Key="defaultDesignTextPageSubtitleDisabled" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+    <Setter Property="FontFamily" Value="SourceSansPro-Light.ttf"/>
+    <Setter Property="FontSize" Value="22"/>
+    <Setter Property="Foreground" Value="Gray"/>
+  </Style>
+
+</ResourceDictionary>
