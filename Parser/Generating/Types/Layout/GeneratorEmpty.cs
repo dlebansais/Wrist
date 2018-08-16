@@ -18,9 +18,10 @@ namespace Parser
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
+            string AttachedProperties = GetAttachedProperties();
+            string ElementProperties = GetElementProperties(currentPage, currentObject);
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{ElementPropertiesString}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties}{visibilityBinding}{ElementProperties}/>");
         }
 
         public override string ToString()

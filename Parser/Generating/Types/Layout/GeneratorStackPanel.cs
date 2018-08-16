@@ -19,25 +19,26 @@ namespace Parser
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
-            string PanelType;
+            string AttachedProperties = GetAttachedProperties();
             string StackPanelProperties = "";
+            string ElementProperties = GetElementProperties(currentPage, currentObject);
 
+            string PanelType;
             switch (Orientation)
             {
                 case Orientation.Horizontal:
                     PanelType = "WrapPanel";
-                    //StackPanelProperties = " Orientation=\"Horizontal\"";
                     break;
 
                 default:
                 case Orientation.Vertical:
                     PanelType = "StackPanel";
-                    //StackPanelProperties = " Orientation=\"Horizontal\"";
                     break;
             }
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<{PanelType}{AttachedProperties(this)}{visibilityBinding}{StackPanelProperties}{ElementPropertiesString}>");
+            string AllProperties = $"{AttachedProperties}{visibilityBinding}{StackPanelProperties}{ElementProperties}";
+
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<{PanelType}{AllProperties}>");
 
             foreach (IGeneratorLayoutElement element in Items)
                 element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, "");

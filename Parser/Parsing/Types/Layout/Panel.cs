@@ -10,6 +10,9 @@ namespace Parser
         {
             base.ConnectComponents(domain, components);
 
+            if (Items.Count < 1)
+                throw new ParsingException(203, Source, $"Panel '{GetType().Name}' has no item.");
+
             foreach (ILayoutElement Item in Items)
                 Item.ConnectComponents(domain, components);
         }

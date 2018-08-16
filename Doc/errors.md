@@ -1845,3 +1845,25 @@ In this case, the element name specified is found, but it cannot be used to enab
 A StatePanel is used to display one among several controls or panels, based on an indexing component. The indexing component can be for instance a radio button.
  
 This error is issued when there is no indexing component declared. 
+
+## WTE00201
+
+*StatePanel is referencing 'x' but doesn't have two the items expected for a boolean property.*
+
+A StatePanel is used to display one among several controls or panels, based on an indexing component. The indexing component can be for instance a radio button.
+ 
+This error is issued when the indexing component is of the boolean type but there is not exactly two items inside the StatePanel (first one for the value `False`, last one for the value `True`). 
+
+## WTE00202
+
+*StatePanel must have at least two items.*
+
+A StatePanel is used to display one among several controls or panels, based on an indexing component. The indexing component can be for instance a radio button.
+ 
+This error is issued when the StatePanel has less than two items. At least two items are expected since the GUI represent different values over an index range of at least [0,1].
+
+## WTE00203
+
+*Panel 'x' has no item.*
+ 
+This error is issued when a panel (such as a *DockPanel* or a *Grid*) has no item. To represent an empty panel, use the *Empty* component.

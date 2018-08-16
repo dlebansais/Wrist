@@ -72,10 +72,12 @@ namespace Parser
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
+            string AttachedProperties = GetAttachedProperties();
             string GridProperties = "";
-            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
+            string ElementProperties = GetElementProperties(currentPage, currentObject);
+            string AllProperties = $"{AttachedProperties}{visibilityBinding}{GridProperties}{ElementProperties}";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties(this)}{visibilityBinding}{GridProperties}{ElementPropertiesString}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AllProperties}>");
 
             if (ColumnCount > 1)
             {

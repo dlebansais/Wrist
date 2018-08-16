@@ -23,9 +23,23 @@ namespace Parser
                     break;
                 }
 
-            if (FoundComponent == null)
+            if (FoundComponent is IComponentIndex AsIndexComponent)
+            {
+                IObjectPropertyIndex IndexObjectProperty = AsIndexComponent.IndexObjectProperty;
+
+                if (IndexObjectProperty is IObjectPropertyBoolean AsBooleanProperty)
+                {
+                    if (Items.Count != 2)
+                        throw new ParsingException(201, Source, $"StatePanel is referencing '{Index}' but doesn't have two the items expected for a boolean property.");
+                }
+                else if (Items.Count < 2)
+                    throw new ParsingException(202, Source, $"StatePanel must have at least two items.");
+            }
+
+            else if (FoundComponent == null)
                 throw new ParsingException(171, Source, $"StatePanel is referencing '{Index}' but this index doesn't exist.");
-            if (!(FoundComponent is IComponentIndex))
+
+            else
                 throw new ParsingException(172, Source, $"StatePanel is referencing '{Index}' but this component is not an index.");
         }
 

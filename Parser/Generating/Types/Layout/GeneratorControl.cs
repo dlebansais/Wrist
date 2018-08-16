@@ -42,10 +42,10 @@ namespace Parser
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             bool IsHorizontalAlignmentStretch = (HorizontalAlignment == Windows.UI.Xaml.HorizontalAlignment.Stretch.ToString());
-            string AttachedPropertiesString = AttachedProperties(this);
-            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
+            string AttachedProperties = GetAttachedProperties();
+            string ElementProperties = GetElementProperties(currentPage, currentObject);
 
-            Component.Generate(design, Style, AttachedPropertiesString, ElementPropertiesString, TextWrapping, IsHorizontalAlignmentStretch, indentation, currentPage, currentObject, colorTheme, xamlWriter, visibilityBinding);
+            Component.Generate(design, Style, AttachedProperties, ElementProperties, TextWrapping, IsHorizontalAlignmentStretch, indentation, currentPage, currentObject, colorTheme, xamlWriter, visibilityBinding);
         }
 
         public override string ToString()

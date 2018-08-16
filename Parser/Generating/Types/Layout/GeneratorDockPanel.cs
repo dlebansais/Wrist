@@ -28,10 +28,12 @@ namespace Parser
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
+            string AttachedProperties = GetAttachedProperties();
+            string ElementProperties = GetElementProperties(currentPage, currentObject);
             string DockPanelProperties = "";
-            string ElementPropertiesString = ElementProperties(currentPage, currentObject);
+            string AllProperties = $"{AttachedProperties}{visibilityBinding}{DockPanelProperties}{ElementProperties}";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<DockPanel{AttachedProperties(this)}{visibilityBinding}{DockPanelProperties}{ElementPropertiesString}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<DockPanel{AllProperties}>");
 
             foreach (IGeneratorLayoutElement element in Items)
                 element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, "");

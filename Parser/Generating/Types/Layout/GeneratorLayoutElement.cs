@@ -56,20 +56,20 @@ namespace Parser
         public string VerticalAlignment { get; private set; }
         public IComponent ControllerElement { get; private set; }
 
-        public static string AttachedProperties(IGeneratorLayoutElement element)
+        protected string GetAttachedProperties()
         {
             string Result = "";
 
-            Result += GeneratorDockPanel.AttachedDockProperty(element);
-            Result += GeneratorGrid.AttachedColumnProperty(element);
-            Result += GeneratorGrid.AttachedColumnSpanProperty(element);
-            Result += GeneratorGrid.AttachedRowProperty(element);
-            Result += GeneratorGrid.AttachedRowSpanProperty(element);
+            Result += GeneratorDockPanel.AttachedDockProperty(this);
+            Result += GeneratorGrid.AttachedColumnProperty(this);
+            Result += GeneratorGrid.AttachedColumnSpanProperty(this);
+            Result += GeneratorGrid.AttachedRowProperty(this);
+            Result += GeneratorGrid.AttachedRowSpanProperty(this);
 
             return Result;
         }
 
-        protected string ElementProperties(IGeneratorPage currentPage, IGeneratorObject currentObject)
+        protected string GetElementProperties(IGeneratorPage currentPage, IGeneratorObject currentObject)
         {
             string Result = "";
 
