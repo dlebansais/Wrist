@@ -2,6 +2,8 @@
 
 This page is used to record information about a new user. A user is brought here if they never signed in and try to sign in in the start page, or if they select the sign up button in the start page or the sign in popup.
 
+The header offers to sign in, but not to sign up since we're in the Sign up page already.
+
 # Info
 
 The user must provide the following information to be able to open a new account:

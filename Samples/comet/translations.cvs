@@ -68,4 +68,9 @@ sign-out	Sign Out
 signed-as-colon	Signed as:
 sign-up-name-error	This name is already taken, please use another.
 sign-up-confirm-password-error	The password and its confirmation don't match.
+about-us	About Us
 about-us-text	Some info.
+download	Download
+download-text	Download tools and projects.
+documentation	Doc
+documentation-text	Documentation.

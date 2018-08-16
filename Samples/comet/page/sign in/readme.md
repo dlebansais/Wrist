@@ -3,6 +3,8 @@
 This page is used when a used has never been signed in before, and has selected the sign in button in the sign up page.
 
 Also if they have selected the other method sign in option in the sign in popup.
+
+The header offers the option to sign up but only if there is an active project.
   
 # Options
 
