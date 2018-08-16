@@ -28,6 +28,7 @@ namespace Parser
             IFormParser FormParserResources = new ParserResource("resource", "png");
             IFormParser FormParserBackgrounds = new ParserBackground("background", "xaml");
             IFormParser FormParserColorThemes = new ParserColorTheme("color", "txt");
+            IFormParser FormParserFonts = new ParserFont("font", "ttf");
 
             IFormParserCollection FormParsers = new FormParserCollection()
             {
@@ -39,6 +40,7 @@ namespace Parser
                 FormParserResources,
                 FormParserBackgrounds,
                 FormParserColorThemes,
+                FormParserFonts,
             };
 
             string[] FolderNames;
@@ -80,6 +82,7 @@ namespace Parser
             IFormCollection<IResource> Resources = (IFormCollection<IResource>)FormParserResources.ParsedResult;
             IFormCollection<IBackground> Backgrounds = (IFormCollection<IBackground>)FormParserBackgrounds.ParsedResult;
             IFormCollection<IColorTheme> ColorThemes = (IFormCollection<IColorTheme>)FormParserColorThemes.ParsedResult;
+            IFormCollection<IFont> Fonts = (IFormCollection<IFont>)FormParserFonts.ParsedResult;
 
             string TranslationFile = Path.Combine(inputFolderName, "translations.cvs");
             ITranslation Translation;
@@ -111,7 +114,7 @@ namespace Parser
             if (SelectedColorTheme == null)
                 throw new ParsingException(7, inputFolderName, $"Color theme '{colorThemeName}' not found.");
 
-            IDomain NewDomain = new Domain(inputFolderName, Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorThemes, Translation, HomePage, SelectedColorTheme);
+            IDomain NewDomain = new Domain(inputFolderName, Areas, Designs, Layouts, Objects, Pages, Resources, Backgrounds, ColorThemes, Fonts, Translation, HomePage, SelectedColorTheme);
 
             bool IsConnected = true;
             for (int i = 0; i < 100 && IsConnected; i++)

@@ -11,6 +11,7 @@
         IFormCollection<IResource> Resources { get; }
         IFormCollection<IBackground> Backgrounds { get; }
         IFormCollection<IColorTheme> ColorThemes { get; }
+        IFormCollection<IFont> Fonts { get; }
         ITranslation Translation { get; }
         IPage HomePage { get; }
         IColorTheme SelectedColorTheme { get; }

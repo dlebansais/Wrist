@@ -88,6 +88,7 @@
     <Compile Include="Generating\Types\Form\GeneratorDesign.cs" />
     <Compile Include="Generating\Types\Form\GeneratorArea.cs" />
     <Compile Include="Generating\Types\Form\GeneratorBackground.cs" />
+    <Compile Include="Generating\Types\Form\GeneratorFont.cs" />
     <Compile Include="Generating\Types\Form\GeneratorResource.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorColorTheme.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorForm.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Generating\GeneratorDomain.cs" />
     <Compile Include="Generating\Types\Form\GeneratorPage.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorBackground.cs" />
+    <Compile Include="Generating\Types\Form\IGeneratorFont.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorResource.cs" />
     <Compile Include="Generating\Types\GeneratorTranslation.cs" />
     <Compile Include="Generating\Types\IGeneratorPageNavigation.cs" />
@@ -153,6 +155,7 @@
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyCollection.cs" />
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyCollection.cs" />
     <Compile Include="Parsing\ParserColorTheme.cs" />
+    <Compile Include="Parsing\ParserFont.cs" />
     <Compile Include="Parsing\Types\Component\ComponentRadioButton.cs" />
     <Compile Include="Parsing\Types\Component\ComponentCheckBox.cs" />
     <Compile Include="Parsing\Types\Component\ComponentCollection.cs" />
@@ -170,9 +173,11 @@
     <Compile Include="Parsing\Types\Form\ColorTheme.cs" />
     <Compile Include="Parsing\Types\Form\FormCollection.cs" />
     <Compile Include="Parsing\Types\Form\IColorTheme.cs" />
+    <Compile Include="Parsing\Types\Form\IFont.cs" />
     <Compile Include="Parsing\Types\Form\Parser\IFormParserCollection.cs" />
     <Compile Include="Parsing\Types\Form\Parser\FormParserCollection.cs" />
     <Compile Include="Parsing\Types\Form\IFormCollection.cs" />
+    <Compile Include="Parsing\Types\Form\Font.cs" />
     <Compile Include="Parsing\Types\IComponentEvent.cs" />
     <Compile Include="Parsing\Types\IComponentProperty.cs" />
     <Compile Include="Parsing\Types\IPageNavigation.cs" />

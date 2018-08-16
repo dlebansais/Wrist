@@ -50,6 +50,10 @@ namespace Parser
             foreach (IColorTheme ColorTheme in domain.ColorThemes)
                 ColorThemes.Add(new GeneratorColorTheme(ColorTheme));
 
+            Fonts = new List<IGeneratorFont>();
+            foreach (IFont Font in domain.Fonts)
+                Fonts.Add(new GeneratorFont(Font));
+
             bool IsConnected;
             do
             {
@@ -85,6 +89,7 @@ namespace Parser
         public List<IGeneratorResource> Resources { get; private set; }
         public List<IGeneratorBackground> Backgrounds { get; private set; }
         public List<IGeneratorColorTheme> ColorThemes { get; private set; }
+        public List<IGeneratorFont> Fonts { get; private set; }
         public IGeneratorTranslation Translation { get; private set; }
         public IGeneratorPage HomePage { get; private set; }
         public IGeneratorColorTheme SelectedColorTheme { get; private set; }
@@ -104,6 +109,9 @@ namespace Parser
 
             foreach (IGeneratorResource Resource in Resources)
                 Resource.Generate(this, outputFolderName);
+
+            foreach (IGeneratorFont Font in Fonts)
+                Font.Generate(this, outputFolderName);
 
             if (Translation != null)
                 GenerateTranslation(outputFolderName, AppNamespace, Translation);
@@ -260,7 +268,7 @@ namespace Parser
             xamlWriter.WriteLine("  <Application.Resources>");
 
             foreach (XmlnsContentPair Resource in ResourceList)
-                colorTheme.WriteXamlLine(xamlWriter, Resource.Content);
+                colorTheme.WriteXamlLine(xamlWriter, Fonts, Resource.Content);
 
             xamlWriter.WriteLine("  </Application.Resources>");
             xamlWriter.WriteLine("</Application>");
@@ -451,6 +459,9 @@ namespace Parser
 
             foreach (IGeneratorResource Resource in Resources)
                 projectWriter.WriteLine($"    <EmbeddedResource Include=\"Resources\\{Resource.Name}.png\"/>");
+
+            foreach (IGeneratorFont Font in Fonts)
+                projectWriter.WriteLine($"    <Content Include=\"Fonts\\{Font.Name}.ttf\"/>");
 
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");

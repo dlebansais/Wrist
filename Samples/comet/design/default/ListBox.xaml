@@ -2,13 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
   <Style x:Key="{x:Type ListBox}" TargetType="{x:Type ListBox}">
-    <Setter Property="FontFamily" Value="Trebuchet MS"/>
+    <Setter Property="FontFamily" Value="SourceSansPro-Regular.ttf"/>
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="Foreground" Value="Black"/>
   </Style>
 
   <Style x:Key="defaultDesignSelectorDisabled" TargetType="{x:Type ListBox}" BasedOn="{StaticResource {x:Type ListBox}}">
-    <Setter Property="FontFamily" Value="Trebuchet MS"/>
+    <Setter Property="FontFamily" Value="SourceSansPro-Regular.ttf"/>
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="Foreground" Value="Gray"/>
   </Style>

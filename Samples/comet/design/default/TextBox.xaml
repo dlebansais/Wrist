@@ -2,14 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
   <Style x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
-    <Setter Property="FontFamily" Value="Trebuchet MS"/>
+    <Setter Property="FontFamily" Value="SourceSansPro-Regular.ttf"/>
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="Foreground" Value="Black"/>
     <Setter Property="Background" Value="White"/>
   </Style>
 
   <Style x:Key="defaultDesignEditDisabled" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
-    <Setter Property="FontFamily" Value="Trebuchet MS"/>
+    <Setter Property="FontFamily" Value="SourceSansPro-Regular.ttf"/>
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="Foreground" Value="Gray"/>
     <Setter Property="Background" Value="LightGray"/>
