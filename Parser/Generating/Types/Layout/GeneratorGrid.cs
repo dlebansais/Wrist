@@ -73,7 +73,7 @@ namespace Parser
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string AttachedProperties = GetAttachedProperties();
-            string GridProperties = "";
+            string GridProperties = GetPanelProperties(currentPage, currentObject);
             string ElementProperties = GetElementProperties(currentPage, currentObject);
             string AllProperties = $"{AttachedProperties}{visibilityBinding}{GridProperties}{ElementProperties}";
 

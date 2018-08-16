@@ -30,7 +30,7 @@ namespace Parser
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string AttachedProperties = GetAttachedProperties();
             string ElementProperties = GetElementProperties(currentPage, currentObject);
-            string DockPanelProperties = "";
+            string DockPanelProperties = GetPanelProperties(currentPage, currentObject);
             string AllProperties = $"{AttachedProperties}{visibilityBinding}{DockPanelProperties}{ElementProperties}";
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<DockPanel{AllProperties}>");

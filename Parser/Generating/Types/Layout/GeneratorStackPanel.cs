@@ -20,7 +20,7 @@ namespace Parser
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string AttachedProperties = GetAttachedProperties();
-            string StackPanelProperties = "";
+            string StackPanelProperties = GetPanelProperties(currentPage, currentObject);
             string ElementProperties = GetElementProperties(currentPage, currentObject);
 
             string PanelType;

@@ -5,8 +5,6 @@ namespace Parser
 {
     public abstract class GeneratorPanel : GeneratorLayoutElement, IGeneratorPanel
     {
-        public IGeneratorLayoutElementCollection Items { get; } = new GeneratorLayoutElementCollection();
-
         public static GeneratorPanel Convert(IPanel panel)
         {
             if (panel is DockPanel AsDockPanel)
@@ -24,9 +22,16 @@ namespace Parser
         public GeneratorPanel(IPanel panel)
             : base(panel)
         {
+            MaxWidth = panel.MaxWidth;
+            MaxHeight = panel.MaxHeight;
+
             foreach (LayoutElement Element in panel.Items)
                 Items.Add(GeneratorLayoutElement.Convert(Element));
         }
+
+        public IGeneratorLayoutElementCollection Items { get; } = new GeneratorLayoutElementCollection();
+        public string MaxWidth { get; set; }
+        public string MaxHeight { get; set; }
 
         public override bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
         {
@@ -36,6 +41,19 @@ namespace Parser
                 IsConnected |= Item.Connect(domain, components);
 
             return IsConnected;
+        }
+
+        protected string GetPanelProperties(IGeneratorPage currentPage, IGeneratorObject currentObject)
+        {
+            string Result = "";
+
+            if (!string.IsNullOrEmpty(MaxWidth))
+                Result += $" MaxWidth=\"{MaxWidth}\"";
+
+            if (!string.IsNullOrEmpty(MaxHeight))
+                Result += $" MaxHeight=\"{MaxHeight}\"";
+
+            return Result;
         }
 
         public override string ToString()

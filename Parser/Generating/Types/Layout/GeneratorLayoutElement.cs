@@ -74,19 +74,19 @@ namespace Parser
             string Result = "";
 
             if (!string.IsNullOrEmpty(Margin))
-                Result += $" Margin=\"{Margin}\""; ;
+                Result += $" Margin=\"{Margin}\"";
 
             if (!string.IsNullOrEmpty(HorizontalAlignment))
-                Result += $" HorizontalAlignment=\"{HorizontalAlignment}\""; ;
+                Result += $" HorizontalAlignment=\"{HorizontalAlignment}\"";
 
             if (!string.IsNullOrEmpty(VerticalAlignment))
-                Result += $" VerticalAlignment=\"{VerticalAlignment}\""; ;
+                Result += $" VerticalAlignment=\"{VerticalAlignment}\"";
 
             if (!string.IsNullOrEmpty(Width))
-                Result += $" Width=\"{Width}\""; ;
+                Result += $" Width=\"{Width}\"";
 
             if (!string.IsNullOrEmpty(Height))
-                Result += $" Height=\"{Height}\""; ;
+                Result += $" Height=\"{Height}\"";
 
             if (ControllerElement != null)
             {

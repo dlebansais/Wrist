@@ -1867,3 +1867,19 @@ This error is issued when the StatePanel has less than two items. At least two i
 *Panel 'x' has no item.*
  
 This error is issued when a panel (such as a *DockPanel* or a *Grid*) has no item. To represent an empty panel, use the *Empty* component.
+
+## WTE00204
+
+*Invalid max width.*
+
+A panel in a layout file can specify a max width or max height.
+
+In this case, the specified max width is invalid.
+
+## WTE00205
+
+*Invalid max height.*
+
+A panel in a layout file can specify a max width or max height.
+
+In this case, the specified max height is invalid.
