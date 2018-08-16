@@ -49,14 +49,12 @@ namespace Presentation
             if (Bytes == null)
                 return null;
 
-            Encoding encoding = new UTF8Encoding();
-            return encoding.GetString(Bytes);
+            return Encoding.UTF8.GetString(Bytes);
         }
 
         public static bool CommitTextFile(string fileName, string content)
         {
-            Encoding encoding = new UTF8Encoding();
-            byte[] bytes = (content == null) ? null : encoding.GetBytes(content);
+            byte[] bytes = (content == null) ? null : Encoding.UTF8.GetBytes(content);
 
             bool Success = SaveToIsolatedStorageFile(ToISFileName(fileName), bytes);
             if (Success)

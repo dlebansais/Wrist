@@ -7,3 +7,5 @@ LigthGray: #E9E9E9
 Gray: #DADADA
 LightBlue: #F0F0FF
 DarkBlue: #3EAAAF
+Green: #2EB459
+DarkGreen: #269449

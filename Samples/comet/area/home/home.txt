@@ -3,6 +3,7 @@ home title: text, text=translation.strings[home-title]
 home text: text, text=translation.strings[home-text]
 start: button, content=translation.strings[start], goto=start
 sample screenshot: image, source=sample_screenshot
+features headline: text, text=translation.strings[features-headline]
 features: area, name=features
 status summary: area, name=status summary
 legal no status: area, name=legal no status

@@ -2,13 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
   <Style x:Key="{x:Type TextBlock}" TargetType="{x:Type TextBlock}">
-    <Setter Property="FontFamily" Value="SourceSansPro-Regular.ttf"/>
+    <Setter Property="FontFamily" Value="SourceSansPro-Light.ttf"/>
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="Foreground" Value="Black"/>
   </Style>
 
   <Style x:Key="defaultDesignTextDisabled" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-    <Setter Property="FontFamily" Value="SourceSansPro-Regular.ttf"/>
+    <Setter Property="FontFamily" Value="SourceSansPro-Light.ttf"/>
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="Foreground" Value="Gray"/>
   </Style>

@@ -47,7 +47,7 @@ sign-in	Sign in
 delete-account-title	todo
 delete-account-text	todo
 feature-1-title	Algorithm
-feature-1-text	Write down your algorithm using a graphic engine or C code..
+feature-1-text	Write down your algorithm using a graphic engine or C code.
 feature-2-title	Optimization
 feature-2-text	Let us find the fastest code among thousands of implementations.
 feature-3-title	Benchmark
@@ -74,3 +74,4 @@ download	Download
 download-text	Download tools and projects.
 documentation	Doc
 documentation-text	Documentation.
+features-headline	Features to help you get the job done.

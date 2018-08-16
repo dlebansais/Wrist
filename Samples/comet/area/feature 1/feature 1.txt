@@ -1,2 +1,3 @@
-﻿feature title: text, text=translation.strings[feature-1-title]
+﻿feature image: image, source=graphic_engine, width=24, height=24
+feature title: text, text=translation.strings[feature-1-title]
 feature text: text, text=translation.strings[feature-1-text]
