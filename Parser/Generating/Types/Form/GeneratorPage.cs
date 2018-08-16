@@ -173,10 +173,10 @@ namespace Parser
                 Indentation++;
             }
 
-            s = GeneratorLayout.IndentationString(Indentation - 1);
-
             if (Background != null)
             {
+                s = GeneratorLayout.IndentationString(Indentation - 1);
+
                 xamlWriter.WriteLine($"{s}<Grid>");
 
                 Background.Generate(xamlWriter, Indentation, colorTheme);
@@ -185,7 +185,7 @@ namespace Parser
                 xamlWriter.WriteLine($"{s}</Grid>");
             }
             else
-                GeneratorComponentArea.Generate(Area, "", "", Indentation, colorTheme, xamlWriter, "", Width);
+                GeneratorComponentArea.Generate(Area, "", "", Indentation - 1, colorTheme, xamlWriter, "", Width);
 
             if (IsScrollable)
             {
