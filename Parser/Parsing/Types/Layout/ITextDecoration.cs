@@ -1,6 +1,6 @@
 ﻿namespace Parser
 {
-    public interface IDecoration : ILayoutElement
+    public interface ITextDecoration : ILayoutElement
     {
         string Text { get; set; }
     }

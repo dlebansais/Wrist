@@ -107,11 +107,13 @@
     <Compile Include="Generating\Types\GeneratorTranslation.cs" />
     <Compile Include="Generating\Types\IGeneratorPageNavigation.cs" />
     <Compile Include="Generating\Types\IGeneratorTranslation.cs" />
-    <Compile Include="Generating\Types\Layout\GeneratorDecoration.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorBorderDecoration.cs" />
+    <Compile Include="Generating\Types\Layout\GeneratorTextDecoration.cs" />
     <Compile Include="Generating\Types\Layout\GeneratorEmpty.cs" />
     <Compile Include="Generating\Types\Layout\GeneratorGrid.cs" />
     <Compile Include="Generating\Types\Layout\GeneratorStatePanel.cs" />
-    <Compile Include="Generating\Types\Layout\IGeneratorDecoration.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorBorderDecoration.cs" />
+    <Compile Include="Generating\Types\Layout\IGeneratorTextDecoration.cs" />
     <Compile Include="Generating\Types\Layout\IGeneratorEmpty.cs" />
     <Compile Include="Generating\Types\Layout\IGeneratorGrid.cs" />
     <Compile Include="Generating\Types\Layout\IGeneratorStatePanel.cs" />
@@ -184,7 +186,8 @@
     <Compile Include="Parsing\Types\ITranslation.cs" />
     <Compile Include="Parsing\Types\Layout\Control.cs" />
     <Compile Include="Parsing\Types\Layout\Empty.cs" />
-    <Compile Include="Parsing\Types\Layout\IDecoration.cs" />
+    <Compile Include="Parsing\Types\Layout\IBorderDecoration.cs" />
+    <Compile Include="Parsing\Types\Layout\ITextDecoration.cs" />
     <Compile Include="Parsing\Types\Layout\IEmpty.cs" />
     <Compile Include="Parsing\Types\Layout\IGrid.cs" />
     <Compile Include="Parsing\Types\Layout\IStatePanel.cs" />
@@ -192,6 +195,7 @@
     <Compile Include="Parsing\Types\Layout\ILayoutElementCollection.cs" />
     <Compile Include="Parsing\Types\Layout\Grid.cs" />
     <Compile Include="Parsing\Types\Layout\StatePanel.cs" />
+    <Compile Include="Parsing\Types\Layout\BorderDecoration.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyBoolean.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyIndex.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyItemList.cs" />
@@ -268,7 +272,7 @@
     <Compile Include="Parsing\Types\Form\ILayout.cs" />
     <Compile Include="Parsing\Types\Form\IDesign.cs" />
     <Compile Include="Parsing\Types\Form\IObject.cs" />
-    <Compile Include="Parsing\Types\Layout\Decoration.cs" />
+    <Compile Include="Parsing\Types\Layout\TextDecoration.cs" />
     <Compile Include="Parsing\Types\Layout\DockPanel.cs" />
     <Compile Include="Parsing\Types\Layout\LayoutElement.cs" />
     <Compile Include="Parsing\Types\Layout\Panel.cs" />

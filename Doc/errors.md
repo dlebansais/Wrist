@@ -1850,7 +1850,7 @@ This error is issued when there is no indexing component declared.
 
 ## WTE00201
 
-*StatePanel is referencing 'x' but doesn't have two the items expected for a boolean property.*
+*StatePanel is referencing 'x' but doesn't have the two items expected for a boolean property.*
 
 A StatePanel is used to display one among several controls or panels, based on an indexing component. The indexing component can be for instance a radio button.
  
@@ -1895,3 +1895,9 @@ A design specifies styles for each of the component used in Wrist: *TextBlock*, 
     <Style x:Key="{x:Type Image}" TargetType="{x:Type Image}"/>
 
 In this case, the *ToggleButton* style (for popups) was not provided.
+
+## WTE00207
+
+*BorderDecoration must have one nested item.*
+
+A BorderDecoration is used to decorate one item. This error is issued if the BorderDecoration has no nested item. You can use the Empty component to fix it.   

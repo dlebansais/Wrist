@@ -12,8 +12,8 @@ namespace Parser
                 return new GeneratorEmpty(AsEmpty);
             else if (element is Control AsControl)
                 return new GeneratorControl(AsControl);
-            else if (element is Decoration AsDecoration)
-                return new GeneratorDecoration(AsDecoration);
+            else if (element is TextDecoration AsTextDecoration)
+                return new GeneratorTextDecoration(AsTextDecoration);
             else if (element is Panel AsPanel)
                 return GeneratorPanel.Convert(AsPanel);
             else

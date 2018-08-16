@@ -30,7 +30,7 @@ namespace Parser
                 if (IndexObjectProperty is IObjectPropertyBoolean AsBooleanProperty)
                 {
                     if (Items.Count != 2)
-                        throw new ParsingException(201, Source, $"StatePanel is referencing '{Index}' but doesn't have two the items expected for a boolean property.");
+                        throw new ParsingException(201, Source, $"StatePanel is referencing '{Index}' but doesn't have the two items expected for a boolean property.");
                 }
                 else if (Items.Count < 2)
                     throw new ParsingException(202, Source, $"StatePanel must have at least two items.");

@@ -3,9 +3,9 @@ using System.IO;
 
 namespace Parser
 {
-    public class GeneratorDecoration : GeneratorLayoutElement, IGeneratorDecoration
+    public class GeneratorTextDecoration : GeneratorLayoutElement, IGeneratorTextDecoration
     {
-        public GeneratorDecoration(Decoration control)
+        public GeneratorTextDecoration(TextDecoration control)
             : base(control)
         {
             Text = control.Text;

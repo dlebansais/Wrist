@@ -15,6 +15,8 @@ namespace Parser
                 return new GeneratorGrid(AsGrid);
             else if (panel is StatePanel AsStatePanel)
                 return new GeneratorStatePanel(AsStatePanel);
+            else if (panel is BorderDecoration AsBorderDecoration)
+                return new GeneratorBorderDecoration(AsBorderDecoration);
             else
                 throw new InvalidOperationException();
         }

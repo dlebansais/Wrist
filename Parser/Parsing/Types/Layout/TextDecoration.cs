@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace Parser
+﻿namespace Parser
 {
-    public class Decoration : LayoutElement, IDecoration
+    public class TextDecoration : LayoutElement, ITextDecoration
     {
         public string Text { get; set; }
 
