@@ -5,6 +5,7 @@ namespace Parser
     public abstract class Panel : LayoutElement, IPanel
     {
         public ILayoutElementCollection Items { get; } = new LayoutElementCollection();
+        public string Background { get; set; }
         public string MaxWidth { get; set; }
         public string MaxHeight { get; set; }
 

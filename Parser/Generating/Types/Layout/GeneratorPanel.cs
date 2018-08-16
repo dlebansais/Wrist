@@ -24,14 +24,16 @@ namespace Parser
         {
             MaxWidth = panel.MaxWidth;
             MaxHeight = panel.MaxHeight;
+            Background = panel.Background;
 
             foreach (LayoutElement Element in panel.Items)
                 Items.Add(GeneratorLayoutElement.Convert(Element));
         }
 
         public IGeneratorLayoutElementCollection Items { get; } = new GeneratorLayoutElementCollection();
-        public string MaxWidth { get; set; }
-        public string MaxHeight { get; set; }
+        public string Background { get; private set; }
+        public string MaxWidth { get; private set; }
+        public string MaxHeight { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
         {
@@ -52,6 +54,9 @@ namespace Parser
 
             if (!string.IsNullOrEmpty(MaxHeight))
                 Result += $" MaxHeight=\"{MaxHeight}\"";
+
+            if (!string.IsNullOrEmpty(Background))
+                Result += $" Background=\"{Background}\"";
 
             return Result;
         }
