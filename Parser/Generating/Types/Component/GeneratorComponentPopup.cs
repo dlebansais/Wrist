@@ -8,6 +8,8 @@ namespace Parser
         public GeneratorComponentPopup(IComponentPopup popup)
             : base(popup)
         {
+            Width = popup.Width;
+            Height = popup.Height;
             BasePopup = popup;
         }
 
@@ -15,6 +17,8 @@ namespace Parser
 
         public IGeneratorResource SourceResource { get; private set; }
         public IGeneratorArea Area { get; private set; }
+        public double Width { get; private set; }
+        public double Height { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain)
         {
@@ -43,18 +47,20 @@ namespace Parser
             string BindingName = $"{XamlName}_Toggle";
             string OpeningBinding = $" IsOpen=\"{{Binding IsChecked, ElementName={BindingName}}}\"";
             string PanelProperties = " VerticalAlignment=\"Bottom\" HorizontalAlignment=\"Right\"";
-            string ButtonProperties = " Padding=\"0\" BorderThickness=\"0\" HorizontalAlignment=\"Right\"";
+            string ButtonProperties = $" HorizontalAlignment=\"Right\" Style=\"{{StaticResource {design.XamlName}ToggleButton}}\"";
             string PopupProperties = " HorizontalOffset=\"0\" VerticalOffset=\"0\"";
             string AreaProperties = $" Template=\"{{StaticResource {Area.XamlName}}}\"";
             string StyleProperty = (style != null) ? style : "";
-            string ImageProperties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\" Width=\"16\" Height=\"16\"";
+            string ImageProperties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\"";
             string ImageSource = $" Source=\"{GetComponentValue(currentPage, currentObject, SourceResource, null, null, null, false)}\"";
+            string WidthProperty = double.IsNaN(Width) ? "" : $" Width=\"{Width}\"";
+            string HeightProperty = double.IsNaN(Height) ? "" : $" Height=\"{Height}\"";
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<StackPanel{attachedProperties}{visibilityBinding}{PanelProperties}{elementProperties}>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ContentControl{AreaProperties} Height=\"0\" Opacity=\"0\"/>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ToggleButton x:Name=\"{BindingName}\"{ButtonProperties}>");
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}            <Image{ImageProperties}{ImageSource}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}            <Image{ImageProperties}{ImageSource}{WidthProperty}{HeightProperty}/>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        </ToggleButton>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    </Grid>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    <p:Popup{OpeningBinding}{PopupProperties}>");

@@ -295,7 +295,7 @@ namespace AppCSHtml5
             destinationPageName = "start";
         }
 
-        public void On_SignIn(string pageName, string sourceName, string sourceContent)
+        public void On_SignIn(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
             IsSignedIn = true;
             Password = null;
@@ -303,6 +303,8 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Password));
             NotifyPropertyChanged(nameof(ConfirmPassword));
+
+            destinationPageName = null;
         }
 
         public void On_ChangeEmail(string pageName, string sourceName, string sourceContent, out string destinationPageName)

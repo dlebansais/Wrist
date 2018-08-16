@@ -618,6 +618,7 @@ When processing area files, each line is expected to be in the following format:
 where `Name` is the component name, `Type` its type, and there can be zero or more specifiers in the form of `key`=`value` pairs separated by commas.
 
 If `Type` is *image*, the `source` key must be specified, as well a `width` and `height` key that must be integer constants.
+If `Type` is *popup*, the `width` and `height` key can be specified but they must be integer constants.
 
 In this case, the `width` key was specified, but is not an integer constant.
 
@@ -646,6 +647,7 @@ When processing area files, each line is expected to be in the following format:
 where `Name` is the component name, `Type` its type, and there can be zero or more specifiers in the form of `key`=`value` pairs separated by commas.
 
 If `Type` is *image*, the `source` key must be specified, as well a `width` and `height` key that must be integer constants.
+If `Type` is *popup*, the `width` and `height` key can be specified but they must be integer constants.
 
 In this case, the `height` key was specified, but is not an integer constant.
 
@@ -1329,13 +1331,13 @@ This error happens when a page specifies a background color and a color theme th
 
 *'x' not parsed as a width.*
 
-This error happens when an image component specifies a width that is not an integer constant or `resource`.
+This error happens when an image component specifies a width that is not an integer constant or, in the case of *image*, `resource`.
 
 ## WTE00129
 
 *'x' not parsed as a height.*
 
-This error happens when an image component specifies a height that is not an integer constant or `resource`.
+This error happens when an image component specifies a height that is not an integer constant or, in the case of *image*, `resource`.
 
 ## WTE00130
 
@@ -1883,3 +1885,13 @@ In this case, the specified max width is invalid.
 A panel in a layout file can specify a max width or max height.
 
 In this case, the specified max height is invalid.
+
+## WTE00206
+
+*Missing 'ToggleButton' style.*
+
+A design specifies styles for each of the component used in Wrist: *TextBlock*, *Button*, *TextBox* and so on. If no specific style is be used, it must still be provided for each component, typically with no setter. For example, the *Image* style can be specified in a design as follow:
+
+    <Style x:Key="{x:Type Image}" TargetType="{x:Type Image}"/>
+
+In this case, the *ToggleButton* style (for popups) was not provided.

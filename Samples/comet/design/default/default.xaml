@@ -16,5 +16,6 @@
     <ResourceDictionary Source="/TextBlockPageTitle.xaml"/>
     <ResourceDictionary Source="/TextBlockPageSubtitle.xaml"/>
     <ResourceDictionary Source="/TextBox.xaml"/>
+    <ResourceDictionary Source="/ToggleButton.xaml"/>
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

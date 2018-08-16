@@ -6,5 +6,7 @@
         IResource SourceResource { get; }
         IDeclarationSource AreaSource { get; }
         IArea Area { get; }
+        double Width { get; }
+        double Height { get; }
     }
 }

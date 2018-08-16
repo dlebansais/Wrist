@@ -4,5 +4,7 @@
     {
         IGeneratorResource SourceResource { get; }
         IGeneratorArea Area { get; }
+        double Width { get; }
+        double Height { get; }
     }
 }

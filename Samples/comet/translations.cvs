@@ -31,6 +31,7 @@ start	Start
 sign-in-title	Sign in
 sign-in-text	Choose a sign in method and enter your info.
 keep-active	Keep this session logged for
+password	Password
 password-colon	Password:
 other-platform	Click one of these buttons to go to the sign in page.
 profile-title	Your profile
@@ -75,3 +76,4 @@ download-text	Download tools and projects.
 documentation	Doc
 documentation-text	Documentation.
 features-headline	Features to help you get the job done.
+username-or-email	Username or email address

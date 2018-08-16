@@ -39,6 +39,8 @@ namespace Parser
                 throw new ParsingException(88, SourceStream, "Missing 'CheckBox' style.");
             if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.PasswordBox)))
                 throw new ParsingException(89, SourceStream, "Missing 'PasswordBox' style.");
+            if (!IsTypeStyleFound(Content, typeof(Windows.UI.Xaml.Controls.Primitives.ToggleButton)))
+                throw new ParsingException(206, SourceStream, "Missing 'ToggleButton' style.");
 
             string MainFileName = FileNames[0];
             string Name = Path.GetFileNameWithoutExtension(MainFileName);

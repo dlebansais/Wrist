@@ -2,17 +2,21 @@
 {
     public class ComponentPopup : Component, IComponentPopup
     {
-        public ComponentPopup(IDeclarationSource source, string xamlName, IComponentProperty sourceProperty, IDeclarationSource areaSource)
+        public ComponentPopup(IDeclarationSource source, string xamlName, IComponentProperty sourceProperty, IDeclarationSource areaSource, double width, double height)
             : base(source, xamlName)
         {
             SourceProperty = sourceProperty;
             AreaSource = areaSource;
+            Width = width;
+            Height = height;
         }
 
         public IComponentProperty SourceProperty { get; private set; }
         public IResource SourceResource { get; private set; }
         public IDeclarationSource AreaSource { get; private set; }
         public IArea Area { get; private set; }
+        public double Width { get; private set; }
+        public double Height { get; private set; }
 
         public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
@@ -59,6 +63,12 @@
 
             else
                 return false;
+        }
+
+        public override string ToString()
+        {
+            string SizeString = (!double.IsNaN(Width) && double.IsNaN(Height)) ? $" ({Width}x{Height})" : "";
+            return $"{GetType().Name} '{Source.Name}'{SizeString}";
         }
     }
 }

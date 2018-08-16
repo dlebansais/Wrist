@@ -426,13 +426,19 @@ namespace Parser
         {
             IComponentProperty SourceProperty = null;
             IComponentProperty AreaProperty = null;
+            IComponentProperty WidthProperty = null;
+            IComponentProperty HeightProperty = null;
 
             foreach (ComponentInfo Info in infoList)
                 if (Info.NameSource.Name == "source" && SourceProperty == null)
                     SourceProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "area" && AreaProperty == null)
                     AreaProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name != "source" && Info.NameSource.Name != "area")
+                else if (Info.NameSource.Name == "width" && WidthProperty == null)
+                    WidthProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name == "height" && HeightProperty == null)
+                    HeightProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name != "source" && Info.NameSource.Name != "area" && Info.NameSource.Name != "width" && Info.NameSource.Name != "height")
                     throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
                     throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
@@ -447,7 +453,33 @@ namespace Parser
             if (AreaProperty.FixedValueSource == null)
                 throw new ParsingException(59, sourceStream, "Area name can only be a static name.");
 
-            return new ComponentPopup(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Popup"), SourceProperty, AreaProperty.FixedValueSource);
+            double WidthValue;
+            if (WidthProperty != null)
+            {
+                if (WidthProperty.FixedValueSource == null)
+                    throw new ParsingException(54, sourceStream, "Width can only be a static value.");
+
+                string ImageWidth = WidthProperty.FixedValueSource.Name;
+                if (!double.TryParse(ImageWidth, out WidthValue))
+                    throw new ParsingException(128, WidthProperty.FixedValueSource.Source, $"'{ImageWidth}' not parsed as a width.");
+            }
+            else
+                WidthValue = double.NaN;
+
+            double HeightValue;
+            if (HeightProperty != null)
+            {
+                if (HeightProperty.FixedValueSource == null)
+                    throw new ParsingException(56, sourceStream, "Height can only be a static value.");
+
+                string ImageHeight = HeightProperty.FixedValueSource.Name;
+                if (!double.TryParse(ImageHeight, out HeightValue))
+                    throw new ParsingException(129, HeightProperty.FixedValueSource.Source, $"'{ImageHeight}' not parsed as a height.");
+            }
+            else
+                HeightValue = double.NaN;
+
+            return new ComponentPopup(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Popup"), SourceProperty, AreaProperty.FixedValueSource, WidthValue, HeightValue);
         }
 
         private IComponentSelector ParseComponentSelector(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)
