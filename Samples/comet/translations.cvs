@@ -66,3 +66,5 @@ sign-up	Sign up
 ready	Ready
 sign-out	Sign Out
 signed-as-colon	Signed as:
+sign-up-name-error	This name is already taken, please use another.
+sign-up-confirm-password-error	The password and its confirmation don't match.

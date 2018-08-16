@@ -8,6 +8,7 @@
     <ResourceDictionary Source="/PasswordBox.xaml"/>
     <ResourceDictionary Source="/RadioButton.xaml"/>
     <ResourceDictionary Source="/TextBlock.xaml"/>
+    <ResourceDictionary Source="/TextBlockError.xaml"/>
     <ResourceDictionary Source="/TextBox.xaml"/>
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
