@@ -12,6 +12,7 @@
         IFormCollection<IBackground> Backgrounds { get; }
         IFormCollection<IColorTheme> ColorThemes { get; }
         IFormCollection<IFont> Fonts { get; }
+        IFormCollection<IDynamic> Dynamics { get; }
         ITranslation Translation { get; }
         IPage HomePage { get; }
         IColorTheme SelectedColorTheme { get; }

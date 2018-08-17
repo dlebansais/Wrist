@@ -207,6 +207,8 @@ namespace Parser
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
             cSharpWriter.WriteLine("            DataContext = this;");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine($"            Dynamic = new {XamlName}Dynamic(this);");
             cSharpWriter.WriteLine("        }");
 
             string ObjectLine = null;
@@ -221,6 +223,8 @@ namespace Parser
 
             if (domain.Translation != null)
                 cSharpWriter.WriteLine("        public Translation Translation { get { return App.Translation; } }");
+
+            cSharpWriter.WriteLine($"    public {XamlName}Dynamic Dynamic {{ get; private set; }}");
 
             List<IGeneratorPageNavigation> GoToList = new List<IGeneratorPageNavigation>();
             Area.CollectGoTo(GoToList, this);

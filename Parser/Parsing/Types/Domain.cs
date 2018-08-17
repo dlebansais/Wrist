@@ -2,7 +2,18 @@
 {
     public class Domain : IDomain
     {
-        public Domain(string inputFolderName, IFormCollection<IArea> areas, IFormCollection<IDesign> designs, IFormCollection<ILayout> layouts, IFormCollection<IObject> objects, IFormCollection<IPage> pages, IFormCollection<IResource> resources, IFormCollection<IBackground> backgrounds, IFormCollection<IColorTheme> colorThemes, IFormCollection<IFont> fonts, ITranslation translation, IPage homePage, IColorTheme selectedColorTheme)
+        public Domain(string inputFolderName, 
+                      IFormCollection<IArea> areas, 
+                      IFormCollection<IDesign> designs, 
+                      IFormCollection<ILayout> layouts, 
+                      IFormCollection<IObject> objects, 
+                      IFormCollection<IPage> pages, 
+                      IFormCollection<IResource> resources, 
+                      IFormCollection<IBackground> backgrounds, 
+                      IFormCollection<IColorTheme> colorThemes,
+                      IFormCollection<IFont> fonts,
+                      IFormCollection<IDynamic> dynamics,
+                      ITranslation translation, IPage homePage, IColorTheme selectedColorTheme)
         {
             InputFolderName = inputFolderName;
             Areas = areas;
@@ -14,6 +25,7 @@
             Backgrounds = backgrounds;
             ColorThemes = colorThemes;
             Fonts = fonts;
+            Dynamics = dynamics;
             Translation = translation;
             HomePage = homePage;
             SelectedColorTheme = selectedColorTheme;
@@ -29,6 +41,7 @@
         public IFormCollection<IBackground> Backgrounds { get; private set; }
         public IFormCollection<IColorTheme> ColorThemes { get; private set; }
         public IFormCollection<IFont> Fonts { get; private set; }
+        public IFormCollection<IDynamic> Dynamics { get; private set; }
         public ITranslation Translation { get; private set; }
         public IPage HomePage { get; private set; }
         public IColorTheme SelectedColorTheme { get; private set; }

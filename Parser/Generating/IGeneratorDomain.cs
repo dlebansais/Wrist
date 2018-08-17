@@ -14,6 +14,8 @@ namespace Parser
         List<IGeneratorResource> Resources { get; }
         List<IGeneratorBackground> Backgrounds { get; }
         List<IGeneratorColorTheme> ColorThemes { get; }
+        List<IGeneratorFont> Fonts { get; }
+        List<IGeneratorDynamic> Dynamics { get; }
         IGeneratorTranslation Translation { get; }
         IGeneratorPage HomePage { get; }
         IGeneratorColorTheme SelectedColorTheme { get; }

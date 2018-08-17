@@ -54,6 +54,10 @@ namespace Parser
             foreach (IFont Font in domain.Fonts)
                 Fonts.Add(new GeneratorFont(Font));
 
+            Dynamics = new List<IGeneratorDynamic>();
+            foreach (IDynamic Dynamic in domain.Dynamics)
+                Dynamics.Add(new GeneratorDynamic(Dynamic));
+
             bool IsConnected;
             do
             {
@@ -90,6 +94,7 @@ namespace Parser
         public List<IGeneratorBackground> Backgrounds { get; private set; }
         public List<IGeneratorColorTheme> ColorThemes { get; private set; }
         public List<IGeneratorFont> Fonts { get; private set; }
+        public List<IGeneratorDynamic> Dynamics { get; private set; }
         public IGeneratorTranslation Translation { get; private set; }
         public IGeneratorPage HomePage { get; private set; }
         public IGeneratorColorTheme SelectedColorTheme { get; private set; }
@@ -112,6 +117,9 @@ namespace Parser
 
             foreach (IGeneratorFont Font in Fonts)
                 Font.Generate(this, outputFolderName);
+
+            foreach (IGeneratorDynamic Dynamic in Dynamics)
+                Dynamic.Generate(this, outputFolderName, AppNamespace);
 
             if (Translation != null)
                 GenerateTranslation(outputFolderName, AppNamespace, Translation);
@@ -439,6 +447,7 @@ namespace Parser
                 projectWriter.WriteLine($"    <Compile Include=\"Pages\\{Page.FileName}.xaml.cs\">");
                 projectWriter.WriteLine($"      <DependentUpon>{Page.FileName}.xaml</DependentUpon>");
                 projectWriter.WriteLine("    </Compile>");
+                projectWriter.WriteLine($"    <Compile Include=\"Dynamics\\{Page.XamlName}Dynamic.cs\"/>");
             }
 
             projectWriter.WriteLine("  </ItemGroup>");
