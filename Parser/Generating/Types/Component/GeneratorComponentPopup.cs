@@ -67,7 +67,7 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<StackPanel{attachedProperties}{visibilityBinding}{PanelProperties}{elementProperties}>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ContentControl{AreaProperties} Height=\"0\" Opacity=\"0\"/>");
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ToggleButton x:Name=\"{BindingName}\"{ButtonProperties}>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ToggleButton x:Name=\"{BindingName}\"{ButtonProperties} Loaded=\"OnToggleLoaded\">");
 
             if (SourcePressedResource != null)
             {

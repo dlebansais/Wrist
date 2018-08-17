@@ -173,19 +173,15 @@ namespace Parser
                 Indentation++;
             }
 
+            s = GeneratorLayout.IndentationString(Indentation - 1);
+
+            xamlWriter.WriteLine($"{s}<Grid PointerPressed=\"OnPointerPressed\">");
+
             if (Background != null)
-            {
-                s = GeneratorLayout.IndentationString(Indentation - 1);
-
-                xamlWriter.WriteLine($"{s}<Grid>");
-
                 Background.Generate(xamlWriter, Indentation, colorTheme);
-                GeneratorComponentArea.Generate(Area, "", "", Indentation, colorTheme, xamlWriter, "", Width);
+            GeneratorComponentArea.Generate(Area, "", "", Indentation, colorTheme, xamlWriter, "", Width);
 
-                xamlWriter.WriteLine($"{s}</Grid>");
-            }
-            else
-                GeneratorComponentArea.Generate(Area, "", "", Indentation - 1, colorTheme, xamlWriter, "", Width);
+            xamlWriter.WriteLine($"{s}</Grid>");
 
             if (IsScrollable)
             {
@@ -198,8 +194,10 @@ namespace Parser
 
         private void GenerateCSharp(IGeneratorDomain domain, string appNamespace, StreamWriter cSharpWriter)
         {
+            cSharpWriter.WriteLine("using System.Collections.Generic;");
             cSharpWriter.WriteLine("using Windows.UI.Xaml;");
             cSharpWriter.WriteLine("using Windows.UI.Xaml.Controls;");
+            cSharpWriter.WriteLine("using Windows.UI.Xaml.Controls.Primitives;");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");
@@ -258,6 +256,20 @@ namespace Parser
             cSharpWriter.WriteLine("        private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            (App.Current as App).OnIsEnabledChanged(sender, e);");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        private List<ToggleButton> ToggleList = new List<ToggleButton>();");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        private void OnPointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            foreach (ToggleButton Toggle in ToggleList)");
+            cSharpWriter.WriteLine("                Toggle.IsChecked = false;");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        private void OnToggleLoaded(object sender, RoutedEventArgs e)");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            if ((sender is ToggleButton AsToggle) && !ToggleList.Contains(AsToggle))");
+            cSharpWriter.WriteLine("                ToggleList.Add(AsToggle);");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");
