@@ -12,22 +12,22 @@
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal">
                   <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="buttonText" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Brown"/>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="buttonBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="Green"/>
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="PointerOver">
                   <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="buttonText" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Black"/>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="buttonBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="DarkGreen"/>
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Pressed">
                   <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="buttonText" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Black"/>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="buttonBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="DarkGreen"/>
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -43,9 +43,9 @@
                 <VisualState x:Name="InvalidUnfocused"/>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Grid>
-              <TextBlock x:Name="buttonText" Text="{TemplateBinding Content}" Foreground="Brown" Margin="1,1,1,1"/>
-            </Grid>
+            <Border x:Name="buttonBorder" CornerRadius="2,2,2,2" BorderBrush="Gray" BorderThickness="1" Background="Green">
+              <TextBlock x:Name="buttonText" Text="{TemplateBinding Content}" TextAlignment="Center" Foreground="White" Margin="10,5,10,5"/>
+            </Border>
           </Grid>
         </ControlTemplate>
       </Setter.Value>
@@ -59,7 +59,9 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type Button}">
           <Grid>
-            <TextBlock x:Name="buttonText" Text="{TemplateBinding Content}" Foreground="Gray" Margin="1,1,1,1"/>
+            <Border x:Name="buttonBorder" CornerRadius="2,2,2,2" BorderBrush="DarkGray" BorderThickness="1" Background="Gray">
+              <TextBlock x:Name="buttonText" Text="{TemplateBinding Content}" TextAlignment="Center" Foreground="DarkGray" Margin="10,5,10,5"/>
+            </Border>
           </Grid>
         </ControlTemplate>
       </Setter.Value>
