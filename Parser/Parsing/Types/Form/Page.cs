@@ -48,12 +48,14 @@ namespace Parser
         public IBackground Background { get; private set; }
         public IDeclarationSource BackgroundColorSource { get; private set; }
         public string BackgroundColor { get; private set; }
+        public IDynamic Dynamic { get; private set; }
 
         public bool Connect(IDomain domain)
         {
             bool IsConnected = false;
 
             ConnectArea(domain, ref IsConnected);
+            ConnectDynamic(domain, ref IsConnected);
             ConnectLayout(domain, ref IsConnected);
             ConnectDesign(domain, ref IsConnected);
             ConnectBackground(domain, ref IsConnected);
@@ -76,6 +78,24 @@ namespace Parser
                     throw new ParsingException(118, AreaSource.Source, $"Unknown area '{AreaSource.Name}'.");
 
                 Area.SetCurrentObject(AreaSource, null);
+
+                IsConnected = true;
+            }
+        }
+
+        public void ConnectDynamic(IDomain domain, ref bool IsConnected)
+        {
+            if (Dynamic == null)
+            {
+                foreach (IDynamic Item in domain.Dynamics)
+                    if (Item.Name == Name)
+                    {
+                        Dynamic = Item;
+                        break;
+                    }
+
+                if (Dynamic == null)
+                    throw new ParsingException(217, FileName, "Dynamic file not found.");
 
                 IsConnected = true;
             }
@@ -118,7 +138,7 @@ namespace Parser
                 }
 
                 foreach (KeyValuePair<IArea, ILayout> Entry in AreaLayouts)
-                    Entry.Value.ConnectComponents(domain, Entry.Key.Components);
+                    Entry.Value.ConnectComponents(domain, Dynamic, Entry.Key.Components);
 
                 IsConnected = true;
             }

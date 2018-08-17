@@ -24,5 +24,6 @@ namespace Parser
         IBackground Background { get; }
         IDeclarationSource BackgroundColorSource { get; }
         string BackgroundColor { get; }
+        IDynamic Dynamic { get; }
     }
 }

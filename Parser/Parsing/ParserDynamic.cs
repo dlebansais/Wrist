@@ -29,7 +29,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(0, SourceStream, e);
+                throw new ParsingException(208, SourceStream, e);
             }
         }
 
@@ -48,17 +48,33 @@ namespace Parser
                 Properties.Add(Property);
             }
 
-            return new Dynamic(name, ParserDomain.ToXamlName(sourceStream, name, "Page"), Properties);
+            string FileName = ParserDomain.ToCSharpName(sourceStream, name + "PageDynamic");
+            string XamlPageName = ParserDomain.ToXamlName(sourceStream, name, "Page");
+            return new Dynamic(name, FileName, XamlPageName, Properties);
         }
 
         private IDynamicProperty Parse(IParsingSourceStream sourceStream, ref string line, ref int indentation, ref bool useTab)
         {
-            if (!line.EndsWith(":"))
-                throw new ParsingException(0, sourceStream, "");
+            while (string.IsNullOrEmpty(line) && !sourceStream.EndOfStream)
+            {
+                sourceStream.ReadLine();
+                line = sourceStream.Line;
+            }
 
-            string PropertyName = line.Substring(0, line.Length - 1).Trim();
-            if (string.IsNullOrEmpty(PropertyName))
-                throw new ParsingException(0, sourceStream, "");
+            IDeclarationSource PropertySource;
+            string ResultValue;
+            ParserDomain.ParseStringPair(sourceStream, ':', out PropertySource, out ResultValue);
+
+            if (string.IsNullOrEmpty(PropertySource.Name))
+                throw new ParsingException(209, sourceStream, "Missing dynamic property name.");
+
+            string CSharpName = ParserDomain.ToCSharpName(PropertySource.Source, PropertySource.Name);
+
+            DynamicOperationResults Result;
+            if (ResultValue == "boolean")
+                Result = DynamicOperationResults.Boolean;
+            else
+                throw new ParsingException(210, sourceStream, $"Invalid dynamic property type '{ResultValue}'.");
 
             Stack<IDynamicOperation> OperationStack = new Stack<IDynamicOperation>();
             IDynamicOperation RootOperation = null;
@@ -77,45 +93,67 @@ namespace Parser
                 int Depth = GetIndentation(sourceStream, indentation, useTab);
 
                 string Text = line.Trim();
-
                 if (Text == "NOT")
-                    OperationStack.Push(new DynamicOperation(DynamicOperationTypes.NOT));
+                    OperationStack.Push(new UnaryOperation(DynamicOperationTypes.NOT));
                 else if (Text == "OR")
-                    OperationStack.Push(new DynamicOperation(DynamicOperationTypes.OR));
+                    OperationStack.Push(new BinaryOperation(DynamicOperationTypes.OR));
                 else if (Text == "AND")
-                    OperationStack.Push(new DynamicOperation(DynamicOperationTypes.AND));
+                    OperationStack.Push(new BinaryOperation(DynamicOperationTypes.AND));
+                else if (Text == "EQUALS")
+                    OperationStack.Push(new BinaryOperation(DynamicOperationTypes.EQUALS));
                 else if (Text == "IS EMPTY")
-                    OperationStack.Push(new DynamicOperation(DynamicOperationTypes.IS_EMPTY));
+                    OperationStack.Push(new UnaryOperation(DynamicOperationTypes.IS_EMPTY));
                 else
                 {
-                    IDynamicOperation Operand = new PropertyValueOperation(Text);
+                    IDynamicOperation Operand;
 
-                    while (OperationStack.Count > 0 && (OperationStack.Peek() is DynamicOperation AsOperation))
+                    int IntegerConstantValue;
+                    if (int.TryParse(Text, out IntegerConstantValue))
+                        Operand = new IntegerConstantOperation(IntegerConstantValue);
+                    else
                     {
-                        if (AsOperation.Operand1 == null)
-                            AsOperation.Operand1 = Operand;
-                        else if (AsOperation.Operand2 == null)
-                            AsOperation.Operand2 = Operand;
-                        else
-                            throw new ParsingException(0, sourceStream, "");
+                        IDeclarationSource ObjectSource;
+                        IDeclarationSource MemberSource;
+                        IDeclarationSource KeySource;
+                        if (!ParserDomain.TryParseObjectProperty(sourceStream, Text, out ObjectSource, out MemberSource, out KeySource))
+                            throw new ParsingException(211, sourceStream, $"Expected operator, integer constant or object property.");
 
-                        if (IsOperationUnary(AsOperation.Type))
+                        ComponentInfo Info = new ComponentInfo();
+                        Info.ObjectSource = ObjectSource;
+                        Info.MemberSource = MemberSource;
+                        Info.KeySource = KeySource;
+
+                        ComponentProperty ValueProperty = new ComponentProperty(Info);
+
+                        Operand = new PropertyValueOperation(ValueProperty);
+                    }
+
+                    while (OperationStack.Count > 0)
+                    {
+                        IDynamicOperation CurrentOperation = OperationStack.Peek();
+
+                        if ((CurrentOperation is IUnaryOperation AsUnary) && (AsUnary.Operand == null))
                         {
+                            AsUnary.SetOperand(Operand);
+
                             RootOperation = OperationStack.Pop();
                             Operand = RootOperation;
                         }
-                        else if (IsOperationBinary(AsOperation.Type))
+
+                        else if (CurrentOperation is IBinaryOperation AsBinary)
                         {
-                            if (AsOperation.Operand2 != null)
+                            if (AsBinary.Operand1 == null)
+                                AsBinary.SetOperand1(Operand);
+                            else
                             {
+                                AsBinary.SetOperand2(Operand);
+
                                 RootOperation = OperationStack.Pop();
                                 Operand = RootOperation;
                             }
-                            else
-                                break;
                         }
                         else
-                            throw new ParsingException(0, sourceStream, "");
+                            throw new ParsingException(212, sourceStream, "Operand not following an operator.");
                     }
 
                     if (OperationStack.Count == 0)
@@ -124,12 +162,12 @@ namespace Parser
             }
 
             if (RootOperation == null)
-                throw new ParsingException(0, sourceStream, "");
+                throw new ParsingException(213, sourceStream, $"Dynamic property '{PropertySource.Name}' with no expression.");
 
             if (OperationStack.Count > 0)
-                throw new ParsingException(0, sourceStream, "");
+                throw new ParsingException(214, sourceStream, $"Dynamic property '{PropertySource.Name}' not completely specified.");
 
-            return new DynamicProperty(PropertyName, RootOperation);
+            return new DynamicProperty(PropertySource, CSharpName, Result, RootOperation);
         }
 
         private void MeasureIndentation(IParsingSourceStream sourceStream, ref int indentation, ref bool useTab)
@@ -151,7 +189,7 @@ namespace Parser
                 useTab = false;
             }
             else
-                throw new ParsingException(0, sourceStream, "");
+                throw new ParsingException(215, sourceStream, "Indentation expected.");
         }
 
         private int GetIndentation(IParsingSourceStream sourceStream, int indentation, bool useTab)
@@ -173,7 +211,7 @@ namespace Parser
                         if (Line[(i * indentation) + j] != ' ')
                         {
                             if (j != 0)
-                                throw new ParsingException(0, sourceStream, "");
+                                throw new ParsingException(216, sourceStream, "Expression partially indented.");
                             break;
                         }
                     if (j < indentation)
@@ -184,7 +222,7 @@ namespace Parser
             }
 
             if (i == 0)
-                throw new ParsingException(0, sourceStream, "");
+                throw new ParsingException(215, sourceStream, "Indentation expected.");
 
             return i;
         }
@@ -196,7 +234,7 @@ namespace Parser
 
         private static bool IsOperationBinary(DynamicOperationTypes type)
         {
-            return type == DynamicOperationTypes.OR || type == DynamicOperationTypes.AND;
+            return type == DynamicOperationTypes.OR || type == DynamicOperationTypes.AND || type == DynamicOperationTypes.EQUALS;
         }
     }
 }

@@ -2,7 +2,10 @@
 {
     public interface IDynamicProperty
     {
-        string PropertyName { get; }
+        IDeclarationSource Source { get; }
+        string CSharpName { get; }
+        DynamicOperationResults Result { get; }
         IDynamicOperation RootOperation { get; }
+        bool Connect(IDomain domain, IDynamic currentDynamic, IObject currentObject);
     }
 }

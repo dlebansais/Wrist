@@ -13,11 +13,6 @@ namespace Parser
 
         public string Text { get; private set; }
 
-        public override bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
-        {
-            return false;
-        }
-
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);

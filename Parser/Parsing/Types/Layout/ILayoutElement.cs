@@ -11,8 +11,8 @@ namespace Parser
         string Margin { get; set; }
         string HorizontalAlignment { get; set; }
         string VerticalAlignment { get; set; }
-        string ElementEnable { get; set; }
-        IComponent ControllerElement { get; }
-        void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components);
+        string DynamicEnable { get; set; }
+        IDynamicProperty DynamicController { get; }
+        void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components);
     }
 }

@@ -8,9 +8,9 @@ namespace Parser
     {
         public string Index { get; set; }
 
-        public override void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
+        public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
-            base.ConnectComponents(domain, components);
+            base.ConnectComponents(domain, currentDynamic, components);
 
             if (Index == null)
                 throw new ParsingException(200, Source, $"StatePanel has no index.");

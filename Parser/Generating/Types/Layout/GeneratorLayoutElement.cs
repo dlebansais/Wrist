@@ -28,8 +28,7 @@ namespace Parser
             Margin = element.Margin;
             HorizontalAlignment = element.HorizontalAlignment;
             VerticalAlignment = element.VerticalAlignment;
-            ElementEnable = element.ElementEnable;
-            ControllerElement = element.ControllerElement;
+            BaseElement = element;
 
             if (DockPanel.DockTargets.ContainsKey(element))
                 GeneratorDockPanel.DockTargets.Add(this, DockPanel.DockTargets[element]);
@@ -47,14 +46,30 @@ namespace Parser
                 GeneratorGrid.RowSpanTargets.Add(this, Grid.RowSpanTargets[element]);
         }
 
+        private ILayoutElement BaseElement;
+
         public string Style { get; private set; }
         public string Width { get; private set; }
         public string Height { get; private set; }
         public string Margin { get; private set; }
         public string HorizontalAlignment { get; private set; }
-        public string ElementEnable { get; private set; }
         public string VerticalAlignment { get; private set; }
-        public IComponent ControllerElement { get; private set; }
+        public IGeneratorDynamicProperty DynamicController { get; private set; }
+
+        public virtual bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
+        {
+            bool IsConnected = false;
+
+            if (DynamicController == null && BaseElement.DynamicController != null)
+            {
+                IsConnected = true;
+
+                if (GeneratorDynamicProperty.GeneratorDynamicPropertyMap.ContainsKey(BaseElement.DynamicController))
+                    DynamicController = GeneratorDynamicProperty.GeneratorDynamicPropertyMap[BaseElement.DynamicController];
+            }
+
+            return IsConnected;
+        }
 
         protected string GetAttachedProperties()
         {
@@ -88,42 +103,22 @@ namespace Parser
             if (!string.IsNullOrEmpty(Height))
                 Result += $" Height=\"{Height}\"";
 
-            if (ControllerElement != null)
+            if (DynamicController != null)
             {
-                if (ControllerElement is IComponentRadioButton AsRadioButton)
+                switch (DynamicController.Result)
                 {
-                    IGeneratorComponentRadioButton ControllerControl = GeneratorComponentRadioButton.GeneratorComponentRadioButtonMap[AsRadioButton];
-                    string IndexValue = ControllerControl.GetObjectBinding(currentObject, ControllerControl.IndexObject, ControllerControl.IndexObjectProperty);
-                    string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=OneWay, Converter={{StaticResource convIndexToChecked}}, ConverterParameter={ControllerControl.GroupIndex}}}";
+                    case DynamicOperationResults.Boolean:
+                        Result += $" IsEnabled=\"{{Binding Dynamic.{DynamicController.CSharpName}}}\" IsEnabledChanged=\"OnIsEnabledChanged\"";
+                        break;
 
-                    Result += $" IsEnabled=\"{IsCheckedBinding}\"";
+                    default:
+                        throw new InvalidOperationException();
                 }
-
-                else if (ControllerElement is IComponentCheckBox AsCheckBox)
-                {
-                    IGeneratorComponentCheckBox ControllerControl = GeneratorComponentCheckBox.GeneratorComponentCheckBoxMap[AsCheckBox];
-                    string IndexValue = ControllerControl.GetObjectBinding(currentObject, ControllerControl.CheckedObject, ControllerControl.CheckedObjectProperty);
-                    string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=OneWay}}";
-
-                    Result += $" IsEnabled=\"{IsCheckedBinding}\"";
-                }
-
-                else if (ControllerElement is IComponentIndex AsIndex)
-                {
-                    IGeneratorComponentIndex ControllerControl = GeneratorComponentIndex.GeneratorComponentIndexMap[AsIndex];
-                    string IndexValue = ControllerControl.GetObjectBinding(currentObject, ControllerControl.IndexObject, ControllerControl.IndexObjectProperty);
-                    string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=OneWay}}";
-
-                    Result += $" IsEnabled=\"{IsCheckedBinding}\"";
-                }
-
-                Result += " IsEnabledChanged=\"OnIsEnabledChanged\"";
             }
 
             return Result;
         }
 
-        public abstract bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components);
         public abstract void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);
     }
 }

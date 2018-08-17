@@ -19,7 +19,7 @@ namespace Parser
 
         public override bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
         {
-            bool IsConnected = false;
+            bool IsConnected = base.Connect(domain, components);
 
             if (Component == null)
             {

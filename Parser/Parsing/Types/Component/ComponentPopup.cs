@@ -35,7 +35,7 @@
         private void ConnectSource(IDomain domain, ref bool IsConnected)
         {
             IResource Resource = SourceResource;
-            IsConnected |= SourceProperty.ConnectToResource(domain, ref Resource);
+            IsConnected |= SourceProperty.ConnectToResourceOnly(domain, ref Resource);
             SourceResource = Resource;
         }
 
@@ -44,7 +44,7 @@
             if (SourcePressedProperty != null)
             {
                 IResource Resource = SourcePressedResource;
-                IsConnected |= SourcePressedProperty.ConnectToResource(domain, ref Resource);
+                IsConnected |= SourcePressedProperty.ConnectToResourceOnly(domain, ref Resource);
                 SourcePressedResource = Resource;
             }
             else

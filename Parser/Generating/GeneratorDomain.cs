@@ -71,6 +71,9 @@ namespace Parser
 
                 foreach (IGeneratorObject Item in Objects)
                     IsConnected |= Item.Connect(this);
+
+                foreach (IGeneratorDynamic Item in Dynamics)
+                    IsConnected |= Item.Connect(this);
             }
             while (IsConnected);
 
@@ -447,7 +450,9 @@ namespace Parser
                 projectWriter.WriteLine($"    <Compile Include=\"Pages\\{Page.FileName}.xaml.cs\">");
                 projectWriter.WriteLine($"      <DependentUpon>{Page.FileName}.xaml</DependentUpon>");
                 projectWriter.WriteLine("    </Compile>");
-                projectWriter.WriteLine($"    <Compile Include=\"Dynamics\\{Page.XamlName}Dynamic.cs\"/>");
+
+                if (Page.Dynamic.HasProperties)
+                    projectWriter.WriteLine($"    <Compile Include=\"Dynamics\\{Page.Dynamic.FileName}.cs\"/>");
             }
 
             projectWriter.WriteLine("  </ItemGroup>");

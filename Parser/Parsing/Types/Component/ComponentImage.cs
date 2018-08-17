@@ -22,7 +22,7 @@
         public override bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject)
         {
             IResource Resource = SourceResource;
-            bool IsConnected = SourceProperty.ConnectToResource(domain, ref Resource);
+            bool IsConnected = SourceProperty.ConnectToResourceOnly(domain, ref Resource);
             SourceResource = Resource;
 
             if (!IsConnected && SourceResource != null)

@@ -10,9 +10,9 @@ namespace Parser
         public string BorderBrush { get; set; }
         public string BorderThickness { get; set; }
 
-        public override void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
+        public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
-            base.ConnectComponents(domain, components);
+            base.ConnectComponents(domain, currentDynamic, components);
 
             if (Items.Count != 1)
                 throw new ParsingException(207, Source, $"BorderDecoration must have one nested item.");

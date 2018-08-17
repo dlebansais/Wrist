@@ -8,9 +8,9 @@ namespace Parser
         public string Wrapping { get; set; }
         public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
 
-        public override void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
+        public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
-            base.ConnectComponents(domain, components);
+            base.ConnectComponents(domain, currentDynamic, components);
 
             bool IsFound = false;
             foreach (IComponent Component in components)

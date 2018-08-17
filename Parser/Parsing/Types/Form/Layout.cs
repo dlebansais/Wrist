@@ -23,9 +23,9 @@ namespace Parser
             return false;
         }
 
-        public void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
+        public void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
-            Content.ConnectComponents(domain, components);
+            Content.ConnectComponents(domain, currentDynamic, components);
         }
 
         public void ReportElementsWithAttachedProperties(List<IDockPanel> dockPanels, List<IGrid> grids)

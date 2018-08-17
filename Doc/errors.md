@@ -1788,7 +1788,7 @@ This error is issued when a Control in a layout file specifies more than one row
 
 *Invalid width.*
 
-A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or a dynamic property to enable the control/panel.
 
 In this case, the specified width is invalid.
 
@@ -1796,7 +1796,7 @@ In this case, the specified width is invalid.
 
 *Invalid height.*
 
-A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or a dynamic property to enable the control/panel.
 
 In this case, the specified height is invalid.
 
@@ -1804,7 +1804,7 @@ In this case, the specified height is invalid.
 
 *Invalid margin.*
 
-A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or a dynamic property to enable the control/panel.
 
 In this case, the specified margin is invalid.
 
@@ -1812,7 +1812,7 @@ In this case, the specified margin is invalid.
 
 *Invalid horizontal alignment.*
 
-A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or a dynamic property to enable the control/panel.
 
 In this case, the specified horizontal alignment is invalid.
 
@@ -1820,25 +1820,25 @@ In this case, the specified horizontal alignment is invalid.
 
 *Invalid vertical alignment.*
 
-A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or a dynamic property to enable the control/panel.
 
 In this case, the specified vertical alignment is invalid.
 
 ## WTE00198
 
-*Element 'x' not found.*
+*Dynamic property 'x' not found.*
 
-A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or a dynamic property to enable the control/panel.
 
-In this case, the element name specified is not found among other elements in the page.
+In this case, the dynamic property name specified is not found among properties in the dynamics of this page.
 
 ## WTE00199
 
-*Element 'x' is neither a CheckBox, RadioButton or Index.*
+*Dynamic property 'x' is not boolean.*
 
-A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or an element to enable the control/panel.
+A control or panel in a layout file can specify a width, height, margin, horizontal alignment, vertical alignment or a dynamic property to enable the control/panel.
 
-In this case, the element name specified is found, but it cannot be used to enable the control or panel.
+In this case, the dynamic property name specified has been found but is not of boolean type.
 
 ## WTE00200
 
@@ -1901,3 +1901,79 @@ In this case, the *ToggleButton* style (for popups) was not provided.
 *BorderDecoration must have one nested item.*
 
 A BorderDecoration is used to decorate one item. This error is issued if the BorderDecoration has no nested item. You can use the Empty component to fix it.   
+
+## WTE00208
+
+The Wrist console must be run with a valid input folder, output folder, the name of a home page and that of a color theme. The input folder contains subdirectories such as 'page', 'area'... and some of these contain Xaml files.
+
+This error is issued when the console fails to process one of the files in the 'dynamic' subfolder.
+
+## WTE00209
+
+*Missing dynamic property name.*
+
+A dynamic property consist of a name and type separated by a colon, and followed by lines of operators or expressions.
+
+In this case the property name is missing.
+
+## WTE00210
+
+*Invalid dynamic property type 'x'.*
+
+A dynamic property consist of a name and type separated by a colon, and followed by lines of operators or expressions.
+
+In this case the property name is found but the type is bad. Only `boolean` is allowed.
+
+## WTE00211
+
+*Expected operator, integer constant or object property.*
+
+A dynamic property consist of a name and type separated by a colon, and followed by lines of operators or expressions.
+
+In this case a line could not be parsed as an operator (ex: AND), an integer constant, or the property of an object using the `object`.`property` syntax.
+
+## WTE00212
+
+*Operand not following an operator.*
+
+A dynamic property consist of a name and type separated by a colon, and followed by lines of operators or expressions.
+
+In this case an operand was found without an operator expecting it.
+
+## WTE00213
+
+*Dynamic property 'x' with no expression.*
+
+A dynamic property consist of a name and type separated by a colon, and followed by lines of operators or expressions.
+
+In this case the property name and types were found, but not operators or expressions.
+
+## WTE00214
+
+*Dynamic property 'x' not completely specified.*
+
+A dynamic property consist of a name and type separated by a colon, and followed by lines of operators or expressions.
+
+In this case the property name and types were found, but some operator is missing an operand.
+
+## WTE00215
+
+*Indentation expected.*
+
+A dynamic property consist of a name and type separated by a colon, and followed by lines of operators or expressions.
+
+In this case an operator or expression has no indentation.
+
+## WTE00216
+
+*Expression partially indented.*
+
+A dynamic property consist of a name and type separated by a colon, and followed by lines of operators or expressions.
+
+In this case an operator or expression is indented, but not with the same number of spaces than other lines. For example, other lines use multiple of 4 space but the guilty line has an indentation not multiple of 4.
+
+## WTE00217
+
+*Dynamic file not found.*
+
+A dynamic file in the 'dynamic' folder with the same name as the page is expected.

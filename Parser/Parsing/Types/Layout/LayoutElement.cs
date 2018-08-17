@@ -16,10 +16,10 @@ namespace Parser
         public string Margin { get; set; }
         public string HorizontalAlignment { get; set; }
         public string VerticalAlignment { get; set; }
-        public string ElementEnable { get; set; }
-        public IComponent ControllerElement { get; private set; }
+        public string DynamicEnable { get; set; }
+        public IDynamicProperty DynamicController { get; private set; }
 
-        public virtual void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
+        public virtual void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
             double WidthValue;
             if (Width != null && !double.TryParse(Width, out WidthValue))
@@ -57,19 +57,19 @@ namespace Parser
                 VerticalAlignment != Windows.UI.Xaml.VerticalAlignment.Stretch.ToString())
                 throw new ParsingException(197, Source, "Invalid vertical alignment.");
 
-            if (ElementEnable != null && ControllerElement == null)
+            if (DynamicEnable != null && DynamicController == null)
             {
-                foreach (IComponent Component in components)
-                    if (Component.Source.Name == ElementEnable)
+                foreach (IDynamicProperty Item in currentDynamic.Properties)
+                    if (DynamicEnable == Item.Source.Name)
                     {
-                        ControllerElement = Component;
+                        DynamicController = Item;
                         break;
                     }
 
-                if (ControllerElement == null)
-                    throw new ParsingException(198, Source, $"Element '{ElementEnable}' not found.");
-                else if (!(ControllerElement is IComponentRadioButton) && !(ControllerElement is IComponentCheckBox) && !(ControllerElement is IComponentIndex))
-                    throw new ParsingException(199, Source, $"Element '{ElementEnable}' is neither a CheckBox, RadioButton or Index.");
+                if (DynamicController == null)
+                    throw new ParsingException(198, Source, $"Dynamic property '{DynamicEnable}' not found.");
+                else if (DynamicController.Result != DynamicOperationResults.Boolean)
+                    throw new ParsingException(199, Source, $"Dynamic property '{DynamicEnable}' is not boolean.");
             }
         }
     }

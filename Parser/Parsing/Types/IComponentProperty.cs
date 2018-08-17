@@ -8,7 +8,8 @@
         IDeclarationSource ObjectPropertySource { get; }
         IDeclarationSource ObjectPropertyKey { get; }
         bool ConnectToResourceOrObject(IDomain domain, IArea currentArea, IObject currentObject, ref IResource resource, ref IObject obj, ref IObjectProperty objectProperty, ref IDeclarationSource objectPropertyKey);
-        bool ConnectToResource(IDomain domain, ref IResource resource);
+        bool ConnectToResourceOnly(IDomain domain, ref IResource resource);
+        bool ConnectToObjectOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectProperty objectProperty, ref IDeclarationSource objectPropertyKey);
         bool ConnectToStringList(IDomain domain, IArea currentArea, IObject currentObject, ref IResource resource, ref IObject obj, ref IObjectPropertyStringList objectProperty);
         bool ConnectToObjectIntegerOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyInteger objectProperty);
         bool ConnectToObjectBooleanOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyBoolean objectProperty);

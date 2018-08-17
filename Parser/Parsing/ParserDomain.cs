@@ -433,5 +433,37 @@ namespace Parser
 
             nameSource = new DeclarationSource(Name, sourceStream);
         }
+
+        public static bool TryParseObjectProperty(IParsingSourceStream sourceStream, string text, out IDeclarationSource objectSource, out IDeclarationSource memberSource, out IDeclarationSource keySource)
+        {
+            if (!text.Contains("."))
+            {
+                objectSource = null;
+                memberSource = null;
+                keySource = null;
+                return false;
+            }
+
+            else
+            {
+                string MemberName;
+                ParseStringPair(sourceStream, text, '.', out objectSource, out MemberName);
+
+                string Key;
+                int StartIndex = MemberName.IndexOf("[");
+                int EndIndex = MemberName.IndexOf("]");
+                if (StartIndex > 0 && EndIndex > StartIndex)
+                {
+                    Key = MemberName.Substring(StartIndex + 1, EndIndex - StartIndex - 1);
+                    MemberName = MemberName.Substring(0, StartIndex);
+                    keySource = new DeclarationSource(Key, sourceStream);
+                }
+                else
+                    keySource = null;
+
+                memberSource = new DeclarationSource(MemberName, sourceStream);
+                return true;
+            }
+        }
     }
 }

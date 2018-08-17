@@ -145,9 +145,9 @@ namespace Parser
         public double[] ColumnWidthArray { get; private set; }
         public double[] RowHeightArray { get; private set; }
 
-        public override void ConnectComponents(IDomain domain, IReadOnlyCollection<IComponent> components)
+        public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
-            base.ConnectComponents(domain, components);
+            base.ConnectComponents(domain, currentDynamic, components);
 
             if (ColumnCount < 0)
                 throw new ParsingException(167, Source, $"Invalid column count.");

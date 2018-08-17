@@ -112,7 +112,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public bool ConnectToResource(IDomain domain, ref IResource resource)
+        public bool ConnectToResourceOnly(IDomain domain, ref IResource resource)
         {
             bool IsConnected = false;
 
@@ -127,6 +127,42 @@ namespace Parser
 
                 if (resource == null)
                     throw new ParsingException(142, FixedValueSource.Source, $"Unknown static resource '{FixedValueSource.Name}'.");
+
+                IsConnected = true;
+            }
+
+            return IsConnected;
+        }
+
+        public bool ConnectToObjectOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectProperty objectProperty, ref IDeclarationSource objectPropertyKey)
+        {
+            bool IsConnected = false;
+
+            if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
+            {
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+
+                foreach (IObjectProperty Property in obj.Properties)
+                    if (Property.NameSource.Name == ObjectPropertySource.Name)
+                    {
+                        if (Property is IObjectPropertyStringDictionary AsObjectPropertyStringDictionary)
+                        {
+                            if (ObjectPropertyKey == null)
+                                throw new ParsingException(143, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be used with a key.");
+                        }
+                        else
+                        {
+                            if (ObjectPropertyKey != null)
+                                throw new ParsingException(144, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' cannot be used with a key.");
+                        }
+
+                        objectProperty = Property;
+                        objectPropertyKey = ObjectPropertyKey;
+                        break;
+                    }
+
+                if (objectProperty == null)
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
 
                 IsConnected = true;
             }

@@ -6,6 +6,7 @@
         NOT,
         OR,
         AND,
-        IS_EMPTY
+        IS_EMPTY,
+        EQUALS
     }
 }

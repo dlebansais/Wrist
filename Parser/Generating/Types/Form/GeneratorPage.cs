@@ -43,6 +43,7 @@ namespace Parser
         public bool IsScrollable { get; private set; }
         public IGeneratorBackground Background { get; private set; }
         public string BackgroundColor { get; private set; }
+        public IGeneratorDynamic Dynamic { get; private set; }
 
         public bool Connect(IGeneratorDomain domain)
         {
@@ -83,6 +84,13 @@ namespace Parser
                 IsConnected = true;
                 if (GeneratorBackground.GeneratorBackgroundMap.ContainsKey(BasePage.Background))
                     Background = GeneratorBackground.GeneratorBackgroundMap[BasePage.Background];
+            }
+
+            if (Dynamic == null)
+            {
+                IsConnected = true;
+                if (GeneratorDynamic.GeneratorDynamicMap.ContainsKey(BasePage.Dynamic))
+                    Dynamic = GeneratorDynamic.GeneratorDynamicMap[BasePage.Dynamic];
             }
 
             return IsConnected;
@@ -207,8 +215,13 @@ namespace Parser
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
             cSharpWriter.WriteLine("            DataContext = this;");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine($"            Dynamic = new {XamlName}Dynamic(this);");
+
+            if (Dynamic.HasProperties)
+            {
+                cSharpWriter.WriteLine();
+                cSharpWriter.WriteLine($"            Dynamic = new {XamlName}Dynamic(this);");
+            }
+
             cSharpWriter.WriteLine("        }");
 
             string ObjectLine = null;
@@ -224,7 +237,8 @@ namespace Parser
             if (domain.Translation != null)
                 cSharpWriter.WriteLine("        public Translation Translation { get { return App.Translation; } }");
 
-            cSharpWriter.WriteLine($"    public {XamlName}Dynamic Dynamic {{ get; private set; }}");
+            if (Dynamic.HasProperties)
+                cSharpWriter.WriteLine($"        public {XamlName}Dynamic Dynamic {{ get; private set; }}");
 
             List<IGeneratorPageNavigation> GoToList = new List<IGeneratorPageNavigation>();
             Area.CollectGoTo(GoToList, this);
