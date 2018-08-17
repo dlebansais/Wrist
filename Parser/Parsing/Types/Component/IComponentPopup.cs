@@ -4,6 +4,8 @@
     {
         IComponentProperty SourceProperty { get; }
         IResource SourceResource { get; }
+        IComponentProperty SourcePressedProperty { get; }
+        IResource SourcePressedResource { get; }
         IDeclarationSource AreaSource { get; }
         IArea Area { get; }
         double Width { get; }

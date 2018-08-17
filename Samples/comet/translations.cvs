@@ -77,3 +77,4 @@ documentation	Doc
 documentation-text	Documentation.
 features-headline	Features to help you get the job done.
 username-or-email	Username or email address
+sign-in-error	Incorrect username or password.

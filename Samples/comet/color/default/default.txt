@@ -9,3 +9,5 @@ LightBlue: #F0F0FF
 DarkBlue: #3EAAAF
 Green: #2EB459
 DarkGreen: #269449
+Pink: #FFDCE0
+Red: #800040

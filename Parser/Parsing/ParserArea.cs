@@ -425,6 +425,7 @@ namespace Parser
         private IComponentPopup ParseComponentPopup(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)
         {
             IComponentProperty SourceProperty = null;
+            IComponentProperty SourcePressedProperty = null;
             IComponentProperty AreaProperty = null;
             IComponentProperty WidthProperty = null;
             IComponentProperty HeightProperty = null;
@@ -432,13 +433,15 @@ namespace Parser
             foreach (ComponentInfo Info in infoList)
                 if (Info.NameSource.Name == "source" && SourceProperty == null)
                     SourceProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name == "source pressed" && SourcePressedProperty == null)
+                    SourcePressedProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "area" && AreaProperty == null)
                     AreaProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "width" && WidthProperty == null)
                     WidthProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "height" && HeightProperty == null)
                     HeightProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name != "source" && Info.NameSource.Name != "area" && Info.NameSource.Name != "width" && Info.NameSource.Name != "height")
+                else if (Info.NameSource.Name != "source" && Info.NameSource.Name != "source pressed" && Info.NameSource.Name != "area" && Info.NameSource.Name != "width" && Info.NameSource.Name != "height")
                     throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
                     throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
@@ -447,6 +450,9 @@ namespace Parser
                 throw new ParsingException(57, sourceStream, "Source not specified.");
             if (SourceProperty.FixedValueSource == null)
                 throw new ParsingException(186, sourceStream, "Source can only be a static name.");
+
+            if (SourcePressedProperty != null && SourcePressedProperty.FixedValueSource == null)
+                throw new ParsingException(186, sourceStream, "Source pressed can only be a static name.");
 
             if (AreaProperty == null)
                 throw new ParsingException(58, sourceStream, "Area not specified.");
@@ -479,7 +485,7 @@ namespace Parser
             else
                 HeightValue = double.NaN;
 
-            return new ComponentPopup(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Popup"), SourceProperty, AreaProperty.FixedValueSource, WidthValue, HeightValue);
+            return new ComponentPopup(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Popup"), SourceProperty, SourcePressedProperty, AreaProperty.FixedValueSource, WidthValue, HeightValue);
         }
 
         private IComponentSelector ParseComponentSelector(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)

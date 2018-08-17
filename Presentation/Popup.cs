@@ -12,7 +12,7 @@ namespace Presentation
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            Border AsBorder = Child as Border;
+            FrameworkElement AsBorder = Child as FrameworkElement;
             AsBorder.Loaded += OnChildLoaded;
         }
 

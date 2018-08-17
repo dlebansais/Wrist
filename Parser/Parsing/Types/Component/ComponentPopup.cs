@@ -2,10 +2,11 @@
 {
     public class ComponentPopup : Component, IComponentPopup
     {
-        public ComponentPopup(IDeclarationSource source, string xamlName, IComponentProperty sourceProperty, IDeclarationSource areaSource, double width, double height)
+        public ComponentPopup(IDeclarationSource source, string xamlName, IComponentProperty sourceProperty, IComponentProperty sourcePressedProperty, IDeclarationSource areaSource, double width, double height)
             : base(source, xamlName)
         {
             SourceProperty = sourceProperty;
+            SourcePressedProperty = sourcePressedProperty;
             AreaSource = areaSource;
             Width = width;
             Height = height;
@@ -13,6 +14,8 @@
 
         public IComponentProperty SourceProperty { get; private set; }
         public IResource SourceResource { get; private set; }
+        public IComponentProperty SourcePressedProperty { get; private set; }
+        public IResource SourcePressedResource { get; private set; }
         public IDeclarationSource AreaSource { get; private set; }
         public IArea Area { get; private set; }
         public double Width { get; private set; }
@@ -23,6 +26,7 @@
             bool IsConnected = false;
 
             ConnectSource(domain, ref IsConnected);
+            ConnectSourcePressed(domain, ref IsConnected);
             ConnectArea(domain, ref IsConnected);
 
             return IsConnected;
@@ -33,6 +37,18 @@
             IResource Resource = SourceResource;
             IsConnected |= SourceProperty.ConnectToResource(domain, ref Resource);
             SourceResource = Resource;
+        }
+
+        private void ConnectSourcePressed(IDomain domain, ref bool IsConnected)
+        {
+            if (SourcePressedProperty != null)
+            {
+                IResource Resource = SourcePressedResource;
+                IsConnected |= SourcePressedProperty.ConnectToResource(domain, ref Resource);
+                SourcePressedResource = Resource;
+            }
+            else
+                SourcePressedResource = null;
         }
 
         private void ConnectArea(IDomain domain, ref bool IsConnected)

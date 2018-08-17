@@ -11,6 +11,13 @@ namespace AppCSHtml5
         public Login()
         {
             KeepActiveIndex = 1;
+
+            Account NewAccount = new Account();
+            NewAccount.SignInMethod = 1;
+            NewAccount.KeepActiveIndex = 1;
+            NewAccount.Name = "a";
+            NewAccount.Password = "b";
+            Accounts.Add(NewAccount);
         }
 
         public string Name
@@ -27,6 +34,8 @@ namespace AppCSHtml5
 
                     SignUpNameError = false;
                     NotifyPropertyChanged(nameof(SignUpNameError));
+                    SignInError = false;
+                    NotifyPropertyChanged(nameof(SignInError));
                 }
             }
         }
@@ -44,6 +53,8 @@ namespace AppCSHtml5
 
                     SignUpConfirmPasswordError = false;
                     NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                    SignInError = false;
+                    NotifyPropertyChanged(nameof(SignInError));
                 }
             }
         }
@@ -183,6 +194,7 @@ namespace AppCSHtml5
         }
         private int _KeepActiveIndex;
 
+        public bool SignInError { get; set; }
         public bool SignUpNameError { get; set; }
         public bool SignUpConfirmPasswordError { get; set; }
 
@@ -297,14 +309,34 @@ namespace AppCSHtml5
 
         public void On_SignIn(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
+            int i;
+            for (i = 0; i < Accounts.Count; i++)
+            {
+                Account Account = Accounts[i];
+                if (Account.Name == Name && Account.Password == Password)
+                    break;
+            }
+            if (i >= Accounts.Count)
+            {
+                Password = null;
+                NotifyPropertyChanged(nameof(Password));
+
+                SignInError = true;
+                NotifyPropertyChanged(nameof(SignInError));
+
+                destinationPageName = null;
+                return;
+            }
+
             IsSignedIn = true;
             Password = null;
-            ConfirmPassword = null;
             NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Password));
-            NotifyPropertyChanged(nameof(ConfirmPassword));
 
-            destinationPageName = null;
+            if (pageName == "home")
+                destinationPageName = "start";
+            else
+                destinationPageName = null;
         }
 
         public void On_ChangeEmail(string pageName, string sourceName, string sourceContent, out string destinationPageName)
