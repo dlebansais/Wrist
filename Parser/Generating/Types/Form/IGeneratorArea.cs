@@ -13,5 +13,6 @@ namespace Parser
         bool Connect(IGeneratorDomain domain);
         void Generate(IGeneratorLayout layout, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter);
         void CollectGoTo(List<IGeneratorPageNavigation> goToList, IGeneratorPage currentPage);
+        void CollectBoundComponents(List<IGeneratorBindableComponent> boundComponentList, IGeneratorPage currentPage);
     }
 }

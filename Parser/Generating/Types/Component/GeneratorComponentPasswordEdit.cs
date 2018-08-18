@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentPasswordEdit : GeneratorComponent, IGeneratorComponentPasswordEdit
+    public class GeneratorComponentPasswordEdit : GeneratorComponent, IGeneratorComponentPasswordEdit, IGeneratorBindableComponent
     {
         public GeneratorComponentPasswordEdit(IComponentPasswordEdit edit)
             : base(edit)
@@ -38,8 +38,14 @@ namespace Parser
             string MaximumLengthProperty = ((TextObjectProperty != null && TextObjectProperty.MaximumLength > 0) ? $" MaxLength=\"{TextObjectProperty.MaximumLength}\"" : "");
             string Properties = $" Style=\"{{StaticResource {design.XamlName}PasswordBox{StyleProperty}}}\"{MaximumLengthProperty}";
             string Value = GetComponentValue(currentPage, currentObject, null, TextObject, TextObjectProperty, null, true);
+            string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" PasswordChanged=\"{GetChangedHandlerName(TextObject, TextObjectProperty)}\"" : "";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox{attachedProperties}{visibilityBinding} Password=\"{Value}\"{Properties}{elementProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox{attachedProperties}{visibilityBinding} Password=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
         }
+
+        public IGeneratorObject BoundObject { get { return TextObject; } }
+        public IGeneratorObjectProperty BoundObjectProperty { get { return TextObjectProperty; } }
+        public string HandlerArgumentTypeName { get { return "RoutedEventArgs"; } }
+        public bool PostponeChangedNotification { get { return false; } }
     }
 }

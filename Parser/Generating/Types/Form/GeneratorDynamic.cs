@@ -95,7 +95,7 @@ namespace Parser
                 string ObjectName = Entry.Key.CSharpName;
 
                 cSharpWriter.WriteLine();
-                cSharpWriter.WriteLine($"        private void On{ObjectName }PropertyChanged(object sender, PropertyChangedEventArgs e)");
+                cSharpWriter.WriteLine($"        public void On{ObjectName }PropertyChanged(object sender, PropertyChangedEventArgs e)");
                 cSharpWriter.WriteLine("        {");
                 cSharpWriter.WriteLine($"            OnPropertyChanged($\"{{nameof({ObjectName })}}.{{e.PropertyName}}\");");
                 cSharpWriter.WriteLine("        }");
@@ -107,7 +107,7 @@ namespace Parser
                 DynamicProperty.Generate(cSharpWriter);
 
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine($"        private void OnPropertyChanged(string propertyName)");
+            cSharpWriter.WriteLine($"        public void OnPropertyChanged(string propertyName)");
             cSharpWriter.WriteLine("        {");
 
             foreach (KeyValuePair<IGeneratorObject, List<IGeneratorObjectProperty>> Entry in UsedObjectTable)

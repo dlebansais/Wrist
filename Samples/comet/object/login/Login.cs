@@ -29,8 +29,6 @@ namespace AppCSHtml5
                 {
                     _Name = value;
                     NotifyPropertyChanged(nameof(Name));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
 
                     SignUpNameError = false;
                     NotifyPropertyChanged(nameof(SignUpNameError));
@@ -49,7 +47,7 @@ namespace AppCSHtml5
                 if (_Password != value)
                 {
                     _Password = value;
-                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
+                    NotifyPropertyChanged(nameof(Password));
 
                     SignUpConfirmPasswordError = false;
                     NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
@@ -68,7 +66,6 @@ namespace AppCSHtml5
                 if (_ConfirmPassword != value)
                 {
                     _ConfirmPassword = value;
-                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
 
                     SignUpConfirmPasswordError = false;
                     NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
@@ -89,12 +86,6 @@ namespace AppCSHtml5
                 {
                     _Email = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2));
-                    NotifyPropertyChanged(nameof(IsSignInMethod3));
-                    NotifyPropertyChanged(nameof(IsSignInMethod4));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
 
                     SignUpNameError = false;
                     NotifyPropertyChanged(nameof(SignUpNameError));
@@ -114,12 +105,6 @@ namespace AppCSHtml5
                 {
                     _Confirm1 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2));
-                    NotifyPropertyChanged(nameof(IsSignInMethod3));
-                    NotifyPropertyChanged(nameof(IsSignInMethod4));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
 
                     SignUpNameError = false;
                     NotifyPropertyChanged(nameof(SignUpNameError));
@@ -139,12 +124,6 @@ namespace AppCSHtml5
                 {
                     _Confirm2 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2));
-                    NotifyPropertyChanged(nameof(IsSignInMethod3));
-                    NotifyPropertyChanged(nameof(IsSignInMethod4));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
 
                     SignUpNameError = false;
                     NotifyPropertyChanged(nameof(SignUpNameError));
@@ -164,12 +143,6 @@ namespace AppCSHtml5
                 {
                     _Confirm3 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2));
-                    NotifyPropertyChanged(nameof(IsSignInMethod3));
-                    NotifyPropertyChanged(nameof(IsSignInMethod4));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
 
                     SignUpNameError = false;
                     NotifyPropertyChanged(nameof(SignUpNameError));
@@ -180,19 +153,7 @@ namespace AppCSHtml5
         }
         private bool _Confirm3;
 
-        public int KeepActiveIndex
-        {
-            get { return _KeepActiveIndex; }
-            set
-            {
-                if (_KeepActiveIndex != value)
-                {
-                    _KeepActiveIndex = value;
-                    NotifyPropertyChanged(nameof(KeepActiveIndex));
-                }
-            }
-        }
-        private int _KeepActiveIndex;
+        public int KeepActiveIndex { get; set; }
 
         public bool SignInError { get; set; }
         public bool SignUpNameError { get; set; }
@@ -206,15 +167,9 @@ namespace AppCSHtml5
             get { return _SignInMethod; }
             set
             {
-                if (value > 0 && value < 4 && _SignInMethod != value)
+                if (value >= 1 && value <= 4 && _SignInMethod != value)
                 {
                     _SignInMethod = value;
-                    NotifyPropertyChanged(nameof(IsSignInMethod1));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2));
-                    NotifyPropertyChanged(nameof(IsSignInMethod3));
-                    NotifyPropertyChanged(nameof(IsSignInMethod4));
-                    NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
-                    NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
 
                     SignUpNameError = false;
                     NotifyPropertyChanged(nameof(SignUpNameError));
@@ -223,30 +178,11 @@ namespace AppCSHtml5
                 }
             }
         }
-        public bool IsSignInMethod1 { get { return SignInMethod == 1 && IsProfileReady; } set { } }
-        public bool IsSignInMethod2 { get { return SignInMethod == 2 && IsProfileReady; } set { } }
-        public bool IsSignInMethod3 { get { return SignInMethod == 3 && IsProfileReady; } set { } }
-        public bool IsSignInMethod4 { get { return SignInMethod == 4 && IsProfileReady; } set { } }
         private int _SignInMethod;
 
-        public bool Ready
-        {
-            get { return _Ready; }
-            set
-            {
-                if (_Ready != value)
-                {
-                    _Ready = value;
-                    NotifyPropertyChanged(nameof(Ready));
-                }
-            }
-        }
-        private bool _Ready;
+        public bool IsReady { get; set; }
 
         public bool IsProfileReady { get { return Confirm1 && Confirm2 && Confirm3 && !string.IsNullOrEmpty(Email); } set { } }
-
-        public bool IsSignInMethod1Possible { get { return IsSignInMethod1 && !string.IsNullOrEmpty(Name) && !SignUpNameError; } set { } }
-        public bool IsSignInMethod2Possible { get { return IsSignInMethod2 && !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword) && !SignUpConfirmPasswordError; } set { } }
 
         public void On_SignUp(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
@@ -262,7 +198,6 @@ namespace AppCSHtml5
                         {
                             SignUpNameError = true;
                             NotifyPropertyChanged(nameof(SignUpNameError));
-                            NotifyPropertyChanged(nameof(IsSignInMethod1Possible));
 
                             destinationPageName = null;
                             return;
@@ -278,7 +213,6 @@ namespace AppCSHtml5
                     {
                         SignUpConfirmPasswordError = true;
                         NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
-                        NotifyPropertyChanged(nameof(IsSignInMethod2Possible));
 
                         destinationPageName = null;
                         return;

@@ -66,6 +66,7 @@
     <Compile Include="Generating\Types\Component\GeneratorComponentSelector.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentContainer.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentText.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorBindableComponent.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentRadioButton.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentCheckBox.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentCollection.cs" />

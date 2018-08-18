@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentSelector : GeneratorComponent, IGeneratorComponentSelector
+    public class GeneratorComponentSelector : GeneratorComponent, IGeneratorComponentSelector, IGeneratorBindableComponent
     {
         public GeneratorComponentSelector(IComponentSelector selector)
             : base(selector)
@@ -63,9 +63,15 @@ namespace Parser
             string Properties = $" Style=\"{{StaticResource {design.XamlName}Selector{StyleProperty}}}\"";
             string IndexValue = GetComponentValue(currentPage, currentObject, null, IndexObject, IndexObjectProperty, null, true);
             string ItemsValue = GetComponentValue(currentPage, currentObject, ItemsResource, ItemsObject, ItemsObjectProperty, null, false);
+            string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" SelectionChanged=\"{GetChangedHandlerName(IndexObject, IndexObjectProperty)}\"" : "";
 
             // SelectedIndex must be first, no clue why.
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} SelectedIndex=\"{IndexValue}\" ItemsSource=\"{ItemsValue}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} SelectedIndex=\"{IndexValue}\"{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
         }
+
+        public IGeneratorObject BoundObject { get { return IndexObject; } }
+        public IGeneratorObjectProperty BoundObjectProperty { get { return IndexObjectProperty; } }
+        public string HandlerArgumentTypeName { get { return "SelectionChangedEventArgs"; } }
+        public bool PostponeChangedNotification { get { return false; } }
     }
 }

@@ -270,6 +270,32 @@ namespace Parser
                 cSharpWriter.WriteLine("        }");
             }
 
+            if (Dynamic.HasProperties)
+            {
+                List<IGeneratorBindableComponent> BoundComponentList = new List<IGeneratorBindableComponent>();
+                Area.CollectBoundComponents(BoundComponentList, this);
+
+                foreach (IGeneratorBindableComponent Component in BoundComponentList)
+                {
+                    string ObjectName = Component.BoundObject.CSharpName;
+                    string ObjectPropertyName = Component.BoundObjectProperty.CSharpName;
+                    string HandlerName = GeneratorComponent.GetChangedHandlerName(Component.BoundObject, Component.BoundObjectProperty);
+                    string HandlerArgumentTypeName = Component.HandlerArgumentTypeName;
+
+                    cSharpWriter.WriteLine();
+                    cSharpWriter.WriteLine($"        private void {HandlerName}(object sender, {Component.HandlerArgumentTypeName} e)");
+                    cSharpWriter.WriteLine("        {");
+
+                    string Notification = $"Dynamic.OnPropertyChanged($\"{{nameof({ObjectName})}}.{{nameof({ObjectName}.{ObjectPropertyName})}}\")";
+                    if (Component.PostponeChangedNotification)
+                        cSharpWriter.WriteLine($"            Dispatcher.BeginInvoke( () => {Notification} );");
+                    else
+                        cSharpWriter.WriteLine($"            {Notification};");
+
+                    cSharpWriter.WriteLine("        }");
+                }
+            }
+
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)");
             cSharpWriter.WriteLine("        {");

@@ -56,5 +56,10 @@ namespace Parser
 
             return IsUsed;
         }
+
+        public override string ToString()
+        {
+            return $"{ValueObject.CSharpName}.{ValueObjectProperty.CSharpName}";
+        }
     }
 }

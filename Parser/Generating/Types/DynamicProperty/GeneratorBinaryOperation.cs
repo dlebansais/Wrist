@@ -21,7 +21,7 @@ namespace Parser
             bool IsConnected = false;
 
             IsConnected |= Operand1.Connect(domain);
-            IsConnected |= Operand1.Connect(domain);
+            IsConnected |= Operand2.Connect(domain);
 
             return IsConnected;
         }
@@ -58,6 +58,13 @@ namespace Parser
             }
 
             return IsUsed1 || IsUsed2;
+        }
+
+        public override string ToString()
+        {
+            string Operand1String = Operand1.ToString();
+            string Operand2String = Operand2.ToString();
+            return $"({Operand1String}) {Type} ({Operand2String})";
         }
     }
 }

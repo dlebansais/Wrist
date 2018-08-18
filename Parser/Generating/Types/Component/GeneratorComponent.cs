@@ -87,6 +87,11 @@ namespace Parser
             return false;
         }
 
+        public static string GetChangedHandlerName(IGeneratorObject boundObject, IGeneratorObjectProperty boundObjectProperty)
+        {
+            return $"OnValueChanged_{boundObject.CSharpName}_{boundObjectProperty.CSharpName}";
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name} '{Source.Name}'";

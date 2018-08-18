@@ -49,5 +49,11 @@ namespace Parser
 
             return IsUsed;
         }
+
+        public override string ToString()
+        {
+            string OperandString = Operand.ToString();
+            return $"{Type} ({OperandString})";
+        }
     }
 }

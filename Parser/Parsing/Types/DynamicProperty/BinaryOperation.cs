@@ -26,7 +26,7 @@
             bool IsConnected = false;
 
             IsConnected |= Operand1.Connect(domain, currentDynamic, currentObject);
-            IsConnected |= Operand1.Connect(domain, currentDynamic, currentObject);
+            IsConnected |= Operand2.Connect(domain, currentDynamic, currentObject);
 
             return IsConnected;
         }

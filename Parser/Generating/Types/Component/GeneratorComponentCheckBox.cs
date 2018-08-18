@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentCheckBox : GeneratorComponent, IGeneratorComponentCheckBox
+    public class GeneratorComponentCheckBox : GeneratorComponent, IGeneratorComponentCheckBox, IGeneratorBindableComponent
     {
         public static Dictionary<IComponentCheckBox, IGeneratorComponentCheckBox> GeneratorComponentCheckBoxMap { get; } = new Dictionary<IComponentCheckBox, IGeneratorComponentCheckBox>();
 
@@ -78,8 +78,15 @@ namespace Parser
             string Properties = $" Style=\"{{StaticResource {design.XamlName}CheckBox{StyleProperty}}}\"";
             string Content = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
             string IsCheckedBinding = GetComponentValue(currentPage, currentObject, null, CheckedObject, CheckedObjectProperty, null, true);
+            string CheckedEvent = currentPage.Dynamic.HasProperties ? $" Checked=\"{GetChangedHandlerName(CheckedObject, CheckedObjectProperty)}\"" : "";
+            string UncheckedEvent = currentPage.Dynamic.HasProperties ? $" Unchecked=\"{GetChangedHandlerName(CheckedObject, CheckedObjectProperty)}\"" : "";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<CheckBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{Content}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<CheckBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\"{CheckedEvent}{UncheckedEvent} Content=\"{Content}\"/>");
         }
+
+        public IGeneratorObject BoundObject { get { return CheckedObject; } }
+        public IGeneratorObjectProperty BoundObjectProperty { get { return CheckedObjectProperty; } }
+        public string HandlerArgumentTypeName { get { return "RoutedEventArgs"; } }
+        public bool PostponeChangedNotification { get { return false; } }
     }
 }

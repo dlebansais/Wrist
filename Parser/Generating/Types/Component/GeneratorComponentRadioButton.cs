@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentRadioButton : GeneratorComponent, IGeneratorComponentRadioButton
+    public class GeneratorComponentRadioButton : GeneratorComponent, IGeneratorComponentRadioButton, IGeneratorBindableComponent
     {
         public static Dictionary<IComponentRadioButton, IGeneratorComponentRadioButton> GeneratorComponentRadioButtonMap { get; } = new Dictionary<IComponentRadioButton, IGeneratorComponentRadioButton>();
 
@@ -97,8 +97,14 @@ namespace Parser
             string ContentValue = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
             string IndexValue = GetObjectBinding(currentObject, IndexObject, IndexObjectProperty);
             string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=TwoWay, Converter={{StaticResource convIndexToChecked}}, ConverterParameter={GroupIndex}}}";
+            string CheckedEvent = currentPage.Dynamic.HasProperties ? $" Checked=\"{GetChangedHandlerName(IndexObject, IndexObjectProperty)}\"" : "";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\" Content=\"{ContentValue}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\"{CheckedEvent} Content=\"{ContentValue}\"/>");
         }
+
+        public IGeneratorObject BoundObject { get { return IndexObject; } }
+        public IGeneratorObjectProperty BoundObjectProperty { get { return IndexObjectProperty; } }
+        public string HandlerArgumentTypeName { get { return "RoutedEventArgs"; } }
+        public bool PostponeChangedNotification { get { return true; } }
     }
 }

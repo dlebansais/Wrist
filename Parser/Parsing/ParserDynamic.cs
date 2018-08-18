@@ -143,7 +143,10 @@ namespace Parser
                         else if (CurrentOperation is IBinaryOperation AsBinary)
                         {
                             if (AsBinary.Operand1 == null)
+                            {
                                 AsBinary.SetOperand1(Operand);
+                                break;
+                            }
                             else
                             {
                                 AsBinary.SetOperand2(Operand);

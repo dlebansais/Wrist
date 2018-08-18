@@ -89,6 +89,28 @@ namespace Parser
                     AsArea.Area.CollectGoTo(goToList, currentPage);
         }
 
+        public void CollectBoundComponents(List<IGeneratorBindableComponent> boundComponentList, IGeneratorPage currentPage)
+        {
+            foreach (IGeneratorComponent Component in Components)
+                if (Component is IGeneratorBindableComponent AsBindable)
+                {
+                    bool IsFound = false;
+                    foreach (IGeneratorBindableComponent Item in boundComponentList)
+                        if (Item.BoundObject == AsBindable.BoundObject && Item.BoundObjectProperty == AsBindable.BoundObjectProperty)
+                        {
+                            IsFound = true;
+                            break;
+                        }
+
+                    if (!IsFound)
+                        boundComponentList.Add(AsBindable);
+                }
+                else if (Component is IGeneratorComponentPopup AsPopup)
+                    AsPopup.Area.CollectBoundComponents(boundComponentList, currentPage);
+                else if (Component is IGeneratorComponentArea AsArea)
+                    AsArea.Area.CollectBoundComponents(boundComponentList, currentPage);
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name} '{Name}'";
