@@ -1977,3 +1977,9 @@ In this case an operator or expression is indented, but not with the same number
 *Dynamic file not found.*
 
 A dynamic file in the 'dynamic' folder with the same name as the page is expected.
+
+## WTE00218
+
+*Control must reference a name.*
+
+This error is issued when a Control in a layout file does not refer to the name of a component.

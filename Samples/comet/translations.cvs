@@ -30,7 +30,7 @@ signed-out-text	todo
 start	Start
 sign-in-title	Sign in
 sign-in-text	Choose a sign in method and enter your info.
-keep-active	Keep this session logged for
+keep-active	Keep this session logged:
 password	Password
 password-colon	Password:
 other-platform	Click one of these buttons to go to the sign in page.
@@ -60,7 +60,7 @@ feature-5-text	This is a free service. No charge, no login, no private info, no 
 status-colon	Status:
 id-colon	Id:
 keep-active-option-1	This session only (until inactive for an hour)
-keep-active-option-2	Two weeks
+keep-active-option-2	For two weeks
 keep-active-option-3	No limit
 other	Other
 sign-up	Sign up

@@ -12,6 +12,9 @@ namespace Parser
         {
             base.ConnectComponents(domain, currentDynamic, components);
 
+            if (string.IsNullOrEmpty(Name))
+                throw new ParsingException(218, Source, $"Control must reference a name.");
+
             bool IsFound = false;
             foreach (IComponent Component in components)
                 if (Component.Source.Name == Name)
