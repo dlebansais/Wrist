@@ -279,12 +279,42 @@ namespace Parser
                 {
                     string ObjectName = Component.BoundObject.CSharpName;
                     string ObjectPropertyName = Component.BoundObjectProperty.CSharpName;
+                    string HandlerName = GeneratorComponent.GetLoadedHandlerName(Component.BoundObject, Component.BoundObjectProperty);
+                    string HandlerArgumentTypeName = Component.HandlerArgumentTypeName;
+
+                    if (Component is IGeneratorComponentSelector AsSelector)
+                    {
+                        cSharpWriter.WriteLine();
+                        cSharpWriter.WriteLine($"        private void {HandlerName}(object sender, RoutedEventArgs e)");
+                        cSharpWriter.WriteLine("        {");
+
+                        cSharpWriter.WriteLine("            ListBox Ctrl = (ListBox)sender;");
+                        cSharpWriter.WriteLine($"            {ObjectName}.NotifyPropertyChanged(nameof({ObjectName}.{ObjectPropertyName}));");
+                        cSharpWriter.WriteLine("        }");
+                    }
+                }
+
+                foreach (IGeneratorBindableComponent Component in BoundComponentList)
+                {
+                    string ObjectName = Component.BoundObject.CSharpName;
+                    string ObjectPropertyName = Component.BoundObjectProperty.CSharpName;
                     string HandlerName = GeneratorComponent.GetChangedHandlerName(Component.BoundObject, Component.BoundObjectProperty);
                     string HandlerArgumentTypeName = Component.HandlerArgumentTypeName;
 
                     cSharpWriter.WriteLine();
                     cSharpWriter.WriteLine($"        private void {HandlerName}(object sender, {Component.HandlerArgumentTypeName} e)");
                     cSharpWriter.WriteLine("        {");
+
+                    if (Component is IGeneratorComponentSelector AsSelector)
+                    {
+                        cSharpWriter.WriteLine("            ListBox Ctrl = (ListBox)sender;");
+                        cSharpWriter.WriteLine($"            if (Ctrl.SelectedIndex >= 0 && {ObjectName}.{ObjectPropertyName} != Ctrl.SelectedIndex)");
+                        cSharpWriter.WriteLine("            {");
+                        cSharpWriter.WriteLine($"                {ObjectName}.{ObjectPropertyName} = Ctrl.SelectedIndex;");
+                        cSharpWriter.WriteLine($"                {ObjectName}.NotifyPropertyChanged(nameof({ObjectName}.{ObjectPropertyName}));");
+                        cSharpWriter.WriteLine("            }");
+                        cSharpWriter.WriteLine();
+                    }
 
                     string Notification = $"Dynamic.OnPropertyChanged($\"{{nameof({ObjectName})}}.{{nameof({ObjectName}.{ObjectPropertyName})}}\")";
                     if (Component.PostponeChangedNotification)

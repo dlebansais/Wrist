@@ -1,5 +1,5 @@
-﻿using DatabaseManager;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -8,21 +8,25 @@ namespace AppCSHtml5
 {
     public class Language : ILanguage, INotifyPropertyChanged
     {
-        public List<string> KeepActiveOptions
+        public ObservableCollection<string> KeepActiveOptions
         {
             get
             {
-                List<string> Result = new List<string>();
+                if (_KeepActiveOptions == null)
+                {
+                    _KeepActiveOptions = new ObservableCollection<string>();
 
-                Translation Translation = App.Translation;
-                IDictionary<string, string> Strings = Translation.Strings;
-                Result.Add(Strings["keep-active-option-1"]);
-                Result.Add(Strings["keep-active-option-2"]);
-                Result.Add(Strings["keep-active-option-3"]);
+                    Translation Translation = App.Translation;
+                    IDictionary<string, string> Strings = Translation.Strings;
+                    _KeepActiveOptions.Add(Strings["keep-active-option-1"]);
+                    _KeepActiveOptions.Add(Strings["keep-active-option-2"]);
+                    _KeepActiveOptions.Add(Strings["keep-active-option-3"]);
+                }
 
-                return Result;
+                return _KeepActiveOptions;
             }
         }
+        private ObservableCollection<string> _KeepActiveOptions;
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>

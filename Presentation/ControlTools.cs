@@ -1,7 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
 namespace Presentation
@@ -18,12 +24,19 @@ namespace Presentation
                     break;
                 }
 
+            bool UpdateItems = false;
+
             if (IsEnabled)
             {
                 if (BrushTable.ContainsKey(AsControl))
                     AsControl.Foreground = BrushTable[AsControl];
                 else if (StyleTable.ContainsKey(AsControl))
+                {
                     AsControl.Style = StyleTable[AsControl] as Style;
+                    Debug.WriteLine($"Control {AsControl.ToString()} enabled.");
+                    if (AsControl is ListBox)
+                        UpdateItems = true;
+                }
                 else if (StyleKey == null)
                     BrushTable.Add(AsControl, AsControl.Foreground);
                 else
@@ -45,6 +58,9 @@ namespace Presentation
                         StyleTable.Add(AsControl, AsControl.Style);
 
                     AsControl.Style = DisabledStyle;
+                    Debug.WriteLine($"Control {AsControl.ToString()} disabled.");
+                    if (AsControl is ListBox)
+                        UpdateItems = true;
                 }
                 else
                 {
@@ -53,6 +69,12 @@ namespace Presentation
 
                     AsControl.Foreground = new SolidColorBrush(Colors.Gray);
                 }
+            }
+
+            if (UpdateItems)
+            {
+                //ListBox lb = (ListBox)AsControl;
+                Debug.WriteLine("TODO: change item styles");
             }
         }
     }

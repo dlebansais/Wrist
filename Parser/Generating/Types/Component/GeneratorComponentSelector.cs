@@ -61,12 +61,13 @@ namespace Parser
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string StyleProperty = (style != null) ? style : "";
             string Properties = $" Style=\"{{StaticResource {design.XamlName}Selector{StyleProperty}}}\"";
-            string IndexValue = GetComponentValue(currentPage, currentObject, null, IndexObject, IndexObjectProperty, null, true);
+            string IndexValue = GetComponentValue(currentPage, currentObject, null, IndexObject, IndexObjectProperty, null, false);
             string ItemsValue = GetComponentValue(currentPage, currentObject, ItemsResource, ItemsObject, ItemsObjectProperty, null, false);
+            string LoadedEvent = currentPage.Dynamic.HasProperties ? $" Loaded=\"{GetLoadedHandlerName(IndexObject, IndexObjectProperty)}\"" : "";
             string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" SelectionChanged=\"{GetChangedHandlerName(IndexObject, IndexObjectProperty)}\"" : "";
 
             // SelectedIndex must be first, no clue why.
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} SelectedIndex=\"{IndexValue}\"{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} SelectedIndex=\"{IndexValue}\"{LoadedEvent}{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
         }
 
         public IGeneratorObject BoundObject { get { return IndexObject; } }

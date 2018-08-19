@@ -10,7 +10,8 @@ namespace AppCSHtml5
     {
         public Login()
         {
-            KeepActiveIndex = 1;
+            KeepActiveIndex1 = 1;
+            KeepActiveIndex2 = 1;
 
             Account NewAccount = new Account();
             NewAccount.SignInMethod = 1;
@@ -153,7 +154,24 @@ namespace AppCSHtml5
         }
         private bool _Confirm3;
 
-        public int KeepActiveIndex { get; set; }
+        public int KeepActiveIndex1 { get; set; }
+        public int KeepActiveIndex2 { get; set; }
+        public int KeepActiveIndex
+        {
+            get
+            {
+                switch (SignInMethod)
+                {
+                    case 1:
+                        return KeepActiveIndex1;
+                    case 2:
+                        return KeepActiveIndex2;
+
+                    default:
+                        return -1;
+                }
+            }
+        }
 
         public bool SignInError { get; set; }
         public bool SignUpNameError { get; set; }
@@ -170,6 +188,18 @@ namespace AppCSHtml5
                 if (value >= 1 && value <= 4 && _SignInMethod != value)
                 {
                     _SignInMethod = value;
+
+                    switch (value)
+                    {
+                        case 1:
+                            KeepActiveIndex1 = KeepActiveIndex2;
+                            NotifyPropertyChanged(nameof(KeepActiveIndex1));
+                            break;
+                        case 2:
+                            KeepActiveIndex2 = KeepActiveIndex1;
+                            NotifyPropertyChanged(nameof(KeepActiveIndex2));
+                            break;
+                    }
 
                     SignUpNameError = false;
                     NotifyPropertyChanged(nameof(SignUpNameError));
@@ -296,7 +326,8 @@ namespace AppCSHtml5
             Confirm1 = false;
             Confirm2 = false;
             Confirm3 = false;
-            KeepActiveIndex = 0;
+            KeepActiveIndex1 = -1;
+            KeepActiveIndex2 = -1;
             FullName = null;
             Location = null;
             SignInMethod = 0;

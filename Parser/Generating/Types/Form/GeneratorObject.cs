@@ -84,6 +84,7 @@ namespace Parser
         private void GenerateInterface(IGeneratorDomain domain, string appNamespace, StreamWriter cSharpWriter)
         {
             cSharpWriter.WriteLine("using System.Collections.Generic;");
+            cSharpWriter.WriteLine("using System.Collections.ObjectModel;");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");

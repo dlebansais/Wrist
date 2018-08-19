@@ -4,7 +4,6 @@
   <Style x:Key="{x:Type ListBox}" TargetType="{x:Type ListBox}">
     <Setter Property="FontFamily" Value="SourceSansPro-Light.ttf"/>
     <Setter Property="FontSize" Value="14"/>
-    <Setter Property="Foreground" Value="Black"/>
   </Style>
 
   <Style x:Key="defaultDesignSelectorDisabled" TargetType="{x:Type ListBox}" BasedOn="{StaticResource {x:Type ListBox}}">

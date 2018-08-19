@@ -92,6 +92,11 @@ namespace Parser
             return $"OnValueChanged_{boundObject.CSharpName}_{boundObjectProperty.CSharpName}";
         }
 
+        public static string GetLoadedHandlerName(IGeneratorObject boundObject, IGeneratorObjectProperty boundObjectProperty)
+        {
+            return $"OnLoaded_{boundObject.CSharpName}_{boundObjectProperty.CSharpName}";
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name} '{Source.Name}'";

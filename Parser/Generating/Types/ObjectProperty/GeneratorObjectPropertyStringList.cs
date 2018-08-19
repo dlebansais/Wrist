@@ -16,7 +16,7 @@ namespace Parser
 
         public override void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter)
         {
-            GenerateDeclaration(domain, cSharpWriter, "List<string>");
+            GenerateDeclaration(domain, cSharpWriter, "ObservableCollection<string>");
         }
     }
 }
