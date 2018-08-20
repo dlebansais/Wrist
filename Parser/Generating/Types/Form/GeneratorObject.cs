@@ -24,6 +24,7 @@ namespace Parser
         {
             Name = obj.Name;
             CSharpName = obj.CSharpName;
+            IsGlobal = obj.IsGlobal;
 
             IGeneratorObjectPropertyCollection ConvertedProperties = new GeneratorObjectPropertyCollection();
             foreach (IObjectProperty Property in obj.Properties)
@@ -40,6 +41,7 @@ namespace Parser
 
         public string Name { get; private set; }
         public string CSharpName { get; private set; }
+        public bool IsGlobal { get; private set; }
         public IReadOnlyCollection<IGeneratorObjectProperty> Properties { get; private set; }
         public IReadOnlyCollection<IGeneratorObjectEvent> Events { get; private set; }
 

@@ -38,7 +38,18 @@ namespace Parser
         {
             IObjectPropertyCollection ObjectPropertyList;
             List<IObjectEvent> ObjectEventList;
-            string Line = null;
+
+            sourceStream.ReadLine();
+            string Line = sourceStream.Line;
+
+            bool IsGlobal;
+            if (!string.IsNullOrEmpty(Line) && Line.Trim().ToLower() == "global")
+            {
+                IsGlobal = true;
+                sourceStream.ReadLine();
+            }
+            else
+                IsGlobal = false;
 
             try
             {
@@ -55,14 +66,13 @@ namespace Parser
             }
 
             string CSharpname = ParserDomain.ToCSharpName(sourceStream, name);
-            return new Object(name, CSharpname, ObjectPropertyList, ObjectEventList);
+            return new Object(name, CSharpname, IsGlobal, ObjectPropertyList, ObjectEventList);
         }
 
         private IObjectPropertyCollection ParseObjectProperties(IParsingSourceStream sourceStream, ref string line)
         {
             IObjectPropertyCollection ObjectPropertyList = new ObjectPropertyCollection();
 
-            sourceStream.ReadLine();
             string HeaderLine = sourceStream.Line;
             if (HeaderLine != "properties")
                 throw new ParsingException(95, sourceStream, "'properties' expected.");

@@ -305,7 +305,8 @@ namespace Parser
             cSharpWriter.WriteLine();
 
             foreach (IGeneratorObject Object in Objects)
-                cSharpWriter.WriteLine($"        public static {Object.CSharpName} {Object.CSharpName} {{ get; }} = new {Object.CSharpName}();");
+                if (Object.IsGlobal)
+                    cSharpWriter.WriteLine($"        public static {Object.CSharpName} {Object.CSharpName} {{ get; }} = new {Object.CSharpName}();");
 
             if (Translation != null)
                 cSharpWriter.WriteLine("        public static Translation Translation { get; } = new Translation();");
@@ -458,6 +459,7 @@ namespace Parser
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");
 
+            List<string> EnumTypeNameList = new List<string>();
             foreach (IGeneratorObject Object in Objects)
             {
                 projectWriter.WriteLine($"    <Compile Include=\"Objects\\I{Object.CSharpName}.cs\"/>");
@@ -465,7 +467,14 @@ namespace Parser
 
                 foreach (IGeneratorObjectProperty Property in Object.Properties)
                     if (Property is IGeneratorObjectPropertyEnum AsPropertyEnum)
-                        projectWriter.WriteLine($"    <Compile Include=\"Objects\\{AsPropertyEnum.CSharpName}s.cs\"/>");
+                        if (!EnumTypeNameList.Contains(AsPropertyEnum.CSharpName))
+                            EnumTypeNameList.Add(AsPropertyEnum.CSharpName);
+            }
+
+            foreach (string EnumTypeName in EnumTypeNameList)
+            {
+                projectWriter.WriteLine($"    <Compile Include=\"Objects\\{EnumTypeName}s.cs\"/>");
+                CopyEnumFile(outputFolderName, EnumTypeName);
             }
 
             projectWriter.WriteLine("  </ItemGroup>");
@@ -620,6 +629,33 @@ namespace Parser
 
             string InputCSharpFileName = Path.Combine(ObjectsInputFolderName, "AssemblyInfo.cs");
             string OutputCSharpFileName = Path.Combine(ObjectsOutputFolderName, "AssemblyInfo.cs");
+
+            DateTime InputWriteTime;
+            if (File.Exists(InputCSharpFileName))
+                InputWriteTime = File.GetLastWriteTimeUtc(InputCSharpFileName);
+            else
+                InputWriteTime = DateTime.MinValue;
+
+            DateTime OutputWriteTime;
+            if (File.Exists(OutputCSharpFileName))
+                OutputWriteTime = File.GetLastWriteTimeUtc(OutputCSharpFileName);
+            else
+                OutputWriteTime = DateTime.MinValue;
+
+            if (InputWriteTime > OutputWriteTime)
+                File.Copy(InputCSharpFileName, OutputCSharpFileName, true);
+        }
+
+        public void CopyEnumFile(string outputFolderName, string EnumTypeName)
+        {
+            string ObjectsInputFolderName = Path.Combine(InputFolderName, "object");
+            string ObjectsOutputFolderName = Path.Combine(outputFolderName, "Objects");
+
+            if (!Directory.Exists(ObjectsOutputFolderName))
+                Directory.CreateDirectory(ObjectsOutputFolderName);
+
+            string InputCSharpFileName = Path.Combine(ObjectsInputFolderName, $"{EnumTypeName}s.cs");
+            string OutputCSharpFileName = Path.Combine(ObjectsOutputFolderName, $"{EnumTypeName}s.cs");
 
             DateTime InputWriteTime;
             if (File.Exists(InputCSharpFileName))

@@ -226,13 +226,14 @@ namespace Parser
 
             string ObjectLine = null;
             foreach (IGeneratorObject Object in domain.Objects)
-            {
-                if (ObjectLine == null)
-                    cSharpWriter.WriteLine();
+                if (Object.IsGlobal)
+                {
+                    if (ObjectLine == null)
+                        cSharpWriter.WriteLine();
 
-                ObjectLine = $"        public {Object.CSharpName} {Object.CSharpName} {{ get {{ return App.{Object.CSharpName}; }} }}";
-                cSharpWriter.WriteLine(ObjectLine);
-            }
+                    ObjectLine = $"        public {Object.CSharpName} {Object.CSharpName} {{ get {{ return App.{Object.CSharpName}; }} }}";
+                    cSharpWriter.WriteLine(ObjectLine);
+                }
 
             if (domain.Translation != null)
                 cSharpWriter.WriteLine("        public Translation Translation { get { return App.Translation; } }");

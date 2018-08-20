@@ -6,6 +6,7 @@ namespace Parser
     {
         string Name { get; }
         string CSharpName { get; }
+        bool IsGlobal { get; }
         IReadOnlyCollection<IObjectProperty> Properties { get; }
         IReadOnlyCollection<IObjectEvent> Events { get; }
     }

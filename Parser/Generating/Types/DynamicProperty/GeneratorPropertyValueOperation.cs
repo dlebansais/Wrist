@@ -52,7 +52,9 @@ namespace Parser
         {
             bool IsUsed = (obj == ValueObject) && (objectProperty == ValueObjectProperty);
 
-            ComposedValue = $"Page.{ValueObject.CSharpName}.{ValueObjectProperty.CSharpName}";
+            string Cast = (ValueObjectProperty is IGeneratorObjectPropertyEnum) ? "(int)" : "";
+
+            ComposedValue = $"{Cast}Page.{ValueObject.CSharpName}.{ValueObjectProperty.CSharpName}";
 
             return IsUsed;
         }
