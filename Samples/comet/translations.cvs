@@ -15,12 +15,13 @@ confirm-password-colon	todo
 start-title	Start your project
 start-text	Start your own project here. When you run your first project, you will be able to save your work (require a valid email address).
 sign-up-title	Sign up to the service and record your work
-sign-up-text	By signing up you ensure your project data can be recovered at all times.
+sign-up-text	By signing up you ensure that your project data can be recovered at all times.
 email-colon	Email:
 confirm-check-1	I'm responsible for keeping my sign in info secure, and remembering my email address.
 confirm-check-2	My data can be examined (for statistic purpose only).
 confirm-check-3	We can ban you any time we wish (data still available to recover).
 sign-in-method-1	Login name only.
+name	Name
 name-colon	Name:
 sign-in-method-2	Login and password.
 sign-in-method-3	Connect using one of the following proxy.
@@ -78,3 +79,5 @@ documentation-text	Documentation.
 features-headline	Features to help you get the job done.
 username-or-email	Username or email address
 sign-in-error	Incorrect username or password.
+email-required	We will need a valid email address to activate your account. This is necessary if you ever want to recover your user name or password (or change it), otherwise all your work saved here could be lost. We won't use this email address for anything else, and if you want to receive news or downtime notifications, you can provide a separate address for that.
+confirm-required	We also require you acknowledge that you understand and meet the following requirements:

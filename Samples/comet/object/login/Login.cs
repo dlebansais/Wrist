@@ -75,9 +75,6 @@ namespace AppCSHtml5
         }
         private string _ConfirmPassword;
 
-        public string NewPassword { get; set; }
-        public bool IsSignedIn { get; set; }
-
         public string Email
         {
             get { return _Email; }
@@ -154,15 +151,6 @@ namespace AppCSHtml5
         }
         private bool _Confirm3;
 
-        public int KeepActiveIndex { get; set; }
-
-        public bool SignInError { get; set; }
-        public bool UserNameError { get; set; }
-        public bool ConfirmPasswordError { get; set; }
-
-        public string FullName { get; set; }
-        public string Location { get; set; }
-
         public int SignInMethod
         {
             get { return _SignInMethod; }
@@ -183,7 +171,25 @@ namespace AppCSHtml5
         }
         private int _SignInMethod;
 
-        public bool IsReady { get; set; }
+        public bool IsReady
+        {
+            get { return _IsReady; }
+            set
+            {
+                if (value == true)
+                    _IsReady = true;
+            }
+        }
+        private bool _IsReady;
+
+        public string NewPassword { get; set; }
+        public bool IsSignedIn { get; set; }
+        public int KeepActiveIndex { get; set; }
+        public bool SignInError { get; set; }
+        public bool UserNameError { get; set; }
+        public bool ConfirmPasswordError { get; set; }
+        public string FullName { get; set; }
+        public string Location { get; set; }
 
         public bool IsProfileReady { get { return Confirm1 && Confirm2 && Confirm3 && !string.IsNullOrEmpty(Email); } set { } }
 

@@ -87,6 +87,6 @@ namespace Parser
         public IGeneratorObject BoundObject { get { return CheckedObject; } }
         public IGeneratorObjectProperty BoundObjectProperty { get { return CheckedObjectProperty; } }
         public string HandlerArgumentTypeName { get { return "RoutedEventArgs"; } }
-        public bool PostponeChangedNotification { get { return false; } }
+        public bool PostponeChangedNotification { get { return true; } }
     }
 }
