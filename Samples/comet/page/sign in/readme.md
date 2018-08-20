@@ -10,20 +10,20 @@ The header offers the option to sign up but only if there is an active project.
 
 The sign in page allows users to sign in using one of the following methods:
 
-- Login id only
-- Login id and password
-- Use the login information from another platform
-- Certificate login
+- name only
+- name and password
+- Use the sign in information from another platform
+- Certificate sign in
 
 The method is chosen with a radio button.
 
-For the login and login+password options there is a validity duration option:
+For the "name only" and "name and password" options there is a validity duration option:
 
 - This session only (until inactive for an hour)
 - Two weeks
 - No limit
 
-If the method is "login" or "login & password", there is a "sign in" button. If successful, it sends them back to the start page. In case of error, there is an error message.
+If the method is "name only" or "name and password", there is a "sign in" button. If successful, it sends them back to the start page. In case of error, there is an error message.
 
 If the method is "other plaform" there is a button that sends them to the sign in page of that platform.
 

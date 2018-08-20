@@ -17,13 +17,13 @@ The user must provide the following information to be able to open a new account
 
 The sign up page allows users to select one of the following methods for signing in:
 
-- Login id only
-- Login id and password, with a confirmation
-- Use the login information from another platform
+- name only
+- name and password, with a confirmation
+- Use the sign in information from another platform
 
 The method is chosen with a radio button. Using a certificate to sign in later czan be done from the profile page.
 
-For login id or login & password methods, There is a validity duration option:
+For "name only" or "name and password" methods, There is a validity duration option:
 
 - This session only
 - Two weeks

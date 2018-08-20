@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class Login : ILogin, INotifyPropertyChanged
+    public class SignIn : ISignIn, INotifyPropertyChanged
     {
-        public Login()
+        public SignIn()
         {
             KeepActiveIndex = -1;
             _SignInMethod = SignInMethods.None;
@@ -166,7 +166,6 @@ namespace AppCSHtml5
         private bool _IsReady;
 
         public string NewPassword { get; set; }
-        public bool IsSignedIn { get; set; }
         public int KeepActiveIndex { get; set; }
         public bool UserNameError { get; set; }
         public bool SignUpNameError { get; set; }
@@ -186,7 +185,6 @@ namespace AppCSHtml5
             SignUpNameError = false;
             SignInError = false;
             SignUpError = false;
-            IsSignedIn = false;
             Email = null;
             Confirm1 = false;
             Confirm2 = false;
@@ -203,7 +201,8 @@ namespace AppCSHtml5
             Password = null;
             NotifyPropertyChanged(nameof(Password));
 
-            if (Account.TrySignInAccount(Name, TempPassword))
+            Account SignedInAccount;
+            if (Account.TrySignInAccount(Name, TempPassword, out SignedInAccount))
                 CompleteSignIn(pageName, out destinationPageName);
             else
                 FailSignIn(out destinationPageName);
@@ -225,7 +224,8 @@ namespace AppCSHtml5
             Password = null;
             NotifyPropertyChanged(nameof(Password));
 
-            if (Account.TrySignInAccount(signInMethod, Name, TempPassword))
+            Account SignedInAccount;
+            if (Account.TrySignInAccount(signInMethod, Name, TempPassword, out SignedInAccount))
                 CompleteSignIn(pageName, out destinationPageName);
             else
                 FailSignIn(out destinationPageName);
@@ -233,10 +233,7 @@ namespace AppCSHtml5
 
         private void CompleteSignIn(string pageName, out string destinationPageName)
         {
-            IsSignedIn = true;
-            NotifyPropertyChanged(nameof(IsSignedIn));
-
-            if (pageName == "home")
+            if (pageName == "home" || pageName == "sign up" || pageName == "signed out")
                 destinationPageName = "start";
             else
                 destinationPageName = null;
@@ -255,7 +252,6 @@ namespace AppCSHtml5
         public void On_SignOut(string pageName, string sourceName, string sourceContent)
         {
             Name = null;
-            IsSignedIn = false;
             Email = null;
             Confirm1 = false;
             Confirm2 = false;
@@ -265,7 +261,6 @@ namespace AppCSHtml5
             Location = null;
             SignInMethod = SignInMethods.None;
             NotifyPropertyChanged(nameof(Name));
-            NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Email));
             NotifyPropertyChanged(nameof(Confirm1));
             NotifyPropertyChanged(nameof(Confirm2));
@@ -278,11 +273,6 @@ namespace AppCSHtml5
 
         public void On_Disconnect(string pageName, string sourceName, string sourceContent)
         {
-        }
-
-        public void On_Delete(string pageName, string sourceName, string sourceContent, out string destinationPageName)
-        {
-            destinationPageName = null;
         }
 
         #region Implementation of INotifyPropertyChanged

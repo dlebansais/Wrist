@@ -2,7 +2,7 @@
 
 This page is displayed when the user tried to sign out, successfully or not.
 
-If the sign in method is "login" or "login & password", this is a confirmation that they have been signed out. 
+If the sign in method is "name only" or "name and password", this is a confirmation that they have been signed out. 
 
 If the sign in method is "other platform", they are asked to sign out from that platform.
 

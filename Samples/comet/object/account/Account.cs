@@ -15,10 +15,6 @@ namespace AppCSHtml5
 
         public Account()
         {
-            Email = null;
-            SignInMethod = SignInMethods.None;
-            Name = null;
-            Password = null;
             KeepActiveIndex = -1;
         }
 
@@ -31,6 +27,7 @@ namespace AppCSHtml5
             KeepActiveIndex = -1;
         }
 
+        public bool IsSignedIn { get; set; }
         public string Email { get; private set; }
         public SignInMethods SignInMethod { get; private set; }
         public string Name { get; private set; }
@@ -81,6 +78,12 @@ namespace AppCSHtml5
         }
         private string _NewEmail;
 
+        private void SetSignedIn()
+        {
+            IsSignedIn = true;
+            NotifyPropertyChanged(nameof(IsSignedIn));
+        }
+
         public static SignInError TryAddAccount(string email, SignInMethods method, string name, string password, out Account account)
         {
             if (string.IsNullOrEmpty(email) || !(method == SignInMethods.NameOnly || method == SignInMethods.NameAndPassword) || string.IsNullOrEmpty(name) || (method == SignInMethods.NameAndPassword && string.IsNullOrEmpty(password)))
@@ -102,26 +105,31 @@ namespace AppCSHtml5
             return SignInError.None;
         }
 
-        public static bool TrySignInAccount(string name, string password)
+        public static bool TrySignInAccount(string name, string password, out Account signedInAccount)
         {
-            return TrySignInAccount(SignInMethods.None, name, password);
+            return TrySignInAccount(SignInMethods.None, name, password, out signedInAccount);
         }
 
-        public static bool TrySignInAccount(SignInMethods signInMethod, string name, string password)
+        public static bool TrySignInAccount(SignInMethods signInMethod, string name, string password, out Account signedInAccount)
         {
-            if (string.IsNullOrEmpty(name))
-                return false;
+            if (!string.IsNullOrEmpty(name))
+            {
+                foreach (Account Account in Accounts)
+                    if (Account.Name == name)
+                    {
+                        if (signInMethod == SignInMethods.None || signInMethod == Account.SignInMethod)
+                            if ((Account.SignInMethod == SignInMethods.NameOnly && string.IsNullOrEmpty(password)) || (Account.SignInMethod == SignInMethods.NameAndPassword && password == Account.Password))
+                            {
+                                Account.SetSignedIn();
+                                signedInAccount = Account;
+                                return true;
+                            }
 
-            foreach (Account Account in Accounts)
-                if (Account.Name == name)
-                {
-                    if (signInMethod == SignInMethods.None || signInMethod == Account.SignInMethod)
-                        if ((Account.SignInMethod == SignInMethods.NameOnly && string.IsNullOrEmpty(password)) || (Account.SignInMethod == SignInMethods.NameAndPassword && password == Account.Password))
-                            return true;
+                        break;
+                    }
+            }
 
-                    break;
-                }
-
+            signedInAccount = null;
             return false;
         }
 
@@ -142,6 +150,7 @@ namespace AppCSHtml5
 
         public void On_SignOut(string pageName, string sourceName, string sourceContent)
         {
+            IsSignedIn = false;
             Email = null;
             SignInMethod = SignInMethods.None;
             Name = null;
@@ -158,8 +167,9 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(Location));
         }
 
-        public void On_Delete(string pageName, string sourceName, string sourceContent)
+        public void On_Delete(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
+            destinationPageName = null;
         }
 
         private static List<Account> Accounts = new List<Account>();
