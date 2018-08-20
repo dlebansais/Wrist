@@ -7,7 +7,7 @@ namespace Presentation
 {
     public static class Persistent
     {
-        public static bool Refresh = false;
+        public static bool Refresh = true;
 
         #region Persistent State
         private static readonly string PersistentStatePath = "17661044A27741D982897CF15F6EC1C3.txt";

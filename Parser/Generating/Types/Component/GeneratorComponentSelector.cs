@@ -67,7 +67,7 @@ namespace Parser
             string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" SelectionChanged=\"{GetChangedHandlerName(IndexObject, IndexObjectProperty)}\"" : "";
 
             // SelectedIndex must be first, no clue why.
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} SelectedIndex=\"{IndexValue}\"{LoadedEvent}{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<p:ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} ControlSelectedIndex=\"{IndexValue}\"{LoadedEvent}{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
         }
 
         public IGeneratorObject BoundObject { get { return IndexObject; } }

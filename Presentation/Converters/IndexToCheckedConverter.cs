@@ -55,26 +55,26 @@ namespace Converters
             if (value == null)
             {
                 Debug.WriteLine("Called with null value");
-                return 0;
+                return -1;
             }
 
             if (parameter == null)
             {
                 Debug.WriteLine("Called with null parameter");
-                return 0;
+                return -1;
             }
 
             if (!(parameter is string))
             {
                 Debug.WriteLine($"Called with parameter {parameter.GetType()}");
-                return 0;
+                return -1;
             }
 
             int ExpectedValue;
             if (!int.TryParse(parameter as string, out ExpectedValue))
             {
                 Debug.WriteLine($"Called with non-int parameter {parameter}");
-                return 0;
+                return -1;
             }
 
             bool IsChecked;
@@ -84,10 +84,10 @@ namespace Converters
             else
             {
                 Debug.WriteLine($"Called with {value} and {parameter}");
-                return 0;
+                return -1;
             }
 
-            return IsChecked ? ExpectedValue : 0;
+            return IsChecked ? ExpectedValue : -1;
         }
     }
 }

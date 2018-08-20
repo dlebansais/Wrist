@@ -65,6 +65,7 @@
     <Compile Include="FileBitmapImage.cs" />
     <Compile Include="FileTools.cs" />
     <Compile Include="HtmlString.cs" />
+    <Compile Include="ListBox.cs" />
     <Compile Include="Persistent.cs" />
     <Compile Include="Popup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

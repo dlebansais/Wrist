@@ -10,11 +10,11 @@ namespace AppCSHtml5
     {
         public Login()
         {
-            KeepActiveIndex1 = 1;
-            KeepActiveIndex2 = 1;
+            KeepActiveIndex = -1;
+            _SignInMethod = -1;
 
             Account NewAccount = new Account();
-            NewAccount.SignInMethod = 1;
+            NewAccount.SignInMethod = 0;
             NewAccount.KeepActiveIndex = 1;
             NewAccount.Name = "a";
             NewAccount.Password = "b";
@@ -31,8 +31,8 @@ namespace AppCSHtml5
                     _Name = value;
                     NotifyPropertyChanged(nameof(Name));
 
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
+                    UserNameError = false;
+                    NotifyPropertyChanged(nameof(UserNameError));
                     SignInError = false;
                     NotifyPropertyChanged(nameof(SignInError));
                 }
@@ -50,8 +50,8 @@ namespace AppCSHtml5
                     _Password = value;
                     NotifyPropertyChanged(nameof(Password));
 
-                    SignUpConfirmPasswordError = false;
-                    NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                    ConfirmPasswordError = false;
+                    NotifyPropertyChanged(nameof(ConfirmPasswordError));
                     SignInError = false;
                     NotifyPropertyChanged(nameof(SignInError));
                 }
@@ -68,8 +68,8 @@ namespace AppCSHtml5
                 {
                     _ConfirmPassword = value;
 
-                    SignUpConfirmPasswordError = false;
-                    NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                    ConfirmPasswordError = false;
+                    NotifyPropertyChanged(nameof(ConfirmPasswordError));
                 }
             }
         }
@@ -88,10 +88,10 @@ namespace AppCSHtml5
                     _Email = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
 
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpConfirmPasswordError = false;
-                    NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                    UserNameError = false;
+                    NotifyPropertyChanged(nameof(UserNameError));
+                    ConfirmPasswordError = false;
+                    NotifyPropertyChanged(nameof(ConfirmPasswordError));
                 }
             }
         }
@@ -107,10 +107,10 @@ namespace AppCSHtml5
                     _Confirm1 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
 
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpConfirmPasswordError = false;
-                    NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                    UserNameError = false;
+                    NotifyPropertyChanged(nameof(UserNameError));
+                    ConfirmPasswordError = false;
+                    NotifyPropertyChanged(nameof(ConfirmPasswordError));
                 }
             }
         }
@@ -126,10 +126,10 @@ namespace AppCSHtml5
                     _Confirm2 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
 
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpConfirmPasswordError = false;
-                    NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                    UserNameError = false;
+                    NotifyPropertyChanged(nameof(UserNameError));
+                    ConfirmPasswordError = false;
+                    NotifyPropertyChanged(nameof(ConfirmPasswordError));
                 }
             }
         }
@@ -145,37 +145,20 @@ namespace AppCSHtml5
                     _Confirm3 = value;
                     NotifyPropertyChanged(nameof(IsProfileReady));
 
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpConfirmPasswordError = false;
-                    NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                    UserNameError = false;
+                    NotifyPropertyChanged(nameof(UserNameError));
+                    ConfirmPasswordError = false;
+                    NotifyPropertyChanged(nameof(ConfirmPasswordError));
                 }
             }
         }
         private bool _Confirm3;
 
-        public int KeepActiveIndex1 { get; set; }
-        public int KeepActiveIndex2 { get; set; }
-        public int KeepActiveIndex
-        {
-            get
-            {
-                switch (SignInMethod)
-                {
-                    case 1:
-                        return KeepActiveIndex1;
-                    case 2:
-                        return KeepActiveIndex2;
-
-                    default:
-                        return -1;
-                }
-            }
-        }
+        public int KeepActiveIndex { get; set; }
 
         public bool SignInError { get; set; }
-        public bool SignUpNameError { get; set; }
-        public bool SignUpConfirmPasswordError { get; set; }
+        public bool UserNameError { get; set; }
+        public bool ConfirmPasswordError { get; set; }
 
         public string FullName { get; set; }
         public string Location { get; set; }
@@ -185,26 +168,16 @@ namespace AppCSHtml5
             get { return _SignInMethod; }
             set
             {
-                if (value >= 1 && value <= 4 && _SignInMethod != value)
+                if (value >= 0 && value <= 3 && _SignInMethod != value)
                 {
                     _SignInMethod = value;
 
-                    switch (value)
-                    {
-                        case 1:
-                            KeepActiveIndex1 = KeepActiveIndex2;
-                            NotifyPropertyChanged(nameof(KeepActiveIndex1));
-                            break;
-                        case 2:
-                            KeepActiveIndex2 = KeepActiveIndex1;
-                            NotifyPropertyChanged(nameof(KeepActiveIndex2));
-                            break;
-                    }
-
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpConfirmPasswordError = false;
-                    NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                    UserNameError = false;
+                    NotifyPropertyChanged(nameof(UserNameError));
+                    ConfirmPasswordError = false;
+                    NotifyPropertyChanged(nameof(ConfirmPasswordError));
+                    SignInError = false;
+                    NotifyPropertyChanged(nameof(SignInError));
                 }
             }
         }
@@ -214,6 +187,26 @@ namespace AppCSHtml5
 
         public bool IsProfileReady { get { return Confirm1 && Confirm2 && Confirm3 && !string.IsNullOrEmpty(Email); } set { } }
 
+        public void On_Cleanup(string pageName, string sourceName, string sourceContent)
+        {
+            Name = null;
+            Password = null;
+            ConfirmPassword = null;
+            NewPassword = null;
+            SignInError = false;
+            UserNameError = false;
+            ConfirmPasswordError = false;
+            IsSignedIn = false;
+            Email = null;
+            Confirm1 = false;
+            Confirm2 = false;
+            Confirm3 = false;
+            KeepActiveIndex = -1;
+            FullName = null;
+            Location = null;
+            SignInMethod = -1;
+        }
+
         public void On_SignUp(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
             Account NewAccount = new Account();
@@ -222,12 +215,12 @@ namespace AppCSHtml5
 
             switch (SignInMethod)
             {
-                case 1:
+                case 0:
                     for (int i = 0; i < Accounts.Count; i++)
                         if (Accounts[i].Name == Name)
                         {
-                            SignUpNameError = true;
-                            NotifyPropertyChanged(nameof(SignUpNameError));
+                            UserNameError = true;
+                            NotifyPropertyChanged(nameof(UserNameError));
 
                             destinationPageName = null;
                             return;
@@ -238,11 +231,11 @@ namespace AppCSHtml5
                     Accounts.Add(NewAccount);
                     break;
 
-                case 2:
+                case 1:
                     if (Password != ConfirmPassword)
                     {
-                        SignUpConfirmPasswordError = true;
-                        NotifyPropertyChanged(nameof(SignUpConfirmPasswordError));
+                        ConfirmPasswordError = true;
+                        NotifyPropertyChanged(nameof(ConfirmPasswordError));
 
                         destinationPageName = null;
                         return;
@@ -251,8 +244,8 @@ namespace AppCSHtml5
                     for (int i = 0; i < Accounts.Count; i++)
                         if (Accounts[i].Name == Name)
                         {
-                            SignUpNameError = true;
-                            NotifyPropertyChanged(nameof(SignUpNameError));
+                            UserNameError = true;
+                            NotifyPropertyChanged(nameof(UserNameError));
 
                             destinationPageName = null;
                             return;
@@ -271,20 +264,36 @@ namespace AppCSHtml5
             destinationPageName = "start";
         }
 
+        private bool IsLoginValidMethod0()
+        {
+            foreach (Account Account in Accounts)
+                if (Account.Name == Name)
+                    return (Account.SignInMethod == 0);
+
+            return false;
+        }
+
+        private bool IsLoginValidMethod1(string testPassword)
+        {
+            foreach (Account Account in Accounts)
+                if (Account.Name == Name)
+                    return (Account.SignInMethod == 1 && Account.Password == testPassword);
+
+            return false;
+        }
+
         public void On_SignIn(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            int i;
-            for (i = 0; i < Accounts.Count; i++)
-            {
-                Account Account = Accounts[i];
-                if (Account.Name == Name && Account.Password == Password)
-                    break;
-            }
-            if (i >= Accounts.Count)
-            {
-                Password = null;
-                NotifyPropertyChanged(nameof(Password));
+            string TestPassword = Password;
+            Password = null;
+            NotifyPropertyChanged(nameof(Password));
 
+            bool IsSignInValid = ((SignInMethod == 0 && IsLoginValidMethod0()) || (SignInMethod == 1 && IsLoginValidMethod1(TestPassword)));
+
+            if (!IsSignInValid)
+            {
+                UserNameError = true;
+                NotifyPropertyChanged(nameof(UserNameError));
                 SignInError = true;
                 NotifyPropertyChanged(nameof(SignInError));
 
@@ -293,9 +302,7 @@ namespace AppCSHtml5
             }
 
             IsSignedIn = true;
-            Password = null;
             NotifyPropertyChanged(nameof(IsSignedIn));
-            NotifyPropertyChanged(nameof(Password));
 
             if (pageName == "home")
                 destinationPageName = "start";
@@ -326,11 +333,10 @@ namespace AppCSHtml5
             Confirm1 = false;
             Confirm2 = false;
             Confirm3 = false;
-            KeepActiveIndex1 = -1;
-            KeepActiveIndex2 = -1;
+            KeepActiveIndex = -1;
             FullName = null;
             Location = null;
-            SignInMethod = 0;
+            SignInMethod = -1;
             NotifyPropertyChanged(nameof(Name));
             NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Email));
