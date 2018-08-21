@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Parser
@@ -64,14 +65,14 @@ namespace Parser
             layout.Generate(this, areaLayouts, design, indentation, currentPage, CurrentObject, colorTheme, xamlWriter);
         }
 
-        public void CollectGoTo(List<IGeneratorPageNavigation> goToList, IGeneratorPage currentPage)
+        public void CollectGoTo(List<Tuple<IGeneratorPageNavigation, IGeneratorObject, IGeneratorObjectPropertyBoolean>> goToList, IGeneratorPage currentPage)
         {
             foreach (IGeneratorComponent Component in Components)
                 if (Component is IGeneratorComponentButton AsButton)
                 {
                     bool IsIncluded = false;
-                    foreach (IGeneratorPageNavigation Item in goToList)
-                        if (Item.IsEqual(AsButton.GoTo, currentPage))
+                    foreach (Tuple<IGeneratorPageNavigation, IGeneratorObject, IGeneratorObjectPropertyBoolean> Item in goToList)
+                        if (Item.Item1.IsEqual(AsButton.GoTo, currentPage))
                         {
                             IsIncluded = true;
                             break;
@@ -80,7 +81,9 @@ namespace Parser
                     if (!IsIncluded)
                     {
                         IGeneratorPageNavigation Copy = AsButton.GoTo.CreateCopyForPage(currentPage, AsButton);
-                        goToList.Add(Copy);
+                        IGeneratorObject ClosePopupObject = AsButton.ClosePopupObject;
+                        IGeneratorObjectPropertyBoolean ClosePopupObjectProperty = AsButton.ClosePopupObjectProperty;
+                        goToList.Add(new Tuple<IGeneratorPageNavigation, IGeneratorObject, IGeneratorObjectPropertyBoolean>(Copy, ClosePopupObject, ClosePopupObjectProperty));
                     }
                 }
                 else if (Component is IGeneratorComponentPopup AsPopup)

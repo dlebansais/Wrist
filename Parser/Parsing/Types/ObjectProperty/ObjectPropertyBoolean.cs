@@ -7,6 +7,13 @@
         {
         }
 
+        public bool IsClosingPopup { get; private set; }
+
+        public void SetIsClosingPopup()
+        {
+            IsClosingPopup = true;
+        }
+
         public override bool Connect(IDomain domain)
         {
             return false;

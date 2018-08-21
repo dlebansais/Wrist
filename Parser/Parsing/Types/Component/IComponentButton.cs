@@ -11,5 +11,8 @@
         string GoToPageName { get; }
         IPageNavigation GoTo { get; }
         IComponentEvent AfterEvent { get; }
+        IComponentProperty ClosePopupProperty { get; }
+        IObject ClosePopupObject { get; }
+        IObjectPropertyBoolean ClosePopupObjectProperty { get; }
     }
 }

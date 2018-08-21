@@ -7,5 +7,7 @@
         IGeneratorObjectProperty ContentObjectProperty { get; }
         IDeclarationSource ContentKey { get; }
         IGeneratorPageNavigation GoTo { get; }
+        IGeneratorObject ClosePopupObject { get; }
+        IGeneratorObjectPropertyBoolean ClosePopupObjectProperty { get; }
     }
 }

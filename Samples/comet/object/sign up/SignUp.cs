@@ -183,7 +183,7 @@ namespace AppCSHtml5
         public void On_SignUp(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
             Account NewAccount;
-            SignInError Error = Account.TryAddAccount(Email, SignInMethod, Name, Password, out NewAccount);
+            SignInError Error = AccountManager.TryAddAccount(Email, SignInMethod, Name, Password, out NewAccount);
 
             switch (Error)
             {
@@ -203,6 +203,8 @@ namespace AppCSHtml5
 
             destinationPageName = "start";
         }
+
+        public AccountManager AccountManager { get { return App.AccountManager; } }
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>

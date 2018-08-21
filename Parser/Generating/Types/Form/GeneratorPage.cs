@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -241,11 +242,15 @@ namespace Parser
             if (Dynamic.HasProperties)
                 cSharpWriter.WriteLine($"        public {XamlName}Dynamic Dynamic {{ get; private set; }}");
 
-            List<IGeneratorPageNavigation> GoToList = new List<IGeneratorPageNavigation>();
+            List<Tuple<IGeneratorPageNavigation, IGeneratorObject, IGeneratorObjectPropertyBoolean>> GoToList = new List<Tuple<IGeneratorPageNavigation, IGeneratorObject, IGeneratorObjectPropertyBoolean>>();
             Area.CollectGoTo(GoToList, this);
 
-            foreach (IGeneratorPageNavigation GoTo in GoToList)
+            foreach (Tuple<IGeneratorPageNavigation, IGeneratorObject, IGeneratorObjectPropertyBoolean> Item in GoToList)
             {
+                IGeneratorPageNavigation GoTo = Item.Item1;
+                IGeneratorObject ClosePopupObject = Item.Item2;
+                IGeneratorObjectPropertyBoolean ClosePopupObjectProperty = Item.Item3;
+
                 cSharpWriter.WriteLine();
                 cSharpWriter.WriteLine($"        private void {GoTo.EventName}(object sender, RoutedEventArgs e)");
                 cSharpWriter.WriteLine("        {");
@@ -267,6 +272,15 @@ namespace Parser
                 }
                 else
                     cSharpWriter.WriteLine($"            (App.Current as App).GoTo(\"{GoTo.GoToPage.Name}\");");
+
+                if (ClosePopupObject != null && ClosePopupObjectProperty != null)
+                {
+                    cSharpWriter.WriteLine($"            if ({ClosePopupObject.CSharpName}.{ClosePopupObjectProperty.CSharpName})");
+                    cSharpWriter.WriteLine("            {");
+                    cSharpWriter.WriteLine($"                ClosePopups();");
+                    cSharpWriter.WriteLine($"                {ClosePopupObject.CSharpName}.OnPopupClosed_{ClosePopupObjectProperty.CSharpName}();");
+                    cSharpWriter.WriteLine("            }");
+                }
 
                 cSharpWriter.WriteLine("        }");
             }
@@ -335,16 +349,21 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        private List<ToggleButton> ToggleList = new List<ToggleButton>();");
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        private void OnPointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)");
-            cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine("            foreach (ToggleButton Toggle in ToggleList)");
-            cSharpWriter.WriteLine("                Toggle.IsChecked = false;");
-            cSharpWriter.WriteLine("        }");
-            cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        private void OnToggleLoaded(object sender, RoutedEventArgs e)");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            if ((sender is ToggleButton AsToggle) && !ToggleList.Contains(AsToggle))");
             cSharpWriter.WriteLine("                ToggleList.Add(AsToggle);");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        private void OnPointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            ClosePopups();");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        private void ClosePopups()");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            foreach (ToggleButton Toggle in ToggleList)");
+            cSharpWriter.WriteLine("                Toggle.IsChecked = false;");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");

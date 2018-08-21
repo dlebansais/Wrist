@@ -201,8 +201,7 @@ namespace AppCSHtml5
             Password = null;
             NotifyPropertyChanged(nameof(Password));
 
-            Account SignedInAccount;
-            if (Account.TrySignInAccount(Name, TempPassword, out SignedInAccount))
+            if (AccountManager.TrySignInAccount(Name, TempPassword))
                 CompleteSignIn(pageName, out destinationPageName);
             else
                 FailSignIn(out destinationPageName);
@@ -224,8 +223,7 @@ namespace AppCSHtml5
             Password = null;
             NotifyPropertyChanged(nameof(Password));
 
-            Account SignedInAccount;
-            if (Account.TrySignInAccount(signInMethod, Name, TempPassword, out SignedInAccount))
+            if (AccountManager.TrySignInAccount(signInMethod, Name, TempPassword))
                 CompleteSignIn(pageName, out destinationPageName);
             else
                 FailSignIn(out destinationPageName);
@@ -274,6 +272,8 @@ namespace AppCSHtml5
         public void On_Disconnect(string pageName, string sourceName, string sourceContent)
         {
         }
+
+        public AccountManager AccountManager { get { return App.AccountManager; } }
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>

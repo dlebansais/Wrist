@@ -174,6 +174,7 @@ namespace Parser
             IComponentEvent BeforeEvent = null;
             IComponentProperty NavigateProperty = null;
             IComponentEvent AfterEvent = null;
+            IComponentProperty ClosePopupProperty = null;
 
             foreach (ComponentInfo Info in infoList)
                 if (Info.NameSource.Name == "content" && ContentProperty == null)
@@ -184,7 +185,9 @@ namespace Parser
                     NavigateProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "after" && AfterEvent == null)
                     AfterEvent = new ComponentEvent(Info);
-                else if (Info.NameSource.Name != "content" && Info.NameSource.Name != "before" && Info.NameSource.Name != "goto" && Info.NameSource.Name != "after")
+                else if (Info.NameSource.Name == "close popup" && ClosePopupProperty == null)
+                    ClosePopupProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name != "content" && Info.NameSource.Name != "before" && Info.NameSource.Name != "goto" && Info.NameSource.Name != "after" && Info.NameSource.Name != "close popup")
                     throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
                     throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
@@ -197,7 +200,10 @@ namespace Parser
             if (NavigateProperty.FixedValueSource == null)
                 throw new ParsingException(33, sourceStream, "Go to page name can only be a static name.");
 
-            return new ComponentButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Button"), ContentProperty, BeforeEvent, NavigateProperty.FixedValueSource.Name, AfterEvent);
+            if (ClosePopupProperty != null && ClosePopupProperty.FixedValueSource != null)
+                throw new ParsingException(0, sourceStream, "Close popup can only be a property.");
+
+            return new ComponentButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Button"), ContentProperty, BeforeEvent, NavigateProperty.FixedValueSource.Name, AfterEvent, ClosePopupProperty);
         }
 
         private IComponentCheckBox ParseComponentCheckBox(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)

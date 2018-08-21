@@ -19,6 +19,8 @@ namespace Parser
         public IGeneratorObjectProperty ContentObjectProperty { get; private set; }
         public IDeclarationSource ContentKey { get; private set; }
         public IGeneratorPageNavigation GoTo { get; private set; }
+        public IGeneratorObject ClosePopupObject { get; private set; }
+        public IGeneratorObjectPropertyBoolean ClosePopupObjectProperty { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain)
         {
@@ -26,6 +28,7 @@ namespace Parser
 
             ConnectContent(domain, ref IsConnected);
             ConnectGoTo(domain, ref IsConnected);
+            ConnectClosePopup(domain, ref IsConnected);
 
             return IsConnected;
         }
@@ -58,6 +61,19 @@ namespace Parser
             {
                 GoTo = new GeneratorPageNavigation(BaseButton.GoTo);
                 IsConnected = true;
+            }
+        }
+
+        public void ConnectClosePopup(IGeneratorDomain domain, ref bool IsConnected)
+        {
+            if ((ClosePopupObject == null || ClosePopupObjectProperty == null) && (BaseButton.ClosePopupObject != null && BaseButton.ClosePopupObjectProperty != null))
+            {
+                IsConnected = true;
+
+                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseButton.ClosePopupObject))
+                    ClosePopupObject = GeneratorObject.GeneratorObjectMap[BaseButton.ClosePopupObject];
+                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseButton.ClosePopupObjectProperty))
+                    ClosePopupObjectProperty = (IGeneratorObjectPropertyBoolean)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseButton.ClosePopupObjectProperty];
             }
         }
 
