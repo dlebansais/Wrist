@@ -4,13 +4,14 @@ home-text	Specify your algorithm and we return its code, tested and optimized.
 certificate-text	todo
 change-certificate-title	todo
 change-certificate-text	todo
-change	todo
-change-email-title	todo
-change-email-text	todo
-new-password-colon	todo
-change-password-title	todo
-change-password-text	todo
-current-password-colon	todo
+change	Change
+change-email-title	Change your email address
+change-email-text	Enter your password here, then the new email address.
+new-email-colon	New email adress:
+change-password-title	Change your password
+change-password-text	Enter you current password here, then the new password.
+current-password-colon	Current password:
+new-password-colon	New password:
 confirm-password-colon	todo
 start-title	Start your project
 start-text	Start your own project here. When you run your first project, you will be able to save your work (require a valid email address).
@@ -87,3 +88,4 @@ view	View
 update	Update
 send-email-to-delete	To confirm you really want to delete your account, you will be signed out, and an email will be sent to the address above with a link. Clicking the link will be the final confirmation that you really want to delete the account. The deletion is effective 24h after you click on the link, and is canceled if you sign in during this time.
 send-delete-email	Send Delete email
+invalid-password-error	Invalid password!

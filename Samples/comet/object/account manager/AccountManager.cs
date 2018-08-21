@@ -24,6 +24,7 @@ namespace AppCSHtml5
         public string FullName { get { return SignedInAccount != null ? SignedInAccount.FullName : null; } }
         public string Location { get { return SignedInAccount != null ? SignedInAccount.Location : null; } }
         public bool Confirmed { get { return true; } set { } }
+        public bool IsPasswordInvalidError { get; private set; }
 
         public string CurrentPassword
         {
@@ -34,6 +35,9 @@ namespace AppCSHtml5
                 {
                     _Password = value;
                     NotifyPropertyChanged(nameof(CurrentPassword));
+
+                    IsPasswordInvalidError = false;
+                    NotifyPropertyChanged(nameof(IsPasswordInvalidError));
                 }
             }
         }
@@ -143,6 +147,7 @@ namespace AppCSHtml5
                                 IsFullNameChanged = false;
                                 _NewLocation = Account.Location;
                                 IsLocationChanged = false;
+                                IsPasswordInvalidError = false;
                                 return true;
                             }
 
@@ -155,12 +160,32 @@ namespace AppCSHtml5
 
         public void On_ChangeEmail(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            destinationPageName = null;
+            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || CurrentPassword != SignedInAccount.Password)
+            {
+                CurrentPassword = null;
+
+                IsPasswordInvalidError = true;
+                NotifyPropertyChanged(nameof(IsPasswordInvalidError));
+
+                destinationPageName = null;
+            }
+            else
+                destinationPageName = "profile";
         }
 
         public void On_ChangePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            destinationPageName = null;
+            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || CurrentPassword != SignedInAccount.Password)
+            {
+                CurrentPassword = null;
+
+                IsPasswordInvalidError = true;
+                NotifyPropertyChanged(nameof(IsPasswordInvalidError));
+
+                destinationPageName = null;
+            }
+            else
+                destinationPageName = "profile";
         }
 
         public void On_ChangeCertificate(string pageName, string sourceName, string sourceContent, out string destinationPageName)
@@ -191,6 +216,7 @@ namespace AppCSHtml5
             IsFullNameChanged = false;
             _NewLocation = null;
             IsLocationChanged = false;
+            IsPasswordInvalidError = false;
             NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Email));
             NotifyPropertyChanged(nameof(SignInMethod));
@@ -202,6 +228,7 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(IsFullNameChanged));
             NotifyPropertyChanged(nameof(NewLocation));
             NotifyPropertyChanged(nameof(IsLocationChanged));
+            NotifyPropertyChanged(nameof(IsPasswordInvalidError));
         }
 
         public void On_ConfirmDelete(string pageName, string sourceName, string sourceContent, out string destinationPageName)
