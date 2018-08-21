@@ -3,13 +3,16 @@
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/Button.xaml"/>
     <ResourceDictionary Source="/ButtonHeader.xaml"/>
+    <ResourceDictionary Source="/ButtonMenu.xaml"/>
     <ResourceDictionary Source="/ButtonStart.xaml"/>
     <ResourceDictionary Source="/CheckBox.xaml"/>
+    <ResourceDictionary Source="/CheckBoxReadOnly.xaml"/>
     <ResourceDictionary Source="/Image.xaml"/>
     <ResourceDictionary Source="/ListBox.xaml"/>
     <ResourceDictionary Source="/PasswordBox.xaml"/>
     <ResourceDictionary Source="/RadioButton.xaml"/>
     <ResourceDictionary Source="/TextBlock.xaml"/>
+    <ResourceDictionary Source="/TextBlockAccountName.xaml"/>
     <ResourceDictionary Source="/TextBlockError.xaml"/>
     <ResourceDictionary Source="/TextBlockFeatureHeadline.xaml"/>
     <ResourceDictionary Source="/TextBlockFeatureTitle.xaml"/>

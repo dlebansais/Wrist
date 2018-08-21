@@ -22,14 +22,8 @@ namespace AppCSHtml5
                     _Name = value;
                     NotifyPropertyChanged(nameof(Name));
 
-                    UserNameError = false;
-                    NotifyPropertyChanged(nameof(UserNameError));
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
                     SignInError = false;
                     NotifyPropertyChanged(nameof(SignInError));
-                    SignUpError = false;
-                    NotifyPropertyChanged(nameof(SignUpError));
                 }
             }
         }
@@ -47,90 +41,10 @@ namespace AppCSHtml5
 
                     SignInError = false;
                     NotifyPropertyChanged(nameof(SignInError));
-                    SignUpError = false;
-                    NotifyPropertyChanged(nameof(SignUpError));
                 }
             }
         }
         private string _Password;
-
-        public string Email
-        {
-            get { return _Email; }
-            set
-            {
-                if (_Email != value)
-                {
-                    _Email = value;
-                    NotifyPropertyChanged(nameof(IsProfileReady));
-
-                    UserNameError = false;
-                    NotifyPropertyChanged(nameof(UserNameError));
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpError = false;
-                    NotifyPropertyChanged(nameof(SignUpError));
-                }
-            }
-        }
-        private string _Email;
-
-        public bool Confirm1
-        {
-            get { return _Confirm1; }
-            set
-            {
-                if (_Confirm1 != value)
-                {
-                    _Confirm1 = value;
-                    NotifyPropertyChanged(nameof(IsProfileReady));
-
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpError = false;
-                    NotifyPropertyChanged(nameof(SignUpError));
-                }
-            }
-        }
-        private bool _Confirm1;
-
-        public bool Confirm2
-        {
-            get { return _Confirm2; }
-            set
-            {
-                if (_Confirm2 != value)
-                {
-                    _Confirm2 = value;
-                    NotifyPropertyChanged(nameof(IsProfileReady));
-
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpError = false;
-                    NotifyPropertyChanged(nameof(SignUpError));
-                }
-            }
-        }
-        private bool _Confirm2;
-
-        public bool Confirm3
-        {
-            get { return _Confirm3; }
-            set
-            {
-                if (_Confirm3 != value)
-                {
-                    _Confirm3 = value;
-                    NotifyPropertyChanged(nameof(IsProfileReady));
-
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
-                    SignUpError = false;
-                    NotifyPropertyChanged(nameof(SignUpError));
-                }
-            }
-        }
-        private bool _Confirm3;
 
         public SignInMethods SignInMethod
         {
@@ -141,58 +55,23 @@ namespace AppCSHtml5
                 {
                     _SignInMethod = value;
 
-                    UserNameError = false;
-                    NotifyPropertyChanged(nameof(UserNameError));
-                    SignUpNameError = false;
-                    NotifyPropertyChanged(nameof(SignUpNameError));
                     SignInError = false;
                     NotifyPropertyChanged(nameof(SignInError));
-                    SignUpError = false;
-                    NotifyPropertyChanged(nameof(SignUpError));
                 }
             }
         }
         private SignInMethods _SignInMethod;
 
-        public bool IsReady
-        {
-            get { return _IsReady; }
-            set
-            {
-                if (value == true)
-                    _IsReady = true;
-            }
-        }
-        private bool _IsReady;
-
-        public string NewPassword { get; set; }
         public int KeepActiveIndex { get; set; }
-        public bool UserNameError { get; set; }
-        public bool SignUpNameError { get; set; }
         public bool SignInError { get; set; }
-        public bool SignUpError { get; set; }
-        public string FullName { get; set; }
-        public string Location { get; set; }
-
-        public bool IsProfileReady { get { return Confirm1 && Confirm2 && Confirm3 && !string.IsNullOrEmpty(Email); } set { } }
 
         public void On_Cleanup(string pageName, string sourceName, string sourceContent)
         {
+            SignInMethod = SignInMethods.None;
             Name = null;
             Password = null;
-            NewPassword = null;
-            UserNameError = false;
-            SignUpNameError = false;
             SignInError = false;
-            SignUpError = false;
-            Email = null;
-            Confirm1 = false;
-            Confirm2 = false;
-            Confirm3 = false;
             KeepActiveIndex = -1;
-            FullName = null;
-            Location = null;
-            SignInMethod = SignInMethods.None;
         }
 
         public void On_SignInNoMethod(string pageName, string sourceName, string sourceContent, out string destinationPageName)
@@ -231,46 +110,20 @@ namespace AppCSHtml5
 
         private void CompleteSignIn(string pageName, out string destinationPageName)
         {
-            if (pageName == "home" || pageName == "sign up" || pageName == "signed out")
+            if (pageName == "home" || pageName == "sign in" || pageName == "signed out")
                 destinationPageName = "start";
             else
                 destinationPageName = null;
+
+            Name = null;
         }
 
         private void FailSignIn(out string destinationPageName)
         {
-            UserNameError = true;
-            NotifyPropertyChanged(nameof(UserNameError));
             SignInError = true;
             NotifyPropertyChanged(nameof(SignInError));
 
             destinationPageName = null;
-        }
-
-        public void On_SignOut(string pageName, string sourceName, string sourceContent)
-        {
-            Name = null;
-            Email = null;
-            Confirm1 = false;
-            Confirm2 = false;
-            Confirm3 = false;
-            KeepActiveIndex = -1;
-            FullName = null;
-            Location = null;
-            SignInMethod = SignInMethods.None;
-            NotifyPropertyChanged(nameof(Name));
-            NotifyPropertyChanged(nameof(Email));
-            NotifyPropertyChanged(nameof(Confirm1));
-            NotifyPropertyChanged(nameof(Confirm2));
-            NotifyPropertyChanged(nameof(Confirm3));
-            NotifyPropertyChanged(nameof(KeepActiveIndex));
-            NotifyPropertyChanged(nameof(FullName));
-            NotifyPropertyChanged(nameof(Location));
-            NotifyPropertyChanged(nameof(SignInMethod));
-        }
-
-        public void On_Disconnect(string pageName, string sourceName, string sourceContent)
-        {
         }
 
         public AccountManager AccountManager { get { return App.AccountManager; } }

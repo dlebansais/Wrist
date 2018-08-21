@@ -22,6 +22,7 @@ namespace AppCSHtml5
         public int KeepActiveIndex { get { return SignedInAccount != null ? SignedInAccount.KeepActiveIndex : -1; } }
         public string FullName { get { return SignedInAccount != null ? SignedInAccount.FullName : null; } }
         public string Location { get { return SignedInAccount != null ? SignedInAccount.Location : null; } }
+        public bool Confirmed { get { return true; } set { } }
 
         public string CurrentPassword
         {

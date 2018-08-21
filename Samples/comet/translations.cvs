@@ -27,7 +27,7 @@ sign-in-method-2	Login and password.
 sign-in-method-3	Connect using one of the following proxy.
 sign-in-method-4	Use a SSL certificate.
 certificate	With a certificate, you should have been signed in immediately. You need to install or renew a valid certificate on your system.
-signed-out-text	todo
+signed-out-text	You have been signed out. Click the button below to restart again anonymously, or sign in with another account.
 start	Start
 sign-in-title	Sign in
 sign-in-text	Choose a sign in method and enter your info.
@@ -67,7 +67,7 @@ other	Other
 sign-up	Sign up
 ready	Ready
 sign-out	Sign Out
-signed-as-colon	Signed as:
+signed-as-colon	Signed in as:
 sign-up-name-error	This name is already taken, please use another.
 sign-up-confirm-password-error	The password and its confirmation don't match.
 about-us	About Us
@@ -81,3 +81,6 @@ username-or-email	Username or email address
 sign-in-error	Incorrect username or password.
 email-required	We will need a valid email address to activate your account. This is necessary if you ever want to recover your user name or password (or change it), otherwise all your work saved here could be lost. We won't use this email address for anything else, and if you want to receive news or downtime notifications, you can provide a separate address for that.
 confirm-required	We also require you acknowledge that you understand and meet the following requirements:
+restart	Restart
+profile	Profile
+view	View
