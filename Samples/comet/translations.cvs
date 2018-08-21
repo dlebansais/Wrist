@@ -46,8 +46,8 @@ full-name-colon	Full name:
 location-colon	Location:
 delete-account	Delete Account
 sign-in	Sign in
-delete-account-title	todo
-delete-account-text	todo
+delete-account-title	Delete my account
+delete-account-text	This operation will destroy all informations linked to your account, including all your projects and data.
 feature-1-title	Algorithm
 feature-1-text	Write down your algorithm using a graphic engine or C code.
 feature-2-title	Optimization
@@ -84,3 +84,6 @@ confirm-required	We also require you acknowledge that you understand and meet th
 restart	Restart
 profile	Profile
 view	View
+update	Update
+send-email-to-delete	To confirm you really want to delete your account, you will be signed out, and an email will be sent to the address above with a link. Clicking the link will be the final confirmation that you really want to delete the account. The deletion is effective 24h after you click on the link, and is canceled if you sign in during this time.
+send-delete-email	Send Delete email

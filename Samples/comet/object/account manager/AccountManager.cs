@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml;
 
 namespace AppCSHtml5
 {
@@ -75,6 +76,8 @@ namespace AppCSHtml5
                 {
                     _NewFullName = value;
                     NotifyPropertyChanged(nameof(NewFullName));
+                    IsFullNameChanged = true;
+                    NotifyPropertyChanged(nameof(IsFullNameChanged));
                 }
             }
         }
@@ -89,10 +92,15 @@ namespace AppCSHtml5
                 {
                     _NewLocation = value;
                     NotifyPropertyChanged(nameof(NewLocation));
+                    IsLocationChanged = true;
+                    NotifyPropertyChanged(nameof(IsLocationChanged));
                 }
             }
         }
         private string _NewLocation;
+
+        public bool IsFullNameChanged { get; private set; }
+        public bool IsLocationChanged { get; private set; }
 
         public SignInError TryAddAccount(string email, SignInMethods method, string name, string password, out Account account)
         {
@@ -131,6 +139,10 @@ namespace AppCSHtml5
                             if ((Account.SignInMethod == SignInMethods.NameOnly && string.IsNullOrEmpty(password)) || (Account.SignInMethod == SignInMethods.NameAndPassword && password == Account.Password))
                             {
                                 SignedInAccount = Account;
+                                _NewFullName = Account.FullName;
+                                IsFullNameChanged = false;
+                                _NewLocation = Account.Location;
+                                IsLocationChanged = false;
                                 return true;
                             }
 
@@ -156,9 +168,29 @@ namespace AppCSHtml5
             destinationPageName = null;
         }
 
+        public void On_UpdateFullName(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            IsFullNameChanged = false;
+            NotifyPropertyChanged(nameof(IsFullNameChanged));
+
+            destinationPageName = null;
+        }
+
+        public void On_UpdateLocation(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            IsLocationChanged = false;
+            NotifyPropertyChanged(nameof(IsLocationChanged));
+
+            destinationPageName = null;
+        }
+
         public void On_SignOut(string pageName, string sourceName, string sourceContent)
         {
             SignedInAccount = null;
+            _NewFullName = null;
+            IsFullNameChanged = false;
+            _NewLocation = null;
+            IsLocationChanged = false;
             NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Email));
             NotifyPropertyChanged(nameof(SignInMethod));
@@ -166,11 +198,24 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(KeepActiveIndex));
             NotifyPropertyChanged(nameof(FullName));
             NotifyPropertyChanged(nameof(Location));
+            NotifyPropertyChanged(nameof(NewFullName));
+            NotifyPropertyChanged(nameof(IsFullNameChanged));
+            NotifyPropertyChanged(nameof(NewLocation));
+            NotifyPropertyChanged(nameof(IsLocationChanged));
         }
 
-        public void On_Delete(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_ConfirmDelete(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            destinationPageName = null;
+            if (MessageBox.Show("This will delete your account, and cannot be recovered, are you sure?", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                destinationPageName = "delete account";
+            else
+                destinationPageName = null;
+        }
+
+        public void On_SendDeleteEmail(string pageName, string sourceName, string sourceContent)
+        {
+            On_SignOut(pageName, sourceName, sourceContent);
+            MessageBox.Show("Email sent");
         }
 
         public void OnPopupClosed_IsSignedIn()
@@ -182,6 +227,8 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(KeepActiveIndex));
             NotifyPropertyChanged(nameof(FullName));
             NotifyPropertyChanged(nameof(Location));
+            NotifyPropertyChanged(nameof(NewFullName));
+            NotifyPropertyChanged(nameof(NewLocation));
         }
 
         private static List<Account> Accounts = new List<Account>();

@@ -2,5 +2,6 @@
 {
     public interface IGeneratorEmpty : IGeneratorLayoutElement
     {
+        string Type { get; }
     }
 }
