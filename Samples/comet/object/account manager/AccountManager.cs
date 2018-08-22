@@ -10,8 +10,15 @@ namespace AppCSHtml5
     {
         public AccountManager()
         {
-            Account NewAccount = new Account("a", SignInMethods.NameAndPassword, "b", "c");
+            Account NewAccount;
+
+            NewAccount = new Account("a0", SignInMethods.NameAndPassword, "b", "c");
             Accounts.Add(NewAccount);
+
+            NewAccount = new Account("a1", SignInMethods.NameOnly, "d", null);
+            Accounts.Add(NewAccount);
+
+            ChangeMethodIndex = -1;
         }
 
         public Account SignedInAccount { get; private set; }
@@ -25,6 +32,7 @@ namespace AppCSHtml5
         public string Location { get { return SignedInAccount != null ? SignedInAccount.Location : null; } }
         public bool Confirmed { get { return true; } set { } }
         public bool IsPasswordInvalidError { get; private set; }
+        public int ChangeMethodIndex { get; set; }
 
         public string CurrentPassword
         {
@@ -190,6 +198,7 @@ namespace AppCSHtml5
 
         public void On_ChangeMethod(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
+            ChangeMethodIndex = -1;
             destinationPageName = null;
         }
 

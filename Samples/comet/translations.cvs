@@ -93,3 +93,8 @@ invalid-password-error	Invalid password!
 change-method-title	Change how you sign in
 change-method-text	Select a new way to sign in below, and fill the required information if necessary.
 cancel	Cancel
+add-password	Add a password
+switch-to-third-party	Switch to third-party sign in
+remove-password	Remove the password
+use-name-no-password	Sign in with a name but no password
+use-name-and-password	Sign in with a name and a password
