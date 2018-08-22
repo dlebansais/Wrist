@@ -92,3 +92,4 @@ send-delete-email	Send Delete email
 invalid-password-error	Invalid password!
 change-method-title	Change how you sign in
 change-method-text	Select a new way to sign in below, and fill the required information if necessary.
+cancel	Cancel
