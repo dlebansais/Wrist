@@ -188,6 +188,11 @@ namespace AppCSHtml5
                 destinationPageName = "profile";
         }
 
+        public void On_ChangeMethod(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            destinationPageName = null;
+        }
+
         public void On_ChangeCertificate(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
             destinationPageName = null;
