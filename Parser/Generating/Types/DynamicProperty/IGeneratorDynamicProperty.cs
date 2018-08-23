@@ -11,7 +11,7 @@ namespace Parser
         IGeneratorDynamicOperation RootOperation { get; }
         bool Connect(IGeneratorDomain domain);
         void GetUsedObjects(Dictionary<IGeneratorObject, List<IGeneratorObjectProperty>> usedObjectTable);
-        void Generate(StreamWriter cSharpWriter);
-        void GenerateNotification(IGeneratorObject obj, IGeneratorObjectProperty objectProperty, string xamlPageName, StreamWriter cSharpWriter);
+        bool Generate(IGeneratorObject obj, IGeneratorObjectProperty objectProperty, StreamWriter cSharpWriter);
+        void GenerateNotification(IGeneratorObject obj, IGeneratorObjectProperty objectProperty, StreamWriter cSharpWriter);
     }
 }

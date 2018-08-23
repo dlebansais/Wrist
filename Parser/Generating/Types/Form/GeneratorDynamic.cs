@@ -103,8 +103,13 @@ namespace Parser
 
             cSharpWriter.WriteLine();
 
-            foreach (IGeneratorDynamicProperty DynamicProperty in Properties)
-                DynamicProperty.Generate(cSharpWriter);
+            List<IGeneratorDynamicProperty> GeneratedProperties = new List<IGeneratorDynamicProperty>();
+            foreach (KeyValuePair<IGeneratorObject, List<IGeneratorObjectProperty>> Entry in UsedObjectTable)
+                foreach (IGeneratorObjectProperty ObjectProperty in Entry.Value)
+                    foreach (IGeneratorDynamicProperty DynamicProperty in Properties)
+                        if (!GeneratedProperties.Contains(DynamicProperty))
+                            if (DynamicProperty.Generate(Entry.Key, ObjectProperty, cSharpWriter))
+                                GeneratedProperties.Add(DynamicProperty);
 
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"        public void OnPropertyChanged(string propertyName)");
@@ -119,12 +124,9 @@ namespace Parser
                     string ObjectPropertyName = ObjectProperty.CSharpName;
 
                     cSharpWriter.WriteLine($"            if (propertyName == $\"{{nameof({ObjectName})}}.{{nameof({ObjectName}.{ObjectPropertyName})}}\")");
-                    cSharpWriter.WriteLine("            {");
 
                     foreach (IGeneratorDynamicProperty DynamicProperty in Properties)
-                        DynamicProperty.GenerateNotification(Entry.Key, ObjectProperty, XamlPageName, cSharpWriter);
-
-                    cSharpWriter.WriteLine("            }");
+                        DynamicProperty.GenerateNotification(Entry.Key, ObjectProperty, cSharpWriter);
                 }
             }
 

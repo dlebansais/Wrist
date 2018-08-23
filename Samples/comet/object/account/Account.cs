@@ -23,6 +23,16 @@ namespace AppCSHtml5
         public string FullName { get; set; }
         public string Location { get; set; }
 
+        public void ChangePassword(string password)
+        {
+            Password = password;
+        }
+
+        public void ChangeUsername(string username)
+        {
+            Name = username;
+        }
+
         public void AddPassword(string password)
         {
             SignInMethod = SignInMethods.NameAndPassword;

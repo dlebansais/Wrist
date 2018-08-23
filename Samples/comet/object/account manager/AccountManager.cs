@@ -75,6 +75,20 @@ namespace AppCSHtml5
         }
         private string _NewPassword;
 
+        public string NewUsername
+        {
+            get { return _NewUsername; }
+            set
+            {
+                if (_NewUsername != value)
+                {
+                    _NewUsername = value;
+                    NotifyPropertyChanged(nameof(NewUsername));
+                }
+            }
+        }
+        private string _NewUsername;
+
         public string NewEmail
         {
             get { return _NewEmail; }
@@ -178,10 +192,11 @@ namespace AppCSHtml5
 
         public void On_ChangeEmail(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || CurrentPassword != SignedInAccount.Password)
-            {
-                CurrentPassword = null;
+            string TempPassword = CurrentPassword;
+            CurrentPassword = null;
 
+            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || TempPassword != SignedInAccount.Password)
+            {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
 
@@ -193,17 +208,21 @@ namespace AppCSHtml5
 
         public void On_ChangePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || CurrentPassword != SignedInAccount.Password)
-            {
-                CurrentPassword = null;
+            string TempPassword = CurrentPassword;
+            CurrentPassword = null;
 
+            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || TempPassword != SignedInAccount.Password)
+            {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
 
                 destinationPageName = null;
             }
             else
+            {
+                SignedInAccount.ChangePassword(NewPassword);
                 destinationPageName = "profile";
+            }
         }
 
         public void On_AddPassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
@@ -222,10 +241,11 @@ namespace AppCSHtml5
 
         public void On_RemovePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || CurrentPassword != SignedInAccount.Password)
-            {
-                CurrentPassword = null;
+            string TempPassword = CurrentPassword;
+            CurrentPassword = null;
 
+            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || TempPassword != SignedInAccount.Password)
+            {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
 
@@ -264,6 +284,28 @@ namespace AppCSHtml5
                 SignedInAccount.CreateUsernameAndPassword(NewPassword);
 
                 _ChangeMethodIndex = -1;
+                destinationPageName = "profile";
+            }
+        }
+
+        public void On_ChangeUsername(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            string TempPassword = CurrentPassword;
+            CurrentPassword = null;
+
+            if (string.IsNullOrEmpty(NewUsername) || SignedInAccount == null)
+                destinationPageName = null;
+
+            else if (IsPasswordRequired && TempPassword != SignedInAccount.Password)
+            {
+                IsPasswordInvalidError = true;
+                NotifyPropertyChanged(nameof(IsPasswordInvalidError));
+
+                destinationPageName = null;
+            }
+            else
+            {
+                SignedInAccount.ChangeUsername(NewUsername);
                 destinationPageName = "profile";
             }
         }

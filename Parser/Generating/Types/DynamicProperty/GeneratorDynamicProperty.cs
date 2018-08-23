@@ -47,19 +47,23 @@ namespace Parser
             RootOperation.GetUsedObjects(usedObjectTable);
         }
 
-        public void Generate(StreamWriter cSharpWriter)
-        {
-            cSharpWriter.WriteLine($"        public bool {CSharpName} {{ get; private set; }}");
-        }
-
-        public void GenerateNotification(IGeneratorObject obj, IGeneratorObjectProperty objectProperty, string xamlPageName, StreamWriter cSharpWriter)
+        public bool Generate(IGeneratorObject obj, IGeneratorObjectProperty objectProperty, StreamWriter cSharpWriter)
         {
             string ComposedValue;
             if (RootOperation.GetComposedValue(obj, objectProperty, out ComposedValue))
             {
-                cSharpWriter.WriteLine($"                {CSharpName} = {ComposedValue};");
-                cSharpWriter.WriteLine($"                NotifyPropertyChanged(nameof({CSharpName}));");
+                cSharpWriter.WriteLine($"        public bool {CSharpName} {{ get {{ return {ComposedValue}; }} }}");
+                return true;
             }
+            else
+                return false;
+        }
+
+        public void GenerateNotification(IGeneratorObject obj, IGeneratorObjectProperty objectProperty, StreamWriter cSharpWriter)
+        {
+            string ComposedValue;
+            if (RootOperation.GetComposedValue(obj, objectProperty, out ComposedValue))
+                cSharpWriter.WriteLine($"                NotifyPropertyChanged(nameof({CSharpName}));");
         }
     }
 }

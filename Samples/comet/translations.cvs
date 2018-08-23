@@ -9,7 +9,7 @@ change-email-title	Change your email address
 change-email-text	Enter your password here, then the new email address.
 new-email-colon	New email adress:
 change-password-title	Change your password
-change-password-text	Enter you current password here, then the new password.
+change-password-text	Enter your current password here, then the new password.
 current-password-colon	Current password:
 new-password-colon	New password:
 confirm-password-colon	todo
@@ -100,3 +100,8 @@ remove-password	Remove Password
 use-name-no-password	Sign in with a name but no password.
 use-name-and-password	Sign in with a name and a password.
 your-name-colon	Your name:
+change-username	Change Username
+change-username-title	Change your username
+change-username0-text	Enter the new username.
+change-username1-text	Enter your current password here, then the new username.
+new-username-colon	New username:
