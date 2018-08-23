@@ -18,7 +18,7 @@ namespace AppCSHtml5
             NewAccount = new Account("a1", SignInMethods.NameOnly, "d", null);
             Accounts.Add(NewAccount);
 
-            ChangeMethodIndex = -1;
+            _ChangeMethodIndex = -1;
         }
 
         public Account SignedInAccount { get; private set; }
@@ -31,8 +31,18 @@ namespace AppCSHtml5
         public string FullName { get { return SignedInAccount != null ? SignedInAccount.FullName : null; } }
         public string Location { get { return SignedInAccount != null ? SignedInAccount.Location : null; } }
         public bool Confirmed { get { return true; } set { } }
+        public bool IsPasswordRequired { get { return SignInMethod == SignInMethods.NameAndPassword; } }
         public bool IsPasswordInvalidError { get; private set; }
-        public int ChangeMethodIndex { get; set; }
+        public int ChangeMethodIndex
+        {
+            get { return _ChangeMethodIndex; }
+            set
+            {
+                if (value >= 0)
+                    _ChangeMethodIndex = value;
+            }
+        }
+        private int _ChangeMethodIndex;
 
         public string CurrentPassword
         {
@@ -196,10 +206,66 @@ namespace AppCSHtml5
                 destinationPageName = "profile";
         }
 
-        public void On_ChangeMethod(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_AddPassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            ChangeMethodIndex = -1;
-            destinationPageName = null;
+            if (SignedInAccount == null)
+                destinationPageName = null;
+
+            else
+            {
+                SignedInAccount.AddPassword(NewPassword);
+
+                _ChangeMethodIndex = -1;
+                destinationPageName = "profile";
+            }
+        }
+
+        public void On_RemovePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || CurrentPassword != SignedInAccount.Password)
+            {
+                CurrentPassword = null;
+
+                IsPasswordInvalidError = true;
+                NotifyPropertyChanged(nameof(IsPasswordInvalidError));
+
+                destinationPageName = null;
+            }
+            else
+            {
+                SignedInAccount.RemovePassword();
+
+                _ChangeMethodIndex = -1;
+                destinationPageName = "profile";
+            }
+        }
+
+        public void On_CreateUsername(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            if (SignedInAccount == null)
+                destinationPageName = null;
+
+            else
+            {
+                SignedInAccount.CreateUsername();
+
+                _ChangeMethodIndex = -1;
+                destinationPageName = "profile";
+            }
+        }
+
+        public void On_CreateUsernameAndPassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        {
+            if (SignedInAccount == null || string.IsNullOrEmpty(NewPassword))
+                destinationPageName = null;
+
+            else
+            {
+                SignedInAccount.CreateUsernameAndPassword(NewPassword);
+
+                _ChangeMethodIndex = -1;
+                destinationPageName = "profile";
+            }
         }
 
         public void On_ChangeCertificate(string pageName, string sourceName, string sourceContent, out string destinationPageName)
@@ -242,6 +308,7 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(IsFullNameChanged));
             NotifyPropertyChanged(nameof(NewLocation));
             NotifyPropertyChanged(nameof(IsLocationChanged));
+            NotifyPropertyChanged(nameof(IsPasswordRequired));
             NotifyPropertyChanged(nameof(IsPasswordInvalidError));
         }
 
@@ -264,6 +331,7 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Email));
             NotifyPropertyChanged(nameof(SignInMethod));
+            NotifyPropertyChanged(nameof(IsPasswordRequired));
             NotifyPropertyChanged(nameof(Name));
             NotifyPropertyChanged(nameof(KeepActiveIndex));
             NotifyPropertyChanged(nameof(FullName));

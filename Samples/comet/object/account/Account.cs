@@ -11,31 +11,41 @@ namespace AppCSHtml5
             Email = email;
             SignInMethod = signInMethod;
             Name = name;
-            _Password = (signInMethod == SignInMethods.NameAndPassword ? password : null);
+            Password = (signInMethod == SignInMethods.NameAndPassword ? password : null);
             KeepActiveIndex = -1;
         }
 
         public string Email { get; private set; }
         public SignInMethods SignInMethod { get; private set; }
         public string Name { get; private set; }
-
-        public string Password
-        {
-            get { return _Password; }
-            set
-            {
-                if (_Password != value)
-                {
-                    _Password = value;
-                    NotifyPropertyChanged(nameof(Password));
-                }
-            }
-        }
-        private string _Password;
-
+        public string Password { get; private set; }
         public int KeepActiveIndex { get; private set; }
         public string FullName { get; set; }
         public string Location { get; set; }
+
+        public void AddPassword(string password)
+        {
+            SignInMethod = SignInMethods.NameAndPassword;
+            Password = password;
+        }
+
+        public void RemovePassword()
+        {
+            SignInMethod = SignInMethods.NameOnly;
+            Password = null;
+        }
+
+        public void CreateUsername()
+        {
+            SignInMethod = SignInMethods.NameOnly;
+            Password = null;
+        }
+
+        public void CreateUsernameAndPassword(string password)
+        {
+            SignInMethod = SignInMethods.NameAndPassword;
+            Password = password;
+        }
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>
