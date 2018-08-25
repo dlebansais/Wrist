@@ -39,6 +39,9 @@ namespace Parser
                 {
                     if (!domain.Translation.KeyList.Contains(objectPropertyKey.Name))
                         throw new ParsingException(139, objectPropertyKey.Source, $"The translation file doesn't contain key '{objectPropertyKey.Name}'.");
+
+                    if (!domain.Translation.UsedKeyList.Contains(objectPropertyKey.Name))
+                        domain.Translation.UsedKeyList.Add(objectPropertyKey.Name);
                 }
                 else
                 {
@@ -58,6 +61,8 @@ namespace Parser
 
                 if (obj == null)
                     throw new ParsingException(140, objectSource.Source, $"Unknown object '{objectSource.Name}'.");
+
+                obj.SetIsUsed();
             }
         }
 

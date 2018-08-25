@@ -11,7 +11,7 @@
 
         public IComponentProperty IndexProperty { get; private set; }
         public IObject IndexObject { get; private set; }
-        public IObjectPropertyInteger IndexObjectProperty { get; private set; }
+        public IObjectPropertyIndex IndexObjectProperty { get; private set; }
         public IComponentProperty ItemsProperty { get; private set; }
         public IResource ItemsResource { get; private set; }
         public IObject ItemsObject { get; private set; }
@@ -30,8 +30,8 @@
         private void ConnectIndex(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
         {
             IObject Object = IndexObject;
-            IObjectPropertyInteger ObjectProperty = IndexObjectProperty;
-            IsConnected |= IndexProperty.ConnectToObjectIntegerOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
+            IObjectPropertyIndex ObjectProperty = IndexObjectProperty;
+            IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             IndexObject = Object;
             IndexObjectProperty = ObjectProperty;
 

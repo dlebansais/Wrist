@@ -185,7 +185,7 @@ namespace Parser
                     break;
 
                 foreach (IObjectEvent ObjectEvent in ObjectEventList)
-                    if (ObjectEvent.Name == line)
+                    if (ObjectEvent.NameSource.Name == line)
                         throw new ParsingException(106, sourceStream, $"Event name '{line}' specified more than once.");
 
                 IObjectEvent NewEvent = ParseEvent(sourceStream, line);
@@ -201,7 +201,8 @@ namespace Parser
             if (Name.Length <= 0)
                 throw new ParsingException(107, sourceStream, "Event name cannot be empty.");
 
-            return new ObjectEvent(Name, ParserDomain.ToCSharpName(sourceStream, Name));
+            IDeclarationSource NameSource = new DeclarationSource(Name, sourceStream);
+            return new ObjectEvent(NameSource, ParserDomain.ToCSharpName(sourceStream, Name));
         }
     }
 }

@@ -53,6 +53,7 @@
                 if (ItemNestedArea == null)
                     throw new ParsingException(117, Source.Source, $"Unknown area '{AreaSource.Name}'.");
 
+                ItemNestedArea.SetIsUsed();
                 ItemNestedArea.SetCurrentObject(Source, ItemNestedObject);
 
                 IsConnected = true;

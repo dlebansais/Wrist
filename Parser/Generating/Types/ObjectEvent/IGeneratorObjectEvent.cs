@@ -4,7 +4,7 @@ namespace Parser
 {
     public interface IGeneratorObjectEvent
     {
-        string Name { get; }
+        IDeclarationSource NameSource { get; }
         string CSharpName { get; }
         bool IsProvidingCustomPageName { get; }
         void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter);

@@ -19,18 +19,18 @@ namespace Parser
 
         public GeneratorObjectEvent(IObjectEvent eventObject)
         {
-            Name = eventObject.Name;
+            NameSource = eventObject.NameSource;
             CSharpName = eventObject.CSharpName;
             IsProvidingCustomPageName = eventObject.IsProvidingCustomPageName.HasValue && eventObject.IsProvidingCustomPageName.Value;
         }
 
-        public string Name { get; private set; }
+        public IDeclarationSource NameSource { get; private set; }
         public string CSharpName { get; private set; }
         public bool IsProvidingCustomPageName { get; set; }
 
         public override string ToString()
         {
-            return $"{Name} event";
+            return $"{NameSource.Name} event";
         }
 
         public void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter)

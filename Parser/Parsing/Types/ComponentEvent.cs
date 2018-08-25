@@ -16,36 +16,40 @@
         public IDeclarationSource ObjectSource { get; private set; }
         public IDeclarationSource ObjectEventSource { get; private set; }
 
-        public bool Connect(IDomain domain, ref IObject Object, ref IObjectEvent ObjectEvent)
+        public bool Connect(IDomain domain, ref IObject obj, ref IObjectEvent objectEvent)
         {
             bool IsConnected = false;
 
-            if (Object == null)
+            if (obj == null)
             {
                 foreach (IObject Item in domain.Objects)
                     if (Item.Name == ObjectSource.Name)
                     {
-                        Object = Item;
+                        obj = Item;
                         break;
                     }
 
-                if (Object == null)
+                if (obj == null)
                     throw new ParsingException(135, ObjectSource.Source, $"Unknown object '{ObjectSource.Name}'.");
+
+                obj.SetIsUsed();
 
                 IsConnected = true;
             }
 
-            if (ObjectEvent == null)
+            if (objectEvent == null)
             {
-                foreach (IObjectEvent Event in Object.Events)
-                    if (Event.Name == ObjectEventSource.Name)
+                foreach (IObjectEvent Event in obj.Events)
+                    if (Event.NameSource.Name == ObjectEventSource.Name)
                     {
-                        ObjectEvent = Event;
+                        objectEvent = Event;
                         break;
                     }
 
-                if (ObjectEvent == null)
+                if (objectEvent == null)
                     throw new ParsingException(136, ObjectEventSource.Source, $"Unknown event '{ObjectEventSource.Name}'.");
+
+                objectEvent.SetIsUsed();
 
                 IsConnected = true;
             }

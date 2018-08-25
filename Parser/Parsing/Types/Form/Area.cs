@@ -15,6 +15,7 @@ namespace Parser
         public string XamlName { get; private set; }
         public IReadOnlyCollection<IComponent> Components { get; private set; }
         public IObject CurrentObject { get; private set; }
+        public bool IsUsed { get; private set; }
 
         public bool Connect(IDomain domain)
         {
@@ -74,6 +75,11 @@ namespace Parser
                     if (AsRadioButton.GroupName == groupName)
                         group.Add(AsRadioButton);
                 }
+        }
+
+        public void SetIsUsed()
+        {
+            IsUsed = true;
         }
 
         public override string ToString()

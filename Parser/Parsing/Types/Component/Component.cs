@@ -10,8 +10,14 @@
 
         public IDeclarationSource Source { get; private set; }
         public string XamlName { get; private set; }
+        public bool IsUsed { get; private set; }
 
         public abstract bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject);
+
+        public void SetIsUsed()
+        {
+            IsUsed = true;
+        }
 
         public virtual bool IsReferencing(IArea other)
         {

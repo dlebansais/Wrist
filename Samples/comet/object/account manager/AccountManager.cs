@@ -21,12 +21,12 @@ namespace AppCSHtml5
             _ChangeMethodIndex = -1;
         }
 
-        public Account SignedInAccount { get; private set; }
+        public IAccount SignedInAccount { get; private set; }
 
         public bool IsSignedIn { get { return SignedInAccount != null; } }
         public string Email { get { return SignedInAccount != null ? SignedInAccount.Email : null; } }
         public SignInMethods SignInMethod { get { return SignedInAccount != null ? SignedInAccount.SignInMethod : SignInMethods.None; } }
-        public string Name { get { return SignedInAccount != null ? SignedInAccount.Name : null; } }
+        public string Username { get { return SignedInAccount != null ? SignedInAccount.Username : null; } }
         public int KeepActiveIndex { get { return SignedInAccount != null ? SignedInAccount.KeepActiveIndex : -1; } }
         public string FullName { get { return SignedInAccount != null ? SignedInAccount.FullName : null; } }
         public string Location { get { return SignedInAccount != null ? SignedInAccount.Location : null; } }
@@ -138,22 +138,22 @@ namespace AppCSHtml5
         public bool IsFullNameChanged { get; private set; }
         public bool IsLocationChanged { get; private set; }
 
-        public SignInError TryAddAccount(string email, SignInMethods method, string name, string password, out Account account)
+        public SignInError TryAddAccount(string email, SignInMethods method, string username, string password, out Account account)
         {
-            if (string.IsNullOrEmpty(email) || !(method == SignInMethods.NameOnly || method == SignInMethods.NameAndPassword) || string.IsNullOrEmpty(name) || (method == SignInMethods.NameAndPassword && string.IsNullOrEmpty(password)))
+            if (string.IsNullOrEmpty(email) || !(method == SignInMethods.NameOnly || method == SignInMethods.NameAndPassword) || string.IsNullOrEmpty(username) || (method == SignInMethods.NameAndPassword && string.IsNullOrEmpty(password)))
             {
                 account = null;
                 return SignInError.InternalError;
             }
 
             foreach (Account Account in Accounts)
-                if (Account.Name == name)
+                if (Account.Username == username)
                 {
                     account = null;
                     return SignInError.NameAlreadyInUse;
                 }
 
-            account = new Account(email, method, name, password);
+            account = new Account(email, method, username, password);
             Accounts.Add(account);
 
             return SignInError.None;
@@ -164,12 +164,12 @@ namespace AppCSHtml5
             return TrySignInAccount(SignInMethods.None, name, password);
         }
 
-        public bool TrySignInAccount(SignInMethods signInMethod, string name, string password)
+        public bool TrySignInAccount(SignInMethods signInMethod, string username, string password)
         {
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(username))
             {
                 foreach (Account Account in Accounts)
-                    if (Account.Name == name)
+                    if (Account.Username == username)
                     {
                         if (signInMethod == SignInMethods.None || signInMethod == Account.SignInMethod)
                             if ((Account.SignInMethod == SignInMethods.NameOnly && string.IsNullOrEmpty(password)) || (Account.SignInMethod == SignInMethods.NameAndPassword && password == Account.Password))
@@ -192,10 +192,7 @@ namespace AppCSHtml5
 
         public void On_ChangeEmail(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            string TempPassword = CurrentPassword;
-            CurrentPassword = null;
-
-            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || TempPassword != SignedInAccount.Password)
+            if (!ClearPasswordAndCompare())
             {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
@@ -208,10 +205,7 @@ namespace AppCSHtml5
 
         public void On_ChangePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            string TempPassword = CurrentPassword;
-            CurrentPassword = null;
-
-            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || TempPassword != SignedInAccount.Password)
+            if (!ClearPasswordAndCompare())
             {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
@@ -220,7 +214,7 @@ namespace AppCSHtml5
             }
             else
             {
-                SignedInAccount.ChangePassword(NewPassword);
+                ((Account)SignedInAccount).ChangePassword(NewPassword);
                 destinationPageName = "profile";
             }
         }
@@ -232,7 +226,7 @@ namespace AppCSHtml5
 
             else
             {
-                SignedInAccount.AddPassword(NewPassword);
+                ((Account)SignedInAccount).AddPassword(NewPassword);
 
                 _ChangeMethodIndex = -1;
                 destinationPageName = "profile";
@@ -241,10 +235,7 @@ namespace AppCSHtml5
 
         public void On_RemovePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            string TempPassword = CurrentPassword;
-            CurrentPassword = null;
-
-            if (SignedInAccount == null || string.IsNullOrEmpty(SignedInAccount.Password) || TempPassword != SignedInAccount.Password)
+            if (!ClearPasswordAndCompare())
             {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
@@ -253,7 +244,7 @@ namespace AppCSHtml5
             }
             else
             {
-                SignedInAccount.RemovePassword();
+                ((Account)SignedInAccount).RemovePassword();
 
                 _ChangeMethodIndex = -1;
                 destinationPageName = "profile";
@@ -267,7 +258,7 @@ namespace AppCSHtml5
 
             else
             {
-                SignedInAccount.CreateUsername();
+                ((Account)SignedInAccount).CreateUsername(Username);
 
                 _ChangeMethodIndex = -1;
                 destinationPageName = "profile";
@@ -281,7 +272,7 @@ namespace AppCSHtml5
 
             else
             {
-                SignedInAccount.CreateUsernameAndPassword(NewPassword);
+                ((Account)SignedInAccount).CreateUsernameAndPassword(Username, NewPassword);
 
                 _ChangeMethodIndex = -1;
                 destinationPageName = "profile";
@@ -290,22 +281,20 @@ namespace AppCSHtml5
 
         public void On_ChangeUsername(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
-            string TempPassword = CurrentPassword;
-            CurrentPassword = null;
-
-            if (string.IsNullOrEmpty(NewUsername) || SignedInAccount == null)
-                destinationPageName = null;
-
-            else if (IsPasswordRequired && TempPassword != SignedInAccount.Password)
+            if (IsPasswordRequired && !ClearPasswordAndCompare())
             {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
 
                 destinationPageName = null;
             }
+
+            else if (string.IsNullOrEmpty(NewUsername) || SignedInAccount == null)
+                destinationPageName = null;
+
             else
             {
-                SignedInAccount.ChangeUsername(NewUsername);
+                ((Account)SignedInAccount).ChangeUsername(NewUsername);
                 destinationPageName = "profile";
             }
         }
@@ -342,7 +331,7 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Email));
             NotifyPropertyChanged(nameof(SignInMethod));
-            NotifyPropertyChanged(nameof(Name));
+            NotifyPropertyChanged(nameof(Username));
             NotifyPropertyChanged(nameof(KeepActiveIndex));
             NotifyPropertyChanged(nameof(FullName));
             NotifyPropertyChanged(nameof(Location));
@@ -374,12 +363,20 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(Email));
             NotifyPropertyChanged(nameof(SignInMethod));
             NotifyPropertyChanged(nameof(IsPasswordRequired));
-            NotifyPropertyChanged(nameof(Name));
+            NotifyPropertyChanged(nameof(Username));
             NotifyPropertyChanged(nameof(KeepActiveIndex));
             NotifyPropertyChanged(nameof(FullName));
             NotifyPropertyChanged(nameof(Location));
             NotifyPropertyChanged(nameof(NewFullName));
             NotifyPropertyChanged(nameof(NewLocation));
+        }
+
+        private bool ClearPasswordAndCompare()
+        {
+            string TempPassword = CurrentPassword;
+            CurrentPassword = null;
+
+            return (SignedInAccount != null && ((Account)SignedInAccount).IsPasswordEqual(TempPassword));
         }
 
         private static List<Account> Accounts = new List<Account>();

@@ -25,5 +25,7 @@ namespace Parser
         IDeclarationSource BackgroundColorSource { get; }
         string BackgroundColor { get; }
         IDynamic Dynamic { get; }
+        bool IsReachable { get; }
+        void SetIsReachable();
     }
 }

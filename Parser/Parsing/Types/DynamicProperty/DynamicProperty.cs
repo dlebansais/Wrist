@@ -14,10 +14,16 @@
         public string CSharpName { get; private set; }
         public DynamicOperationResults Result { get; private set; }
         public IDynamicOperation RootOperation { get; private set; }
+        public bool IsUsed { get; private set; }
 
         public bool Connect(IDomain domain, IDynamic currentDynamic, IObject currentObject)
         {
             return RootOperation.Connect(domain, currentDynamic, currentObject);
+        }
+
+        public void SetIsUsed()
+        {
+            IsUsed = true;
         }
     }
 }

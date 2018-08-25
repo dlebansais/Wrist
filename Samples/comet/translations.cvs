@@ -1,9 +1,6 @@
 ﻿Key	English
 home-title	Optimize your Data Flow
 home-text	Specify your algorithm and we return its code, tested and optimized.
-certificate-text	todo
-change-certificate-title	todo
-change-certificate-text	todo
 change	Change
 change-email-title	Change your email address
 change-email-text	Enter your password here, then the new email address.
@@ -12,7 +9,6 @@ change-password-title	Change your password
 change-password-text	Enter your current password here, then the new password.
 current-password-colon	Current password:
 new-password-colon	New password:
-confirm-password-colon	todo
 start-title	Start your project
 start-text	Start your own project here. When you run your first project, you will be able to save your work (require a valid email address).
 sign-up-title	Sign up to the service and record your work
@@ -41,7 +37,6 @@ profile-text	Find your profile info here.
 change-email	Change your email address
 change-password	Change your password
 change-method	Change how you sign in
-disconnect	Sign out
 certificate-password	Manage certificates
 optional	Fill your private info here (optional)
 full-name-colon	Full name:
@@ -60,18 +55,15 @@ feature-4-title	Download
 feature-4-text	Download the result as source and compiled code, ready to integrate in your toolchain.
 feature-5-title	Free
 feature-5-text	This is a free service. No charge, no login, no private info, no adds. 100% free.
-status-colon	Status:
-id-colon	Id:
-keep-active-option-1	This session only (until inactive for an hour)
-keep-active-option-2	For two weeks
-keep-active-option-3	No limit
+*keep-active-option-1	This session only (until inactive for an hour)
+*keep-active-option-2	For two weeks
+*keep-active-option-3	No limit
 other	Other
 sign-up	Sign up
 ready	Ready
 sign-out	Sign Out
 signed-as-colon	Signed in as:
 sign-up-name-error	This name is already taken, please use another.
-sign-up-confirm-password-error	The password and its confirmation don't match.
 about-us	About Us
 about-us-text	Some info.
 download	Download
@@ -105,3 +97,7 @@ change-username-title	Change your username
 change-username0-text	Enter the new username.
 change-username1-text	Enter your current password here, then the new username.
 new-username-colon	New username:
+signed-in-option-1	Your are signed in using a username only.
+signed-in-option-2	Your are signed in using a username and password.
+signed-in-option-3	Your are signed in using a third-party account.
+signed-in-option-4	Your are signed in using a certificate.

@@ -2,15 +2,16 @@
 {
     public class ObjectEvent : IObjectEvent
     {
-        public ObjectEvent(string name, string cSharpName)
+        public ObjectEvent(IDeclarationSource nameSource, string cSharpName)
         {
-            Name = name;
+            NameSource = nameSource;
             CSharpName = cSharpName;
         }
 
-        public string Name { get; private set; }
+        public IDeclarationSource NameSource { get; private set; }
         public string CSharpName { get; private set; }
         public bool? IsProvidingCustomPageName { get; private set; }
+        public bool IsUsed { get; private set; }
 
         public void SetIsProvidingCustomPageName(IDeclarationSource componentSource, bool isSet)
         {
@@ -20,9 +21,19 @@
                 throw new ParsingException(173, componentSource.Source, "Incompatible use of event.");
         }
 
+        public bool Connect(IDomain domain)
+        {
+            return false;
+        }
+
+        public void SetIsUsed()
+        {
+            IsUsed = true;
+        }
+
         public override string ToString()
         {
-            return $"{Name} event";
+            return $"{NameSource.Name} event";
         }
     }
 }

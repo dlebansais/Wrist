@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Windows.Controls;
 using System.Windows.Markup;
 
 namespace Parser
@@ -13,26 +11,22 @@ namespace Parser
             : base(panel)
         {
             Index = panel.Index;
+            BasePanel = panel;
         }
 
+        private IStatePanel BasePanel;
+
         public string Index { get; private set; }
-        public IGeneratorComponentIndex IndexComponent { get; private set; }
+        public IGeneratorComponentIndex Component { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
         {
             bool IsConnected = base.Connect(domain, components);
 
-            if (IndexComponent == null)
+            if (Component == null)
             {
-                foreach (IGeneratorComponent Item in components)
-                    if (Item.Source.Name == Index)
-                    {
-                        IndexComponent = (IGeneratorComponentIndex)Item;
-                        break;
-                    }
-
-                if (IndexComponent == null)
-                    throw new InvalidOperationException();
+                if (GeneratorComponent.GeneratorComponentMap.ContainsKey(BasePanel.Component))
+                    Component = (IGeneratorComponentIndex)GeneratorComponent.GeneratorComponentMap[BasePanel.Component];
 
                 IsConnected = true;
             }
@@ -53,11 +47,11 @@ namespace Parser
             for (int i = 0; i < Items.Count; i++)
                 Parameters.Add(i.ToString());
 
-            IGeneratorObjectPropertyIndex IndexObjectProperty = IndexComponent.IndexObjectProperty;
+            IGeneratorObjectPropertyIndex IndexObjectProperty = Component.IndexObjectProperty;
             int Index = 0;
             foreach (IGeneratorLayoutElement Element in Items)
             {
-                string VisibilityBinding = $" Visibility=\"{{Binding {IndexComponent.IndexObject.CSharpName}.{IndexComponent.IndexObjectProperty.CSharpName}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter={Parameters[Index++]}}}\"";
+                string VisibilityBinding = $" Visibility=\"{{Binding {Component.IndexObject.CSharpName}.{Component.IndexObjectProperty.CSharpName}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter={Parameters[Index++]}}}\"";
                 Element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, VisibilityBinding);
             }
 

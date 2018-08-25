@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace Parser
@@ -11,11 +10,15 @@ namespace Parser
         {
             Name = control.Name;
             TextWrapping = control.TextWrapping;
+
+            BaseControl = control;
         }
 
+        private IControl BaseControl;
+
         public string Name { get; private set; }
-        public IGeneratorComponent Component { get; private set; }
         public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
+        public IGeneratorComponent Component { get; private set; }
 
         public override bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components)
         {
@@ -23,17 +26,10 @@ namespace Parser
 
             if (Component == null)
             {
-                foreach (IGeneratorComponent Item in components)
-                    if (Item.Source.Name == Name)
-                    {
-                        Component = Item;
-                        break;
-                    }
-
-                if (Component == null)
-                    throw new InvalidOperationException();
-
                 IsConnected = true;
+
+                if (GeneratorComponent.GeneratorComponentMap.ContainsKey(BaseControl.Component))
+                    Component = GeneratorComponent.GeneratorComponentMap[BaseControl.Component];
             }
 
             return IsConnected;

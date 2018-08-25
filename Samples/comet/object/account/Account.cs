@@ -6,31 +6,36 @@ namespace AppCSHtml5
 {
     public class Account : IAccount, INotifyPropertyChanged
     {
-        public Account(string email, SignInMethods signInMethod, string name, string password)
+        public Account(string email, SignInMethods signInMethod, string username, string password)
         {
             Email = email;
             SignInMethod = signInMethod;
-            Name = name;
+            Username = username;
             Password = (signInMethod == SignInMethods.NameAndPassword ? password : null);
             KeepActiveIndex = -1;
         }
 
         public string Email { get; private set; }
         public SignInMethods SignInMethod { get; private set; }
-        public string Name { get; private set; }
+        public string Username { get; private set; }
         public string Password { get; private set; }
-        public int KeepActiveIndex { get; private set; }
+        public int KeepActiveIndex { get; set; }
         public string FullName { get; set; }
         public string Location { get; set; }
 
-        public void ChangePassword(string password)
+        public bool IsPasswordEqual(string password)
         {
-            Password = password;
+            return !string.IsNullOrEmpty(password) && (password == Password);
         }
 
         public void ChangeUsername(string username)
         {
-            Name = username;
+            Username = username;
+        }
+
+        public void ChangePassword(string password)
+        {
+            Password = password;
         }
 
         public void AddPassword(string password)
@@ -45,15 +50,17 @@ namespace AppCSHtml5
             Password = null;
         }
 
-        public void CreateUsername()
+        public void CreateUsername(string username)
         {
             SignInMethod = SignInMethods.NameOnly;
+            Username = username;
             Password = null;
         }
 
-        public void CreateUsernameAndPassword(string password)
+        public void CreateUsernameAndPassword(string username, string password)
         {
             SignInMethod = SignInMethods.NameAndPassword;
+            Username = username;
             Password = password;
         }
 

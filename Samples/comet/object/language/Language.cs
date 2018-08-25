@@ -18,9 +18,9 @@ namespace AppCSHtml5
 
                     Translation Translation = App.Translation;
                     IDictionary<string, string> Strings = Translation.Strings;
-                    _KeepActiveOptions.Add(Strings["keep-active-option-1"]);
-                    _KeepActiveOptions.Add(Strings["keep-active-option-2"]);
-                    _KeepActiveOptions.Add(Strings["keep-active-option-3"]);
+                    _KeepActiveOptions.Add(Strings["*keep-active-option-1"]);
+                    _KeepActiveOptions.Add(Strings["*keep-active-option-2"]);
+                    _KeepActiveOptions.Add(Strings["*keep-active-option-3"]);
                 }
 
                 return _KeepActiveOptions;

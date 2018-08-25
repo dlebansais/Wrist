@@ -49,6 +49,7 @@ namespace Parser
         public IDeclarationSource BackgroundColorSource { get; private set; }
         public string BackgroundColor { get; private set; }
         public IDynamic Dynamic { get; private set; }
+        public bool IsReachable { get; private set; }
 
         public bool Connect(IDomain domain)
         {
@@ -77,6 +78,7 @@ namespace Parser
                 if (Area == null)
                     throw new ParsingException(118, AreaSource.Source, $"Unknown area '{AreaSource.Name}'.");
 
+                Area.SetIsUsed();
                 Area.SetCurrentObject(AreaSource, null);
 
                 IsConnected = true;
@@ -227,6 +229,11 @@ namespace Parser
 
                 IsConnected = true;
             }
+        }
+
+        public void SetIsReachable()
+        {
+            IsReachable = true;
         }
 
         public override string ToString()

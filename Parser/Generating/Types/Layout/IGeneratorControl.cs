@@ -4,5 +4,6 @@
     {
         string Name { get; }
         Windows.UI.Xaml.TextWrapping? TextWrapping { get; }
+        IGeneratorComponent Component { get; }
     }
 }

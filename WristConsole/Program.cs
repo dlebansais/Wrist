@@ -54,7 +54,9 @@ namespace WristConsole
             try
             {
                 Console.WriteLine("Building...");
-                MainManager.Build(InputFolder, OutputFolder, HomePageName, ColorThemeName);
+                IDomain Domain;
+                MainManager.Build(InputFolder, OutputFolder, HomePageName, ColorThemeName, out Domain);
+                Domain.CheckUnused((string message) => Console.WriteLine(message));
                 Console.WriteLine("Done.");
                 Thread.Sleep(TimeSpan.FromSeconds(2));
             }

@@ -70,6 +70,8 @@ namespace Parser
                     throw new ParsingException(198, Source, $"Dynamic property '{DynamicEnable}' not found.");
                 else if (DynamicController.Result != DynamicOperationResults.Boolean)
                     throw new ParsingException(199, Source, $"Dynamic property '{DynamicEnable}' is not boolean.");
+
+                DynamicController.SetIsUsed();
             }
         }
     }

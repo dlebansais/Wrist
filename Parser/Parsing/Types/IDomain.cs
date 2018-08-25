@@ -1,4 +1,6 @@
-﻿namespace Parser
+﻿using System;
+
+namespace Parser
 {
     public interface IDomain
     {
@@ -16,5 +18,6 @@
         ITranslation Translation { get; }
         IPage HomePage { get; }
         IColorTheme SelectedColorTheme { get; }
+        void CheckUnused(Action<string> handler);
     }
 }

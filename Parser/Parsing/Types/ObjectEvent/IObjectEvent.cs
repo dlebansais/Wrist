@@ -2,9 +2,12 @@
 {
     public interface IObjectEvent
     {
-        string Name { get; }
+        IDeclarationSource NameSource { get; }
         string CSharpName { get; }
         bool? IsProvidingCustomPageName { get; }
         void SetIsProvidingCustomPageName(IDeclarationSource componentSource, bool isSet);
+        bool Connect(IDomain domain);
+        bool IsUsed { get; }
+        void SetIsUsed();
     }
 }

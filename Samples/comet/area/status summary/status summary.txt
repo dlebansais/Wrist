@@ -1,1 +1,1 @@
-﻿status text: text, text=translation.strings[status-colon]
+﻿

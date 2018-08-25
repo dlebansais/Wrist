@@ -1,4 +1,6 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
     public class PageNavigation : IPageNavigation
     {
@@ -16,6 +18,7 @@
         public IPage GoToPage { get; private set; }
         public IObject AfterObject { get; private set; }
         public IObjectEvent AfterObjectEvent { get; private set; }
+        public IList<IPage> AlternatePages { get; } = new List<IPage>();
 
         private void ConnectBefore(IDomain domain, IComponentEvent beforeEvent)
         {
@@ -45,8 +48,52 @@
 
             if (GoToPage == null && goToPageName == Page.CurrentPage.Name)
                 GoToPage = Page.CurrentPage;
-            else if (GoToPage == null && goToPageName == Page.AnyPage.Name)
-                GoToPage = Page.AnyPage;
+
+            else if (GoToPage != null)
+                GoToPage.SetIsReachable();
+
+            else
+            {
+                string[] Splitted = goToPageName.Split(':');
+                string SplittedPrefix = Splitted.Length > 0 && Splitted[0].Length > 0 ? Splitted[0] : "";
+                string SplittedSuffix = Splitted.Length > 1 && Splitted[1].Length > 0 ? Splitted[1].Substring(Splitted[1].Length - 1) : "";
+                string AnyPagePrefix = Page.AnyPage.Name.Substring(0, Page.AnyPage.Name.Length - 1);
+                string AnyPageSuffix = Page.AnyPage.Name.Substring(Page.AnyPage.Name.Length - 1);
+
+                if (SplittedPrefix == AnyPagePrefix && SplittedSuffix == AnyPageSuffix)
+                {
+                    GoToPage = Page.AnyPage;
+                    string[] AlternateNames = Splitted[1].Substring(0, Splitted[1].Length - 1).Split(';');
+
+                    foreach (string AlternateName in AlternateNames)
+                    {
+                        string TrimmedAlternate = AlternateName.Trim();
+                        IPage Alternate = null;
+                        foreach (IPage Item in domain.Pages)
+                            if (Item.Name == TrimmedAlternate)
+                            {
+                                Alternate = Item;
+                                break;
+                            }
+
+                        if (Alternate != null)
+                        {
+                            Alternate.SetIsReachable();
+                            AlternatePages.Add(Alternate);
+                        }
+                        else if (AlternateName == Page.CurrentPage.Name)
+                        {
+                            if (!AlternatePages.Contains(Page.CurrentPage))
+                                AlternatePages.Add(Page.CurrentPage);
+                        }
+                        else
+                            throw new ParsingException(176, NavigationSource.Source, $"Unknown page name '{TrimmedAlternate}'.");
+                    }
+
+                    if (AlternatePages.Count == 0)
+                        throw new ParsingException(0, NavigationSource.Source, "A custom page must declare at least one destination page");
+                }
+            }
 
             if (BeforeObjectEvent != null)
                 BeforeObjectEvent.SetIsProvidingCustomPageName(NavigationSource, GoToPage == Page.AnyPage);
@@ -76,8 +123,8 @@
 
         public override string ToString()
         {
-            string BeforeString = BeforeObject != null ? $" ({BeforeObject.CSharpName}.{BeforeObjectEvent.Name})" : "";
-            string AfterString = AfterObject != null ? $" ({AfterObject.CSharpName}.{AfterObjectEvent.Name})" : "";
+            string BeforeString = BeforeObject != null ? $" ({BeforeObject.CSharpName}.{BeforeObjectEvent.NameSource.Name})" : "";
+            string AfterString = AfterObject != null ? $" ({AfterObject.CSharpName}.{AfterObjectEvent.NameSource.Name})" : "";
             return $"{GetType().Name} ->{BeforeString} {GoToPage.Name}{AfterString}";
         }
     }

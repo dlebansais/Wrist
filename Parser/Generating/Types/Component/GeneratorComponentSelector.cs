@@ -15,7 +15,7 @@ namespace Parser
         IComponentSelector BaseSelector;
 
         public IGeneratorObject IndexObject { get; private set; }
-        public IGeneratorObjectPropertyInteger IndexObjectProperty { get; private set; }
+        public IGeneratorObjectPropertyIndex IndexObjectProperty { get; private set; }
         public IGeneratorResource ItemsResource { get; private set; }
         public IGeneratorObject ItemsObject { get; private set; }
         public IGeneratorObjectPropertyStringList ItemsObjectProperty { get; private set; }
@@ -31,7 +31,7 @@ namespace Parser
                 if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseSelector.IndexObject))
                     IndexObject = GeneratorObject.GeneratorObjectMap[BaseSelector.IndexObject];
                 if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseSelector.IndexObjectProperty))
-                    IndexObjectProperty = (IGeneratorObjectPropertyInteger)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseSelector.IndexObjectProperty];
+                    IndexObjectProperty = (IGeneratorObjectPropertyIndex)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseSelector.IndexObjectProperty];
             }
 
             if (ItemsResource == null && (ItemsObject == null || ItemsObjectProperty == null))

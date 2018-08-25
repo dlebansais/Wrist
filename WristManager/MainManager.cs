@@ -5,11 +5,11 @@ namespace WristManager
 {
     public class MainManager
     {
-        public void Build(string inputFolder, string outputFolder, string homePageName, string colorThemeName)
+        public void Build(string inputFolder, string outputFolder, string homePageName, string colorThemeName, out IDomain domain)
         {
-            IDomain Domain = ParserDomain.Parse(inputFolder, homePageName, colorThemeName);
+            domain = ParserDomain.Parse(inputFolder, homePageName, colorThemeName);
             string OutputName = Path.GetFileName(outputFolder);
-            IGeneratorDomain Generator = new GeneratorDomain(OutputName, Domain);
+            IGeneratorDomain Generator = new GeneratorDomain(OutputName, domain);
             Generator.Generate(outputFolder);
         }
     }

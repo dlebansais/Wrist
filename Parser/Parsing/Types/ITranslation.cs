@@ -9,6 +9,7 @@ namespace Parser
         IDictionary<string, IDictionary<string, string>> TranslationTable { get; }
         IList<string> LanguageList { get; }
         IList<string> KeyList { get; }
+        IList<string> UsedKeyList { get; }
         void Process();
     }
 }

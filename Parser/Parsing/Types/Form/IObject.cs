@@ -9,5 +9,7 @@ namespace Parser
         bool IsGlobal { get; }
         IReadOnlyCollection<IObjectProperty> Properties { get; }
         IReadOnlyCollection<IObjectEvent> Events { get; }
+        bool IsUsed { get; }
+        void SetIsUsed();
     }
 }

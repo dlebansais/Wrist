@@ -7,6 +7,7 @@ namespace Parser
     public class StatePanel : Panel, IStatePanel
     {
         public string Index { get; set; }
+        public IComponentIndex Component { get; private set; }
 
         public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
@@ -16,10 +17,10 @@ namespace Parser
                 throw new ParsingException(200, Source, $"StatePanel has no index.");
 
             IComponent FoundComponent = null;
-            foreach (IComponent Component in components)
-                if (Component.Source.Name == Index)
+            foreach (IComponent Item in components)
+                if (Item.Source.Name == Index)
                 {
-                    FoundComponent = Component;
+                    FoundComponent = Item;
                     break;
                 }
 
@@ -34,6 +35,9 @@ namespace Parser
                 }
                 else if (Items.Count < 2)
                     throw new ParsingException(202, Source, $"StatePanel must have at least two items.");
+
+                Component = AsIndexComponent;
+                Component.SetIsUsed();
             }
 
             else if (FoundComponent == null)

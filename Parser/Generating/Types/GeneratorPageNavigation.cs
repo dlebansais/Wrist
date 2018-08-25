@@ -99,8 +99,8 @@
 
         public override string ToString()
         {
-            string BeforeString = BeforeObject != null ? $" ({BeforeObject.CSharpName}.{BeforeObjectEvent.Name})" : "";
-            string AfterString = AfterObject != null ? $" ({AfterObject.CSharpName}.{AfterObjectEvent.Name})" : "";
+            string BeforeString = BeforeObject != null ? $" ({BeforeObject.CSharpName}.{BeforeObjectEvent.NameSource.Name})" : "";
+            string AfterString = AfterObject != null ? $" ({AfterObject.CSharpName}.{AfterObjectEvent.NameSource.Name})" : "";
             return $"{GetType().Name} ->{BeforeString} {GoToPage.Name}{AfterString}";
         }
     }

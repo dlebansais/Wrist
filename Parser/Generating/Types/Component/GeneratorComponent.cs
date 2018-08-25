@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Windows.UI.Xaml;
 
@@ -6,6 +7,8 @@ namespace Parser
 {
     public abstract class GeneratorComponent : IGeneratorComponent
     {
+        public static Dictionary<IComponent, IGeneratorComponent> GeneratorComponentMap { get; } = new Dictionary<IComponent, IGeneratorComponent>();
+
         public static IGeneratorComponent Convert(IComponent component)
         {
             if (component is IComponentArea AsComponentArea)
@@ -42,6 +45,8 @@ namespace Parser
         {
             Source = component.Source;
             XamlName = component.XamlName;
+
+            GeneratorComponentMap.Add(component, this);
         }
 
         public IDeclarationSource Source { get; private set; }

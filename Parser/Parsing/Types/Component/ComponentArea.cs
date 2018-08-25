@@ -15,6 +15,13 @@
         {
             bool IsConnected = false;
 
+            ConnectArea(domain, ref IsConnected);
+
+            return IsConnected;
+        }
+
+        private void ConnectArea(IDomain domain, ref bool IsConnected)
+        {
             if (Area == null)
             {
                 foreach (IArea Item in domain.Areas)
@@ -27,10 +34,10 @@
                 if (Area == null)
                     throw new ParsingException(117, Source.Source, $"Unknown area '{AreaSource.Name}'.");
 
+                Area.SetIsUsed();
+
                 IsConnected = true;
             }
-
-            return IsConnected;
         }
 
         public override bool IsReferencing(IArea other)

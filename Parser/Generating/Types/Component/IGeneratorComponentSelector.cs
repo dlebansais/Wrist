@@ -3,7 +3,7 @@
     public interface IGeneratorComponentSelector : IGeneratorComponent
     {
         IGeneratorObject IndexObject { get; }
-        IGeneratorObjectPropertyInteger IndexObjectProperty { get; }
+        IGeneratorObjectPropertyIndex IndexObjectProperty { get; }
         IGeneratorResource ItemsResource { get; }
         IGeneratorObject ItemsObject { get; }
         IGeneratorObjectPropertyStringList ItemsObjectProperty { get; }

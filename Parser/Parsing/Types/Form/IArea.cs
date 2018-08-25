@@ -11,5 +11,7 @@ namespace Parser
         void SetCurrentObject(IDeclarationSource componentSource, IObject currentObject);
         bool IsReferencedBy(IArea other);
         void FindOtherRadioButtons(string groupName, ICollection<IComponentRadioButton> group);
+        bool IsUsed { get; }
+        void SetIsUsed();
     }
 }

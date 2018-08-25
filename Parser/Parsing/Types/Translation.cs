@@ -17,6 +17,7 @@ namespace Parser
         public IDictionary<string, IDictionary<string, string>> TranslationTable { get; private set; }
         public IList<string> LanguageList { get; private set; }
         public IList<string> KeyList { get; private set; }
+        public IList<string> UsedKeyList { get; private set; }
 
         public void Process()
         {
@@ -34,6 +35,7 @@ namespace Parser
             TranslationTable = new Dictionary<string, IDictionary<string, string>>();
             LanguageList = new List<string>();
             KeyList = new List<string>();
+            UsedKeyList = new List<string>();
 
             IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(TranslationFile);
             //DeclarationSource FileSource = new DeclarationSource("Translation", SourceStream);
@@ -73,7 +75,7 @@ namespace Parser
                 else
                 {
                     string Key = Splitted[0];
-                    if (!IsKeyValid(Key))
+                    if (!IsKeyReserved(Key) && !IsKeyValid(Key))
                         throw new ParsingException(183, SourceStream, $"Invalid key '{Key}' at line {LineNumber + 1}.");
 
                     for (int i = 1; i < Splitted.Length; i++)
@@ -84,14 +86,21 @@ namespace Parser
                         if (i == 1 && LanguageTable.ContainsKey(Key))
                             throw new ParsingException(184, SourceStream, $"Translation for key '{Key}' found at line {LineNumber + 1} but this key already has an entry.");
 
-                        LanguageTable.Add(Key, Splitted[i].Trim());
+                        if (!IsKeyReserved(Key))
+                            LanguageTable.Add(Key, Splitted[i].Trim());
                     }
 
-                    KeyList.Add(Key);
+                    if (!IsKeyReserved(Key))
+                        KeyList.Add(Key);
                 }
 
                 LineNumber++;
             }
+        }
+
+        public static bool IsKeyReserved(string key)
+        {
+            return !string.IsNullOrEmpty(key) && key[0] == '*';
         }
 
         public static bool IsKeyValid(string key)

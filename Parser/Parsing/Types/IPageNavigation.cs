@@ -1,4 +1,6 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
     public interface IPageNavigation
     {
@@ -8,5 +10,6 @@
         IPage GoToPage { get; }
         IObject AfterObject { get; }
         IObjectEvent AfterObjectEvent { get; }
+        IList<IPage> AlternatePages { get; }
     }
 }
