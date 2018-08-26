@@ -51,7 +51,8 @@ namespace Parser
             int Index = 0;
             foreach (IGeneratorLayoutElement Element in Items)
             {
-                string VisibilityBinding = $" Visibility=\"{{Binding {Component.IndexObject.CSharpName}.{Component.IndexObjectProperty.CSharpName}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter={Parameters[Index++]}}}\"";
+                string IndexReference = Component.GetObjectBinding(currentObject, Component.IndexObject, Component.IndexObjectProperty);
+                string VisibilityBinding = $" Visibility=\"{{Binding {IndexReference}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter={Parameters[Index++]}}}\"";
                 Element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, VisibilityBinding);
             }
 

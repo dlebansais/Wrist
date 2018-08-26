@@ -210,7 +210,7 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");
-            cSharpWriter.WriteLine($"    public partial class {XamlName} : Page");
+            cSharpWriter.WriteLine($"    public partial class {XamlName} : Page, IObjectBase");
             cSharpWriter.WriteLine("    {");
             cSharpWriter.WriteLine($"        public {XamlName}()");
             cSharpWriter.WriteLine("        {");
@@ -232,12 +232,12 @@ namespace Parser
                     if (ObjectLine == null)
                         cSharpWriter.WriteLine();
 
-                    ObjectLine = $"        public {Object.CSharpName} {Object.CSharpName} {{ get {{ return App.{Object.CSharpName}; }} }}";
+                    ObjectLine = $"        public I{Object.CSharpName} Get{Object.CSharpName} {{ get {{ return App.Get{Object.CSharpName}; }} }}";
                     cSharpWriter.WriteLine(ObjectLine);
                 }
 
             if (domain.Translation != null)
-                cSharpWriter.WriteLine("        public Translation Translation { get { return App.Translation; } }");
+                cSharpWriter.WriteLine("        public Translation GetTranslation { get { return App.GetTranslation; } }");
 
             if (Dynamic.HasProperties)
                 cSharpWriter.WriteLine($"        public {XamlName}Dynamic Dynamic {{ get; private set; }}");
@@ -257,16 +257,23 @@ namespace Parser
 
                 if (GoTo.BeforeObject != null && GoTo.BeforeObjectEvent != null)
                 {
-                    cSharpWriter.WriteLine($"            string Content = (sender as Button).Content as string;");
+                    cSharpWriter.WriteLine("            string Content = (sender as Button).Content as string;");
+
                     if (GoTo.GoToPage == GeneratorPage.AnyPage)
                     {
                         cSharpWriter.WriteLine($"            string DestinationPageName;");
-                        cSharpWriter.WriteLine($"            {GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
+                        if (GoTo.BeforeObject.IsGlobal)
+                            cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
+                        else
+                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
                         cSharpWriter.WriteLine($"            (App.Current as App).GoTo(DestinationPageName);");
                     }
                     else
                     {
-                        cSharpWriter.WriteLine($"            {GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content);");
+                        if (GoTo.BeforeObject.IsGlobal)
+                            cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content);");
+                        else
+                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content);");
                         cSharpWriter.WriteLine($"            (App.Current as App).GoTo(\"{GoTo.GoToPage.Name}\");");
                     }
                 }
@@ -275,10 +282,16 @@ namespace Parser
 
                 if (ClosePopupObject != null && ClosePopupObjectProperty != null)
                 {
-                    cSharpWriter.WriteLine($"            if ({ClosePopupObject.CSharpName}.{ClosePopupObjectProperty.CSharpName})");
+                    if (ClosePopupObject.IsGlobal)
+                        cSharpWriter.WriteLine($"            if (((IObjectBase)(sender as Button).DataContext).Get{ClosePopupObject.CSharpName}.{ClosePopupObjectProperty.CSharpName})");
+                    else
+                        cSharpWriter.WriteLine($"            if ((({ClosePopupObject.CSharpName})(sender as Button).DataContext).{ClosePopupObjectProperty.CSharpName})");
                     cSharpWriter.WriteLine("            {");
                     cSharpWriter.WriteLine($"                ClosePopups();");
-                    cSharpWriter.WriteLine($"                {ClosePopupObject.CSharpName}.OnPopupClosed_{ClosePopupObjectProperty.CSharpName}();");
+                    if (ClosePopupObject.IsGlobal)
+                        cSharpWriter.WriteLine($"                ((IObjectBase)(sender as Button).DataContext).Get{ClosePopupObject.CSharpName}.OnPopupClosed_{ClosePopupObjectProperty.CSharpName}();");
+                    else
+                        cSharpWriter.WriteLine($"                (({ClosePopupObject.CSharpName})(sender as Button).DataContext).OnPopupClosed_{ClosePopupObjectProperty.CSharpName}();");
                     cSharpWriter.WriteLine("            }");
                 }
 
@@ -304,7 +317,8 @@ namespace Parser
                         cSharpWriter.WriteLine("        {");
 
                         cSharpWriter.WriteLine("            ListBox Ctrl = (ListBox)sender;");
-                        cSharpWriter.WriteLine($"            {ObjectName}.NotifyPropertyChanged(nameof({ObjectName}.{ObjectPropertyName}));");
+                        cSharpWriter.WriteLine($"            {ObjectName} Item = ({ObjectName})Ctrl.DataContext;");
+                        cSharpWriter.WriteLine($"            Item.NotifyPropertyChanged(nameof({ObjectName}.{ObjectPropertyName}));");
                         cSharpWriter.WriteLine("        }");
                     }
                 }
@@ -323,10 +337,11 @@ namespace Parser
                     if (Component is IGeneratorComponentSelector AsSelector)
                     {
                         cSharpWriter.WriteLine("            ListBox Ctrl = (ListBox)sender;");
-                        cSharpWriter.WriteLine($"            if (Ctrl.SelectedIndex >= 0 && {ObjectName}.{ObjectPropertyName} != Ctrl.SelectedIndex)");
+                        cSharpWriter.WriteLine($"            {ObjectName} Item = ({ObjectName})Ctrl.DataContext;");
+                        cSharpWriter.WriteLine($"            if (Ctrl.SelectedIndex >= 0 && Item.{ObjectPropertyName} != Ctrl.SelectedIndex)");
                         cSharpWriter.WriteLine("            {");
-                        cSharpWriter.WriteLine($"                {ObjectName}.{ObjectPropertyName} = Ctrl.SelectedIndex;");
-                        cSharpWriter.WriteLine($"                {ObjectName}.NotifyPropertyChanged(nameof({ObjectName}.{ObjectPropertyName}));");
+                        cSharpWriter.WriteLine($"                Item.{ObjectPropertyName} = Ctrl.SelectedIndex;");
+                        cSharpWriter.WriteLine($"                Item.NotifyPropertyChanged(nameof({ObjectName}.{ObjectPropertyName}));");
                         cSharpWriter.WriteLine("            }");
                         cSharpWriter.WriteLine();
                     }

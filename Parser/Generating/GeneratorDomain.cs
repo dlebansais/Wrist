@@ -131,6 +131,7 @@ namespace Parser
             GenerateAppCSharp(outputFolderName, AppNamespace);
             GenerateAppProject(outputFolderName, AppNamespace);
             CopyAssemblyInfo(outputFolderName);
+            GenerateObjectBase(outputFolderName, AppNamespace);
         }
 
         private void GenerateTranslation(string outputFolderName, string appNamespace, IGeneratorTranslation translation)
@@ -225,19 +226,6 @@ namespace Parser
             }
         }
 
-        private void GenerateAppCSharp(string outputFolderName, string appNamespace)
-        {
-            string CSharpFileName = Path.Combine(outputFolderName, "App.xaml.cs");
-
-            using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                using (StreamWriter CSharpWriter = new StreamWriter(CSharpFile, Encoding.UTF8))
-                {
-                    GenerateAppCSharp(outputFolderName, appNamespace, CSharpWriter);
-                }
-            }
-        }
-
         private void GenerateAppXaml(string outputFolderName, string appNamespace, StreamWriter xamlWriter, IGeneratorColorTheme colorTheme)
         {
             List<XmlnsContentPair> ResourceList = new List<XmlnsContentPair>();
@@ -285,6 +273,19 @@ namespace Parser
             xamlWriter.WriteLine("</Application>");
         }
 
+        private void GenerateAppCSharp(string outputFolderName, string appNamespace)
+        {
+            string CSharpFileName = Path.Combine(outputFolderName, "App.xaml.cs");
+
+            using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (StreamWriter CSharpWriter = new StreamWriter(CSharpFile, Encoding.UTF8))
+                {
+                    GenerateAppCSharp(outputFolderName, appNamespace, CSharpWriter);
+                }
+            }
+        }
+
         private void GenerateAppCSharp(string outputFolderName, string appNamespace, StreamWriter cSharpWriter)
         {
             cSharpWriter.WriteLine("using Presentation;");
@@ -306,10 +307,10 @@ namespace Parser
 
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)
-                    cSharpWriter.WriteLine($"        public static {Object.CSharpName} {Object.CSharpName} {{ get; }} = new {Object.CSharpName}();");
+                    cSharpWriter.WriteLine($"        public static {Object.CSharpName} Get{Object.CSharpName} {{ get; }} = new {Object.CSharpName}();");
 
             if (Translation != null)
-                cSharpWriter.WriteLine("        public static Translation Translation { get; } = new Translation();");
+                cSharpWriter.WriteLine("        public static Translation GetTranslation { get; } = new Translation();");
 
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void GoTo(string pageName)");
@@ -477,6 +478,7 @@ namespace Parser
                 CopyEnumFile(outputFolderName, EnumTypeName);
             }
 
+            projectWriter.WriteLine($"    <Compile Include=\"Objects\\IObjectBase.cs\"/>");
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");
 
@@ -499,6 +501,34 @@ namespace Parser
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <Import Project=\"$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\InternalStuff\\Targets\\CSharpXamlForHtml5.Build.targets\"/>");
             projectWriter.WriteLine("</Project>");
+        }
+
+        private void GenerateObjectBase(string outputFolderName, string appNamespace)
+        {
+            string CSharpFileName = Path.Combine(outputFolderName, "Objects/IObjectBase.cs");
+
+            using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (StreamWriter CSharpWriter = new StreamWriter(CSharpFile, Encoding.UTF8))
+                {
+                    GenerateObjectBase(outputFolderName, appNamespace, CSharpWriter);
+                }
+            }
+        }
+
+        private void GenerateObjectBase(string outputFolderName, string appNamespace, StreamWriter cSharpWriter)
+        {
+            cSharpWriter.WriteLine($"namespace {appNamespace}");
+            cSharpWriter.WriteLine("{");
+            cSharpWriter.WriteLine("    public interface IObjectBase");
+            cSharpWriter.WriteLine("    {");
+
+            foreach (IGeneratorObject Object in Objects)
+                if (Object.IsGlobal)
+                    cSharpWriter.WriteLine($"        I{Object.CSharpName} Get{Object.CSharpName} {{ get; }}");
+
+            cSharpWriter.WriteLine("    }");
+            cSharpWriter.WriteLine("}");
         }
 
         private XmlnsContentPair ExtractResources(string name, string DesignResourceFile)

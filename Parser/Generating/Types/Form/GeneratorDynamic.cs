@@ -84,7 +84,7 @@ namespace Parser
             cSharpWriter.WriteLine("            Page = page;");
 
             foreach (KeyValuePair<IGeneratorObject, List<IGeneratorObjectProperty>> Entry in UsedObjectTable)
-                cSharpWriter.WriteLine($"            Page.{Entry.Key.CSharpName}.PropertyChanged += On{Entry.Key.CSharpName}PropertyChanged;");
+                cSharpWriter.WriteLine($"            Page.Get{Entry.Key.CSharpName}.PropertyChanged += On{Entry.Key.CSharpName}PropertyChanged;");
 
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();

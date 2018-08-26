@@ -54,7 +54,7 @@ namespace Parser
 
             string Cast = (ValueObjectProperty is IGeneratorObjectPropertyEnum) ? "(int)" : "";
 
-            ComposedValue = $"{Cast}Page.{ValueObject.CSharpName}.{ValueObjectProperty.CSharpName}";
+            ComposedValue = $"{Cast}Page.Get{ValueObject.CSharpName}.{ValueObjectProperty.CSharpName}";
 
             return IsUsed;
         }

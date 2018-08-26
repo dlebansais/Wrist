@@ -90,6 +90,10 @@ namespace Parser
                     AsPopup.Area.CollectGoTo(goToList, currentPage);
                 else if (Component is IGeneratorComponentArea AsArea)
                     AsArea.Area.CollectGoTo(goToList, currentPage);
+                else if (Component is IGeneratorComponentContainer AsContainer)
+                    AsContainer.ItemNestedArea.CollectGoTo(goToList, currentPage);
+                else if (Component is IGeneratorComponentContainerList AsContainerList)
+                    AsContainerList.ItemNestedArea.CollectGoTo(goToList, currentPage);
         }
 
         public void CollectBoundComponents(List<IGeneratorBindableComponent> boundComponentList, IGeneratorPage currentPage)
@@ -112,6 +116,10 @@ namespace Parser
                     AsPopup.Area.CollectBoundComponents(boundComponentList, currentPage);
                 else if (Component is IGeneratorComponentArea AsArea)
                     AsArea.Area.CollectBoundComponents(boundComponentList, currentPage);
+                else if (Component is IGeneratorComponentContainer AsContainer)
+                    AsContainer.ItemNestedArea.CollectBoundComponents(boundComponentList, currentPage);
+                else if (Component is IGeneratorComponentContainerList AsContainerList)
+                    AsContainerList.ItemNestedArea.CollectBoundComponents(boundComponentList, currentPage);
         }
 
         public override string ToString()

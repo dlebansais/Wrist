@@ -6,8 +6,14 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class Language : ILanguage, INotifyPropertyChanged
+    public class Language : ILanguage
     {
+        public Translation GetTranslation { get { return App.GetTranslation; } }
+        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
+        public ILanguage GetLanguage { get { return App.GetLanguage; } }
+        public ISignIn GetSignIn { get { return App.GetSignIn; } }
+        public ISignUp GetSignUp { get { return App.GetSignUp; } }
+
         public ObservableCollection<string> KeepActiveOptions
         {
             get
@@ -16,8 +22,7 @@ namespace AppCSHtml5
                 {
                     _KeepActiveOptions = new ObservableCollection<string>();
 
-                    Translation Translation = App.Translation;
-                    IDictionary<string, string> Strings = Translation.Strings;
+                    IDictionary<string, string> Strings = GetTranslation.Strings;
                     _KeepActiveOptions.Add(Strings["*keep-active-option-1"]);
                     _KeepActiveOptions.Add(Strings["*keep-active-option-2"]);
                     _KeepActiveOptions.Add(Strings["*keep-active-option-3"]);

@@ -104,7 +104,7 @@ namespace Parser
             }
 
             foreach (string Key in Translation.KeyList)
-                if (!Translation.UsedKeyList.Contains(Key))
+                if (!Translation.UsedKeyList.Contains(Key) && !Parser.Translation.IsKeyReserved(Key))
                 {
                     string Text = $"Unused translation key: '{Key}'";
                     handler(Text);

@@ -11,13 +11,19 @@ namespace AppCSHtml5
         NameAlreadyInUse,
     }
 
-    public class SignUp : ISignUp, INotifyPropertyChanged
+    public class SignUp : ISignUp
     {
         public SignUp()
         {
             _SignInMethod = SignInMethods.None;
             KeepActiveIndex = -1;
         }
+
+        public Translation GetTranslation { get { return App.GetTranslation; } }
+        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
+        public ILanguage GetLanguage { get { return App.GetLanguage; } }
+        public ISignIn GetSignIn { get { return App.GetSignIn; } }
+        public ISignUp GetSignUp { get { return App.GetSignUp; } }
 
         public bool IsReady
         {
@@ -183,7 +189,7 @@ namespace AppCSHtml5
         public void On_SignUp(string pageName, string sourceName, string sourceContent, out string destinationPageName)
         {
             Account NewAccount;
-            SignInError Error = AccountManager.TryAddAccount(Email, SignInMethod, Name, Password, out NewAccount);
+            SignInError Error = ((AccountManager)GetAccountManager).TryAddAccount(Email, SignInMethod, Name, Password, out NewAccount);
 
             switch (Error)
             {
@@ -203,8 +209,6 @@ namespace AppCSHtml5
 
             destinationPageName = "start";
         }
-
-        public AccountManager AccountManager { get { return App.AccountManager; } }
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>

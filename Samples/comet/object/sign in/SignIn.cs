@@ -4,13 +4,19 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class SignIn : ISignIn, INotifyPropertyChanged
+    public class SignIn : ISignIn
     {
         public SignIn()
         {
             KeepActiveIndex = -1;
             _SignInMethod = SignInMethods.None;
         }
+
+        public Translation GetTranslation { get { return App.GetTranslation; } }
+        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
+        public ILanguage GetLanguage { get { return App.GetLanguage; } }
+        public ISignIn GetSignIn { get { return App.GetSignIn; } }
+        public ISignUp GetSignUp { get { return App.GetSignUp; } }
 
         public string Name
         {
@@ -80,7 +86,7 @@ namespace AppCSHtml5
             Password = null;
             NotifyPropertyChanged(nameof(Password));
 
-            if (AccountManager.TrySignInAccount(Name, TempPassword))
+            if (((AccountManager)GetAccountManager).TrySignInAccount(Name, TempPassword))
                 CompleteSignIn(pageName, out destinationPageName);
             else
                 FailSignIn(out destinationPageName);
@@ -102,7 +108,7 @@ namespace AppCSHtml5
             Password = null;
             NotifyPropertyChanged(nameof(Password));
 
-            if (AccountManager.TrySignInAccount(signInMethod, Name, TempPassword))
+            if (((AccountManager)GetAccountManager).TrySignInAccount(signInMethod, Name, TempPassword))
                 CompleteSignIn(pageName, out destinationPageName);
             else
                 FailSignIn(out destinationPageName);
@@ -125,8 +131,6 @@ namespace AppCSHtml5
 
             destinationPageName = null;
         }
-
-        public AccountManager AccountManager { get { return App.AccountManager; } }
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>

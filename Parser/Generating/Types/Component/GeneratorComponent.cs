@@ -80,11 +80,11 @@ namespace Parser
         public string GetObjectBinding(IGeneratorObject currentObject, IGeneratorObject objectValue, IGeneratorObjectProperty objectPropertyValue)
         {
             if (objectValue == GeneratorObject.TranslationObject && objectPropertyValue == GeneratorObjectPropertyStringDictionary.StringsProperty)
-                return "Translation.Strings";
+                return "GetTranslation.Strings";
             else if (objectValue == currentObject)
                 return objectPropertyValue.CSharpName;
             else
-                return $"{objectValue.CSharpName}.{objectPropertyValue.CSharpName}";
+                return $"Get{objectValue.CSharpName}.{objectPropertyValue.CSharpName}";
         }
 
         public virtual bool IsReferencing(IGeneratorArea other)

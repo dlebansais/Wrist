@@ -86,12 +86,10 @@ namespace Parser
                         if (i == 1 && LanguageTable.ContainsKey(Key))
                             throw new ParsingException(184, SourceStream, $"Translation for key '{Key}' found at line {LineNumber + 1} but this key already has an entry.");
 
-                        if (!IsKeyReserved(Key))
-                            LanguageTable.Add(Key, Splitted[i].Trim());
+                        LanguageTable.Add(Key, Splitted[i].Trim());
                     }
 
-                    if (!IsKeyReserved(Key))
-                        KeyList.Add(Key);
+                    KeyList.Add(Key);
                 }
 
                 LineNumber++;

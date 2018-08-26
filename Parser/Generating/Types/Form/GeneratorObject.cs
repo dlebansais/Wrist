@@ -87,10 +87,11 @@ namespace Parser
         {
             cSharpWriter.WriteLine("using System.Collections.Generic;");
             cSharpWriter.WriteLine("using System.Collections.ObjectModel;");
+            cSharpWriter.WriteLine("using System.ComponentModel;");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");
-            cSharpWriter.WriteLine($"    public interface I{CSharpName}");
+            cSharpWriter.WriteLine($"    public interface I{CSharpName} : IObjectBase, INotifyPropertyChanged");
             cSharpWriter.WriteLine("    {");
 
             foreach (IGeneratorObjectProperty Property in Properties)

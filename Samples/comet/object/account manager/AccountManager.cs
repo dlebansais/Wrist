@@ -6,7 +6,7 @@ using Windows.UI.Xaml;
 
 namespace AppCSHtml5
 {
-    public class AccountManager : IAccountManager, INotifyPropertyChanged
+    public class AccountManager : IAccountManager
     {
         public AccountManager()
         {
@@ -20,6 +20,12 @@ namespace AppCSHtml5
 
             _ChangeMethodIndex = -1;
         }
+
+        public Translation GetTranslation { get { return App.GetTranslation; } }
+        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
+        public ILanguage GetLanguage { get { return App.GetLanguage; } }
+        public ISignIn GetSignIn { get { return App.GetSignIn; } }
+        public ISignUp GetSignUp { get { return App.GetSignUp; } }
 
         public IAccount SignedInAccount { get; private set; }
 
@@ -103,41 +109,6 @@ namespace AppCSHtml5
         }
         private string _NewEmail;
 
-        public string NewFullName
-        {
-            get { return _NewFullName; }
-            set
-            {
-                if (_NewFullName != value)
-                {
-                    _NewFullName = value;
-                    NotifyPropertyChanged(nameof(NewFullName));
-                    IsFullNameChanged = true;
-                    NotifyPropertyChanged(nameof(IsFullNameChanged));
-                }
-            }
-        }
-        private string _NewFullName;
-
-        public string NewLocation
-        {
-            get { return _NewLocation; }
-            set
-            {
-                if (_NewLocation != value)
-                {
-                    _NewLocation = value;
-                    NotifyPropertyChanged(nameof(NewLocation));
-                    IsLocationChanged = true;
-                    NotifyPropertyChanged(nameof(IsLocationChanged));
-                }
-            }
-        }
-        private string _NewLocation;
-
-        public bool IsFullNameChanged { get; private set; }
-        public bool IsLocationChanged { get; private set; }
-
         public SignInError TryAddAccount(string email, SignInMethods method, string username, string password, out Account account)
         {
             if (string.IsNullOrEmpty(email) || !(method == SignInMethods.NameOnly || method == SignInMethods.NameAndPassword) || string.IsNullOrEmpty(username) || (method == SignInMethods.NameAndPassword && string.IsNullOrEmpty(password)))
@@ -175,10 +146,6 @@ namespace AppCSHtml5
                             if ((Account.SignInMethod == SignInMethods.NameOnly && string.IsNullOrEmpty(password)) || (Account.SignInMethod == SignInMethods.NameAndPassword && password == Account.Password))
                             {
                                 SignedInAccount = Account;
-                                _NewFullName = Account.FullName;
-                                IsFullNameChanged = false;
-                                _NewLocation = Account.Location;
-                                IsLocationChanged = false;
                                 IsPasswordInvalidError = false;
                                 return true;
                             }
@@ -304,29 +271,9 @@ namespace AppCSHtml5
             destinationPageName = null;
         }
 
-        public void On_UpdateFullName(string pageName, string sourceName, string sourceContent, out string destinationPageName)
-        {
-            IsFullNameChanged = false;
-            NotifyPropertyChanged(nameof(IsFullNameChanged));
-
-            destinationPageName = null;
-        }
-
-        public void On_UpdateLocation(string pageName, string sourceName, string sourceContent, out string destinationPageName)
-        {
-            IsLocationChanged = false;
-            NotifyPropertyChanged(nameof(IsLocationChanged));
-
-            destinationPageName = null;
-        }
-
         public void On_SignOut(string pageName, string sourceName, string sourceContent)
         {
             SignedInAccount = null;
-            _NewFullName = null;
-            IsFullNameChanged = false;
-            _NewLocation = null;
-            IsLocationChanged = false;
             IsPasswordInvalidError = false;
             NotifyPropertyChanged(nameof(IsSignedIn));
             NotifyPropertyChanged(nameof(Email));
@@ -335,10 +282,6 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(KeepActiveIndex));
             NotifyPropertyChanged(nameof(FullName));
             NotifyPropertyChanged(nameof(Location));
-            NotifyPropertyChanged(nameof(NewFullName));
-            NotifyPropertyChanged(nameof(IsFullNameChanged));
-            NotifyPropertyChanged(nameof(NewLocation));
-            NotifyPropertyChanged(nameof(IsLocationChanged));
             NotifyPropertyChanged(nameof(IsPasswordRequired));
             NotifyPropertyChanged(nameof(IsPasswordInvalidError));
         }
@@ -367,8 +310,6 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(KeepActiveIndex));
             NotifyPropertyChanged(nameof(FullName));
             NotifyPropertyChanged(nameof(Location));
-            NotifyPropertyChanged(nameof(NewFullName));
-            NotifyPropertyChanged(nameof(NewLocation));
         }
 
         private bool ClearPasswordAndCompare()
