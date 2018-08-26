@@ -9,5 +9,6 @@ namespace Parser
         string MaxWidth { get; set; }
         string MaxHeight { get; set; }
         void ReportElementsWithAttachedProperties(List<IDockPanel> dockPanels, List<IGrid> grids);
+        void ReportControlsUsingComponent(List<IControl> controlList, IComponentWithEvent component);
     }
 }

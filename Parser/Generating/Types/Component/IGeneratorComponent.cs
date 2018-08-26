@@ -7,6 +7,7 @@ namespace Parser
     {
         IDeclarationSource Source { get; }
         string XamlName { get; }
+        string ControlName { get; }
         bool IsReferencing(IGeneratorArea other);
         bool Connect(IGeneratorDomain domain);
         void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);

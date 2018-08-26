@@ -97,6 +97,16 @@ namespace Parser
             else
                 Translation = null;
 
+            string UnitTestingFile = Path.Combine(inputFolderName, "unit_testing.txt");
+            IUnitTesting UnitTesting;
+            if (File.Exists(UnitTestingFile))
+            {
+                UnitTesting = new UnitTesting(UnitTestingFile);
+                UnitTesting.Process();
+            }
+            else
+                UnitTesting = null;
+
             IPage HomePage = null;
             foreach (IPage Page in Pages)
                 if (Page.Name == homePageName)
@@ -128,7 +138,7 @@ namespace Parser
                                            ColorThemes, 
                                            Fonts, 
                                            Dynamics, 
-                                           Translation, HomePage, SelectedColorTheme);
+                                           Translation, UnitTesting, HomePage, SelectedColorTheme);
 
             bool IsConnected = true;
             for (int i = 0; i < 100 && IsConnected; i++)
@@ -138,6 +148,8 @@ namespace Parser
                 foreach (IFormParser FormParser in FormParsers)
                     foreach (IConnectable Connectable in FormParser.ParsedResult)
                         IsConnected |= Connectable.Connect(NewDomain);
+
+                IsConnected |= UnitTesting.Connect(NewDomain);
             }
             if (IsConnected)
                 throw new ParsingException(8, inputFolderName, $"Unexpected error during processing of the input folder.");
@@ -180,6 +192,16 @@ namespace Parser
                         if (!Translation.KeyList.Contains(PageKey))
                             throw new ParsingException(12, Declaration.Source, $"Translation key for page '{Page.Name}' used in area '{SpecifiedArea.Name}' not found.");
                     }
+
+                    ILayout SpecifiedLayout = Page.AreaLayouts[SpecifiedArea];
+                    foreach (IComponent Component in SpecifiedArea.Components)
+                        if (Component is IComponentWithEvent AsComponentWithEvent)
+                        {
+                            List<IControl> ControlList = new List<IControl>();
+                            SpecifiedLayout.Content.ReportControlsUsingComponent(ControlList, AsComponentWithEvent);
+                            if (ControlList.Count > 1)
+                                throw new ParsingException(0, Component.Source.Source, $"Component '{Component.Source.Name}' is used more than once in page '{Page.Name}'.");
+                        }
                 }
             }
 

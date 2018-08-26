@@ -83,17 +83,20 @@ namespace Parser
             string StyleProperty = (style != null) ? style : "";
             string Properties = $" Style=\"{{StaticResource {design.XamlName}Button{StyleProperty}}}\"";
             string Value = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
+            string ClickEventHandler = $" Click=\"{ClickEventName(currentPage)}\"";
 
-            string ClickEventHandler;
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Button x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{ClickEventHandler} Content=\"{Value}\"/>");
+        }
+
+        public string ClickEventName(IGeneratorPage currentPage)
+        {
             if (GoTo.GoToPage == GeneratorPage.CurrentPage)
             {
                 IGeneratorPageNavigation Copy = GoTo.CreateCopyForPage(currentPage, this);
-                ClickEventHandler = $" Click=\"{Copy.EventName}\"";
+                return Copy.EventName;
             }
             else
-                ClickEventHandler = $" Click=\"{GoTo.EventName}\"";
-
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Button{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{ClickEventHandler} Content=\"{Value}\"/>");
+                return GoTo.EventName;
         }
     }
 }

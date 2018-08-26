@@ -8,5 +8,6 @@
         string TextDecoration { get; }
         string HorizontalScrollBarVisibility { get; }
         string VerticalScrollBarVisibility { get; }
+        string TextChangedEventName { get; }
     }
 }

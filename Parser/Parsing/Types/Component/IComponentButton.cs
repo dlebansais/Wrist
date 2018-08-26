@@ -1,6 +1,6 @@
 ﻿namespace Parser
 {
-    public interface IComponentButton : IComponent
+    public interface IComponentButton : IComponent, IComponentWithEvent
     {
         IComponentProperty ContentProperty { get; }
         IResource ContentResource { get; }

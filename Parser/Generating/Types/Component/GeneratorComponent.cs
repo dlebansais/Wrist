@@ -11,34 +11,38 @@ namespace Parser
 
         public static IGeneratorComponent Convert(IComponent component)
         {
+            IGeneratorComponent Result;
+
             if (component is IComponentArea AsComponentArea)
-                return new GeneratorComponentArea(AsComponentArea);
+                Result = new GeneratorComponentArea(AsComponentArea);
             else if (component is IComponentButton AsComponentButton)
-                return new GeneratorComponentButton(AsComponentButton);
+                Result = new GeneratorComponentButton(AsComponentButton);
             else if (component is IComponentCheckBox AsComponentCheckBox)
-                return new GeneratorComponentCheckBox(AsComponentCheckBox);
+                Result = new GeneratorComponentCheckBox(AsComponentCheckBox);
             else if (component is IComponentContainer AsComponentContainer)
-                return new GeneratorComponentContainer(AsComponentContainer);
+                Result = new GeneratorComponentContainer(AsComponentContainer);
             else if (component is IComponentContainerList AsComponentContainerList)
-                return new GeneratorComponentContainerList(AsComponentContainerList);
+                Result = new GeneratorComponentContainerList(AsComponentContainerList);
             else if (component is IComponentEdit AsComponentEdit)
-                return new GeneratorComponentEdit(AsComponentEdit);
+                Result = new GeneratorComponentEdit(AsComponentEdit);
             else if (component is IComponentImage AsComponentImage)
-                return new GeneratorComponentImage(AsComponentImage);
+                Result = new GeneratorComponentImage(AsComponentImage);
             else if (component is IComponentIndex AsComponentIndex)
-                return new GeneratorComponentIndex(AsComponentIndex);
+                Result = new GeneratorComponentIndex(AsComponentIndex);
             else if (component is IComponentPasswordEdit AsComponentPasswordEdit)
-                return new GeneratorComponentPasswordEdit(AsComponentPasswordEdit);
+                Result = new GeneratorComponentPasswordEdit(AsComponentPasswordEdit);
             else if (component is IComponentPopup AsComponentPopup)
-                return new GeneratorComponentPopup(AsComponentPopup);
+                Result = new GeneratorComponentPopup(AsComponentPopup);
             else if (component is IComponentRadioButton AsComponentRadioButton)
-                return new GeneratorComponentRadioButton(AsComponentRadioButton);
+                Result = new GeneratorComponentRadioButton(AsComponentRadioButton);
             else if (component is IComponentSelector AsComponentSelector)
-                return new GeneratorComponentSelector(AsComponentSelector);
+                Result = new GeneratorComponentSelector(AsComponentSelector);
             else if (component is IComponentText AsComponentText)
-                return new GeneratorComponentText(AsComponentText);
+                Result = new GeneratorComponentText(AsComponentText);
             else
                 throw new InvalidOperationException();
+
+            return Result;
         }
 
         public GeneratorComponent(IComponent component)
@@ -46,11 +50,20 @@ namespace Parser
             Source = component.Source;
             XamlName = component.XamlName;
 
+            List<IComponent> IdenticalControls = new List<IComponent>();
+            foreach (KeyValuePair<IComponent, IGeneratorComponent> Entry in GeneratorComponentMap)
+                if (Entry.Key.XamlName == XamlName)
+                    IdenticalControls.Add(Entry.Key);
+            int ControlIndex = IdenticalControls.Count;
+
+            ControlName = $"{XamlName}{ControlIndex}";
+
             GeneratorComponentMap.Add(component, this);
         }
 
         public IDeclarationSource Source { get; private set; }
         public string XamlName { get; private set; }
+        public string ControlName { get; private set; }
 
         public abstract bool Connect(IGeneratorDomain domain);
         public abstract void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);

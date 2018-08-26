@@ -52,8 +52,7 @@ namespace Parser
         public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string BindingName = $"{XamlName}_Toggle";
-            string OpeningBinding = $" IsOpen=\"{{Binding IsChecked, ElementName={BindingName}}}\"";
+            string OpeningBinding = $" IsOpen=\"{{Binding IsChecked, ElementName={ControlName}}}\"";
             string PanelProperties = " HorizontalAlignment=\"Right\"";
             string ButtonProperties = $" HorizontalAlignment=\"Right\" Style=\"{{StaticResource {design.XamlName}ToggleButton}}\"";
             string PopupProperties = " HorizontalOffset=\"0\" VerticalOffset=\"0\"";
@@ -67,13 +66,13 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<StackPanel{attachedProperties}{visibilityBinding}{PanelProperties}{elementProperties}>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    <Grid>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ContentControl{AreaProperties} Height=\"0\" Opacity=\"0\"/>");
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ToggleButton x:Name=\"{BindingName}\"{ButtonProperties} Loaded=\"OnToggleLoaded\">");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ToggleButton x:Name=\"{ControlName}\"{ButtonProperties} Loaded=\"OnToggleLoaded\">");
 
             if (SourcePressedResource != null)
             {
                 string ImageSourcePressed = $" Source=\"{GetComponentValue(currentPage, currentObject, SourcePressedResource, null, null, null, false)}\"";
-                string ImageVisibilityBinding = $" Visibility=\"{{Binding IsChecked, ElementName={BindingName}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter=1}}\"";
-                string ImagePressedVisibilityBinding = $" Visibility=\"{{Binding IsChecked, ElementName={BindingName}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter=0}}\"";
+                string ImageVisibilityBinding = $" Visibility=\"{{Binding IsChecked, ElementName={ControlName}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter=1}}\"";
+                string ImagePressedVisibilityBinding = $" Visibility=\"{{Binding IsChecked, ElementName={ControlName}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter=0}}\"";
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}            <Grid>");
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}                <Image{ImageVisibilityBinding}{ImageProperties}{ImageSourcePressed}{WidthProperty}{HeightProperty}/>");
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}                <Image{ImagePressedVisibilityBinding}{ImageProperties}{ImageSource}{WidthProperty}{HeightProperty}/>");

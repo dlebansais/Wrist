@@ -252,7 +252,7 @@ namespace Parser
                 IGeneratorObjectPropertyBoolean ClosePopupObjectProperty = Item.Item3;
 
                 cSharpWriter.WriteLine();
-                cSharpWriter.WriteLine($"        private void {GoTo.EventName}(object sender, RoutedEventArgs e)");
+                cSharpWriter.WriteLine($"        public void {GoTo.EventName}(object sender, RoutedEventArgs e)");
                 cSharpWriter.WriteLine("        {");
 
                 if (GoTo.BeforeObject != null && GoTo.BeforeObjectEvent != null)
@@ -313,7 +313,7 @@ namespace Parser
                     if (Component is IGeneratorComponentSelector AsSelector)
                     {
                         cSharpWriter.WriteLine();
-                        cSharpWriter.WriteLine($"        private void {HandlerName}(object sender, RoutedEventArgs e)");
+                        cSharpWriter.WriteLine($"        public void {HandlerName}(object sender, RoutedEventArgs e)");
                         cSharpWriter.WriteLine("        {");
 
                         cSharpWriter.WriteLine("            ListBox Ctrl = (ListBox)sender;");
@@ -331,7 +331,7 @@ namespace Parser
                     string HandlerArgumentTypeName = Component.HandlerArgumentTypeName;
 
                     cSharpWriter.WriteLine();
-                    cSharpWriter.WriteLine($"        private void {HandlerName}(object sender, {Component.HandlerArgumentTypeName} e)");
+                    cSharpWriter.WriteLine($"        public void {HandlerName}(object sender, {Component.HandlerArgumentTypeName} e)");
                     cSharpWriter.WriteLine("        {");
 
                     if (Component is IGeneratorComponentSelector AsSelector)

@@ -1,6 +1,6 @@
 ﻿namespace Parser
 {
-    public interface IGeneratorComponentSelector : IGeneratorComponent
+    public interface IGeneratorComponentSelector : IGeneratorComponent, IGeneratorBindableComponent
     {
         IGeneratorObject IndexObject { get; }
         IGeneratorObjectPropertyIndex IndexObjectProperty { get; }

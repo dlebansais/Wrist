@@ -1,0 +1,3 @@
+home,click,home,start
+start,fill,sign in popup,name=test
+start,click,sign in popup,sign in

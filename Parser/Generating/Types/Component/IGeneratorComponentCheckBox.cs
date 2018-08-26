@@ -1,6 +1,6 @@
 ﻿namespace Parser
 {
-    public interface IGeneratorComponentCheckBox : IGeneratorComponent
+    public interface IGeneratorComponentCheckBox : IGeneratorComponent, IGeneratorBindableComponent
     {
         IGeneratorResource ContentResource { get; }
         IGeneratorObject ContentObject { get; }

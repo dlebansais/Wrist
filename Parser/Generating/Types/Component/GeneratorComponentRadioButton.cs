@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentRadioButton : GeneratorComponent, IGeneratorComponentRadioButton, IGeneratorBindableComponent
+    public class GeneratorComponentRadioButton : GeneratorComponent, IGeneratorComponentRadioButton
     {
         public static Dictionary<IComponentRadioButton, IGeneratorComponentRadioButton> GeneratorComponentRadioButtonMap { get; } = new Dictionary<IComponentRadioButton, IGeneratorComponentRadioButton>();
 

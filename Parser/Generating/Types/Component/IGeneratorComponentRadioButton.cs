@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public interface IGeneratorComponentRadioButton : IGeneratorComponent
+    public interface IGeneratorComponentRadioButton : IGeneratorComponent, IGeneratorBindableComponent
     {
         IGeneratorResource ContentResource { get; }
         IGeneratorObject ContentObject { get; }

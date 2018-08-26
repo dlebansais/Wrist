@@ -35,6 +35,16 @@ namespace Parser
                     AsPanel.ReportElementsWithAttachedProperties(dockPanels, grids);
         }
 
+        public virtual void ReportControlsUsingComponent(List<IControl> controlList, IComponentWithEvent component)
+        {
+            foreach (ILayoutElement Item in Items)
+                if (Item is IPanel AsPanel)
+                    AsPanel.ReportControlsUsingComponent(controlList, component);
+                else if (Item is IControl AsControl)
+                    if (AsControl.Component == component)
+                        controlList.Add(AsControl);
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name}, {Items.Count} item(s)";

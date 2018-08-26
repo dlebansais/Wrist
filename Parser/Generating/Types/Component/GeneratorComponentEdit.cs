@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentEdit : GeneratorComponent, IGeneratorComponentEdit, IGeneratorBindableComponent
+    public class GeneratorComponentEdit : GeneratorComponent, IGeneratorComponentEdit
     {
         public GeneratorComponentEdit(IComponentEdit edit)
             : base(edit)
@@ -52,9 +52,14 @@ namespace Parser
             string VerticalScrollBarProperty = (VerticalScrollBarVisibility != null ? $" VerticalScrollBarVisibility=\"{VerticalScrollBarVisibility}\"" : "");
             string Properties = $" Style=\"{{StaticResource {design.XamlName}Edit{StyleProperty}}}\"{MaximumLengthProperty}{AcceptsReturnProperty}{AlignmentProperty}{WrappingProperty}{DecorationProperty}{HorizontalScrollBarProperty}{VerticalScrollBarProperty}";
             string Value = GetComponentValue(currentPage, currentObject, null, TextObject, TextObjectProperty, null, true);
-            string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" TextChanged=\"{GetChangedHandlerName(TextObject, TextObjectProperty)}\"" : "";
+            string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" TextChanged=\"{TextChangedEventName}\"" : "";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBox{attachedProperties}{visibilityBinding} Text=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding} Text=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
+        }
+
+        public string TextChangedEventName
+        {
+            get { return GetChangedHandlerName(TextObject, TextObjectProperty); }
         }
 
         public IGeneratorObject BoundObject { get { return TextObject; } }

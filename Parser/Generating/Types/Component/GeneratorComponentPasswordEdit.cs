@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentPasswordEdit : GeneratorComponent, IGeneratorComponentPasswordEdit, IGeneratorBindableComponent
+    public class GeneratorComponentPasswordEdit : GeneratorComponent, IGeneratorComponentPasswordEdit
     {
         public GeneratorComponentPasswordEdit(IComponentPasswordEdit edit)
             : base(edit)
@@ -38,9 +38,14 @@ namespace Parser
             string MaximumLengthProperty = ((TextObjectProperty != null && TextObjectProperty.MaximumLength > 0) ? $" MaxLength=\"{TextObjectProperty.MaximumLength}\"" : "");
             string Properties = $" Style=\"{{StaticResource {design.XamlName}PasswordBox{StyleProperty}}}\"{MaximumLengthProperty}";
             string Value = GetComponentValue(currentPage, currentObject, null, TextObject, TextObjectProperty, null, true);
-            string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" PasswordChanged=\"{GetChangedHandlerName(TextObject, TextObjectProperty)}\"" : "";
+            string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" PasswordChanged=\"{PasswordChangedEventName}\"" : "";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox{attachedProperties}{visibilityBinding} Password=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding} Password=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
+        }
+
+        public string PasswordChangedEventName
+        {
+            get { return GetChangedHandlerName(TextObject, TextObjectProperty); }
         }
 
         public IGeneratorObject BoundObject { get { return TextObject; } }

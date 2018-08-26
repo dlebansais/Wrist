@@ -16,7 +16,7 @@ namespace Parser
                       IFormCollection<IColorTheme> colorThemes,
                       IFormCollection<IFont> fonts,
                       IFormCollection<IDynamic> dynamics,
-                      ITranslation translation, IPage homePage, IColorTheme selectedColorTheme)
+                      ITranslation translation, IUnitTesting unitTesting, IPage homePage, IColorTheme selectedColorTheme)
         {
             InputFolderName = inputFolderName;
             Areas = areas;
@@ -30,6 +30,7 @@ namespace Parser
             Fonts = fonts;
             Dynamics = dynamics;
             Translation = translation;
+            UnitTesting = unitTesting;
             HomePage = homePage;
             SelectedColorTheme = selectedColorTheme;
 
@@ -124,6 +125,7 @@ namespace Parser
         public IFormCollection<IFont> Fonts { get; private set; }
         public IFormCollection<IDynamic> Dynamics { get; private set; }
         public ITranslation Translation { get; private set; }
+        public IUnitTesting UnitTesting { get; private set; }
         public IPage HomePage { get; private set; }
         public IColorTheme SelectedColorTheme { get; private set; }
     }

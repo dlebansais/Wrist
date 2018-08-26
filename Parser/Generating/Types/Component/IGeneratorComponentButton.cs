@@ -9,5 +9,6 @@
         IGeneratorPageNavigation GoTo { get; }
         IGeneratorObject ClosePopupObject { get; }
         IGeneratorObjectPropertyBoolean ClosePopupObjectProperty { get; }
+        string ClickEventName(IGeneratorPage currentPage);
     }
 }

@@ -82,6 +82,14 @@ namespace Parser
             else
                 Translation = null;
 
+            if (domain.UnitTesting != null)
+            {
+                UnitTesting = new GeneratorUnitTesting(domain.UnitTesting);
+                UnitTesting.Connect(this);
+            }
+            else
+                UnitTesting = null;
+
             HomePage = GeneratorPage.GeneratorPageMap[domain.HomePage];
             SelectedColorTheme = GeneratorColorTheme.GeneratorColorThemeMap[domain.SelectedColorTheme];
         }
@@ -99,6 +107,7 @@ namespace Parser
         public List<IGeneratorFont> Fonts { get; private set; }
         public List<IGeneratorDynamic> Dynamics { get; private set; }
         public IGeneratorTranslation Translation { get; private set; }
+        public IGeneratorUnitTesting UnitTesting { get; private set; }
         public IGeneratorPage HomePage { get; private set; }
         public IGeneratorColorTheme SelectedColorTheme { get; private set; }
 
@@ -125,92 +134,16 @@ namespace Parser
                 Dynamic.Generate(this, outputFolderName, AppNamespace);
 
             if (Translation != null)
-                GenerateTranslation(outputFolderName, AppNamespace, Translation);
+                Translation.Generate(outputFolderName, AppNamespace);
+
+            if (UnitTesting != null)
+                UnitTesting.Generate(outputFolderName, AppNamespace);
 
             GenerateAppXaml(outputFolderName, AppNamespace, SelectedColorTheme);
             GenerateAppCSharp(outputFolderName, AppNamespace);
             GenerateAppProject(outputFolderName, AppNamespace);
             CopyAssemblyInfo(outputFolderName);
             GenerateObjectBase(outputFolderName, AppNamespace);
-        }
-
-        private void GenerateTranslation(string outputFolderName, string appNamespace, IGeneratorTranslation translation)
-        {
-            string TranslationFileName = Path.Combine(outputFolderName, "Translation.cs");
-
-            using (FileStream TranslationFile = new FileStream(TranslationFileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                using (StreamWriter CSharpWriter = new StreamWriter(TranslationFile, Encoding.UTF8))
-                {
-                    GenerateTranslation(appNamespace, CSharpWriter);
-                }
-            }
-        }
-
-        private void GenerateTranslation(string appNamespace, StreamWriter cSharpWriter)
-        {
-            cSharpWriter.WriteLine("using System.Collections.Generic;");
-            cSharpWriter.WriteLine("using System.ComponentModel;");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine($"namespace {appNamespace}");
-            cSharpWriter.WriteLine("{");
-            cSharpWriter.WriteLine("    public class Translation");
-            cSharpWriter.WriteLine("    {");
-            cSharpWriter.WriteLine("        public IDictionary<string, IDictionary<string, string>> AllStrings { get; } = new Dictionary<string, IDictionary<string, string>>()");
-            cSharpWriter.WriteLine("        {");
-
-            string FirstLanguage = null;
-
-            foreach (KeyValuePair<string, IDictionary<string, string>> Entry in Translation.TranslationTable)
-            {
-                string Language = Entry.Key;
-                IDictionary<string, string> LanguageTable = Entry.Value;
-
-                if (FirstLanguage != null)
-                    cSharpWriter.WriteLine();
-                else
-                    FirstLanguage = Language;
-
-                cSharpWriter.WriteLine($"            {{ \"{Language}\", new Dictionary<string, string>()");
-                cSharpWriter.WriteLine("                {");
-
-                foreach (KeyValuePair<string, string> LanguageEntry in LanguageTable)
-                {
-                    string Key = LanguageEntry.Key;
-                    string TranslatedString = LanguageEntry.Value;
-                    cSharpWriter.WriteLine($"                    {{ \"{Key}\", \"{TranslatedString}\" }},");
-                }
-
-                cSharpWriter.WriteLine("                }");
-                cSharpWriter.WriteLine("            },");
-            }
-
-            cSharpWriter.WriteLine("        };");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        public IDictionary<string, string> Strings { get; private set; }");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        public Translation()");
-            cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine($"            Strings = AllStrings[\"{FirstLanguage}\"];");
-            cSharpWriter.WriteLine("        }");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        public void SetLanguage(string language)");
-            cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine("            if (AllStrings.ContainsKey(language))");
-            cSharpWriter.WriteLine("            {");
-            cSharpWriter.WriteLine("                Strings = AllStrings[language];");
-            cSharpWriter.WriteLine("                NotifyLanguageChanged();");
-            cSharpWriter.WriteLine("            }");
-            cSharpWriter.WriteLine("        }");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        public event PropertyChangedEventHandler PropertyChanged;");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        internal void NotifyLanguageChanged()");
-            cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine($"            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Strings)));");
-            cSharpWriter.WriteLine("        }");
-            cSharpWriter.WriteLine("    }");
-            cSharpWriter.WriteLine("}");
         }
 
         private void GenerateAppXaml(string outputFolderName, string appNamespace, IGeneratorColorTheme colorTheme)
@@ -302,6 +235,7 @@ namespace Parser
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
             cSharpWriter.WriteLine($"            GoTo(Persistent.GetValue(\"page\", \"{HomePage.Name}\"));");
+            cSharpWriter.WriteLine($"            GetUnitTesting.Start((Page)Window.Current.Content);");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
 
@@ -311,6 +245,9 @@ namespace Parser
 
             if (Translation != null)
                 cSharpWriter.WriteLine("        public static Translation GetTranslation { get; } = new Translation();");
+
+            if (UnitTesting != null)
+                cSharpWriter.WriteLine("        public static UnitTesting GetUnitTesting { get; } = new UnitTesting();");
 
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void GoTo(string pageName)");
@@ -433,6 +370,9 @@ namespace Parser
 
             if (Translation != null)
                 projectWriter.WriteLine("    <Compile Include=\"Translation.cs\"/>");
+
+            if (UnitTesting != null)
+                projectWriter.WriteLine("    <Compile Include=\"UnitTesting.cs\"/>");
 
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");

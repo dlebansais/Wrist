@@ -16,6 +16,7 @@ namespace Parser
         IFormCollection<IFont> Fonts { get; }
         IFormCollection<IDynamic> Dynamics { get; }
         ITranslation Translation { get; }
+        IUnitTesting UnitTesting { get; }
         IPage HomePage { get; }
         IColorTheme SelectedColorTheme { get; }
         void CheckUnused(Action<string> handler);

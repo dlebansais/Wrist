@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentCheckBox : GeneratorComponent, IGeneratorComponentCheckBox, IGeneratorBindableComponent
+    public class GeneratorComponentCheckBox : GeneratorComponent, IGeneratorComponentCheckBox
     {
         public static Dictionary<IComponentCheckBox, IGeneratorComponentCheckBox> GeneratorComponentCheckBoxMap { get; } = new Dictionary<IComponentCheckBox, IGeneratorComponentCheckBox>();
 

@@ -1,6 +1,6 @@
 ﻿namespace Parser
 {
-    public interface IComponentEdit : IComponent
+    public interface IComponentEdit : IComponent, IComponentWithEvent
     {
         IComponentProperty TextProperty { get; }
         IObject TextObject { get; }

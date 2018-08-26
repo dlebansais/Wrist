@@ -2,9 +2,9 @@
 
 namespace Parser
 {
-    public interface IGeneratorTranslation
+    public interface IGeneratorUnitTesting
     {
-        IDictionary<string, IDictionary<string, string>> TranslationTable { get; }
+        List<IGeneratorTestingOperation> Operations { get; }
         bool Connect(IGeneratorDomain domain);
         void Generate(string outputFolderName, string appNamespace);
     }

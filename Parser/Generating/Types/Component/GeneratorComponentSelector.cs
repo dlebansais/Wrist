@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Parser
 {
-    public class GeneratorComponentSelector : GeneratorComponent, IGeneratorComponentSelector, IGeneratorBindableComponent
+    public class GeneratorComponentSelector : GeneratorComponent, IGeneratorComponentSelector
     {
         public GeneratorComponentSelector(IComponentSelector selector)
             : base(selector)
@@ -67,7 +67,7 @@ namespace Parser
             string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" SelectionChanged=\"{GetChangedHandlerName(IndexObject, IndexObjectProperty)}\"" : "";
 
             // SelectedIndex must be first, no clue why.
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<p:ListBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} ControlSelectedIndex=\"{IndexValue}\"{LoadedEvent}{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<p:ListBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding}{Properties}{elementProperties} ControlSelectedIndex=\"{IndexValue}\"{LoadedEvent}{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
         }
 
         public IGeneratorObject BoundObject { get { return IndexObject; } }

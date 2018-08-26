@@ -1,6 +1,6 @@
 ﻿namespace Parser
 {
-    public interface IComponentSelector : IComponent
+    public interface IComponentSelector : IComponent, IComponentWithEvent
     {
         IObject IndexObject { get; }
         IObjectPropertyIndex IndexObjectProperty { get; }
