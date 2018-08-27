@@ -1,3 +1,4 @@
 home,click,home,start
+start,toggle,header,sign in
 start,fill,sign in popup,name=test
 start,click,sign in popup,sign in

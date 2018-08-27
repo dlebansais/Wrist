@@ -174,8 +174,10 @@
     <Compile Include="Generating\Types\GeneratorPageNavigation.cs" />
     <Compile Include="Generating\Types\ObjectProperty\IGeneratorObjectPropertyCollection.cs" />
     <Compile Include="Generating\Types\ObjectProperty\GeneratorObjectPropertyCollection.cs" />
+    <Compile Include="Generating\Types\UnitTesting\GeneratorToggleOperation.cs" />
     <Compile Include="Generating\Types\UnitTesting\GeneratorClickOperation.cs" />
     <Compile Include="Generating\Types\UnitTesting\GeneratorFillOperation.cs" />
+    <Compile Include="Generating\Types\UnitTesting\IGeneratorToggleOperation.cs" />
     <Compile Include="Generating\Types\UnitTesting\IGeneratorClickOperation.cs" />
     <Compile Include="Generating\Types\UnitTesting\IGeneratorFillOperation.cs" />
     <Compile Include="Generating\Types\UnitTesting\IGeneratorSelectOperation.cs" />
@@ -292,6 +294,8 @@
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyStringDictionary.cs" />
     <Compile Include="Parsing\Types\Translation.cs" />
     <Compile Include="Parsing\Types\UnitTesting.cs" />
+    <Compile Include="Parsing\Types\UnitTesting\ToggleOperation.cs" />
+    <Compile Include="Parsing\Types\UnitTesting\IToggleOperation.cs" />
     <Compile Include="Parsing\Types\UnitTesting\IClickOperation.cs" />
     <Compile Include="Parsing\Types\UnitTesting\ClickOperation.cs" />
     <Compile Include="Parsing\Types\UnitTesting\IFillOperation.cs" />

@@ -66,6 +66,13 @@ namespace Parser
                     IDeclarationSource ComponentName = new DeclarationSource(Parameters.Trim(), SourceStream);
                     NewOperation = new ClickOperation(PageName, AreaName, ComponentName);
                 }
+
+                else if (Operation == "toggle")
+                {
+                    IDeclarationSource ComponentName = new DeclarationSource(Parameters.Trim(), SourceStream);
+                    NewOperation = new ToggleOperation(PageName, AreaName, ComponentName);
+                }
+
                 else if (Operation == "fill")
                 {
                     string[] FillParameters = Parameters.Split('=');
@@ -77,6 +84,7 @@ namespace Parser
 
                     NewOperation = new FillOperation(PageName, AreaName, ComponentName, Content);
                 }
+
                 else if (Operation == "select")
                 {
                     string[] FillParameters = Parameters.Split('=');
