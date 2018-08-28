@@ -23,6 +23,9 @@ namespace AppCSHtml5
             LanguageState = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
         }
 
+        public ILanguage GetLanguage { get { return App.GetLanguage; } }
+        public ILogin GetLogin { get { return App.GetLogin; } }
+
         public LanguageStates LanguageState { get; set; } = LanguageStates.English;
 
         public INewsEntry LastNews

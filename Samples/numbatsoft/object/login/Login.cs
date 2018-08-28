@@ -20,6 +20,9 @@ namespace AppCSHtml5
             LoginState = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
         }
 
+        public ILanguage GetLanguage { get { return App.GetLanguage; } }
+        public ILogin GetLogin { get { return App.GetLogin; } }
+
         public LoginStates LoginState { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
