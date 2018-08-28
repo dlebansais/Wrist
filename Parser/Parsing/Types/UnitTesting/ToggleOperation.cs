@@ -14,7 +14,7 @@
             if (IsConnected)
             {
                 if (!(Component is IComponentPopup))
-                    throw new ParsingException(0, ComponentName.Source, $"Component '{ComponentName}' must be a popup.");
+                    throw new ParsingException(230, ComponentName.Source, $"Component '{ComponentName}' must be a popup.");
             }
 
             return IsConnected;

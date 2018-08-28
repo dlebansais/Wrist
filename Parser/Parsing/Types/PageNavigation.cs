@@ -78,6 +78,9 @@ namespace Parser
 
                         if (Alternate != null)
                         {
+                            if (AlternatePages.Contains(Alternate))
+                                throw new ParsingException(222, NavigationSource.Source, $"Custom page destination '{TrimmedAlternate}' is repeated.");
+
                             Alternate.SetIsReachable();
                             AlternatePages.Add(Alternate);
                         }
@@ -91,7 +94,7 @@ namespace Parser
                     }
 
                     if (AlternatePages.Count == 0)
-                        throw new ParsingException(0, NavigationSource.Source, "A custom page must declare at least one destination page");
+                        throw new ParsingException(223, NavigationSource.Source, "A custom page must declare at least one destination page.");
                 }
             }
 

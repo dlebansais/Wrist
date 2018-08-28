@@ -33,7 +33,7 @@
                         break;
                     }
                 if (Page == null)
-                    throw new ParsingException(0, PageName.Source, $"Page '{PageName}' not found.");
+                    throw new ParsingException(227, PageName.Source, $"Page '{PageName}' not found.");
 
                 IsConnected = true;
             }
@@ -47,7 +47,7 @@
                         break;
                     }
                 if (Area == null)
-                    throw new ParsingException(0, AreaName.Source, $"Area '{AreaName}' not found.");
+                    throw new ParsingException(228, AreaName.Source, $"Area '{AreaName}' not found.");
 
                 IsConnected = true;
             }
@@ -61,7 +61,7 @@
                         break;
                     }
                 if (Component == null)
-                    throw new ParsingException(0, ComponentName.Source, $"Component '{ComponentName}' not found in area {Area.Name}.");
+                    throw new ParsingException(229, ComponentName.Source, $"Component '{ComponentName}' not found in area '{Area.Name}'.");
 
                 IsConnected = true;
             }

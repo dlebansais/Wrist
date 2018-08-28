@@ -14,7 +14,7 @@
             if (IsConnected)
             {
                 if (!(Component is IComponentButton))
-                    throw new ParsingException(0, ComponentName.Source, $"Component '{ComponentName}' must be a button.");
+                    throw new ParsingException(224, ComponentName.Source, $"Component '{ComponentName}' must be a button.");
             }
 
             return IsConnected;

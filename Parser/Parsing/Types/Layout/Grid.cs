@@ -182,7 +182,7 @@ namespace Parser
                     Result[i] = 0;
                 else if (WidthString.ToLower() == "auto")
                     Result[i] = double.NaN;
-                else if (!double.TryParse(WidthString, out Result[i]))
+                else if (!ParserDomain.TryParseDouble(WidthString, out Result[i]))
                     throw new ParsingException(170, Source, $"'{WidthString}' not parsed as a {propertyName}.");
             }
             for (; i < maxCount; i++)

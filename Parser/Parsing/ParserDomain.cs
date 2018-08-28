@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Windows.Controls;
 
@@ -149,7 +150,11 @@ namespace Parser
                     foreach (IConnectable Connectable in FormParser.ParsedResult)
                         IsConnected |= Connectable.Connect(NewDomain);
 
-                IsConnected |= UnitTesting.Connect(NewDomain);
+                if (Translation != null)
+                    IsConnected |= Translation.Connect(NewDomain);
+
+                if (UnitTesting != null)
+                    IsConnected |= UnitTesting.Connect(NewDomain);
             }
             if (IsConnected)
                 throw new ParsingException(8, inputFolderName, $"Unexpected error during processing of the input folder.");
@@ -200,7 +205,7 @@ namespace Parser
                             List<IControl> ControlList = new List<IControl>();
                             SpecifiedLayout.Content.ReportControlsUsingComponent(ControlList, AsComponentWithEvent);
                             if (ControlList.Count > 1)
-                                throw new ParsingException(0, Component.Source.Source, $"Component '{Component.Source.Name}' is used more than once in page '{Page.Name}'.");
+                                throw new ParsingException(220, Component.Source.Source, $"Component '{Component.Source.Name}' is used more than once in page '{Page.Name}'.");
                         }
                 }
             }
@@ -454,6 +459,11 @@ namespace Parser
                 throw new ParsingException(22, sourceStream, $"<key>{separator}<value> expected, found empty value.");
 
             nameSource = new DeclarationSource(Name, sourceStream);
+        }
+
+        public static bool TryParseDouble(string s, out double d)
+        {
+            return double.TryParse(s, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out d);
         }
 
         public static bool TryParseObjectProperty(IParsingSourceStream sourceStream, string text, out IDeclarationSource objectSource, out IDeclarationSource memberSource, out IDeclarationSource keySource)

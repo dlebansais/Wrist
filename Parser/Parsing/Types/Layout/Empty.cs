@@ -12,7 +12,7 @@ namespace Parser
 
             if (Type != null &&
                 Type != "Button")
-                throw new ParsingException(0, Source, "Invalid Type for Empty component.");
+                throw new ParsingException(221, Source, "Invalid Type for Empty component.");
         }
 
         public override string ToString()

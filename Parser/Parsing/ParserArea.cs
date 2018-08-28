@@ -201,7 +201,7 @@ namespace Parser
                 throw new ParsingException(33, sourceStream, "Go to page name can only be a static name.");
 
             if (ClosePopupProperty != null && ClosePopupProperty.FixedValueSource != null)
-                throw new ParsingException(0, sourceStream, "Close popup can only be a property.");
+                throw new ParsingException(219, sourceStream, "Close popup can only be a property.");
 
             return new ComponentButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Button"), ContentProperty, BeforeEvent, NavigateProperty.FixedValueSource.Name, AfterEvent, ClosePopupProperty);
         }
@@ -389,7 +389,7 @@ namespace Parser
                     IsResourceWidth = true;
                     WidthValue = double.NaN;
                 }
-                else if (double.TryParse(ImageWidth, out WidthValue))
+                else if (ParserDomain.TryParseDouble(ImageWidth, out WidthValue))
                     IsResourceWidth = false;
                 else
                     throw new ParsingException(128, WidthProperty.FixedValueSource.Source, $"'{ImageWidth}' not parsed as a width.");
@@ -413,7 +413,7 @@ namespace Parser
                     IsResourceHeight = true;
                     HeightValue = double.NaN;
                 }
-                else if (double.TryParse(ImageHeight, out HeightValue))
+                else if (ParserDomain.TryParseDouble(ImageHeight, out HeightValue))
                     IsResourceHeight = false;
                 else
                     throw new ParsingException(129, HeightProperty.FixedValueSource.Source, $"'{ImageHeight}' not parsed as a height.");
@@ -471,7 +471,7 @@ namespace Parser
                     throw new ParsingException(54, sourceStream, "Width can only be a static value.");
 
                 string ImageWidth = WidthProperty.FixedValueSource.Name;
-                if (!double.TryParse(ImageWidth, out WidthValue))
+                if (!ParserDomain.TryParseDouble(ImageWidth, out WidthValue))
                     throw new ParsingException(128, WidthProperty.FixedValueSource.Source, $"'{ImageWidth}' not parsed as a width.");
             }
             else
@@ -484,7 +484,7 @@ namespace Parser
                     throw new ParsingException(56, sourceStream, "Height can only be a static value.");
 
                 string ImageHeight = HeightProperty.FixedValueSource.Name;
-                if (!double.TryParse(ImageHeight, out HeightValue))
+                if (!ParserDomain.TryParseDouble(ImageHeight, out HeightValue))
                     throw new ParsingException(129, HeightProperty.FixedValueSource.Source, $"'{ImageHeight}' not parsed as a height.");
             }
             else

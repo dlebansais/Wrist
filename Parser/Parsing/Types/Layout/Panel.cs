@@ -17,11 +17,11 @@ namespace Parser
                 throw new ParsingException(203, Source, $"Panel '{GetType().Name}' has no item.");
 
             double MaxWidthValue;
-            if (MaxWidth != null && !double.TryParse(MaxWidth, out MaxWidthValue))
+            if (MaxWidth != null && !ParserDomain.TryParseDouble(MaxWidth, out MaxWidthValue))
                 throw new ParsingException(204, Source, "Invalid max width.");
 
             double MaxHeightValue;
-            if (MaxHeight != null && !double.TryParse(MaxHeight, out MaxHeightValue))
+            if (MaxHeight != null && !ParserDomain.TryParseDouble(MaxHeight, out MaxHeightValue))
                 throw new ParsingException(205, Source, "Invalid max height.");
 
             foreach (ILayoutElement Item in Items)

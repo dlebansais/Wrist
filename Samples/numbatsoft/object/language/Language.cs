@@ -10,7 +10,13 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class Language : ILanguage, INotifyPropertyChanged
+    public enum LanguageStates
+    {
+        English,
+        French,
+    }
+
+    public class Language : ILanguage
     {
         public Language()
         {
@@ -45,7 +51,7 @@ namespace AppCSHtml5
             }
         }
 
-        public IList<INewsEntry> AllNews
+        public ObservableCollection<INewsEntry> AllNews
         {
             get
             {
@@ -53,7 +59,7 @@ namespace AppCSHtml5
                 return _AllNews;
             }
         }
-        private IList<INewsEntry> _AllNews = new ObservableCollection<INewsEntry>();
+        private ObservableCollection<INewsEntry> _AllNews = new ObservableCollection<INewsEntry>();
 
         private bool IsAllNewsParsed;
 
@@ -64,7 +70,7 @@ namespace AppCSHtml5
                 Item.SelectLanguage(LanguageState);
 
             Persistent.SetValue("language", LanguageState.ToString().ToLower());
-            App.Translation.SetLanguage(StateToLanguage[LanguageState]);
+            App.GetTranslation.SetLanguage(StateToLanguage[LanguageState]);
 
             NotifyPropertyChanged(nameof(LanguageState));
         }

@@ -22,21 +22,21 @@ namespace Parser
         public virtual void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
             double WidthValue;
-            if (Width != null && !double.TryParse(Width, out WidthValue))
+            if (Width != null && !ParserDomain.TryParseDouble(Width, out WidthValue))
                 throw new ParsingException(193, Source, "Invalid width.");
 
             double HeightValue;
-            if (Height != null && !double.TryParse(Height, out HeightValue))
+            if (Height != null && !ParserDomain.TryParseDouble(Height, out HeightValue))
                 throw new ParsingException(194, Source, "Invalid height.");
 
             double SingleMargin;
-            if (Margin != null && !double.TryParse(Margin, out SingleMargin))
+            if (Margin != null && !ParserDomain.TryParseDouble(Margin, out SingleMargin))
             {
                 string[] ThicknessMargin = Margin.Split(',');
                 int i;
 
                 for (i = 0; i < 4 && i < ThicknessMargin.Length; i++)
-                    if (!double.TryParse(ThicknessMargin[i], out SingleMargin))
+                    if (!ParserDomain.TryParseDouble(ThicknessMargin[i], out SingleMargin))
                         break;
 
                 if (i < 4)

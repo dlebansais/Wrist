@@ -17,7 +17,7 @@
             if (IsConnected)
             {
                 if (!(Component is IComponentSelector))
-                    throw new ParsingException(0, ComponentName.Source, $"Component '{ComponentName}' must be a selector.");
+                    throw new ParsingException(226, ComponentName.Source, $"Component '{ComponentName}' must be a selector.");
             }
 
             return IsConnected;

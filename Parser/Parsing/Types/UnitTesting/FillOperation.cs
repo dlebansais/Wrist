@@ -17,7 +17,7 @@
             if (IsConnected)
             {
                 if (!(Component is IComponentEdit) && !(Component is IComponentPasswordEdit))
-                    throw new ParsingException(0, ComponentName.Source, $"Component '{ComponentName}' must be an edit or password edit.");
+                    throw new ParsingException(225, ComponentName.Source, $"Component '{ComponentName}' must be an edit or password edit.");
             }
 
             return IsConnected;

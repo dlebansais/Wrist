@@ -32,7 +32,7 @@ namespace Parser
             }
             catch (Exception e)
             {
-                throw new ParsingException(0, SourceStream, e);
+                throw new ParsingException(231, SourceStream, e);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Parser
                 string[] Splitted = Line.Split(',');
 
                 if (Splitted.Length < 4)
-                    throw new ParsingException(0, SourceStream, "Invalid line in the unit testing file.");
+                    throw new ParsingException(232, SourceStream, "Invalid line in the unit testing file.");
 
                 IDeclarationSource PageName = new DeclarationSource(Splitted[0].Trim(), SourceStream);
                 string Operation = Splitted[1].Trim();
@@ -77,7 +77,7 @@ namespace Parser
                 {
                     string[] FillParameters = Parameters.Split('=');
                     if (FillParameters.Length < 2)
-                        throw new ParsingException(0, SourceStream, "Invalid line in the unit testing file.");
+                        throw new ParsingException(233, SourceStream, "Invalid line in the unit testing file.");
 
                     IDeclarationSource ComponentName = new DeclarationSource(FillParameters[0].Trim(), SourceStream);
                     string Content = FillParameters[1].Trim();
@@ -89,18 +89,18 @@ namespace Parser
                 {
                     string[] FillParameters = Parameters.Split('=');
                     if (FillParameters.Length < 2)
-                        throw new ParsingException(0, SourceStream, "Invalid line in the unit testing file.");
+                        throw new ParsingException(234, SourceStream, "Invalid line in the unit testing file.");
 
                     IDeclarationSource ComponentName = new DeclarationSource(FillParameters[0].Trim(), SourceStream);
 
                     int Index;
                     if (!int.TryParse(FillParameters[1].Trim(), out Index))
-                        throw new ParsingException(0, SourceStream, "Invalid line in the unit testing file.");
+                        throw new ParsingException(235, SourceStream, "Invalid line in the unit testing file.");
 
                     NewOperation = new SelectOperation(PageName, AreaName, ComponentName, Index);
                 }
                 else
-                    throw new ParsingException(0, SourceStream, $"Unknown unit testing operation '{Operation}'.");
+                    throw new ParsingException(236, SourceStream, $"Unknown unit testing operation '{Operation}'.");
 
                 Operations.Add(NewOperation);
             }

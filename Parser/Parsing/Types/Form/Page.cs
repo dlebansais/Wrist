@@ -179,7 +179,7 @@ namespace Parser
                     throw new ParsingException(122, BackgroundSource.Source, $"Unknown background '{BackgroundSource.Name}'.");
 
                 double WidthValue;
-                if (!double.TryParse(WidthSource.Name, out WidthValue))
+                if (!ParserDomain.TryParseDouble(WidthSource.Name, out WidthValue))
                     throw new ParsingException(123, WidthSource.Source, $"'{WidthSource.Name}' not parsed as a width.");
 
                 Width = WidthValue;
@@ -203,7 +203,7 @@ namespace Parser
                 else
                 {
                     double HeightValue;
-                    if (!double.TryParse(HeightSource.Name, out HeightValue))
+                    if (!ParserDomain.TryParseDouble(HeightSource.Name, out HeightValue))
                         throw new ParsingException(126, HeightSource.Source, $"'{HeightSource.Name}' not parsed as a height (only valid values are integer constants or 'infinite').");
 
                     Height = HeightValue;

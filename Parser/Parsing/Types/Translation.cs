@@ -19,6 +19,11 @@ namespace Parser
         public IList<string> KeyList { get; private set; }
         public IList<string> UsedKeyList { get; private set; }
 
+        public bool Connect(IDomain domain)
+        {
+            return false;
+        }
+
         public void Process()
         {
             using (FileStream fs = new FileStream(TranslationFile, FileMode.Open, FileAccess.Read, FileShare.Read))

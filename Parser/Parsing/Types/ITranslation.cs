@@ -10,6 +10,7 @@ namespace Parser
         IList<string> LanguageList { get; }
         IList<string> KeyList { get; }
         IList<string> UsedKeyList { get; }
+        bool Connect(IDomain domain);
         void Process();
     }
 }

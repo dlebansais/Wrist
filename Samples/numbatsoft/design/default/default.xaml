@@ -6,10 +6,16 @@
     <ResourceDictionary Source="/ButtonLogin.xaml"/>
     <ResourceDictionary Source="/ButtonSimpleLink.xaml"/>
     <ResourceDictionary Source="/ButtonTextLink.xaml"/>
+    <ResourceDictionary Source="/CheckBox.xaml"/>
+    <ResourceDictionary Source="/Image.xaml"/>
+    <ResourceDictionary Source="/ListBox.xaml"/>
+    <ResourceDictionary Source="/PasswordBox.xaml"/>
+    <ResourceDictionary Source="/RadioButton.xaml"/>
     <ResourceDictionary Source="/TextBlock.xaml"/>
     <ResourceDictionary Source="/TextBlockArchiveTitle.xaml"/>
     <ResourceDictionary Source="/TextBlockPageTitle.xaml"/>
     <ResourceDictionary Source="/TextBlockTitle.xaml"/>
-    <ResourceDictionary Source="/Others.xaml"/>
+    <ResourceDictionary Source="/TextBox.xaml"/>
+    <ResourceDictionary Source="/ToggleButton.xaml"/>
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

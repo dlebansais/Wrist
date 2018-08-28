@@ -235,7 +235,10 @@ namespace Parser
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
             cSharpWriter.WriteLine($"            GoTo(Persistent.GetValue(\"page\", \"{HomePage.Name}\"));");
-            cSharpWriter.WriteLine($"            GetUnitTesting.Start((Page)Window.Current.Content);");
+
+            if (UnitTesting != null)
+                cSharpWriter.WriteLine($"            GetUnitTesting.Start((Page)Window.Current.Content);");
+
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
 

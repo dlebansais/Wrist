@@ -1379,7 +1379,7 @@ This error happens when a text component is referencing an object property but t
 
 ## WTE00134
 
-*Events must use the <Object>.<Event> syntax.*
+*Events must use the Object.Event syntax.*
 
 For components that raise events (such as buttons), the event must be specified for a corresponding object.
 
@@ -1983,3 +1983,113 @@ A dynamic file in the 'dynamic' folder with the same name as the page is expecte
 *Control must reference a name.*
 
 This error is issued when a Control in a layout file does not refer to the name of a component.
+
+## WTE00219
+
+*Close popup can only be a property.*
+
+This error is issued when a popup component declares a *close popup* but not with the `object`.`property syntax`.
+
+## WTE00220
+
+*Component 'x' is used more than once in page 'y'.*
+
+This error is issued when in all combined layouts used by a page a component is used more than once. It cannot be made the target of a unit test operation.
+
+## WTE00221
+
+*Invalid Type for Empty component.*
+
+This error is issued when `<Empy Type="..."/>` uses a *Type* that is not `"Button"`.
+
+## WTE00222
+
+*Custom page destination 'x' is repeated.*
+
+This error is issued when a button declares a goto using the *<custom page: page 1; page 2; ... page n>* syntax but one of the pages is present more than once.
+
+## WTE00223
+
+*A custom page must declare at least one destination page.*
+
+This error is issued when a button declares a goto using the *<custom page: page 1; page 2; ... page n>* syntax but there not even page 1.
+ 
+## WTE00224
+
+*Component 'x' must be a button.*
+
+This error is issued when the target of a click operation is not a button.
+
+## WTE00225
+
+*Component 'x' must be an edit or password edit.*
+
+This error is issued when the target of a fill operation is not an edit or password edit.
+
+## WTE00226
+
+*Component 'x' must be a selector.*
+
+This error is issued when the target of a select operation is not a selector.
+
+## WTE00227
+
+*Page 'x' not found.*
+
+This error is issued when a unit test operation applies to a page that doesn't exist.
+
+## WTE00228
+
+*Area 'x' not found.*
+
+This error is issued when a unit test operation applies to an area that doesn't exist.
+
+## WTE00229
+
+*Component 'x' not found in area 'y'.*
+
+This error is issued when the target of a unit test operation is not found in the area where it must be declared.
+
+## WTE00230
+
+*Component 'x' must be a popup.*
+
+This error is issued when the target of a toggle operation is not a popup.
+
+## WTE00231
+
+The Wrist console must be run with a valid input folder, output folder, the name of a home page and that of a color theme. The input folder contains subdirectories such as 'page', 'area'... and some of these contain Xaml files.
+
+This error is issued when the console fails to process the unit test file.
+
+## WTE00232
+
+*Invalid line in the unit testing file.*
+
+This error is issued when a line in the unit test file doesn't follow this syntax: *page name*, *operation*, *area name*, *component name with optional parameter*.
+
+## WTE00233
+
+*Invalid line in the unit testing file.*
+
+This error is issued when a fill operation is missing the component parameter.
+
+## WTE00234
+
+*Invalid line in the unit testing file.*
+
+This error is issued when a select operation is missing the component parameter.
+
+## WTE00235
+
+*Invalid line in the unit testing file.*
+
+This error is issued when a select operation has the component parameter but it's not an integer constant.
+
+## WTE00236
+
+*Unknown unit testing operation 'x'.*
+
+This error is issued when a unit test operation is none of the reconginized operations such as *click*, *fill*, *select* or *toggle*.
+
+
