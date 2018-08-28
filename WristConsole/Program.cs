@@ -29,13 +29,13 @@ namespace WristConsole
 
             string InputFolder;
             if (Args.Length > 1)
-                InputFolder = Args[1];
+                InputFolder = Path.GetFullPath(Args[1]);
             else
                 InputFolder = Path.Combine(LaunchFolder, "Samples", "comet");
 
             string OutputFolder;
             if (Args.Length > 2)
-                OutputFolder = Args[2];
+                OutputFolder = Path.GetFullPath(Args[2]);
             else
                 OutputFolder = Path.Combine(LaunchFolder, "AppCSHtml5");
 
