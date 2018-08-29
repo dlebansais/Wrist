@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Parser
 {
-    public interface IDesign : IForm
+    public interface IDesign : IForm, IConnectable
     {
         List<string> FileNames { get; }
         string Name { get; }

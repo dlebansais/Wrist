@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public interface IObject : IForm
+    public interface IObject : IForm, IConnectable
     {
         string Name { get; }
         string CSharpName { get; }

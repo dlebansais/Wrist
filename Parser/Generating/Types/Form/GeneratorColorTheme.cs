@@ -7,12 +7,12 @@ namespace Parser
     {
         public static Dictionary<IColorTheme, IGeneratorColorTheme> GeneratorColorThemeMap { get; } = new Dictionary<IColorTheme, IGeneratorColorTheme>();
 
-        public GeneratorColorTheme(IColorTheme background)
+        public GeneratorColorTheme(IColorTheme colorTheme)
         {
-            Name = background.Name;
-            Colors = background.Colors;
+            Name = colorTheme.Name;
+            Colors = colorTheme.Colors;
 
-            GeneratorColorThemeMap.Add(background, this);
+            GeneratorColorThemeMap.Add(colorTheme, this);
         }
 
         public string Name { get; private set; }

@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public class Area : IArea, IConnectable
+    public class Area : IArea
     {
         public Area(string name, string xamlName, IComponentCollection components)
         {

@@ -51,11 +51,17 @@ namespace WristConsole
             else
                 ColorThemeName = "default";
 
+            string UnitTestName;
+            if (Args.Length > 5)
+                UnitTestName = Args[5];
+            else
+                UnitTestName = null;
+
             try
             {
                 Console.WriteLine("Building...");
                 IDomain Domain;
-                MainManager.Build(InputFolder, OutputFolder, HomePageName, ColorThemeName, out Domain);
+                MainManager.Build(InputFolder, OutputFolder, HomePageName, ColorThemeName, UnitTestName, out Domain);
                 Domain.CheckUnused((string message) => Console.WriteLine(message));
                 Console.WriteLine("Done.");
                 Thread.Sleep(TimeSpan.FromSeconds(2));

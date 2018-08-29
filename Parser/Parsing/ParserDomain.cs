@@ -8,7 +8,7 @@ namespace Parser
 {
     public static class ParserDomain
     {
-        public static IDomain Parse(string inputFolderName, string homePageName, string colorThemeName)
+        public static IDomain Parse(string inputFolderName, string homePageName, string colorThemeName, string unitTestName)
         {
             if (inputFolderName == null)
                 throw new ArgumentNullException(nameof(inputFolderName));
@@ -31,6 +31,7 @@ namespace Parser
             IFormParser FormParserColorThemes = new ParserColorTheme("color", "txt");
             IFormParser FormParserFonts = new ParserFont("font", "ttf");
             IFormParser FormParserDynamics = new ParserDynamic("dynamic", "txt");
+            IFormParser FormParserUnitTest = new ParserUnitTest("unit_test", "txt");
 
             IFormParserCollection FormParsers = new FormParserCollection()
             {
@@ -44,6 +45,7 @@ namespace Parser
                 FormParserColorThemes,
                 FormParserFonts,
                 FormParserDynamics,
+                FormParserUnitTest,
             };
 
             string[] FolderNames;
@@ -87,6 +89,7 @@ namespace Parser
             IFormCollection<IColorTheme> ColorThemes = (IFormCollection<IColorTheme>)FormParserColorThemes.ParsedResult;
             IFormCollection<IFont> Fonts = (IFormCollection<IFont>)FormParserFonts.ParsedResult;
             IFormCollection<IDynamic> Dynamics = (IFormCollection<IDynamic>)FormParserDynamics.ParsedResult;
+            IFormCollection<IUnitTest> UnitTests = (IFormCollection<IUnitTest>)FormParserUnitTest.ParsedResult;
 
             string TranslationFile = Path.Combine(inputFolderName, "translations.cvs");
             ITranslation Translation;
@@ -97,16 +100,6 @@ namespace Parser
             }
             else
                 Translation = null;
-
-            string UnitTestingFile = Path.Combine(inputFolderName, "unit_testing.txt");
-            IUnitTesting UnitTesting;
-            if (File.Exists(UnitTestingFile))
-            {
-                UnitTesting = new UnitTesting(UnitTestingFile);
-                UnitTesting.Process();
-            }
-            else
-                UnitTesting = null;
 
             IPage HomePage = null;
             foreach (IPage Page in Pages)
@@ -128,6 +121,19 @@ namespace Parser
             if (SelectedColorTheme == null)
                 throw new ParsingException(7, inputFolderName, $"Color theme '{colorThemeName}' not found.");
 
+            IUnitTest SelectedUnitTest = null;
+            if (unitTestName != null)
+            {
+                foreach (IUnitTest UnitTest in UnitTests)
+                    if (UnitTest.Name == unitTestName)
+                    {
+                        SelectedUnitTest = UnitTest;
+                        break;
+                    }
+                if (SelectedUnitTest == null)
+                    throw new ParsingException(0, inputFolderName, $"Unit test '{unitTestName}' not found.");
+            }
+
             IDomain NewDomain = new Domain(inputFolderName, 
                                            Areas, 
                                            Designs, 
@@ -138,8 +144,9 @@ namespace Parser
                                            Backgrounds, 
                                            ColorThemes, 
                                            Fonts, 
-                                           Dynamics, 
-                                           Translation, UnitTesting, HomePage, SelectedColorTheme);
+                                           Dynamics,
+                                           UnitTests,
+                                           Translation, HomePage, SelectedColorTheme, SelectedUnitTest);
 
             bool IsConnected = true;
             for (int i = 0; i < 100 && IsConnected; i++)
@@ -152,9 +159,6 @@ namespace Parser
 
                 if (Translation != null)
                     IsConnected |= Translation.Connect(NewDomain);
-
-                if (UnitTesting != null)
-                    IsConnected |= UnitTesting.Connect(NewDomain);
             }
             if (IsConnected)
                 throw new ParsingException(8, inputFolderName, $"Unexpected error during processing of the input folder.");
@@ -461,11 +465,6 @@ namespace Parser
             nameSource = new DeclarationSource(Name, sourceStream);
         }
 
-        public static bool TryParseDouble(string s, out double d)
-        {
-            return double.TryParse(s, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out d);
-        }
-
         public static bool TryParseObjectProperty(IParsingSourceStream sourceStream, string text, out IDeclarationSource objectSource, out IDeclarationSource memberSource, out IDeclarationSource keySource)
         {
             if (!text.Contains("."))
@@ -496,6 +495,11 @@ namespace Parser
                 memberSource = new DeclarationSource(MemberName, sourceStream);
                 return true;
             }
+        }
+
+        public static bool TryParseDouble(string s, out double d)
+        {
+            return double.TryParse(s, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out d);
         }
     }
 }

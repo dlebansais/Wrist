@@ -1,6 +1,6 @@
 ﻿namespace Parser
 {
-    public class Font : IFont, IConnectable
+    public class Font : IFont
     {
         public Font(string name, string xamlName, string filePath)
         {

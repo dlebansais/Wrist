@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Parser
 {
-    public class Resource : IResource, IConnectable
+    public class Resource : IResource
     {
         public Resource(string name, string xamlName, string filePath)
         {

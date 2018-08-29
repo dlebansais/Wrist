@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace Parser
 {
-    public class UnitTesting : IUnitTesting
+    public class ParserUnitTest : FormParser<IUnitTest>
     {
-        public UnitTesting(string unitTestingFile)
+        public ParserUnitTest(string folderName, string extension)
+            : base(folderName, extension)
         {
-            UnitTestingFile = unitTestingFile;
         }
 
-        public string UnitTestingFile { get; private set; }
-        public List<ITestingOperation> Operations { get; private set; }
-
-        public void Process()
+        public override IUnitTest Parse(string fileName)
         {
-            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(UnitTestingFile);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
 
             try
             {
                 using (SourceStream.Open())
                 {
-                    Process(SourceStream);
+                    return Parse(fileName, SourceStream);
                 }
             }
             catch (ParsingException)
@@ -36,9 +31,9 @@ namespace Parser
             }
         }
 
-        public void Process(IParsingSourceStream SourceStream)
+        private IUnitTest Parse(string fileName, IParsingSourceStream SourceStream)
         {
-            Operations = new List<ITestingOperation>();
+            List<ITestingOperation> Operations = new List<ITestingOperation>();
 
             while (!SourceStream.EndOfStream)
             {
@@ -104,16 +99,8 @@ namespace Parser
 
                 Operations.Add(NewOperation);
             }
-        }
 
-        public bool Connect(IDomain domain)
-        {
-            bool IsConnected = false;
-
-            foreach (TestingOperation Operation in Operations)
-                IsConnected |= Operation.Connect(domain);
-
-            return IsConnected;
+            return new UnitTest(fileName, Operations);
         }
     }
 }

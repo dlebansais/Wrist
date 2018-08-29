@@ -16,7 +16,8 @@ namespace Parser
                       IFormCollection<IColorTheme> colorThemes,
                       IFormCollection<IFont> fonts,
                       IFormCollection<IDynamic> dynamics,
-                      ITranslation translation, IUnitTesting unitTesting, IPage homePage, IColorTheme selectedColorTheme)
+                      IFormCollection<IUnitTest> unitTests,
+                      ITranslation translation, IPage homePage, IColorTheme selectedColorTheme, IUnitTest selectedUnitTest)
         {
             InputFolderName = inputFolderName;
             Areas = areas;
@@ -29,13 +30,31 @@ namespace Parser
             ColorThemes = colorThemes;
             Fonts = fonts;
             Dynamics = dynamics;
+            UnitTests = unitTests;
             Translation = translation;
-            UnitTesting = unitTesting;
             HomePage = homePage;
             SelectedColorTheme = selectedColorTheme;
+            SelectedUnitTest = selectedUnitTest;
 
             HomePage.SetIsReachable();
         }
+
+        public string InputFolderName { get; private set; }
+        public IFormCollection<IArea> Areas { get; private set; }
+        public IFormCollection<IDesign> Designs { get; private set; }
+        public IFormCollection<ILayout> Layouts { get; private set; }
+        public IFormCollection<IObject> Objects { get; private set; }
+        public IFormCollection<IPage> Pages { get; private set; }
+        public IFormCollection<IResource> Resources { get; private set; }
+        public IFormCollection<IBackground> Backgrounds { get; private set; }
+        public IFormCollection<IColorTheme> ColorThemes { get; private set; }
+        public IFormCollection<IFont> Fonts { get; private set; }
+        public IFormCollection<IDynamic> Dynamics { get; private set; }
+        public IFormCollection<IUnitTest> UnitTests { get; private set; }
+        public ITranslation Translation { get; private set; }
+        public IPage HomePage { get; private set; }
+        public IColorTheme SelectedColorTheme { get; private set; }
+        public IUnitTest SelectedUnitTest { get; private set; }
 
         public void CheckUnused(Action<string> handler)
         {
@@ -112,21 +131,5 @@ namespace Parser
                     Debug.WriteLine(Text);
                 }
         }
-
-        public string InputFolderName { get; private set; }
-        public IFormCollection<IArea> Areas { get; private set; }
-        public IFormCollection<IDesign> Designs { get; private set; }
-        public IFormCollection<ILayout> Layouts { get; private set; }
-        public IFormCollection<IObject> Objects { get; private set; }
-        public IFormCollection<IPage> Pages { get; private set; }
-        public IFormCollection<IResource> Resources { get; private set; }
-        public IFormCollection<IBackground> Backgrounds { get; private set; }
-        public IFormCollection<IColorTheme> ColorThemes { get; private set; }
-        public IFormCollection<IFont> Fonts { get; private set; }
-        public IFormCollection<IDynamic> Dynamics { get; private set; }
-        public ITranslation Translation { get; private set; }
-        public IUnitTesting UnitTesting { get; private set; }
-        public IPage HomePage { get; private set; }
-        public IColorTheme SelectedColorTheme { get; private set; }
     }
 }

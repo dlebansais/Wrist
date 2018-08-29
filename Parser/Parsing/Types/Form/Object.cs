@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public class Object : IObject, IConnectable
+    public class Object : IObject
     {
         public static Object TranslationObject = new Object("translation");
 

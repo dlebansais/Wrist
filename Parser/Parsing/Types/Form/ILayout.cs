@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public interface ILayout : IForm
+    public interface ILayout : IForm, IConnectable
     {
         string Name { get; }
         string XamlName { get; }

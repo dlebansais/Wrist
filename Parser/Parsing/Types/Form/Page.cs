@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public class Page : IPage, IConnectable
+    public class Page : IPage
     {
         public static Page CurrentPage = new Page("<current page>");
         public static Page AnyPage = new Page("<custom page>");

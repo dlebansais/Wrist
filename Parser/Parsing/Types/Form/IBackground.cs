@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public interface IBackground : IForm
+    public interface IBackground : IForm, IConnectable
     {
         string Name { get; }
         string XamlName { get; }

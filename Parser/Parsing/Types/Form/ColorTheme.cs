@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public class ColorTheme : IColorTheme, IConnectable
+    public class ColorTheme : IColorTheme
     {
         public ColorTheme(string name, Dictionary<IDeclarationSource, string> colors)
         {

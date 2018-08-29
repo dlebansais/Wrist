@@ -58,6 +58,10 @@ namespace Parser
             foreach (IDynamic Dynamic in domain.Dynamics)
                 Dynamics.Add(new GeneratorDynamic(Dynamic));
 
+            UnitTests = new List<IGeneratorUnitTest>();
+            foreach (IUnitTest UnitTest in domain.UnitTests)
+                UnitTests.Add(new GeneratorUnitTest(UnitTest));
+
             bool IsConnected;
             do
             {
@@ -74,6 +78,9 @@ namespace Parser
 
                 foreach (IGeneratorDynamic Item in Dynamics)
                     IsConnected |= Item.Connect(this);
+
+                foreach (IGeneratorUnitTest Item in UnitTests)
+                    IsConnected |= Item.Connect(this);
             }
             while (IsConnected);
 
@@ -82,16 +89,9 @@ namespace Parser
             else
                 Translation = null;
 
-            if (domain.UnitTesting != null)
-            {
-                UnitTesting = new GeneratorUnitTesting(domain.UnitTesting);
-                UnitTesting.Connect(this);
-            }
-            else
-                UnitTesting = null;
-
             HomePage = GeneratorPage.GeneratorPageMap[domain.HomePage];
             SelectedColorTheme = GeneratorColorTheme.GeneratorColorThemeMap[domain.SelectedColorTheme];
+            SelectedUnitTest = domain.SelectedUnitTest != null ? GeneratorUnitTest.GeneratorUnitTestMap[domain.SelectedUnitTest] : null;
         }
 
         public string AppNamespace { get; private set; }
@@ -106,10 +106,11 @@ namespace Parser
         public List<IGeneratorColorTheme> ColorThemes { get; private set; }
         public List<IGeneratorFont> Fonts { get; private set; }
         public List<IGeneratorDynamic> Dynamics { get; private set; }
+        public List<IGeneratorUnitTest> UnitTests { get; private set; }
         public IGeneratorTranslation Translation { get; private set; }
-        public IGeneratorUnitTesting UnitTesting { get; private set; }
         public IGeneratorPage HomePage { get; private set; }
         public IGeneratorColorTheme SelectedColorTheme { get; private set; }
+        public IGeneratorUnitTest SelectedUnitTest { get; private set; }
 
         public void Generate(string outputFolderName)
         {
@@ -136,8 +137,8 @@ namespace Parser
             if (Translation != null)
                 Translation.Generate(outputFolderName, AppNamespace);
 
-            if (UnitTesting != null)
-                UnitTesting.Generate(outputFolderName, AppNamespace);
+            if (SelectedUnitTest != null)
+                SelectedUnitTest.Generate(outputFolderName, AppNamespace);
 
             GenerateAppXaml(outputFolderName, AppNamespace, SelectedColorTheme);
             GenerateAppCSharp(outputFolderName, AppNamespace);
@@ -236,8 +237,8 @@ namespace Parser
             cSharpWriter.WriteLine("            InitializeComponent();");
             cSharpWriter.WriteLine($"            GoTo(Persistent.GetValue(\"page\", \"{HomePage.Name}\"));");
 
-            if (UnitTesting != null)
-                cSharpWriter.WriteLine($"            GetUnitTesting.Start((Page)Window.Current.Content);");
+            if (SelectedUnitTest != null)
+                cSharpWriter.WriteLine($"            GetUnitTest.Start((Page)Window.Current.Content);");
 
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
@@ -249,8 +250,8 @@ namespace Parser
             if (Translation != null)
                 cSharpWriter.WriteLine("        public static Translation GetTranslation { get; } = new Translation();");
 
-            if (UnitTesting != null)
-                cSharpWriter.WriteLine("        public static UnitTesting GetUnitTesting { get; } = new UnitTesting();");
+            if (SelectedUnitTest != null)
+                cSharpWriter.WriteLine("        public static UnitTest GetUnitTest { get; } = new UnitTest();");
 
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void GoTo(string pageName)");
@@ -374,8 +375,8 @@ namespace Parser
             if (Translation != null)
                 projectWriter.WriteLine("    <Compile Include=\"Translation.cs\"/>");
 
-            if (UnitTesting != null)
-                projectWriter.WriteLine("    <Compile Include=\"UnitTesting.cs\"/>");
+            if (SelectedUnitTest != null)
+                projectWriter.WriteLine("    <Compile Include=\"UnitTest.cs\"/>");
 
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");

@@ -15,10 +15,11 @@ namespace Parser
         IFormCollection<IColorTheme> ColorThemes { get; }
         IFormCollection<IFont> Fonts { get; }
         IFormCollection<IDynamic> Dynamics { get; }
+        IFormCollection<IUnitTest> UnitTests { get; }
         ITranslation Translation { get; }
-        IUnitTesting UnitTesting { get; }
         IPage HomePage { get; }
         IColorTheme SelectedColorTheme { get; }
+        IUnitTest SelectedUnitTest { get; }
         void CheckUnused(Action<string> handler);
     }
 }

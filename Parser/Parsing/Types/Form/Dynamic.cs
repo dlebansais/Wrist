@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public class Dynamic : IDynamic, IConnectable
+    public class Dynamic : IDynamic
     {
         public Dynamic(string name, string fileName, string xamlPageName, IDynamicPropertyCollection properties)
         {

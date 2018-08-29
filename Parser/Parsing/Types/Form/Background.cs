@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public class Background : IBackground, IConnectable
+    public class Background : IBackground
     {
         public Background(string name, string xamlName, List<string> lines)
         {

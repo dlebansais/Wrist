@@ -4,7 +4,7 @@ using System.Windows.Markup;
 namespace Parser
 {
     [ContentProperty("Content")]
-    public class Layout : ILayout, IConnectable
+    public class Layout : ILayout
     {
         public void SetName(string name, string xamlName, string fileName)
         {

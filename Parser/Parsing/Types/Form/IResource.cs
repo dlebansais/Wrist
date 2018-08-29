@@ -1,6 +1,6 @@
 ﻿namespace Parser
 {
-    public interface IResource : IForm
+    public interface IResource : IForm, IConnectable
     {
         string Name { get; }
         string XamlName { get; }

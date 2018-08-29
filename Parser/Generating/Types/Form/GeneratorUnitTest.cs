@@ -5,13 +5,15 @@ using System.Text;
 
 namespace Parser
 {
-    public class GeneratorUnitTesting : IGeneratorUnitTesting
+    public class GeneratorUnitTest : IGeneratorUnitTest
     {
-        public GeneratorUnitTesting(IUnitTesting unitTesting)
+        public static Dictionary<IUnitTest, IGeneratorUnitTest> GeneratorUnitTestMap { get; } = new Dictionary<IUnitTest, IGeneratorUnitTest>();
+
+        public GeneratorUnitTest(IUnitTest unitTest)
         {
             Operations = new List<IGeneratorTestingOperation>();
 
-            foreach (ITestingOperation Operation in unitTesting.Operations)
+            foreach (ITestingOperation Operation in unitTest.Operations)
                 if (Operation is IClickOperation AsClick)
                     Operations.Add(new GeneratorClickOperation(AsClick));
                 else if (Operation is IFillOperation AsFill)
@@ -22,17 +24,19 @@ namespace Parser
                     Operations.Add(new GeneratorToggleOperation(AsToggle));
                 else
                     throw new InvalidOperationException();
+
+            GeneratorUnitTestMap.Add(unitTest, this);
         }
 
         public List<IGeneratorTestingOperation> Operations { get; private set; }
 
         public void Generate(string outputFolderName, string appNamespace)
         {
-            string UnitTestingFileName = Path.Combine(outputFolderName, "UnitTesting.cs");
+            string UnitTestFileName = Path.Combine(outputFolderName, "UnitTest.cs");
 
-            using (FileStream UnitTestingFile = new FileStream(UnitTestingFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (FileStream UnitTestFile = new FileStream(UnitTestFileName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                using (StreamWriter CSharpWriter = new StreamWriter(UnitTestingFile, Encoding.UTF8))
+                using (StreamWriter CSharpWriter = new StreamWriter(UnitTestFile, Encoding.UTF8))
                 {
                     Generate(appNamespace, CSharpWriter);
                 }
@@ -64,7 +68,7 @@ namespace Parser
             cSharpWriter.WriteLine("    {");
             cSharpWriter.WriteLine("        public string Info;");
             cSharpWriter.WriteLine("        public string ControlName;");
-            cSharpWriter.WriteLine("        public Action<UnitTesting, TestingOperation, Page, FrameworkElement> Handler;");
+            cSharpWriter.WriteLine("        public Action<UnitTest, TestingOperation, Page, FrameworkElement> Handler;");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("    public class ClickOperation : TestingOperation");
@@ -83,9 +87,9 @@ namespace Parser
             cSharpWriter.WriteLine("    {");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("    public class UnitTesting");
+            cSharpWriter.WriteLine("    public class UnitTest");
             cSharpWriter.WriteLine("    {");
-            cSharpWriter.WriteLine("        public UnitTesting()");
+            cSharpWriter.WriteLine("        public UnitTest()");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            TestTimer = new DispatcherTimer();");
             cSharpWriter.WriteLine("            TestTimer.Interval = TimeSpan.FromSeconds(1);");
@@ -112,12 +116,12 @@ namespace Parser
                     cSharpWriter.WriteLine("            {");
                     cSharpWriter.WriteLine($"                Info = \"Line {Operation.LineIndex} in {Operation.TestingFileName.Replace('\\', '/')}\",");
                     cSharpWriter.WriteLine($"                ControlName = \"{ControlName}\",");
-                    cSharpWriter.WriteLine("                Handler = (UnitTesting unitTesting, TestingOperation operation, Page currentPage, FrameworkElement ctrl) =>");
+                    cSharpWriter.WriteLine("                Handler = (UnitTest unitTest, TestingOperation operation, Page currentPage, FrameworkElement ctrl) =>");
                     cSharpWriter.WriteLine("                {");
                     cSharpWriter.WriteLine($"                    {PageName} page;");
                     cSharpWriter.WriteLine("                    Button ctrlButton;");
-                    cSharpWriter.WriteLine($"                    if ((page = AssertPage<{PageName}>(unitTesting, operation, currentPage)) != null)");
-                    cSharpWriter.WriteLine("                        if ((ctrlButton = AssertControl<Button>(unitTesting, operation, ctrl)) != null)");
+                    cSharpWriter.WriteLine($"                    if ((page = AssertPage<{PageName}>(unitTest, operation, currentPage)) != null)");
+                    cSharpWriter.WriteLine("                        if ((ctrlButton = AssertControl<Button>(unitTest, operation, ctrl)) != null)");
                     cSharpWriter.WriteLine($"                            page.{EventName}(ctrlButton , new {EventArgs}());");
                     cSharpWriter.WriteLine("                }");
                     cSharpWriter.WriteLine("            },");
@@ -131,12 +135,12 @@ namespace Parser
                     cSharpWriter.WriteLine("            {");
                     cSharpWriter.WriteLine($"                Info = \"Line {Operation.LineIndex} in {Operation.TestingFileName.Replace('\\', '/')}\",");
                     cSharpWriter.WriteLine($"                ControlName = \"{ControlName}\",");
-                    cSharpWriter.WriteLine("                Handler = (UnitTesting unitTesting, TestingOperation operation, Page currentPage, FrameworkElement ctrl) =>");
+                    cSharpWriter.WriteLine("                Handler = (UnitTest unitTest, TestingOperation operation, Page currentPage, FrameworkElement ctrl) =>");
                     cSharpWriter.WriteLine("                {");
                     cSharpWriter.WriteLine($"                    {PageName} page;");
                     cSharpWriter.WriteLine("                    ToggleButton ctrlButton;");
-                    cSharpWriter.WriteLine($"                    if ((page = AssertPage<{PageName}>(unitTesting, operation, currentPage)) != null)");
-                    cSharpWriter.WriteLine("                        if ((ctrlButton = AssertControl<ToggleButton>(unitTesting, operation, ctrl)) != null)");
+                    cSharpWriter.WriteLine($"                    if ((page = AssertPage<{PageName}>(unitTest, operation, currentPage)) != null)");
+                    cSharpWriter.WriteLine("                        if ((ctrlButton = AssertControl<ToggleButton>(unitTest, operation, ctrl)) != null)");
                     cSharpWriter.WriteLine("                            ctrlButton.IsChecked = !ctrlButton.IsChecked;");
                     cSharpWriter.WriteLine("                }");
                     cSharpWriter.WriteLine("            },");
@@ -169,12 +173,12 @@ namespace Parser
                     cSharpWriter.WriteLine("            {");
                     cSharpWriter.WriteLine($"                Info = \"Line {Operation.LineIndex} in {Operation.TestingFileName.Replace('\\', '/')}\",");
                     cSharpWriter.WriteLine($"                ControlName = \"{ControlName}\",");
-                    cSharpWriter.WriteLine("                Handler = (UnitTesting unitTesting, TestingOperation operation, Page currentPage, FrameworkElement ctrl) =>");
+                    cSharpWriter.WriteLine("                Handler = (UnitTest unitTest, TestingOperation operation, Page currentPage, FrameworkElement ctrl) =>");
                     cSharpWriter.WriteLine("                {");
                     cSharpWriter.WriteLine($"                    {PageName} page;");
                     cSharpWriter.WriteLine($"                    {ControlType} ctrlEdit;");
-                    cSharpWriter.WriteLine($"                    if ((page = AssertPage<{PageName}>(unitTesting, operation, currentPage)) != null)");
-                    cSharpWriter.WriteLine($"                        if ((ctrlEdit = AssertControl<{ControlType}>(unitTesting, operation, ctrl)) != null)");
+                    cSharpWriter.WriteLine($"                    if ((page = AssertPage<{PageName}>(unitTest, operation, currentPage)) != null)");
+                    cSharpWriter.WriteLine($"                        if ((ctrlEdit = AssertControl<{ControlType}>(unitTest, operation, ctrl)) != null)");
                     cSharpWriter.WriteLine("                        {");
                     cSharpWriter.WriteLine($"                            page.{BindingName} = \"{AsFill.Content}\";");
                     cSharpWriter.WriteLine($"                            page.{EventName}(ctrlEdit, new {EventArgs}());");
@@ -265,18 +269,18 @@ namespace Parser
             cSharpWriter.WriteLine("            return Result;");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        private static T AssertPage<T>(UnitTesting unitTesting, TestingOperation operation, Page page) where T : Page");
+            cSharpWriter.WriteLine("        private static T AssertPage<T>(UnitTest unitTest, TestingOperation operation, Page page) where T : Page");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            if (!(page is T))");
             cSharpWriter.WriteLine("            {");
-            cSharpWriter.WriteLine("                unitTesting.Abort(operation, \"Invalid page.\");");
+            cSharpWriter.WriteLine("                unitTest.Abort(operation, \"Invalid page.\");");
             cSharpWriter.WriteLine("                return null;");
             cSharpWriter.WriteLine("            }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("            return page as T;");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        private static T AssertControl<T>(UnitTesting unitTesting, TestingOperation operation, FrameworkElement ctrl) where T : FrameworkElement");
+            cSharpWriter.WriteLine("        private static T AssertControl<T>(UnitTest unitTest, TestingOperation operation, FrameworkElement ctrl) where T : FrameworkElement");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            FrameworkElement element = ctrl;");
             cSharpWriter.WriteLine("            while (element != null)");
@@ -286,7 +290,7 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("                if (!element.IsLoaded || !element.IsEnabled || element.Visibility != Visibility.Visible)");
             cSharpWriter.WriteLine("                {");
-            cSharpWriter.WriteLine("                    unitTesting.Abort(operation, \"Invalid control.\");");
+            cSharpWriter.WriteLine("                    unitTest.Abort(operation, \"Invalid control.\");");
             cSharpWriter.WriteLine("                    return null;");
             cSharpWriter.WriteLine("                }");
             cSharpWriter.WriteLine();

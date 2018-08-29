@@ -2,10 +2,10 @@
 
 namespace Parser
 {
-    public interface IUnitTesting : IConnectable
+    public interface IUnitTest : IForm, IConnectable
     {
-        string UnitTestingFile { get; }
+        string Name { get; }
+        string UnitTestFile { get; }
         List<ITestingOperation> Operations { get; }
-        void Process();
     }
 }

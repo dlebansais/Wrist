@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public interface IPage : IForm
+    public interface IPage : IForm, IConnectable
     {
         string Name { get; }
         string FileName { get; }

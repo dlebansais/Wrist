@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace Parser
 {
-    public class Design : IDesign, IConnectable
+    public class Design : IDesign
     {
         public Design(List<string> fileNames, string xamlName, ResourceDictionary root)
         {

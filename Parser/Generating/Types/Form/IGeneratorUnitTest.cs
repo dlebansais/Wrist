@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public interface IGeneratorUnitTesting
+    public interface IGeneratorUnitTest : IGeneratorForm
     {
         List<IGeneratorTestingOperation> Operations { get; }
         bool Connect(IGeneratorDomain domain);

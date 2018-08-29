@@ -16,8 +16,8 @@ namespace Parser
         List<IGeneratorColorTheme> ColorThemes { get; }
         List<IGeneratorFont> Fonts { get; }
         List<IGeneratorDynamic> Dynamics { get; }
+        List<IGeneratorUnitTest> UnitTests { get; }
         IGeneratorTranslation Translation { get; }
-        IGeneratorUnitTesting UnitTesting { get; }
         IGeneratorPage HomePage { get; }
         IGeneratorColorTheme SelectedColorTheme { get; }
         void Generate(string outputFolderName);
