@@ -105,12 +105,20 @@ namespace AppCSHtml5
 
             foreach (Dictionary<string, string> Item in NewsList)
             {
-                NewsEntry NewEntry = new NewsEntry(LanguageState, Item["enu_summary"], Item["enu_content"], Item["fra_summary"], Item["fra_content"]);
+                NewsEntry NewEntry = new NewsEntry(LanguageState, Item["created"], Item["enu_summary"], Item["enu_content"], Item["fra_summary"], Item["fra_content"]);
                 _AllNews.Add(NewEntry);
             }
 
             NotifyPropertyChanged(nameof(LastNews));
             NotifyPropertyChanged(nameof(ArchiveNews));
+        }
+
+        public static string ReplaceHtml(string text)
+        {
+            string Result = text;
+            Result = Result.Replace("&nbsp;", "\u00A0");
+
+            return Result;
         }
 
         #region Operations
@@ -128,7 +136,7 @@ namespace AppCSHtml5
             Action<bool, object> Callback = e.Operation.Callback;
 
             List<Dictionary<string, string>> Result;
-            if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "enu_summary", "enu_content", "fra_summary", "fra_content" })) != null)
+            if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "created", "enu_summary", "enu_content", "fra_summary", "fra_content" })) != null)
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(true, Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
@@ -147,44 +155,54 @@ namespace AppCSHtml5
 
             Result.Add(new Dictionary<string, string>()
             {
-                { "enu_summary", "summary 0" },
-                { "enu_content", "content 0" },
-                { "fra_summary", "sommaire 0" },
-                { "fra_content", "contenu 0" },
+                { "created", "2015-07-14 10:37:53" },
+                { "enu_summary", "Custom Controls updated" },
+                { "enu_content", "A set of custom controls, on which I've been working for months, is finally available. It includes the three previous controls (Editable TextBlock, Dialog Validation and Extended TreeView) as well as new controls.\u00A0 " +
+"These can be grouped in two categories: utility controls such as Tightfitting Tab Control, and specialized controls for solutions management.\u00A0 " +
+"The later are used by Easly Solution Manager, available at www.easly.org." },
+                { "fra_summary", "Contrôles personnalisés mis à jour" },
+                { "fra_content", "Une suite de contrôles personnalisés, sur laquelle je travaille depuis plusieurs mois, est enfin disponible. Elle comprend les trois contrôles déjà disponibles (Editable TextBlock, Dialog Validation et Extended TreeView) plus toutes une séries de nouveaux contrôles. " +
+"On peut les regrouper en deux catégories : une série de contrôles utilitaires, par exemple Tightfitting Tab Control, et des contrôles spécialisés dans la gestion de solutions. " +
+"Ceux-ci sont utilisés par Easly Solution Manager, disponible sur www.easly.org." },
             });
             Result.Add(new Dictionary<string, string>()
             {
-                { "enu_summary", "summary 1" },
-                { "enu_content", "content 1" },
-                { "fra_summary", "sommaire 1" },
-                { "fra_content", "contenu 1" },
+                { "created", "2015-03-28 11:15:17" },
+                { "enu_summary", "Dialog Validation control added" },
+                { "enu_content", "I just added a new custom control to the library. It displays buttons you see at the bottom of a dialog box (like OK or Cancel). It sounds simple and easy at first, but this control can display strings already localized from Windows, which is a great deal for me (even if my most recent programs are English only).\u00A0 " +
+"It also simplifies the design of dialog boxes.\u00A0 " +
+"Documentation will be available soon." },
+                { "fra_summary", "Ajout du contrôle personnalisé Dialog Validation" },
+                { "fra_content", "Je viens d'ajouter à la librairie un nouveau contrôle personnalisé. Il affiche les boutons que l'on peut trouver au bas des boîtes de dialogue (comme OK ou Annuler). Cela parait simple, mais ce contrôle peut afficher les chaînes de caractères déjà personnalisées de Windows, ce qui est très important pour moi (même si mes derniers programmes sont tous en anglais seul)." +
+"Il simplifie également la création de boîtes de dialogue." +
+"La documentation sera disponible prochainement." },
             });
             Result.Add(new Dictionary<string, string>()
             {
-                { "enu_summary", "summary 2" },
-                { "enu_content", "content 2" },
-                { "fra_summary", "sommaire 2" },
-                { "fra_content", "contenu 2" },
+                { "created", "2015-03-26 16:11:12" },
+                { "enu_summary", "New custom control" },
+                { "enu_content", "A new and more ambitious custom control has been added to the library. It's a TreeView with additional features.\u00A0 " +
+"Since the new control is a lot more complex than a mere editable TextBlock, the list of features will probably be available as a separate document, hopefully soon." },
+                { "fra_summary", "Nouveau contrôle personnalisé" },
+                { "fra_content", "Un nouveau contrôle personnalisé, plus ambitieux, a été ajouté à la librairie. Il s'agit d'un TreeView avec des fonctionnalités supplémentaires. " +
+"Comme le nouveau contrôle est beaucoup plus complexe qu'un simple TextBlock éditable, la liste des fonctionnalités sera probablement disponible dans un document séparé, et j'espère très bientôt." },
             });
             Result.Add(new Dictionary<string, string>()
             {
-                { "enu_summary", "summary 3" },
-                { "enu_content", "content 3" },
-                { "fra_summary", "sommaire 3" },
-                { "fra_content", "contenu 3" },
+                { "created", "2015-03-12 14:10:46" },
+                { "enu_summary", "First custom control added" },
+                { "enu_content", "Today I have added to the download section what I hope to be the first of a long list of WPF custom controls. It's the simplest of them, and I have two more in the queue.\u00A0 " +
+"I intend to provide both a 32-bits and 64-bits version of each control, as well as the source code.\u00A0 " +
+"Eventually I will also update the documentation section with a summary of best practices when writing WPF custom controls, since I've needed one and couldn't find it." },
+                { "fra_summary", "Premier ajour d'un contrôle personnalisé" },
+                { "fra_content", "Aujourd'hui j'ai ajouté à la section Téléchargement ce que j'espère être le premier d'une longue liste de contrôles WPF personnalisés. C'est le plus simple d'entre eux, et j'en ai deux autres en attente. " +
+"J'ai l'intention de fournir à la fois une version 32-bits et une version 64-bits de chaque contrôle, ainsi que leur code source. " +
+"Ultérieurement je mettrais également à jour la section documentation avec un résumé des meilleures pratiques à suivre quand on écrit un contrôle WPF personnalisé, car j'en ai eu besoin et je n'en ai pas trouvé." },
             });
 
             return Result;
         }
         #endregion
-
-        public static string ReplaceHtml(string text)
-        {
-            string Result = text;
-            Result = Result.Replace("&nbsp;", "\u00A0");
-
-            return Result;
-        }
 
         private Database Database = Database.Current;
 

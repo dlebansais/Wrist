@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
     public class NewsEntry : INewsEntry
     {
-        public NewsEntry(LanguageStates languageState, string enu_title, string enu_text, string fra_title, string fra_text)
+        public NewsEntry(LanguageStates languageState, string created, string enu_title, string enu_text, string fra_title, string fra_text)
         {
             LanguageState = languageState;
+            DateTime ParsedCreated;
+            DateTime.TryParse(created, out ParsedCreated);
+            _Created = ParsedCreated;
             TitleTable.Add(LanguageStates.English, Language.ReplaceHtml(enu_title));
             TitleTable.Add(LanguageStates.French, Language.ReplaceHtml(fra_title));
             TextTable.Add(LanguageStates.English, Language.ReplaceHtml(enu_text));
@@ -27,6 +32,23 @@ namespace AppCSHtml5
         {
             LanguageState = languageState;
         }
+
+        public string Created
+        {
+            get
+            {
+                switch (LanguageState)
+                {
+                    default:
+                    case LanguageStates.English:
+                        return _Created.ToString("MMM d, yyyy", CultureInfo.GetCultureInfo("en-US"));
+
+                    case LanguageStates.French:
+                        return _Created.ToString("dd/MM/yyyy", CultureInfo.GetCultureInfo("fr-FR"));
+                }
+            }
+        }
+        public DateTime _Created;
 
         public string Title { get { return TitleTable[LanguageState]; } }
         public Dictionary<LanguageStates, string> TitleTable { get; } = new Dictionary<LanguageStates, string>();

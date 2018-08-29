@@ -13,6 +13,7 @@
     <ResourceDictionary Source="/RadioButton.xaml"/>
     <ResourceDictionary Source="/TextBlock.xaml"/>
     <ResourceDictionary Source="/TextBlockArchiveTitle.xaml"/>
+    <ResourceDictionary Source="/TextBlockNewsTitle.xaml"/>
     <ResourceDictionary Source="/TextBlockPageTitle.xaml"/>
     <ResourceDictionary Source="/TextBlockTitle.xaml"/>
     <ResourceDictionary Source="/TextBox.xaml"/>

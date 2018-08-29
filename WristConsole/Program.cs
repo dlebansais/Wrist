@@ -59,7 +59,7 @@ namespace WristConsole
 
             try
             {
-                Console.WriteLine("Building...");
+                Console.WriteLine($"Building {InputFolder}...");
                 IDomain Domain;
                 MainManager.Build(InputFolder, OutputFolder, HomePageName, ColorThemeName, UnitTestName, out Domain);
                 Domain.CheckUnused((string message) => Console.WriteLine(message));
