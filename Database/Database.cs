@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-#if HTTP
 using System;
+#if HTTP
 using System.Net;
 #else
 #endif
@@ -24,7 +24,6 @@ namespace DatabaseManager
         public event CompletionEventHandler Completed;
         public Dictionary<DatabaseOperation, List<Dictionary<string, object>>> RequestResultTable { get; } = new Dictionary<DatabaseOperation, List<Dictionary<string, object>>>();
 
-#if HTTP
         public void Query(DatabaseQueryOperation operation)
         {
             StartRequest(operation);
@@ -131,28 +130,10 @@ namespace DatabaseManager
         private Dictionary<string, KeyValuePair<DatabaseOperation, WebClient>> DownloadClientTable = new Dictionary<string, KeyValuePair<DatabaseOperation, WebClient>>();
         private WebClient CurrentDownload = null;
         private DatabaseOperation CurrentOperation = null;
-#else
-        public void Query(DatabaseQueryOperation operation)
-        {
-            List<Dictionary<string, object>> Result = new List<Dictionary<string, object>>();
-            RequestResultTable.Add(operation, Result);
-            Completed?.Invoke(null, new CompletionEventArgs(operation));
-        }
 
-        public void Encrypt(DatabaseEncryptOperation operation)
-        {
-            List<Dictionary<string, object>> Result = new List<Dictionary<string, object>>();
-            RequestResultTable.Add(operation, Result);
-            Completed?.Invoke(null, new CompletionEventArgs(operation));
-        }
-
-        public void Update(DatabaseUpdateOperation operation)
-        {
-            List<Dictionary<string, object>> Result = new List<Dictionary<string, object>>();
-            RequestResultTable.Add(operation, Result);
-            Completed?.Invoke(null, new CompletionEventArgs(operation));
-        }
-#endif
+        public static readonly string RecordPattern = "<p>*</p>";
+        public static readonly string StartLinePattern = "<p>";
+        public static readonly string EndLinePattern = "</p>";
 
         private List<Dictionary<string, object>> ParseResponse(string content)
         {
@@ -160,10 +141,6 @@ namespace DatabaseManager
 
             if (DebugWriteResponse)
                 Debug.WriteLine(content);
-
-            string RecordPattern = "<p>*</p>";
-            string StartLinePattern = "<p>";
-            string EndLinePattern = "</p>";
 
             int RecordStart = 0;
             while ((RecordStart = content.IndexOf(RecordPattern, RecordStart)) >= 0)

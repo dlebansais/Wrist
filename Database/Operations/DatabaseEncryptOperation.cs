@@ -5,8 +5,8 @@ namespace DatabaseManager
 {
     public class DatabaseEncryptOperation : DatabaseOperation
     {
-        public DatabaseEncryptOperation(string name, string scriptName, string parameterName, string parameterValue, Action<bool, object> callback)
-            : base(name, scriptName, new Dictionary<string, string>() { { parameterName, parameterValue } }, callback)
+        public DatabaseEncryptOperation(string name, string scriptName, string constantName, string constantValue, string parameterName, string parameterValue, Action<bool, object> callback)
+            : base(name, scriptName, new Dictionary<string, string>() { { constantName, constantValue }, { parameterName, parameterValue } }, callback)
         {
         }
 

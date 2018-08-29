@@ -59,11 +59,13 @@
     <Compile Include="CompletionEventArgs.cs" />
     <Compile Include="CompletionEventHandler.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="OperationHandler.cs" />
     <Compile Include="Operations\DatabaseEncryptOperation.cs" />
     <Compile Include="Operations\DatabaseQueryOperation.cs" />
     <Compile Include="Operations\DatabaseOperation.cs" />
     <Compile Include="Operations\DatabaseUpdateOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebClient.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildProgramFiles32)\MSBuild\CSharpXamlForHtml5\InternalStuff\Targets\CSharpXamlForHtml5.Build.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

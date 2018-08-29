@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace AppCSHtml5
 {
@@ -18,6 +19,8 @@ namespace AppCSHtml5
             RecoveryQuestion = Persistent.GetValue("question", null);
             Remember = (Persistent.GetValue("remember", null) != null);
             LoginState = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
+
+            InitSimulation();
         }
 
         public ILanguage GetLanguage { get { return App.GetLanguage; } }
@@ -61,7 +64,7 @@ namespace AppCSHtml5
 
         private void StartLogin(string name, string testPassword, bool remember)
         {
-            EncryptPassword(testPassword, (bool encryptSuccess, object encryptResult) => Login_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, remember));
+            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => Login_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, remember));
         }
 
         private void Login_OnTestPasswordEncrypted(bool success, object result, string name, bool remember)
@@ -150,7 +153,7 @@ namespace AppCSHtml5
 
         private void StartUpdatePassword(string name, string testPassword, string newPassword)
         {
-            EncryptPassword(testPassword, (bool encryptSuccess, object encryptResult) => ChangePassword_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, newPassword));
+            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => ChangePassword_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, newPassword));
         }
 
         private void ChangePassword_OnTestPasswordEncrypted(bool success, object result, string name, string newPassword)
@@ -172,7 +175,7 @@ namespace AppCSHtml5
                 string EncryptedCurrentPassword = CheckPasswordResult["password"];
                 
                 if (encryptedTestPassword == EncryptedCurrentPassword)
-                    EncryptPassword(newPassword, (bool encryptSuccess, object encryptResult) => ChangePassword_OnNewPasswordEncrypted(encryptSuccess, encryptResult, name));
+                    EncryptPassword(newPassword, name, (bool encryptSuccess, object encryptResult) => ChangePassword_OnNewPasswordEncrypted(encryptSuccess, encryptResult, name));
                 else
                     (App.Current as App).GoTo("change password failed #5");
             }
@@ -229,10 +232,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
         }
 
-        private void EncryptPassword(string plainText, Action<bool, object> callback)
+        private void EncryptPassword(string plainText, string key, Action<bool, object> callback)
         {
             Database.Completed += OnEncryptPasswordCompleted;
-            Database.Encrypt(new DatabaseEncryptOperation("encrypt password", "encrypt.php", "pt", plainText, callback));
+            Database.Encrypt(new DatabaseEncryptOperation("encrypt password", "encrypt.php", "site/key", $"numbatsoft/{key}", "pt", plainText, callback));
         }
 
         private void OnEncryptPasswordCompleted(object sender, CompletionEventArgs e)
@@ -279,6 +282,100 @@ namespace AppCSHtml5
         }
 
         private Database Database = Database.Current;
+        #endregion
+
+        #region Simulation
+        private void InitSimulation()
+        {
+            OperationHandler.Add(new OperationHandler("/request/encrypt.php", OnEncrypt));
+            OperationHandler.Add(new OperationHandler("/request/query_1.php", OnLoginMatchRequest));
+        }
+
+        private List<Dictionary<string, string>> OnEncrypt(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string Site = null;
+            string Username = null;
+            if (parameters.ContainsKey("site/key"))
+            {
+                string EncodeInfo = parameters["site/key"];
+                string[] Splitted = EncodeInfo.Split('/');
+                if (Splitted.Length >= 2)
+                {
+                    Site = Splitted[0].Trim();
+                    Username = Splitted[1];
+                    for (int i = 2; i < Splitted.Length; i++)
+                        Username += "/" + Splitted[i];
+                    Username = Username.Trim();
+                }
+                else
+                {
+                    Site = null;
+                    Username = null;
+                }
+            }
+            else
+            {
+                Site = null;
+                Username = null;
+            }
+
+            string PlainText;
+            if (parameters.ContainsKey("pt"))
+                PlainText = parameters["pt"];
+            else
+                PlainText = null;
+
+            if (Site == null || Username == null || PlainText == null)
+                return Result;
+
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "encrypted", Convert.ToBase64String(Encoding.UTF8.GetBytes(PlainText)) },
+            });
+
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> OnLoginMatchRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string Username;
+            if (parameters.ContainsKey("name"))
+                Username = parameters["name"];
+            else
+                Username = null;
+
+            if (Username == null)
+                return Result;
+
+            foreach (Dictionary<string, string> Line in KnownUserTable)
+            {
+                if (Line.ContainsKey("id") && Line["id"] == Username)
+                    Result.Add(new Dictionary<string, string>()
+                    {
+                        { "id", Line["id"]},
+                        { "password", Line["password"] },
+                        { "email", Line["email"] },
+                        { "question", Line["question"] },
+                    });
+            }
+
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> KnownUserTable = new List<Dictionary<string, string>>
+        {
+            new Dictionary<string, string>()
+            {
+                { "id", "test" },
+                { "password", Convert.ToBase64String(Encoding.UTF8.GetBytes("toto")) },
+                { "email", "test@test.com" },
+                { "question", "no question" },
+            }
+        };
         #endregion
 
         #region Implementation of INotifyPropertyChanged

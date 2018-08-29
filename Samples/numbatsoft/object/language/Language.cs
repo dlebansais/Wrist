@@ -21,6 +21,8 @@ namespace AppCSHtml5
         public Language()
         {
             LanguageState = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
+
+            InitSimulation();
         }
 
         public ILanguage GetLanguage { get { return App.GetLanguage; } }
@@ -130,6 +132,49 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(true, Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+        #endregion
+
+        #region Simulation
+        private void InitSimulation()
+        {
+            OperationHandler.Add(new OperationHandler("/request/query_2.php", OnQueryNews));
+        }
+
+        private List<Dictionary<string, string>> OnQueryNews(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "enu_summary", "summary 0" },
+                { "enu_content", "content 0" },
+                { "fra_summary", "sommaire 0" },
+                { "fra_content", "contenu 0" },
+            });
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "enu_summary", "summary 1" },
+                { "enu_content", "content 1" },
+                { "fra_summary", "sommaire 1" },
+                { "fra_content", "contenu 1" },
+            });
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "enu_summary", "summary 2" },
+                { "enu_content", "content 2" },
+                { "fra_summary", "sommaire 2" },
+                { "fra_content", "contenu 2" },
+            });
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "enu_summary", "summary 3" },
+                { "enu_content", "content 3" },
+                { "fra_summary", "sommaire 3" },
+                { "fra_content", "contenu 3" },
+            });
+
+            return Result;
         }
         #endregion
 
