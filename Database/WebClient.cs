@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Windows.UI.Xaml;
 
 namespace DatabaseManager
@@ -22,11 +23,13 @@ namespace DatabaseManager
         public WebClient()
         {
             DatabaseTimer = new DispatcherTimer();
-            DatabaseTimer.Interval = TimeSpan.FromSeconds(1);
+            DatabaseTimer.Interval = TimeSpan.FromMilliseconds(1);
             DatabaseTimer.Tick += OnTick;
+            Address = null;
         }
 
         private DispatcherTimer DatabaseTimer;
+        private Uri Address;
 
         public event DownloadStringCompletedEventHandler DownloadStringCompleted;
 
@@ -36,17 +39,19 @@ namespace DatabaseManager
             DatabaseTimer.Start();
         }
 
-        private Uri Address;
-
         private void OnTick(object sender, object e)
         {
-            DispatcherTimer DatabaseTimer = (DispatcherTimer)sender;
-            DatabaseTimer.Stop();
-
-            string Result = OperationHandler.Execute(Address.OriginalString);
+            Uri LocalAddress = Address;
             Address = null;
 
-            DownloadStringCompleted?.Invoke(this, new DownloadStringCompletedEventArgs(Result));
+            if (LocalAddress != null)
+            {
+                DispatcherTimer DatabaseTimer = (DispatcherTimer)sender;
+                DatabaseTimer.Stop();
+
+                string Result = OperationHandler.Execute(LocalAddress.OriginalString);
+                DownloadStringCompleted?.Invoke(this, new DownloadStringCompletedEventArgs(Result));
+            }
         }
     }
 #endif

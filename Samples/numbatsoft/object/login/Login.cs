@@ -288,7 +288,8 @@ namespace AppCSHtml5
         private void InitSimulation()
         {
             OperationHandler.Add(new OperationHandler("/request/encrypt.php", OnEncrypt));
-            OperationHandler.Add(new OperationHandler("/request/query_1.php", OnLoginMatchRequest));
+            OperationHandler.Add(new OperationHandler("/request/query_1.php", OnSignInMatchRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_1.php", OnSignUpRequest));
         }
 
         private List<Dictionary<string, string>> OnEncrypt(Dictionary<string, string> parameters)
@@ -338,7 +339,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnLoginMatchRequest(Dictionary<string, string> parameters)
+        private List<Dictionary<string, string>> OnSignInMatchRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
@@ -362,6 +363,41 @@ namespace AppCSHtml5
                         { "question", Line["question"] },
                     });
             }
+
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> OnSignUpRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string Username;
+            if (parameters.ContainsKey("name"))
+                Username = parameters["name"];
+            else
+                Username = null;
+
+            string Password;
+            if (parameters.ContainsKey("password"))
+                Password = parameters["password"];
+            else
+                Password = null;
+
+            if (Username == null || Password == null)
+                return Result;
+
+            foreach (Dictionary<string, string> Line in KnownUserTable)
+                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("password"))
+                {
+                    Line["password"] = Password;
+
+                    Result.Add(new Dictionary<string, string>()
+                    {
+                        { "result", "1"},
+                    });
+
+                    break;
+                }
 
             return Result;
         }
