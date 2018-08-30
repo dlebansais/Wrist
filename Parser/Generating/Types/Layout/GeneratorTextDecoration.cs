@@ -9,19 +9,22 @@ namespace Parser
             : base(control)
         {
             Text = control.Text;
+            TextWrapping = control.TextWrapping;
         }
 
         public string Text { get; private set; }
+        public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
 
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string AttachedProperties = GetAttachedProperties();
             string StyleProperty = (Style != null) ? Style : "";
+            string WrappingProperty = ((TextWrapping.HasValue && TextWrapping.Value == Windows.UI.Xaml.TextWrapping.NoWrap) ? " TextWrapping=\"NoWrap\"" : " TextWrapping=\"Wrap\"");
             string Properties = $" Style=\"{{StaticResource {design.XamlName}Text{StyleProperty}}}\"";
             string ElementProperties = GetElementProperties(currentPage, currentObject);
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties}{visibilityBinding} Text=\"{Text}\"{Properties}{ElementProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties}{visibilityBinding} Text=\"{Text}\"{Properties}{ElementProperties}{WrappingProperty}/>");
         }
 
         public override string ToString()

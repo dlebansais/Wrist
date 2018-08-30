@@ -10,12 +10,6 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public enum LanguageStates
-    {
-        English,
-        French,
-    }
-
     public class Language : ILanguage
     {
         public Language()
