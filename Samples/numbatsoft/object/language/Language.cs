@@ -21,6 +21,7 @@ namespace AppCSHtml5
         public Language()
         {
             LanguageState = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
+            //Database.DebugWriteResponse = true;
 
             InitSimulation();
         }

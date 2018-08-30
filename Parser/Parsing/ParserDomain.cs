@@ -200,6 +200,9 @@ namespace Parser
                             throw new ParsingException(11, Declaration.Source, $"Translation key used in area '{SpecifiedArea.Name}' but no translation file provided.");
                         if (!Translation.KeyList.Contains(PageKey))
                             throw new ParsingException(12, Declaration.Source, $"Translation key for page '{Page.Name}' used in area '{SpecifiedArea.Name}' not found.");
+
+                        if (!Translation.UsedKeyList.Contains(PageKey))
+                            Translation.UsedKeyList.Add(PageKey);
                     }
 
                     ILayout SpecifiedLayout = Page.AreaLayouts[SpecifiedArea];
