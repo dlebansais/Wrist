@@ -89,7 +89,7 @@ namespace AppCSHtml5
                 if (encryptedTestPassword == EncryptedCurrentPassword)
                 {
                     Email = CheckPasswordResult["email"];
-                    RecoveryQuestion = CheckPasswordResult["question"];
+                    RecoveryQuestion = DecodedRecoveryQuestion(CheckPasswordResult["question"]);
 
                     if (remember)
                     {
@@ -529,6 +529,24 @@ namespace AppCSHtml5
             return Result;
         }
 
+        private static string EncodedRecoveryQuestion(string text)
+        {
+            string Result = "";
+            foreach (char c in text)
+                Result += (char)(((int)c ^ 204 ) + 40);
+
+            return Result;
+        }
+
+        private static string DecodedRecoveryQuestion(string text)
+        {
+            string Result = "";
+            foreach (char c in text)
+                Result += (char)(((int)c - 40) ^ 204);
+
+            return Result;
+        }
+
         private List<Dictionary<string, string>> KnownUserTable = new List<Dictionary<string, string>>
         {
             new Dictionary<string, string>()
@@ -536,7 +554,7 @@ namespace AppCSHtml5
                 { "id", "test" },
                 { "password", Convert.ToBase64String(Encoding.UTF8.GetBytes("toto")) },
                 { "email", "test@test.com" },
-                { "question", "no question" },
+                { "question", EncodedRecoveryQuestion("toto") },
             }
         };
         #endregion

@@ -194,6 +194,14 @@ namespace AppCSHtml5
 "J'ai l'intention de fournir à la fois une version 32-bits et une version 64-bits de chaque contrôle, ainsi que leur code source. " +
 "Ultérieurement je mettrais également à jour la section documentation avec un résumé des meilleures pratiques à suivre quand on écrit un contrôle WPF personnalisé, car j'en ai eu besoin et je n'en ai pas trouvé." },
             });
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "created", "2011-03-22 18:14:16" },
+                { "enu_summary", "Everquest Multilog Parser is now live!" },
+                { "enu_content", "This application brings a unique feature to Everquest players: the ability to parse raids accurately, in real-time.&nbsp; Everquest Multilog Parser can be <a href=\"#root#/download/eqmlp/eqmlp.php\">downloaded</a> for free, and additional services are available.&nbsp; See the <a href=\"#root#/products/eqmlp/eqmlp.php\">product description</a> for details." },
+                { "fra_summary", "Everquest Multilog Parser est disponible !" },
+                { "fra_content", "Cette application apporte une fonctionnalité unique aux joueurs d'Everquest : la possibilité de parser les raids avec précision, en temps réel. Everquest Multilog Parser peut être <a href=\"#root#/download/eqmlp/eqmlp.php\">téléchargé</a> gratuitement, et des services supplémentaires sont disponibles. Consultez la <a href=\"#root#/products/eqmlp/eqmlp.php\">description du produit</a> pour en connaitre le détail." },
+            });
 
             return Result;
         }
