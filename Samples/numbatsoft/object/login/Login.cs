@@ -28,10 +28,11 @@ namespace AppCSHtml5
 
         public LoginStates LoginState { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
         public string Password { get; set; }
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }
+        public string Email { get; set; }
+        public string NewEmail { get; set; }
         public string RecoveryQuestion { get; set; }
         public string RecoveryAnswer { get; set; }
         public bool Remember { get; set; }
@@ -203,6 +204,72 @@ namespace AppCSHtml5
         }
         #endregion
 
+        #region Change Email
+        public void On_ChangeEmail(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (string.IsNullOrEmpty(Password))
+                destinationPageName = PageNames.change_email_failed_1Page;
+
+            else if (string.IsNullOrEmpty(NewEmail))
+                destinationPageName = PageNames.change_email_failed_2Page;
+
+            else if (!NewEmail.Contains("@"))
+                destinationPageName = PageNames.change_email_failed_3Page;
+
+            else
+            {
+                StartUpdateEmail(Name, Password, NewEmail);
+                destinationPageName = PageNames.CurrentPage;
+            }
+
+            Password = null;
+            NewEmail = null;
+        }
+
+        private void StartUpdateEmail(string name, string testPassword, string newEmail)
+        {
+            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => ChangeEmail_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, newEmail));
+        }
+
+        private void ChangeEmail_OnTestPasswordEncrypted(bool success, object result, string name, string newEmail)
+        {
+            if (success)
+            {
+                string EncryptedTestPassword = (string)result;
+                CheckPassword(name, (bool checkSuccess, object checkResult) => ChangeEmail_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, name, newEmail));
+            }
+            else
+                (App.Current as App).GoTo(PageNames.change_email_failed_4Page);
+        }
+
+        private void ChangeEmail_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, string name, string newEmail)
+        {
+            if (success)
+            {
+                Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
+                string EncryptedCurrentPassword = CheckPasswordResult["password"];
+
+                if (encryptedTestPassword == EncryptedCurrentPassword)
+                    ChangeEmail(name, newEmail, (bool changeSuccess, object changeResult) => ChangeEmail_OnEmailChanged(changeSuccess, changeResult, newEmail));
+                else
+                    (App.Current as App).GoTo(PageNames.change_email_failed_5Page);
+            }
+            else
+                (App.Current as App).GoTo(PageNames.change_email_failed_4Page);
+        }
+
+        private void ChangeEmail_OnEmailChanged(bool success, object result, string newEmail)
+        {
+            if (success)
+            {
+                Email = newEmail;
+                (App.Current as App).GoTo(PageNames.change_email_successPage);
+            }
+            else
+                (App.Current as App).GoTo(PageNames.change_email_failed_4Page);
+        }
+        #endregion
+
         #region Operations
         private void CheckPassword(string name, Action<bool, object> callback)
         {
@@ -281,6 +348,30 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
         }
 
+        private void ChangeEmail(string name, string newEmail, Action<bool, object> callback)
+        {
+            Database.Completed += OnChangeEmailCompleted;
+            Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "email", HtmlString.Entities(newEmail) } }, callback));
+        }
+
+        private void OnChangeEmailCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnChangeEmailCompleted notified");
+            Database.Completed -= OnChangeEmailCompleted;
+
+            Action<bool, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
+            {
+                string ChangeEmailResult = Result["result"];
+
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangeEmailResult == "1", null));
+            }
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+
         private Database Database = Database.Current;
         #endregion
 
@@ -289,7 +380,8 @@ namespace AppCSHtml5
         {
             OperationHandler.Add(new OperationHandler("/request/encrypt.php", OnEncrypt));
             OperationHandler.Add(new OperationHandler("/request/query_1.php", OnSignInMatchRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_1.php", OnSignUpRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_1.php", OnChangePasswordRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_2.php", OnChangeEmailRequest));
         }
 
         private List<Dictionary<string, string>> OnEncrypt(Dictionary<string, string> parameters)
@@ -367,7 +459,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnSignUpRequest(Dictionary<string, string> parameters)
+        private List<Dictionary<string, string>> OnChangePasswordRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
@@ -390,6 +482,41 @@ namespace AppCSHtml5
                 if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("password"))
                 {
                     Line["password"] = Password;
+
+                    Result.Add(new Dictionary<string, string>()
+                    {
+                        { "result", "1"},
+                    });
+
+                    break;
+                }
+
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> OnChangeEmailRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string Username;
+            if (parameters.ContainsKey("name"))
+                Username = parameters["name"];
+            else
+                Username = null;
+
+            string Email;
+            if (parameters.ContainsKey("email"))
+                Email = parameters["email"];
+            else
+                Email = null;
+
+            if (Username == null || Email == null)
+                return Result;
+
+            foreach (Dictionary<string, string> Line in KnownUserTable)
+                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("email"))
+                {
+                    Line["email"] = Email;
 
                     Result.Add(new Dictionary<string, string>()
                     {

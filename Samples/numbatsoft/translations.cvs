@@ -13,6 +13,12 @@ page-change-password-failed-3	Account management	Gestion du compte
 page-change-password-failed-4	Account management	Gestion du compte
 page-change-password-failed-5	Account management	Gestion du compte
 page-change-password-success	Account management	Gestion du compte
+page-change-email-failed-1	Account management	Gestion du compte
+page-change-email-failed-2	Account management	Gestion du compte
+page-change-email-failed-3	Account management	Gestion du compte
+page-change-email-failed-4	Account management	Gestion du compte
+page-change-email-failed-5	Account management	Gestion du compte
+page-change-email-success	Account management	Gestion du compte
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -61,8 +67,8 @@ current-password-colon	Current password:	Mot de passe actuel :
 new-password-colon	New password:	Nouveau :
 confirm-password-colon	Confirm password:	Confirmation :
 change	Change now	Changer
-change-email-title	change email address	changer l'addresse courriel
-change-email-text	change email address	changer l'addresse courriel
+change-email-title	Change email address	Changer l'addresse courriel
+change-email-text	Please enter your current password, followed by the new email address.	Veuillez entrer votre mot de passe actuel, et la nouvelle adresse courriel.
 change-recovery-title	change recovery question	changer la question de récupération
 change-recovery-text	change recovery question	changer la question de récupération
 change-password-failed-title	Changing the password failed	Le changement de mot de passe a échoué
@@ -75,3 +81,12 @@ retry	Click here to try again.	Cliquez ici pour essayer à nouveau.
 change-password-success-title	Password changed	Le changement de mot de passe a réussi
 change-password-success-text	Congratulation, your password has been changed.	Félicitation, votre mot de passe a bien été changé.
 return-home	Click here to return to your account summary.	Cliquez ici pour retourner à la page Sommaire de votre compte.
+new-email-colon	New email address:	Nouvelle adresse courriel :
+change-email-failed-title	Changing the email address failed	Le changement d'adresse courriel a échoué
+change-email-failed-text-1	Sorry, you must enter your password to be able to change the email address.	Désolé, vous devez entrer votre mot de passe actuel pour pouvoir changer l'adresse courriel.
+change-email-failed-text-2	Sorry, you did not enter a new email address.	Désolé, vous n'avez pas entré une nouvelle adresse courriel.
+change-email-failed-text-3	Sorry, the email address you entered appears to be invalid.	Sorry, the email address you entered appears to be invalid.
+change-email-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+change-email-failed-text-5	Sorry, you misspelled your current password.	Désolé, vous avez entré un mot de passe actuel erroné.
+change-email-success-title	Email address changed	Le changement de d'adresse courriel a réussi
+change-email-success-text	Congratulation, your email address has been changed.	Félicitation, votre adresse courriel a bien été changée.
