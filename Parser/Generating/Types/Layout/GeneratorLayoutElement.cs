@@ -6,18 +6,26 @@ namespace Parser
 {
     public abstract class GeneratorLayoutElement : IGeneratorLayoutElement
     {
+        public static Dictionary<ILayoutElement, IGeneratorLayoutElement> GeneratorLayoutElementMap { get; } = new Dictionary<ILayoutElement, IGeneratorLayoutElement>();
+
         public static GeneratorLayoutElement Convert(ILayoutElement element)
         {
+            GeneratorLayoutElement Result;
+
             if (element is Empty AsEmpty)
-                return new GeneratorEmpty(AsEmpty);
+                Result = new GeneratorEmpty(AsEmpty);
             else if (element is Control AsControl)
-                return new GeneratorControl(AsControl);
+                Result = new GeneratorControl(AsControl);
             else if (element is TextDecoration AsTextDecoration)
-                return new GeneratorTextDecoration(AsTextDecoration);
+                Result = new GeneratorTextDecoration(AsTextDecoration);
             else if (element is Panel AsPanel)
-                return GeneratorPanel.Convert(AsPanel);
+                Result = GeneratorPanel.Convert(AsPanel);
             else
                 throw new InvalidOperationException();
+
+            GeneratorLayoutElementMap.Add(element, Result);
+
+            return Result;
         }
 
         public GeneratorLayoutElement(ILayoutElement element)
@@ -119,6 +127,6 @@ namespace Parser
             return Result;
         }
 
-        public abstract void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);
+        public abstract void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);
     }
 }

@@ -10,6 +10,6 @@ namespace Parser
         string FileName { get; }
         Dictionary<IGeneratorArea, IGeneratorPanel> ContentTable { get; }
         bool Connect(IGeneratorDomain domain, IGeneratorArea area);
-        void Generate(IGeneratorArea area, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter);
+        void Generate(IGeneratorArea area, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter);
     }
 }

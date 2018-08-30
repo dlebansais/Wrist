@@ -159,7 +159,7 @@ namespace Parser
                     xamlWriter.WriteLine($"{s}<DataTemplate x:Key=\"{Area.XamlName}\">");
 
                 IGeneratorLayout Layout = AreaLayouts[Area];
-                Area.Generate(Layout, AreaLayouts, Design, Indentation + 1, this, colorTheme, xamlWriter);
+                Area.Generate(Layout, AreaLayouts, domain.Pages, Design, Indentation + 1, this, colorTheme, xamlWriter);
 
                 if (Area.CurrentObject == null)
                     xamlWriter.WriteLine($"{s}</ControlTemplate>");
@@ -354,6 +354,22 @@ namespace Parser
 
                     cSharpWriter.WriteLine("        }");
                 }
+            }
+
+            Dictionary<IGeneratorPage, string> LinkedPageTable = new Dictionary<IGeneratorPage, string>();
+            foreach (KeyValuePair<ILayoutElement, IGeneratorLayoutElement> Entry in GeneratorLayoutElement.GeneratorLayoutElementMap)
+                if (Entry.Value is IGeneratorTextDecoration AsTextDecoration)
+                    foreach (KeyValuePair<IGeneratorPage, string> LinkEntry in AsTextDecoration.LinkedPageTable)
+                        if (!LinkedPageTable.ContainsKey(LinkEntry.Key))
+                            LinkedPageTable.Add(LinkEntry.Key, LinkEntry.Value);
+
+            foreach (KeyValuePair<IGeneratorPage, string> LinkEntry in LinkedPageTable)
+            {
+                cSharpWriter.WriteLine();
+                cSharpWriter.WriteLine($"        private void {LinkEntry.Value}(object sender, RoutedEventArgs e)");
+                cSharpWriter.WriteLine("        {");
+                cSharpWriter.WriteLine($"            (App.Current as App).GoTo(PageNames.{LinkEntry.Key.XamlName});");
+                cSharpWriter.WriteLine("        }");
             }
 
             cSharpWriter.WriteLine();

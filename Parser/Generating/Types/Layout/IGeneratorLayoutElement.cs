@@ -13,6 +13,6 @@ namespace Parser
         string VerticalAlignment { get; }
         IGeneratorDynamicProperty DynamicController { get; }
         bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components);
-        void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);
+        void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);
     }
 }

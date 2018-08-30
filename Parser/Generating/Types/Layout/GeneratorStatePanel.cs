@@ -34,7 +34,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string AttachedProperties = GetAttachedProperties();
@@ -53,7 +53,7 @@ namespace Parser
             {
                 string IndexReference = Component.GetObjectBinding(currentObject, Component.IndexObject, Component.IndexObjectProperty);
                 string VisibilityBinding = $" Visibility=\"{{Binding {IndexReference}, Converter={{StaticResource convIndexToVisibility}}, ConverterParameter={Parameters[Index++]}}}\"";
-                Element.Generate(areaLayouts, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, VisibilityBinding);
+                Element.Generate(areaLayouts, pageList, design, indentation + 1, currentPage, currentObject, colorTheme, xamlWriter, VisibilityBinding);
             }
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</Grid>");

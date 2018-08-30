@@ -43,10 +43,10 @@ namespace Parser
             return IsConnected;
         }
 
-        public void Generate(IGeneratorArea area, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
+        public void Generate(IGeneratorArea area, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
         {
             IGeneratorPanel Content = ContentTable[area];
-            Content.Generate(areaLayouts, design, indentation, currentPage, currentObject, colorTheme, xamlWriter, "");
+            Content.Generate(areaLayouts, pageList, design, indentation, currentPage, currentObject, colorTheme, xamlWriter, "");
         }
 
         public static string IndentationString(int indentation)

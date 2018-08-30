@@ -60,9 +60,9 @@ namespace Parser
             return false;
         }
 
-        public void Generate(IGeneratorLayout layout, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
+        public void Generate(IGeneratorLayout layout, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
         {
-            layout.Generate(this, areaLayouts, design, indentation, currentPage, CurrentObject, colorTheme, xamlWriter);
+            layout.Generate(this, areaLayouts, pageList, design, indentation, currentPage, CurrentObject, colorTheme, xamlWriter);
         }
 
         public void CollectGoTo(List<Tuple<IGeneratorPageNavigation, IGeneratorObject, IGeneratorObjectPropertyBoolean>> goToList, IGeneratorPage currentPage)
