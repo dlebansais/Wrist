@@ -145,6 +145,7 @@ namespace Parser
             GenerateAppProject(outputFolderName, AppNamespace);
             CopyAssemblyInfo(outputFolderName);
             GenerateObjectBase(outputFolderName, AppNamespace);
+            GeneratePageNames(outputFolderName, AppNamespace);
         }
 
         private void GenerateAppXaml(string outputFolderName, string appNamespace, IGeneratorColorTheme colorTheme)
@@ -235,7 +236,9 @@ namespace Parser
             cSharpWriter.WriteLine("        public App()");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
-            cSharpWriter.WriteLine($"            GoTo(Persistent.GetValue(\"page\", \"{HomePage.Name}\"));");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine($"            PageNames StartPage = int.TryParse(Persistent.GetValue(\"page\", \"\"), out int PageIndex) ? (PageNames)PageIndex : PageNames.{HomePage.XamlName};");
+            cSharpWriter.WriteLine($"            GoTo(StartPage);");
 
             if (SelectedUnitTest != null)
                 cSharpWriter.WriteLine($"            GetUnitTest.Start((Page)Window.Current.Content);");
@@ -254,29 +257,27 @@ namespace Parser
                 cSharpWriter.WriteLine("        public static UnitTest GetUnitTest { get; } = new UnitTest();");
 
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        public void GoTo(string pageName)");
+            cSharpWriter.WriteLine("        public void GoTo(PageNames pageName)");
             cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine("            if (pageName == null)");
+            cSharpWriter.WriteLine("            if (pageName == PageNames.CurrentPage)");
             cSharpWriter.WriteLine("                return;");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("            switch (pageName)");
+            cSharpWriter.WriteLine("            {");
 
             for (int i = 0; i < Pages.Count; i++)
             {
                 IGeneratorPage Page = Pages[i];
-
-                if (Page != HomePage)
-                {
-                    cSharpWriter.WriteLine($"            else if (pageName == \"{Page.Name}\")");
-                    cSharpWriter.WriteLine($"                Window.Current.Content = new {Page.XamlName}();");
-                }
+                if (Page == HomePage)
+                    cSharpWriter.WriteLine("                default:");
+                cSharpWriter.WriteLine($"                case PageNames.{Page.XamlName}:");
+                cSharpWriter.WriteLine($"                    Window.Current.Content = new {Page.XamlName}();");
+                cSharpWriter.WriteLine("                    break;");
             }
 
-            cSharpWriter.WriteLine("            else");
-            cSharpWriter.WriteLine("            {");
-            cSharpWriter.WriteLine($"                pageName = \"{HomePage.Name}\";");
-            cSharpWriter.WriteLine($"                Window.Current.Content = new {HomePage.XamlName}();");
             cSharpWriter.WriteLine("            }");
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("            Persistent.SetValue(\"page\", pageName);");
+            cSharpWriter.WriteLine("            Persistent.SetValue(\"page\", ((int)pageName).ToString());");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        private Dictionary<Control, Brush> BrushTable = new Dictionary<Control, Brush>();");
@@ -423,6 +424,7 @@ namespace Parser
             }
 
             projectWriter.WriteLine($"    <Compile Include=\"Objects\\IObjectBase.cs\"/>");
+            projectWriter.WriteLine($"    <Compile Include=\"Pages\\PageNames.cs\"/>");
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");
 
@@ -470,6 +472,34 @@ namespace Parser
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)
                     cSharpWriter.WriteLine($"        I{Object.CSharpName} Get{Object.CSharpName} {{ get; }}");
+
+            cSharpWriter.WriteLine("    }");
+            cSharpWriter.WriteLine("}");
+        }
+
+        private void GeneratePageNames(string outputFolderName, string appNamespace)
+        {
+            string CSharpFileName = Path.Combine(outputFolderName, "Pages/PageNames.cs");
+
+            using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (StreamWriter CSharpWriter = new StreamWriter(CSharpFile, Encoding.UTF8))
+                {
+                    GeneratePageNames(outputFolderName, appNamespace, CSharpWriter);
+                }
+            }
+        }
+
+        private void GeneratePageNames(string outputFolderName, string appNamespace, StreamWriter cSharpWriter)
+        {
+            cSharpWriter.WriteLine($"namespace {appNamespace}");
+            cSharpWriter.WriteLine("{");
+            cSharpWriter.WriteLine("    public enum PageNames");
+            cSharpWriter.WriteLine("    {");
+            cSharpWriter.WriteLine("        CurrentPage,");
+
+            foreach (IGeneratorPage Page in Pages)
+                cSharpWriter.WriteLine($"        {Page.XamlName},");
 
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");

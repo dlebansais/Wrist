@@ -261,24 +261,24 @@ namespace Parser
 
                     if (GoTo.GoToPage == GeneratorPage.AnyPage)
                     {
-                        cSharpWriter.WriteLine($"            string DestinationPageName;");
+                        cSharpWriter.WriteLine($"            PageNames DestinationPageName;");
                         if (GoTo.BeforeObject.IsGlobal)
-                            cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
+                            cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
                         else
-                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
+                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
                         cSharpWriter.WriteLine($"            (App.Current as App).GoTo(DestinationPageName);");
                     }
                     else
                     {
                         if (GoTo.BeforeObject.IsGlobal)
-                            cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content);");
+                            cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
                         else
-                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(\"{Name}\", \"{GoTo.Source.Source.Name}\", Content);");
-                        cSharpWriter.WriteLine($"            (App.Current as App).GoTo(\"{GoTo.GoToPage.Name}\");");
+                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
+                        cSharpWriter.WriteLine($"            (App.Current as App).GoTo(PageNames.{GoTo.GoToPage.XamlName});");
                     }
                 }
                 else
-                    cSharpWriter.WriteLine($"            (App.Current as App).GoTo(\"{GoTo.GoToPage.Name}\");");
+                    cSharpWriter.WriteLine($"            (App.Current as App).GoTo(PageNames.{GoTo.GoToPage.XamlName});");
 
                 if (ClosePopupObject != null && ClosePopupObjectProperty != null)
                 {

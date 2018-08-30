@@ -69,7 +69,7 @@ namespace AppCSHtml5
 
         private bool IsAllNewsParsed;
 
-        public void On_Switch(string pageName, string sourceName, string sourceContent)
+        public void On_Switch(PageNames pageName, string sourceName, string sourceContent)
         {
             LanguageState = (LanguageState == LanguageStates.English) ? LanguageStates.French : LanguageStates.English;
             foreach (NewsEntry Item in _AllNews)

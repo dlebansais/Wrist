@@ -37,7 +37,7 @@ namespace AppCSHtml5
         public bool Remember { get; set; }
 
         #region Login
-        public void On_Login(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_Login(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (!Remember)
             {
@@ -48,15 +48,15 @@ namespace AppCSHtml5
             }
 
             if (string.IsNullOrEmpty(Name))
-                destinationPageName = "login failed";
+                destinationPageName = PageNames.login_failedPage;
 
             else if (string.IsNullOrEmpty(Password))
-                destinationPageName = "login failed";
+                destinationPageName = PageNames.login_failedPage;
 
             else
             {
                 StartLogin(Name, Password, Remember);
-                destinationPageName = null;
+                destinationPageName = PageNames.CurrentPage;
             }
 
             Password = null;
@@ -75,7 +75,7 @@ namespace AppCSHtml5
                 CheckPassword(name, (bool checkSuccess, object checkResult) => Login_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, remember));
             }
             else
-                (App.Current as App).GoTo("login failed");
+                (App.Current as App).GoTo(PageNames.login_failedPage);
         }
 
         private void Login_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, bool remember)
@@ -104,18 +104,18 @@ namespace AppCSHtml5
                     NotifyPropertyChanged(nameof(RecoveryQuestion));
                     NotifyPropertyChanged(nameof(LoginState));
 
-                    (App.Current as App).GoTo("account");
+                    (App.Current as App).GoTo(PageNames.accountPage);
                 }
                 else
-                    (App.Current as App).GoTo("login failed");
+                    (App.Current as App).GoTo(PageNames.login_failedPage);
             }
             else
-                (App.Current as App).GoTo("login failed");
+                (App.Current as App).GoTo(PageNames.login_failedPage);
         }
         #endregion
 
         #region Logout
-        public void On_Logout(string pageName, string sourceName, string sourceContent)
+        public void On_Logout(PageNames pageName, string sourceName, string sourceContent)
         {
             LoginState = LoginStates.LoggedOff;
             Name = null;
@@ -129,21 +129,21 @@ namespace AppCSHtml5
         #endregion
 
         #region Change Password
-        public void On_ChangePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_ChangePassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (string.IsNullOrEmpty(Password))
-                destinationPageName = "change password failed #1";
+                destinationPageName = PageNames.change_password_failed_1Page;
 
             else if (string.IsNullOrEmpty(NewPassword) || string.IsNullOrEmpty(ConfirmPassword))
-                destinationPageName = "change password failed #2";
+                destinationPageName = PageNames.change_password_failed_2Page;
 
             else if (NewPassword != ConfirmPassword)
-                destinationPageName = "change password failed #3";
+                destinationPageName = PageNames.change_password_failed_3Page;
 
             else
             {
                 StartUpdatePassword(Name, Password, NewPassword);
-                destinationPageName = null;
+                destinationPageName = PageNames.CurrentPage;
             }
 
             Password = null;
@@ -164,7 +164,7 @@ namespace AppCSHtml5
                 CheckPassword(name, (bool checkSuccess, object checkResult) => ChangePassword_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, name, newPassword));
             }
             else
-                (App.Current as App).GoTo("change password failed #4");
+                (App.Current as App).GoTo(PageNames.change_password_failed_4Page);
         }
 
         private void ChangePassword_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, string name, string newPassword)
@@ -177,10 +177,10 @@ namespace AppCSHtml5
                 if (encryptedTestPassword == EncryptedCurrentPassword)
                     EncryptPassword(newPassword, name, (bool encryptSuccess, object encryptResult) => ChangePassword_OnNewPasswordEncrypted(encryptSuccess, encryptResult, name));
                 else
-                    (App.Current as App).GoTo("change password failed #5");
+                    (App.Current as App).GoTo(PageNames.change_password_failed_5Page);
             }
             else
-                (App.Current as App).GoTo("change password failed #4");
+                (App.Current as App).GoTo(PageNames.change_password_failed_4Page);
         }
 
         private void ChangePassword_OnNewPasswordEncrypted(bool success, object result, string name)
@@ -191,15 +191,15 @@ namespace AppCSHtml5
                 ChangePassword(name, EncryptedNewPassword, ChangePassword_OnPasswordChanged);
             }
             else
-                (App.Current as App).GoTo("change password failed #4");
+                (App.Current as App).GoTo(PageNames.change_password_failed_4Page);
         }
 
         private void ChangePassword_OnPasswordChanged(bool success, object result)
         {
             if (success)
-                (App.Current as App).GoTo("change password success");
+                (App.Current as App).GoTo(PageNames.change_password_successPage);
             else
-                (App.Current as App).GoTo("change password failed #4");
+                (App.Current as App).GoTo(PageNames.change_password_failed_4Page);
         }
         #endregion
 
