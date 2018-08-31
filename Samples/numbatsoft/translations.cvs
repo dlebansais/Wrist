@@ -43,13 +43,11 @@ last-news-title	Latest news	Dernières nouvelles
 archive-news-title	News archives	Précédement
 read-more	Read more...	En savoir plus...
 login-title	Login information	Informations d'identification
-login-text	Please fill the form below to log in.\u00A0 If you don't have a login name and password, please register.\u00A0 If you cannot remember your name or password, you can recover them.	Veuillez entrer les informations requises ci-dessous pour vous identifier. Si vous n'avez pas un identifiant avec mot de passe, veuillez vous enregistrer. Si vous ne pouvez vous rappeler de votre identifiant, ou de votre mot de passe, vous pouvez les récupérer.
 name-colon	Name:	Nom :
 password-colon	Password:	Mot de passe :
 remember-me	Remember me on this computer	Se rappeller de moi sur cet ordinateur
 login-failed-title	Login failed	L'identification a échoué
 login-failed-text-1	Sorry, the name or password you entered is not correct.	Désolé, le nom ou le mot de passe que vous avez entré sont incorrects.
-login-failed-text-2	Click here if you want to try again.\u00A0 If you think you might have lost your login information, you can try to recover them.	Cliquez ici si vous voulez essayer à nouveau. Si vous pensez que vous avez perdu vos informations d'identification, vous pouvez essayer de les récupérer.
 logged-as	Logged as:	Identifiant :
 account-title	Your account	Votre compte
 email-colon	Email:	Courriel :
