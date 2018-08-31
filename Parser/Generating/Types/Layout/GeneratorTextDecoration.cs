@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -15,7 +16,7 @@ namespace Parser
 
         public string Text { get; private set; }
         public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
-        public Dictionary<IGeneratorPage, string> LinkedPageTable { get; } = new Dictionary<IGeneratorPage, string>();
+        public List<object> LinkedPageList { get; } = new List<object>();
 
         public override void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
@@ -76,7 +77,11 @@ namespace Parser
             text = ReplaceTag(text, pageList, "font", "Span", false, new Dictionary<string, string>() { { "size", "FontSize" }, { "color", "Foreground" }, { "background", "Background" }, { "face", "FontFamily" } });
             text = ReplaceTag(text, pageList, "a", "Hyperlink", false, new Dictionary<string, string>() { { "href", "NavigateUri" } });
 
-            text = ReplaceUri(text, pageList);
+            Dictionary<string, object> PageTable = new Dictionary<string, object>();
+            foreach (IGeneratorPage Page in pageList)
+                PageTable.Add(Page.Name, Page);
+
+            text = TextDecoration.ReplaceUri(text, "NavigateUri", PageTable, LinkedPageList, null, (object value) => $" Click=\"{ToEventHandlerName((IGeneratorPage)value)}\"");
 
             return text;
         }
@@ -152,39 +157,9 @@ namespace Parser
             return Result;
         }
 
-        private string ReplaceUri(string text, IList<IGeneratorPage> pageList)
+        public static string ToEventHandlerName(IGeneratorPage page)
         {
-            LinkedPageTable.Clear();
-
-            string Pattern = "NavigateUri=\"";
-            int StartIndex = 0;
-
-            while ((StartIndex = text.IndexOf(Pattern, StartIndex)) >= 0)
-            {
-                int EndIndex = text.IndexOf("\"", StartIndex + Pattern.Length);
-                if (EndIndex > StartIndex + Pattern.Length)
-                {
-                    string PageName = text.Substring(StartIndex + Pattern.Length, EndIndex - StartIndex - Pattern.Length);
-                    string ClickEvent = "";
-
-                    foreach (IGeneratorPage Page in pageList)
-                        if (Page.Name == PageName)
-                        {
-                            if (!LinkedPageTable.ContainsKey(Page))
-                                LinkedPageTable.Add(Page, $"OnLinkClick_{Page.XamlName}");
-
-                            ClickEvent = $" Click=\"{LinkedPageTable[Page]}\"";
-                            break;
-                        }
-
-                    if (ClickEvent.Length > 0)
-                        text = text.Substring(0, StartIndex) + ClickEvent + text.Substring(EndIndex + 1);
-                    else
-                        StartIndex = EndIndex;
-                }
-            }
-
-            return text;
+            return $"OnLinkClick_{page.XamlName}";
         }
 
         public override string ToString()

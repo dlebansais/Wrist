@@ -359,9 +359,12 @@ namespace Parser
             Dictionary<IGeneratorPage, string> LinkedPageTable = new Dictionary<IGeneratorPage, string>();
             foreach (KeyValuePair<ILayoutElement, IGeneratorLayoutElement> Entry in GeneratorLayoutElement.GeneratorLayoutElementMap)
                 if (Entry.Value is IGeneratorTextDecoration AsTextDecoration)
-                    foreach (KeyValuePair<IGeneratorPage, string> LinkEntry in AsTextDecoration.LinkedPageTable)
-                        if (!LinkedPageTable.ContainsKey(LinkEntry.Key))
-                            LinkedPageTable.Add(LinkEntry.Key, LinkEntry.Value);
+                    foreach (object LinkEntry in AsTextDecoration.LinkedPageList)
+                    {
+                        IGeneratorPage LinkedPage = (IGeneratorPage)LinkEntry;
+                        if (!LinkedPageTable.ContainsKey(LinkedPage))
+                            LinkedPageTable.Add(LinkedPage, GeneratorTextDecoration.ToEventHandlerName(LinkedPage));
+                    }
 
             foreach (KeyValuePair<IGeneratorPage, string> LinkEntry in LinkedPageTable)
             {

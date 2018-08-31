@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Parser
 {
@@ -20,6 +21,63 @@ namespace Parser
                 TextWrapping = Windows.UI.Xaml.TextWrapping.NoWrap;
             else
                 throw new ParsingException(0, Source, $"Invalid wrapping for text decoration.");
+
+            Dictionary<string, object> MatchTable = new Dictionary<string, object>();
+            foreach (IPage Page in domain.Pages)
+                MatchTable.Add(Page.Name, Page);
+
+            List<object> MatchedList = new List<object>();
+            List<string> UnmatchedList = new List<string>();
+            ReplaceUri(Text, "href", MatchTable, MatchedList, UnmatchedList, null);
+            if (UnmatchedList.Count > 0)
+                throw new ParsingException(0, Source, $"Invalid link to page '{UnmatchedList[0]}' in text decoration, page not found.");
+
+            foreach (object Item in MatchedList)
+            {
+                IPage Page = (IPage)Item;
+                Page.SetIsReachable();
+            }
+        }
+
+        public static string ReplaceUri(string text, string uriDeclaration, Dictionary<string, object> matchTable, List<object> matchedList, List<string> unmatchedList, Func<object, string> handler)
+        {
+            string Pattern = $"{uriDeclaration}=\"";
+            int StartIndex = 0;
+
+            while ((StartIndex = text.IndexOf(Pattern, StartIndex)) >= 0)
+            {
+                int EndIndex = text.IndexOf("\"", StartIndex + Pattern.Length);
+                if (EndIndex > StartIndex + Pattern.Length)
+                {
+                    string PageName = text.Substring(StartIndex + Pattern.Length, EndIndex - StartIndex - Pattern.Length);
+                    string Replacement = "";
+
+                    foreach (KeyValuePair<string, object> Entry in matchTable)
+                        if (Entry.Key == PageName)
+                        {
+                            if (!matchedList.Contains(Entry.Value))
+                                matchedList.Add(Entry.Value);
+
+                            if (handler != null)
+                                Replacement = handler(Entry.Value);
+                            else
+                                Replacement = $"{uriDeclaration}=\"{PageName}\"";
+                            break;
+                        }
+
+                    if (Replacement.Length > 0)
+                        text = text.Substring(0, StartIndex) + Replacement + text.Substring(EndIndex + 1);
+                    else
+                    {
+                        if (unmatchedList != null && !unmatchedList.Contains(PageName))
+                            unmatchedList.Add(PageName);
+                    }
+
+                    StartIndex = EndIndex;
+                }
+            }
+
+            return text;
         }
 
         public override string ToString()

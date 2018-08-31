@@ -19,6 +19,12 @@ page-change-email-failed-3	Account management	Gestion du compte
 page-change-email-failed-4	Account management	Gestion du compte
 page-change-email-failed-5	Account management	Gestion du compte
 page-change-email-success	Account management	Gestion du compte
+page-change-recovery-failed-1	Account management	Gestion du compte
+page-change-recovery-failed-2	Account management	Gestion du compte
+page-change-recovery-failed-3	Account management	Gestion du compte
+page-change-recovery-failed-4	Account management	Gestion du compte
+page-change-recovery-failed-5	Account management	Gestion du compte
+page-change-recovery-success	Account management	Gestion du compte
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -65,8 +71,14 @@ confirm-password-colon	Confirm password:	Confirmation :
 change	Change now	Changer
 change-email-title	Change email address	Changer l'addresse courriel
 change-email-text	Please enter your current password, followed by the new email address.	Veuillez entrer votre mot de passe actuel, et la nouvelle adresse courriel.
-change-recovery-title	change recovery question	changer la question de récupération
-change-recovery-text	change recovery question	changer la question de récupération
+change-email-failed-title	Changing the email address failed	Le changement d'adresse courriel a échoué
+change-email-failed-text-1	Sorry, you must enter your password to be able to change the email address.	Désolé, vous devez entrer un mot de passe pour pouvoir changer l'adresse courriel.
+change-email-failed-text-2	Sorry, you did not enter a new email address.	Désolé, vous n'avez pas entré une nouvelle adresse courriel.
+change-email-failed-text-3	Sorry, the email address you entered appears to be invalid.	Désolé, l'adresse courriel que vous avez entré semble incorrecte.
+change-email-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+change-email-failed-text-5	Sorry, you misspelled your current password.	Désolé, vous avez entré un mot de passe erroné.
+change-email-success-title	Email address changed	Adresse courriel changée
+change-email-success-text	Congratulation, your email address has been changed.	Félicitation, votre adresse courriel a bien été changée.
 change-password-failed-title	Changing the password failed	Le changement de mot de passe a échoué
 change-password-failed-text-1	Sorry, you must enter your current password to be able to change it.	Désolé, vous devez entrer votre mot de passe actuel pour pouvoir le changer.
 change-password-failed-text-2	Sorry, you did not enter a new password or did not confirm it.	Désolé, vous n'avez pas entré de nouveau mot de passe, ou bien sa confirmation.
@@ -76,11 +88,22 @@ change-password-failed-text-5	Sorry, you misspelled your current password.	Déso
 change-password-success-title	Password changed	Le changement de mot de passe a réussi
 change-password-success-text	Congratulation, your password has been changed.	Félicitation, votre mot de passe a bien été changé.
 new-email-colon	New email address:	Nouvelle adresse courriel :
-change-email-failed-title	Changing the email address failed	Le changement d'adresse courriel a échoué
-change-email-failed-text-1	Sorry, you must enter your password to be able to change the email address.	Désolé, vous devez entrer votre mot de passe actuel pour pouvoir changer l'adresse courriel.
-change-email-failed-text-2	Sorry, you did not enter a new email address.	Désolé, vous n'avez pas entré une nouvelle adresse courriel.
-change-email-failed-text-3	Sorry, the email address you entered appears to be invalid.	Sorry, the email address you entered appears to be invalid.
-change-email-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
-change-email-failed-text-5	Sorry, you misspelled your current password.	Désolé, vous avez entré un mot de passe actuel erroné.
-change-email-success-title	Email address changed	Le changement de d'adresse courriel a réussi
-change-email-success-text	Congratulation, your email address has been changed.	Félicitation, votre adresse courriel a bien été changée.
+change-recovery-title	Change recovery question	Changer la question de récupération
+change-recovery-text-1	Please enter your current password, followed by the new question and answer with confirmation.	Veuillez entrer votre mot de passe actuel, suivi de la nouvelle question de récupération, la réponse ainsi que sa confirmation.
+change-recovery-text-2	If you wish to remove the recovery question (not recommended) you can leave these fields empty.	Si vous souhaitez supprimer la question de récupération (non recommandé) vous pouvez laisser ces champs vides.
+change-recovery-failed-title	Changing the recovery question failed	Changing the recovery question failed
+change-recovery-failed-text-1	Sorry, you must enter your current password to be able to change the recovery question.	Sorry, you must enter your current password to be able to change the recovery question.
+change-recovery-failed-text-2	Sorry, you did not enter a new question or answer, or did not confirm it.	Sorry, you did not enter a new question or answer, or did not confirm it.
+change-recovery-failed-text-3	Sorry, you misspelled your answer in the confirmation box.	Sorry, you misspelled your answer in the confirmation box.
+change-recovery-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+change-recovery-failed-text-5	Sorry, you misspelled your current password.	Désolé, vous avez entré un mot de passe erroné.
+change-recovery-success-title	Recovery question and answer changed	La question de récupération et sa réponse ont été changés
+change-recovery-success-text	Congratulation, your account recovery information has been changed.	Félicitation, les informations utilisées pour la récupération de votre compte on bien été changées.
+new-question-colon	New question:	Nouvelle question :
+answer-colon	Answer:	Réponse :
+confirm-answer-colon	Confirm answer:	Confirmation :
+page-products	Products	Produits
+page-download	Download	Téléchargement
+page-feedback	Feedback	Feedback
+page-recover	Recover	Récupération
+page-register	Register	Enregistrement

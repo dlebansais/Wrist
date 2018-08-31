@@ -34,7 +34,9 @@ namespace AppCSHtml5
         public string Email { get; set; }
         public string NewEmail { get; set; }
         public string RecoveryQuestion { get; set; }
+        public string NewQuestion { get; set; }
         public string RecoveryAnswer { get; set; }
+        public string ConfirmAnswer { get; set; }
         public bool Remember { get; set; }
 
         #region Login
@@ -270,6 +272,80 @@ namespace AppCSHtml5
         }
         #endregion
 
+        #region Change Recovery
+        public void On_ChangeRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (string.IsNullOrEmpty(Password))
+                destinationPageName = PageNames.change_recovery_failed_1Page;
+
+            else if (string.IsNullOrEmpty(NewQuestion) && string.IsNullOrEmpty(RecoveryAnswer) && string.IsNullOrEmpty(ConfirmAnswer))
+            {
+                StartUpdateRecovery(Name, Password, "", "");
+                destinationPageName = PageNames.CurrentPage;
+            }
+
+            else if (string.IsNullOrEmpty(NewQuestion) || string.IsNullOrEmpty(RecoveryAnswer) || string.IsNullOrEmpty(ConfirmAnswer))
+                destinationPageName = PageNames.change_recovery_failed_2Page;
+
+            else if (RecoveryAnswer != ConfirmAnswer)
+                destinationPageName = PageNames.change_recovery_failed_3Page;
+
+            else
+            {
+                StartUpdateRecovery(Name, Password, NewQuestion, RecoveryAnswer);
+                destinationPageName = PageNames.CurrentPage;
+            }
+
+            Password = null;
+            NewQuestion = null;
+            RecoveryAnswer = null;
+            ConfirmAnswer = null;
+        }
+
+        private void StartUpdateRecovery(string name, string testPassword, string newQuestion, string newAnswer)
+        {
+            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => ChangeRecovery_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, newQuestion, newAnswer));
+        }
+
+        private void ChangeRecovery_OnTestPasswordEncrypted(bool success, object result, string name, string newQuestion, string newAnswer)
+        {
+            if (success)
+            {
+                string EncryptedTestPassword = (string)result;
+                CheckPassword(name, (bool checkSuccess, object checkResult) => ChangeRecovery_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, name, newQuestion, newAnswer));
+            }
+            else
+                (App.Current as App).GoTo(PageNames.change_recovery_failed_4Page);
+        }
+
+        private void ChangeRecovery_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, string name, string newQuestion, string newAnswer)
+        {
+            if (success)
+            {
+                Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
+                string EncryptedCurrentPassword = CheckPasswordResult["password"];
+
+                if (encryptedTestPassword == EncryptedCurrentPassword)
+                    ChangeRecovery(name, newQuestion, newAnswer, (bool changeSuccess, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeSuccess, changeResult, newQuestion));
+                else
+                    (App.Current as App).GoTo(PageNames.change_recovery_failed_5Page);
+            }
+            else
+                (App.Current as App).GoTo(PageNames.change_recovery_failed_4Page);
+        }
+
+        private void ChangeRecovery_OnRecoveryChanged(bool success, object result, string newQuestion)
+        {
+            if (success)
+            {
+                RecoveryQuestion = newQuestion;
+                (App.Current as App).GoTo(PageNames.change_recovery_successPage);
+            }
+            else
+                (App.Current as App).GoTo(PageNames.change_recovery_failed_4Page);
+        }
+        #endregion
+
         #region Operations
         private void CheckPassword(string name, Action<bool, object> callback)
         {
@@ -372,6 +448,30 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
         }
 
+        private void ChangeRecovery(string name, string newQuestion, string newAnswer, Action<bool, object> callback)
+        {
+            Database.Completed += OnChangeRecoveryCompleted;
+            Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "question", HtmlString.Entities(newQuestion) }, { "answer", HtmlString.Entities(newAnswer) } }, callback));
+        }
+
+        private void OnChangeRecoveryCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnChangeRecoveryCompleted notified");
+            Database.Completed -= OnChangeRecoveryCompleted;
+
+            Action<bool, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
+            {
+                string ChangeRecoveryResult = Result["result"];
+
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangeRecoveryResult == "1", null));
+            }
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+
         private Database Database = Database.Current;
         #endregion
 
@@ -382,6 +482,7 @@ namespace AppCSHtml5
             OperationHandler.Add(new OperationHandler("/request/query_1.php", OnSignInMatchRequest));
             OperationHandler.Add(new OperationHandler("/request/update_1.php", OnChangePasswordRequest));
             OperationHandler.Add(new OperationHandler("/request/update_2.php", OnChangeEmailRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_3.php", OnChangeRecoveryRequest));
         }
 
         private List<Dictionary<string, string>> OnEncrypt(Dictionary<string, string> parameters)
@@ -529,6 +630,48 @@ namespace AppCSHtml5
             return Result;
         }
 
+        private List<Dictionary<string, string>> OnChangeRecoveryRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string Username;
+            if (parameters.ContainsKey("name"))
+                Username = parameters["name"];
+            else
+                Username = null;
+
+            string NewQuestion;
+            if (parameters.ContainsKey("question"))
+                NewQuestion = parameters["question"];
+            else
+                NewQuestion = null;
+
+            string NewAnswer;
+            if (parameters.ContainsKey("answer"))
+                NewAnswer = parameters["answer"];
+            else
+                NewAnswer = null;
+
+            if (Username == null || NewQuestion == null || NewAnswer == null)
+                return Result;
+
+            foreach (Dictionary<string, string> Line in KnownUserTable)
+                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("question") && Line.ContainsKey("answer"))
+                {
+                    Line["question"] = NewQuestion;
+                    Line["answer"] = NewAnswer;
+
+                    Result.Add(new Dictionary<string, string>()
+                    {
+                        { "result", "1"},
+                    });
+
+                    break;
+                }
+
+            return Result;
+        }
+
         private static string EncodedRecoveryQuestion(string text)
         {
             string Result = "";
@@ -554,7 +697,8 @@ namespace AppCSHtml5
                 { "id", "test" },
                 { "password", Convert.ToBase64String(Encoding.UTF8.GetBytes("toto")) },
                 { "email", "test@test.com" },
-                { "question", EncodedRecoveryQuestion("toto") },
+                { "question", EncodedRecoveryQuestion("foo") },
+                { "answer", Convert.ToBase64String(Encoding.UTF8.GetBytes("not foo")) },
             }
         };
         #endregion
