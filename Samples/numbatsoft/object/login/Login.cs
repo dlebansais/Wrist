@@ -39,6 +39,55 @@ namespace AppCSHtml5
         public string ConfirmAnswer { get; set; }
         public bool Remember { get; set; }
 
+        #region Register
+        public void On_Register(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(Email) || !Email.Contains("@"))
+                destinationPageName = PageNames.registration_failed_01Page;
+
+            else if (string.IsNullOrEmpty(RecoveryQuestion) && !string.IsNullOrEmpty(RecoveryAnswer))
+                destinationPageName = PageNames.registration_failed_02Page;
+
+            else if (!string.IsNullOrEmpty(RecoveryQuestion) && string.IsNullOrEmpty(RecoveryAnswer))
+                destinationPageName = PageNames.registration_failed_03Page;
+
+            else
+            {
+                StartRegister(Name, Password, Email, RecoveryQuestion, RecoveryAnswer);
+                destinationPageName = PageNames.CurrentPage;
+            }
+
+            Password = null;
+            RecoveryAnswer = null;
+        }
+
+        private void StartRegister(string name, string password, string email, string question, string answer)
+        {
+            EncryptPassword(password, name, (bool encryptSuccess, object encryptResult) => Register_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, email, question, answer));
+        }
+
+        private void Register_OnTestPasswordEncrypted(bool success, object result, string name, string email, string question, string answer)
+        {
+            if (success)
+            {
+                string EncryptedPassword = (string)result;
+                RegisterAndSendEmail(name, EncryptedPassword, email, question, answer, (bool checkSuccess, object checkResult) => Register_OnEmailSent(checkSuccess, checkResult));
+            }
+            else
+                (App.Current as App).GoTo(PageNames.registration_failed_04Page);
+        }
+
+        private void Register_OnEmailSent(bool success, object result)
+        {
+            if (success)
+            {
+                (App.Current as App).GoTo(PageNames.registration_startedPage);
+            }
+            else
+                (App.Current as App).GoTo(PageNames.registration_failed_05Page);
+        }
+        #endregion
+
         #region Login
         public void On_Login(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
@@ -458,6 +507,30 @@ namespace AppCSHtml5
         {
             Debug.WriteLine("OnChangeRecoveryCompleted notified");
             Database.Completed -= OnChangeRecoveryCompleted;
+
+            Action<bool, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
+            {
+                string ChangeRecoveryResult = Result["result"];
+
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangeRecoveryResult == "1", null));
+            }
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+
+        private void RegisterAndSendEmail(string name, string encryptedPassword, string email, string question, string answer, Action<bool, object> callback)
+        {
+            Database.Completed += OnRegisterSendEmailCompleted;
+            Database.Update(new DatabaseUpdateOperation("start register", "update_4.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "password", HtmlString.Entities(encryptedPassword) }, { "question", HtmlString.Entities(question) }, { "answer", HtmlString.Entities(answer) } }, callback));
+        }
+
+        private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnRegisterSendEmailCompleted notified");
+            Database.Completed -= OnRegisterSendEmailCompleted;
 
             Action<bool, object> Callback = e.Operation.Callback;
 
