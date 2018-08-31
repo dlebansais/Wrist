@@ -71,17 +71,22 @@ namespace Parser
             }
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string StyleProperty = (style != null) ? style : "";
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}CheckBox{StyleProperty}}}\"";
+            string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"";
             string Content = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
             string IsCheckedBinding = GetComponentValue(currentPage, currentObject, null, CheckedObject, CheckedObjectProperty, null, true);
             string CheckedEvent = currentPage.Dynamic.HasProperties ? $" Checked=\"{GetChangedHandlerName(CheckedObject, CheckedObjectProperty)}\"" : "";
             string UncheckedEvent = currentPage.Dynamic.HasProperties ? $" Unchecked=\"{GetChangedHandlerName(CheckedObject, CheckedObjectProperty)}\"" : "";
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<CheckBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\"{CheckedEvent}{UncheckedEvent} Content=\"{Content}\"/>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{design.XamlName}CheckBox{StyleProperty}";
         }
 
         public IGeneratorObject BoundObject { get { return CheckedObject; } }

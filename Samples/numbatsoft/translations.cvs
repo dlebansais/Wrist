@@ -131,15 +131,17 @@ question-explanation	Enter a question for which you're the only one to know the 
 before-register	Upon clicking the button below, an email will be sent to you, with a link to the registration completion page.\u00A0 The link will remain valid for 24h.\u00A0 If your registration is not finished within this time, it will be cancelled.	Après avoir cliqué sur le bouton ci-dessous, un courriel vous sera envoyé, avec un lien vers la page de confirmation de l'enregistrement. Ce lien restera valide 24 heures. Au delà de ce délai, si votre enregistrement n'est pas confirmé, il sera annulé.
 register	Begin registration	Commencer l'enregistrement
 registration-failed-title	Registration failed	L'enregistrement a échoué
-registration-failed-text-1	.	.
-registration-failed-text-2	.	.
-registration-failed-text-3	.	.
-registration-failed-text-4	.	.
+registration-failed-text-1	Sorry, the name, password or email address you entered is not correct.	Désolé, le nom, le mot de passe ou l'adresse courriel que vous avez entré ne sont pas valides.
+registration-failed-text-2	Sorry, if there is a secret question the answer cannot be empty.	Désolé, s'il y a une question secrète la réponse ne peut pas être vide.
+registration-failed-text-3	Sorry, if there is no secret question the answer must be empty too.	Désolé, s'il n'y a pas de question la réponse doit être vide également.
+registration-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 registration-failed-text-5	.	.
 registration-failed-text-6	.	.
-registration-failed-text-7	.	.
-registration-failed-text-8	.	.
+registration-failed-text-7-1	Sorry, the name	Désolé, le nom
+registration-failed-text-7-2	is already used.\u00A0 Please pick another name.	est déjà utilisé. Veuillez choisir un autre nom.
+registration-failed-text-8-1	Sorry, the email address	Désolé, l'adresse courriel
+registration-failed-text-8-2	is already used.\u00A0 Please pick another address.	est déjà utilisée. Veuillez choisir une autre adresse.
 registration-failed-text-9	.	.
 registration-failed-text-10	.	.
-registration-started-title	Registration started	.
-registration-started-text	Registration started	.
+registration-started-title	Registration is started	L'enregistrement a démarré
+registration-started-text	Please check your email inbox to continue registration.	Veuillez consulter la boîte de réception de votre courriel pour continuer l'enregistrement.

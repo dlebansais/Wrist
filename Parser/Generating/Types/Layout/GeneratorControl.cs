@@ -44,6 +44,11 @@ namespace Parser
             Component.Generate(design, Style, AttachedProperties, ElementProperties, TextWrapping, IsHorizontalAlignmentStretch, indentation, currentPage, currentObject, colorTheme, xamlWriter, visibilityBinding);
         }
 
+        public override string GetStyleResourceKey(IGeneratorDesign design)
+        {
+            return Component.GetStyleResourceKey(design, Style);
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name} '{Name}'";

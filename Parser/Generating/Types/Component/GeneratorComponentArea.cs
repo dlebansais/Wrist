@@ -29,7 +29,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             Generate(Area, attachedProperties, elementProperties, indentation, colorTheme, xamlWriter, visibilityBinding, double.NaN);
         }
@@ -41,6 +41,11 @@ namespace Parser
             string WidthProperty = double.IsNaN(width) ? "" : $" HorizontalAlignment=\"Center\" Width=\"{width}\"";
 
             colorTheme.WriteXamlLine(xamlWriter, $"{s}<ContentControl{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{WidthProperty}/>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            return null;
         }
 
         public override bool IsReferencing(IGeneratorArea other)

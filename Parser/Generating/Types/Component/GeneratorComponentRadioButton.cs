@@ -89,17 +89,22 @@ namespace Parser
             }
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string StyleProperty = (style != null) ? style : "";
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}RadioButton{StyleProperty}}}\" GroupName=\"{GroupName}\"";
+            string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\" GroupName=\"{GroupName}\"";
             string ContentValue = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
             string IndexValue = GetObjectBinding(currentObject, IndexObject, IndexObjectProperty);
             string IsCheckedBinding = $"{{Binding {IndexValue}, Mode=TwoWay, Converter={{StaticResource convIndexToChecked}}, ConverterParameter={GroupIndex}}}";
             string CheckedEvent = currentPage.Dynamic.HasProperties ? $" Checked=\"{GetChangedHandlerName(IndexObject, IndexObjectProperty)}\"" : "";
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\"{CheckedEvent} Content=\"{ContentValue}\"/>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{design.XamlName}RadioButton{StyleProperty}";
         }
 
         public IGeneratorObject BoundObject { get { return IndexObject; } }

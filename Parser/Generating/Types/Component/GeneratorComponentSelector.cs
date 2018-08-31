@@ -56,11 +56,10 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string StyleProperty = (style != null) ? style : "";
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}Selector{StyleProperty}}}\"";
+            string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"";
             string IndexValue = GetComponentValue(currentPage, currentObject, null, IndexObject, IndexObjectProperty, null, false);
             string ItemsValue = GetComponentValue(currentPage, currentObject, ItemsResource, ItemsObject, ItemsObjectProperty, null, false);
             string LoadedEvent = currentPage.Dynamic.HasProperties ? $" Loaded=\"{GetLoadedHandlerName(IndexObject, IndexObjectProperty)}\"" : "";
@@ -68,6 +67,12 @@ namespace Parser
 
             // SelectedIndex must be first, no clue why.
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<p:ListBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding}{Properties}{elementProperties} ControlSelectedIndex=\"{IndexValue}\"{LoadedEvent}{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{design.XamlName}Selector{StyleProperty}";
         }
 
         public IGeneratorObject BoundObject { get { return IndexObject; } }

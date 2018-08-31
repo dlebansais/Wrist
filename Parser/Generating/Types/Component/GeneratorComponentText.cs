@@ -47,17 +47,22 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string StyleProperty = (style != null) ? style : "";
             string AlignmentProperty = (isHorizontalAlignmentStretch ? $" TextAlignment=\"Justify\"" : "");
             string WrappingProperty = ((textWrapping.HasValue && textWrapping.Value == TextWrapping.NoWrap) ? " TextWrapping=\"NoWrap\"" : " TextWrapping=\"Wrap\"");
             string DecorationProperty = (TextDecoration != null ? $" TextDecorations=\"{TextDecoration}\"" : "");
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}Text{StyleProperty}}}\"{AlignmentProperty}{WrappingProperty}{DecorationProperty}";
+            string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"{AlignmentProperty}{WrappingProperty}{DecorationProperty}";
             string Value = GetComponentValue(currentPage, currentObject, TextResource, TextObject, TextObjectProperty, TextKey, false);
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{attachedProperties}{visibilityBinding} Text=\"{Value}\"{Properties}{elementProperties}/>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{design.XamlName}Text{StyleProperty}";
         }
     }
 }

@@ -31,16 +31,21 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string StyleProperty = (style != null) ? style : "";
             string MaximumLengthProperty = ((TextObjectProperty != null && TextObjectProperty.MaximumLength > 0) ? $" MaxLength=\"{TextObjectProperty.MaximumLength}\"" : "");
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}PasswordBox{StyleProperty}}}\"{MaximumLengthProperty}";
+            string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"{MaximumLengthProperty}";
             string Value = GetComponentValue(currentPage, currentObject, null, TextObject, TextObjectProperty, null, true);
             string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" PasswordChanged=\"{PasswordChangedEventName}\"" : "";
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding} Password=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{design.XamlName}PasswordBox{StyleProperty}";
         }
 
         public string PasswordChangedEventName

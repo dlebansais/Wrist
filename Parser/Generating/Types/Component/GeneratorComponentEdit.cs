@@ -39,10 +39,9 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string StyleProperty = (style != null) ? style : "";
             string MaximumLengthProperty = ((TextObjectProperty != null && TextObjectProperty.MaximumLength > 0) ? $" MaxLength=\"{TextObjectProperty.MaximumLength}\"" : "");
             string AcceptsReturnProperty = (AcceptsReturn ? " AcceptsReturn=\"True\"" : "");
             string AlignmentProperty = (isHorizontalAlignmentStretch ? $" TextAlignment=\"Justify\"" : "");
@@ -50,11 +49,17 @@ namespace Parser
             string DecorationProperty = (TextDecoration != null ? $" TextDecorations=\"{TextDecoration}\"" : "");
             string HorizontalScrollBarProperty = (HorizontalScrollBarVisibility != null ? $" HorizontalScrollBarVisibility=\"{HorizontalScrollBarVisibility}\"" : "");
             string VerticalScrollBarProperty = (VerticalScrollBarVisibility != null ? $" VerticalScrollBarVisibility=\"{VerticalScrollBarVisibility}\"" : "");
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}Edit{StyleProperty}}}\"{MaximumLengthProperty}{AcceptsReturnProperty}{AlignmentProperty}{WrappingProperty}{DecorationProperty}{HorizontalScrollBarProperty}{VerticalScrollBarProperty}";
+            string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"{MaximumLengthProperty}{AcceptsReturnProperty}{AlignmentProperty}{WrappingProperty}{DecorationProperty}{HorizontalScrollBarProperty}{VerticalScrollBarProperty}";
             string Value = GetComponentValue(currentPage, currentObject, null, TextObject, TextObjectProperty, null, true);
             string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" TextChanged=\"{TextChangedEventName}\"" : "";
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding} Text=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{design.XamlName}Edit{StyleProperty}";
         }
 
         public string TextChangedEventName

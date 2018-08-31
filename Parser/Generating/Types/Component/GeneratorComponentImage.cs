@@ -34,20 +34,25 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             double LocalWidth = double.IsNaN(Width) ? SourceResource.Width : Width;
             double LocalHeight = double.IsNaN(Height) ? SourceResource.Height : Height;
 
             string Indentation = GeneratorLayout.IndentationString(indentation);
-            string StyleProperty = (style != null) ? style : "";
             string WidthProperty = double.IsNaN(Width) ? "" : $" Width=\"{Width}\"";
             string HeightProperty = double.IsNaN(Height) ? "" : $" Height=\"{Height}\"";
             string StretchProperty = (double.IsNaN(Width) && double.IsNaN(Height)) ? " Stretch=\"Uniform\"" : "";
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\"{StretchProperty}{WidthProperty}{HeightProperty}";
+            string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"{StretchProperty}{WidthProperty}{HeightProperty}";
             string Value = GetComponentValue(currentPage, currentObject, SourceResource, null, null, null, false);
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Image{attachedProperties}{visibilityBinding} Source=\"{Value}\"{Properties}{elementProperties}/>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{design.XamlName}Image{StyleProperty}";
         }
 
         public override string ToString()

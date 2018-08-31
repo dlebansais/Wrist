@@ -41,6 +41,11 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</Border>");
         }
 
+        public override string GetStyleResourceKey(IGeneratorDesign design)
+        {
+            return null;
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name}";

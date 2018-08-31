@@ -49,7 +49,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public override void Generate(IGeneratorDesign design, string style, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
+        public override void Generate(IGeneratorDesign design, string styleName, string attachedProperties, string elementProperties, TextWrapping? textWrapping, bool isHorizontalAlignmentStretch, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding)
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string OpeningBinding = $" IsOpen=\"{{Binding IsChecked, ElementName={ControlName}}}\"";
@@ -57,8 +57,7 @@ namespace Parser
             string ButtonProperties = $" HorizontalAlignment=\"Right\" Style=\"{{StaticResource {design.XamlName}ToggleButton}}\"";
             string PopupProperties = " HorizontalOffset=\"0\" VerticalOffset=\"0\"";
             string AreaProperties = $" Template=\"{{StaticResource {Area.XamlName}}}\"";
-            string StyleProperty = (style != null) ? style : "";
-            string ImageProperties = $" Style=\"{{StaticResource {design.XamlName}Image{StyleProperty}}}\"";
+            string ImageProperties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"";
             string ImageSource = $" Source=\"{GetComponentValue(currentPage, currentObject, SourceResource, null, null, null, false)}\"";
             string WidthProperty = double.IsNaN(Width) ? "" : $" Width=\"{Width}\"";
             string HeightProperty = double.IsNaN(Height) ? "" : $" Height=\"{Height}\"";
@@ -87,6 +86,12 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}        <ContentControl{AreaProperties}/>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    </p:Popup>");
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</StackPanel>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{design.XamlName}Image{StyleProperty}";
         }
 
         public override bool IsReferencing(IGeneratorArea other)

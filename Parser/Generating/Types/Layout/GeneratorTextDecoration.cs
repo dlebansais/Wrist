@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -22,9 +21,8 @@ namespace Parser
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string AttachedProperties = GetAttachedProperties();
-            string StyleProperty = (Style != null) ? Style : "";
             string WrappingProperty = ((TextWrapping.HasValue && TextWrapping.Value == Windows.UI.Xaml.TextWrapping.NoWrap) ? " TextWrapping=\"NoWrap\"" : " TextWrapping=\"Wrap\"");
-            string Properties = $" Style=\"{{StaticResource {design.XamlName}Text{StyleProperty}}}\"";
+            string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design)}}}\"";
             string ElementProperties = GetElementProperties(currentPage, currentObject);
 
             /*
@@ -66,6 +64,12 @@ namespace Parser
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties}{visibilityBinding} Text=\"{SpanText}\"{Properties}{ElementProperties}{WrappingProperty}/>");
             else
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties}{visibilityBinding}{Properties}{ElementProperties}{WrappingProperty}>{SpanText}</TextBlock>");
+        }
+
+        public override string GetStyleResourceKey(IGeneratorDesign design)
+        {
+            string StyleProperty = (Style != null) ? Style : "";
+            return $"{design.XamlName}Text{StyleProperty}";
         }
 
         private string TextToSpan(string text, IList<IGeneratorPage> pageList)
