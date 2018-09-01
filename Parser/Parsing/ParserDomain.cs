@@ -268,6 +268,12 @@ namespace Parser
                     throw new ParsingException(15, Entry.Key.Source, $"Grid.Row specified for {Entry.Key} not included in a Grid.");
             }
 
+            foreach (IDesign Design in Designs)
+            {
+                foreach (ILayout Layout in Layouts)
+                    Layout.ReportResourceKeys();
+            }
+
             return NewDomain;
         }
 

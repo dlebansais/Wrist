@@ -89,8 +89,7 @@ namespace Parser
 
         public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
-            string StyleProperty = (styleName != null) ? styleName : "";
-            return $"{design.XamlName}Button{StyleProperty}";
+            return ComponentButton.FormatStyleResourceKey(design.XamlName, styleName);
         }
 
         public string ClickEventName(IGeneratorPage currentPage)

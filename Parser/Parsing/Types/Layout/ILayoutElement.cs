@@ -14,5 +14,6 @@ namespace Parser
         string DynamicEnable { get; set; }
         IDynamicProperty DynamicController { get; }
         void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components);
+        void ReportResourceKeys();
     }
 }

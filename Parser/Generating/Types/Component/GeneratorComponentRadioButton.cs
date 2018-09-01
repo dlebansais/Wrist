@@ -103,8 +103,7 @@ namespace Parser
 
         public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
-            string StyleProperty = (styleName != null) ? styleName : "";
-            return $"{design.XamlName}RadioButton{StyleProperty}";
+            return ComponentRadioButton.FormatStyleResourceKey(design.XamlName, styleName);
         }
 
         public IGeneratorObject BoundObject { get { return IndexObject; } }

@@ -54,10 +54,10 @@ namespace Parser
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string OpeningBinding = $" IsOpen=\"{{Binding IsChecked, ElementName={ControlName}}}\"";
             string PanelProperties = " HorizontalAlignment=\"Right\"";
-            string ButtonProperties = $" HorizontalAlignment=\"Right\" Style=\"{{StaticResource {design.XamlName}ToggleButton}}\"";
+            string ButtonProperties = $" HorizontalAlignment=\"Right\" Style=\"{{StaticResource {GetToggleButtonStyleResourceKey(design, styleName)}}}\"";
             string PopupProperties = " HorizontalOffset=\"0\" VerticalOffset=\"0\"";
             string AreaProperties = $" Template=\"{{StaticResource {Area.XamlName}}}\"";
-            string ImageProperties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"";
+            string ImageProperties = $" Style=\"{{StaticResource {GetImageStyleResourceKey(design, styleName)}}}\"";
             string ImageSource = $" Source=\"{GetComponentValue(currentPage, currentObject, SourceResource, null, null, null, false)}\"";
             string WidthProperty = double.IsNaN(Width) ? "" : $" Width=\"{Width}\"";
             string HeightProperty = double.IsNaN(Height) ? "" : $" Height=\"{Height}\"";
@@ -90,8 +90,17 @@ namespace Parser
 
         public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
-            string StyleProperty = (styleName != null) ? styleName : "";
-            return $"{design.XamlName}Image{StyleProperty}";
+            return ComponentImage.FormatStyleResourceKey(design.XamlName, styleName);
+        }
+
+        public string GetToggleButtonStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            return ComponentPopup.FormatToggleButtonStyleResourceKey(design.XamlName, styleName);
+        }
+
+        public string GetImageStyleResourceKey(IGeneratorDesign design, string styleName)
+        {
+            return ComponentPopup.FormatImageStyleResourceKey(design.XamlName, styleName);
         }
 
         public override bool IsReferencing(IGeneratorArea other)

@@ -33,6 +33,11 @@ namespace Parser
             Content.ReportElementsWithAttachedProperties(dockPanels, grids);
         }
 
+        public void ReportResourceKeys()
+        {
+            Content.ReportResourceKeys();
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name} '{Name}' with {Content}";

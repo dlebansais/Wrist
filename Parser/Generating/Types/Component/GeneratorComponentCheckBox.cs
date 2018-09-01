@@ -85,8 +85,7 @@ namespace Parser
 
         public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
-            string StyleProperty = (styleName != null) ? styleName : "";
-            return $"{design.XamlName}CheckBox{StyleProperty}";
+            return ComponentCheckBox.FormatStyleResourceKey(design.XamlName, styleName);
         }
 
         public IGeneratorObject BoundObject { get { return CheckedObject; } }

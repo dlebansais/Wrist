@@ -61,8 +61,7 @@ namespace Parser
 
         public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
-            string StyleProperty = (styleName != null) ? styleName : "";
-            return $"{design.XamlName}Text{StyleProperty}";
+            return ComponentText.FormatStyleResourceKey(design.XamlName, styleName);
         }
     }
 }

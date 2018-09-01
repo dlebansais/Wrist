@@ -1,4 +1,6 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
     public class ComponentPopup : Component, IComponentPopup
     {
@@ -81,6 +83,29 @@
 
             else
                 return false;
+        }
+
+        public override void ReportResourceKeys(IDesign design, List<string> KeyList, string styleName)
+        {
+            string Key = FormatToggleButtonStyleResourceKey(design.XamlName, styleName);
+            if (!KeyList.Contains(Key))
+                KeyList.Add(Key);
+
+            Key = ComponentImage.FormatStyleResourceKey(design.XamlName, styleName);
+            if (!KeyList.Contains(Key))
+                KeyList.Add(Key);
+        }
+
+        public static string FormatToggleButtonStyleResourceKey(string xamlDesignName, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{xamlDesignName}ToggleButton{StyleProperty}";
+        }
+
+        public static string FormatImageStyleResourceKey(string xamlDesignName, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{xamlDesignName}Image{StyleProperty}";
         }
 
         public override string ToString()

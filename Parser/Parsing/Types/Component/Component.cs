@@ -1,4 +1,6 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
     public abstract class Component : IComponent
     {
@@ -13,6 +15,10 @@
         public bool IsUsed { get; private set; }
 
         public abstract bool Connect(IDomain domain, IArea rootArea, IArea currentArea, IObject currentObject);
+
+        public virtual void ReportResourceKeys(IDesign design, List<string> KeyList, string styleName)
+        {
+        }
 
         public void SetIsUsed()
         {

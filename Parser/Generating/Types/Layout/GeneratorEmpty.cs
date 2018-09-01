@@ -21,7 +21,7 @@ namespace Parser
 
             if (Type == "Button")
             {
-                string Properties = $" Style=\"{{StaticResource {design.XamlName}Button}}\"";
+                string Properties = $" Style=\"{{StaticResource {GetButtonStyleResourceKey(design)}}}\"";
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Button{AttachedProperties}{visibilityBinding}{Properties}{ElementProperties} Opacity=\"0\"/>");
             }
             else
@@ -31,6 +31,11 @@ namespace Parser
         public override string GetStyleResourceKey(IGeneratorDesign design)
         {
             return null;
+        }
+
+        public string GetButtonStyleResourceKey(IGeneratorDesign design)
+        {
+            return ComponentButton.FormatStyleResourceKey(design.XamlName, Style);
         }
 
         public override string ToString()

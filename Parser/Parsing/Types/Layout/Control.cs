@@ -38,6 +38,11 @@ namespace Parser
                 throw new ParsingException(157, Source, $"Invalid wrapping for '{Name}'.");
         }
 
+        public override void ReportResourceKeys()
+        {
+            Component.ReportResourceKeys();
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name} '{Name}'";

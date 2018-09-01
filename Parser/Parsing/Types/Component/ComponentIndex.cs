@@ -31,5 +31,12 @@
 
             IndexObjectProperty?.SetIsRead();
         }
+
+        public override void ReportResourceKeys(IDesign design, List<string> KeyList, string styleName)
+        {
+            string Key = ComponentText.FormatStyleResourceKey(design.XamlName, styleName);
+            if (!KeyList.Contains(Key))
+                KeyList.Add(Key);
+        }
     }
 }

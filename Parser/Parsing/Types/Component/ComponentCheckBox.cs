@@ -1,4 +1,6 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
     public class ComponentCheckBox : Component, IComponentCheckBox
     {
@@ -52,6 +54,19 @@
             CheckedObjectProperty = ObjectProperty;
 
             CheckedObjectProperty?.SetIsReadWrite();
+        }
+
+        public override void ReportResourceKeys(IDesign design, List<string> KeyList, string styleName)
+        {
+            string Key = FormatStyleResourceKey(design.XamlName, styleName);
+            if (!KeyList.Contains(Key))
+                KeyList.Add(Key);
+        }
+
+        public static string FormatStyleResourceKey(string xamlDesignName, string styleName)
+        {
+            string StyleProperty = (styleName != null) ? styleName : "";
+            return $"{xamlDesignName}CheckBox{StyleProperty}";
         }
     }
 }

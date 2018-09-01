@@ -51,8 +51,7 @@ namespace Parser
 
         public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
-            string StyleProperty = (styleName != null) ? styleName : "";
-            return $"{design.XamlName}Image{StyleProperty}";
+            return ComponentImage.FormatStyleResourceKey(design.XamlName, styleName);
         }
 
         public override string ToString()

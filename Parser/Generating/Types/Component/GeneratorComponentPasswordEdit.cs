@@ -44,8 +44,7 @@ namespace Parser
 
         public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
-            string StyleProperty = (styleName != null) ? styleName : "";
-            return $"{design.XamlName}PasswordBox{StyleProperty}";
+            return ComponentPasswordEdit.FormatStyleResourceKey(design.XamlName, styleName);
         }
 
         public string PasswordChangedEventName

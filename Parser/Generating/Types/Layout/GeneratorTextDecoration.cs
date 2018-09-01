@@ -68,8 +68,7 @@ namespace Parser
 
         public override string GetStyleResourceKey(IGeneratorDesign design)
         {
-            string StyleProperty = (Style != null) ? Style : "";
-            return $"{design.XamlName}Text{StyleProperty}";
+            return ComponentText.FormatStyleResourceKey(design.XamlName, Style);
         }
 
         private string TextToSpan(string text, IList<IGeneratorPage> pageList)
