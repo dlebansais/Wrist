@@ -101,7 +101,7 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<RadioButton{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\"{CheckedEvent} Content=\"{ContentValue}\"/>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        public string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
             return ComponentRadioButton.FormatStyleResourceKey(design.XamlName, styleName);
         }

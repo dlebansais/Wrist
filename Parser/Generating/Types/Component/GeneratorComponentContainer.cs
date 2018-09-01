@@ -60,10 +60,5 @@ namespace Parser
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<ContentControl{attachedProperties}{visibilityBinding}{ContentBinding}{AreaTemplate}{Properties}{elementProperties}/>");
         }
-
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
-        {
-            return null;
-        }
     }
 }

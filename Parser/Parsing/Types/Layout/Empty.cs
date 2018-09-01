@@ -10,9 +10,24 @@ namespace Parser
         {
             base.ConnectComponents(domain, currentDynamic, components);
 
-            if (Type != null &&
-                Type != "Button")
-                throw new ParsingException(221, Source, "Invalid Type for Empty component.");
+            if (Type != null)
+            {
+                if (Type != "Button")
+                    throw new ParsingException(221, Source, "Invalid Type for Empty component.");
+            }
+        }
+
+        public override void ReportResourceKeys(IDesign design, List<string> KeyList)
+        {
+            if (Type != null)
+            {
+                if (Type == "Button")
+                {
+                    string Key = ComponentButton.FormatStyleResourceKey(design.XamlName, Style);
+                    if (!KeyList.Contains(Key))
+                        KeyList.Add(Key);
+                }
+            }
         }
 
         public override string ToString()

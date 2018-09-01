@@ -56,7 +56,7 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding} Text=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        public string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
             return ComponentEdit.FormatStyleResourceKey(design.XamlName, styleName);
         }

@@ -14,6 +14,5 @@ namespace Parser
         IGeneratorDynamicProperty DynamicController { get; }
         bool Connect(IGeneratorDomain domain, IReadOnlyCollection<IGeneratorComponent> components);
         void Generate(Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorObject currentObject, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter, string visibilityBinding);
-        string GetStyleResourceKey(IGeneratorDesign design);
     }
 }

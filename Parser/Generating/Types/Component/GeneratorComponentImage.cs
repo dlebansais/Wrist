@@ -49,7 +49,7 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Image{attachedProperties}{visibilityBinding} Source=\"{Value}\"{Properties}{elementProperties}/>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        public string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
             return ComponentImage.FormatStyleResourceKey(design.XamlName, styleName);
         }

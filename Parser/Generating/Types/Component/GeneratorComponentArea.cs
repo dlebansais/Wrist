@@ -43,11 +43,6 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{s}<ContentControl{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{WidthProperty}/>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
-        {
-            return null;
-        }
-
         public override bool IsReferencing(IGeneratorArea other)
         {
             if (Area == other)

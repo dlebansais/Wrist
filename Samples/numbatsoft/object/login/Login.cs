@@ -53,7 +53,11 @@ namespace AppCSHtml5
 
             else
             {
-                StartRegister0(Name, Password, Email, RecoveryQuestion, RecoveryAnswer);
+                if (string.IsNullOrEmpty(RecoveryQuestion) && string.IsNullOrEmpty(RecoveryAnswer))
+                    StartRegister(Name, Password, Email, "", "");
+                else
+                    StartRegister(Name, Password, Email, RecoveryQuestion, RecoveryAnswer);
+
                 destinationPageName = PageNames.CurrentPage;
             }
 
@@ -61,7 +65,7 @@ namespace AppCSHtml5
             RecoveryAnswer = null;
         }
 
-        private void StartRegister0(string name, string password, string email, string question, string answer)
+        private void StartRegister(string name, string password, string email, string question, string answer)
         {
             GetUserInfo(name, (bool checkSuccess, object checkResult) => Register_OnNameChecked(checkSuccess, checkResult, name, password, email, question, answer));
         }
@@ -70,7 +74,7 @@ namespace AppCSHtml5
         {
             if (!success)
             {
-                CheckIfEmailTaken(name, (bool checkSuccess, object checkResult) => Register_OnEmailChecked(checkSuccess, checkResult, name, password, email, question, answer));
+                CheckIfEmailTaken(email, (bool checkSuccess, object checkResult) => Register_OnEmailChecked(checkSuccess, checkResult, name, password, email, question, answer));
             }
             else
                 (App.Current as App).GoTo(PageNames.registration_failed_07Page);

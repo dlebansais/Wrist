@@ -110,10 +110,5 @@ namespace Parser
 
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</Grid>");
         }
-
-        public override string GetStyleResourceKey(IGeneratorDesign design)
-        {
-            return null;
-        }
     }
 }

@@ -88,11 +88,6 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</StackPanel>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
-        {
-            return ComponentImage.FormatStyleResourceKey(design.XamlName, styleName);
-        }
-
         public string GetToggleButtonStyleResourceKey(IGeneratorDesign design, string styleName)
         {
             return ComponentPopup.FormatToggleButtonStyleResourceKey(design.XamlName, styleName);

@@ -83,7 +83,7 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<CheckBox{attachedProperties}{visibilityBinding}{Properties}{elementProperties} IsChecked=\"{IsCheckedBinding}\"{CheckedEvent}{UncheckedEvent} Content=\"{Content}\"/>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        public string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
             return ComponentCheckBox.FormatStyleResourceKey(design.XamlName, styleName);
         }

@@ -42,7 +42,7 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding} Password=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        public string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
             return ComponentPasswordEdit.FormatStyleResourceKey(design.XamlName, styleName);
         }

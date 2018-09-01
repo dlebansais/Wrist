@@ -10,6 +10,6 @@ namespace Parser
         IPanel Content { get; }
         void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components);
         void ReportElementsWithAttachedProperties(List<IDockPanel> dockPanels, List<IGrid> grids);
-        void ReportResourceKeys();
+        void ReportResourceKeys(IDesign design, List<string> KeyList);
     }
 }

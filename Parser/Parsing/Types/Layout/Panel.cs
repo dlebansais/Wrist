@@ -45,6 +45,12 @@ namespace Parser
                         controlList.Add(AsControl);
         }
 
+        public override void ReportResourceKeys(IDesign design, List<string> KeyList)
+        {
+            foreach (ILayoutElement Item in Items)
+                Item.ReportResourceKeys(design, KeyList);
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name}, {Items.Count} item(s)";

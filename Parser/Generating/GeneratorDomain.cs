@@ -605,14 +605,7 @@ namespace Parser
                     string TypeName = line.Substring(TypeIndex + 8 + prefix.Length, SeparatorIndex - TypeIndex - 8 - prefix.Length);
 
                     if (renameType)
-                    {
-                        if (TypeName == "TextBlock")
-                            TypeName = "Text";
-                        else if (TypeName == "TextBox")
-                            TypeName = "Edit";
-                        else if (TypeName == "ListBox")
-                            TypeName = "Selector";
-                    }
+                        TypeName = ParserDomain.StyleTypeConverter(TypeName);
 
                     line = line.Substring(0, TypeIndex) + $"{prefix}{replace}" + TypeName + line.Substring(SeparatorIndex + 1);
                 }

@@ -66,7 +66,7 @@ namespace Parser
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties}{visibilityBinding}{Properties}{ElementProperties}{WrappingProperty}>{SpanText}</TextBlock>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design)
+        public string GetStyleResourceKey(IGeneratorDesign design)
         {
             return ComponentText.FormatStyleResourceKey(design.XamlName, Style);
         }

@@ -19,7 +19,7 @@ namespace Parser
         public string DynamicEnable { get; set; }
         public IDynamicProperty DynamicController { get; private set; }
 
-        public abstract void ReportResourceKeys();
+        public abstract void ReportResourceKeys(IDesign design, List<string> KeyList);
 
         public virtual void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {

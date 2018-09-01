@@ -38,9 +38,9 @@ namespace Parser
                 throw new ParsingException(157, Source, $"Invalid wrapping for '{Name}'.");
         }
 
-        public override void ReportResourceKeys()
+        public override void ReportResourceKeys(IDesign design, List<string> KeyList)
         {
-            Component.ReportResourceKeys();
+            Component.ReportResourceKeys(design, KeyList, Style);
         }
 
         public override string ToString()

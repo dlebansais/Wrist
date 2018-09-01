@@ -33,9 +33,9 @@ namespace Parser
             Content.ReportElementsWithAttachedProperties(dockPanels, grids);
         }
 
-        public void ReportResourceKeys()
+        public void ReportResourceKeys(IDesign design, List<string> KeyList)
         {
-            Content.ReportResourceKeys();
+            Content.ReportResourceKeys(design, KeyList);
         }
 
         public override string ToString()

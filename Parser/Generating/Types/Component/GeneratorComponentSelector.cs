@@ -69,7 +69,7 @@ namespace Parser
             colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<p:ListBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding}{Properties}{elementProperties} ControlSelectedIndex=\"{IndexValue}\"{LoadedEvent}{ValueChangedEvent} ItemsSource=\"{ItemsValue}\"/>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design, string styleName)
+        public string GetStyleResourceKey(IGeneratorDesign design, string styleName)
         {
             return ComponentSelector.FormatStyleResourceKey(design.XamlName, styleName);
         }

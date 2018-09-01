@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -215,6 +216,26 @@ namespace Parser
                                 throw new ParsingException(220, Component.Source.Source, $"Component '{Component.Source.Name}' is used more than once in page '{Page.Name}'.");
                         }
                 }
+
+                List<string> KeyList = new List<string>();
+                foreach (KeyValuePair<IArea, ILayout> Entry in Page.AreaLayouts)
+                    Entry.Value.ReportResourceKeys(Page.Design, KeyList);
+
+                List<string> DesignKeyList = new List<string>();
+                foreach (object Key in Page.Design.Root)
+                    if (Key is DictionaryEntry AsEntry)
+                        if (AsEntry.Key is string AsStringKey)
+                            DesignKeyList.Add(AsStringKey);
+                        else if (AsEntry.Key is Type AsTypeKey)
+                            DesignKeyList.Add($"{Page.Design.XamlName}{StyleTypeConverter(AsTypeKey.Name)}");
+                        else
+                            throw new ParsingException(0, "", $"Unexpected key in design '{Page.Design.Name}'.");
+                    else
+                        throw new ParsingException(0, "", $"Unexpected key in design '{Page.Design.Name}'.");
+
+                foreach (string Key in KeyList)
+                    if (!DesignKeyList.Contains(Key))
+                        throw new ParsingException(0, "", $"Resource key '{Key}' not found in design '{Page.Design.Name}'.");
             }
 
             List<IDockPanel> DockPanels = new List<IDockPanel>();
@@ -266,12 +287,6 @@ namespace Parser
 
                 if (!Found)
                     throw new ParsingException(15, Entry.Key.Source, $"Grid.Row specified for {Entry.Key} not included in a Grid.");
-            }
-
-            foreach (IDesign Design in Designs)
-            {
-                foreach (ILayout Layout in Layouts)
-                    Layout.ReportResourceKeys();
             }
 
             return NewDomain;
@@ -443,6 +458,20 @@ namespace Parser
                 throw new ParsingException(18, source, $"'{name}' only contains invalid characters.");
 
             return Result;
+        }
+
+        public static string StyleTypeConverter(string typeName)
+        {
+            if (typeName == "TextBlock")
+                return "Text";
+            else if (typeName == "TextBox")
+                return "Edit";
+            else if (typeName == "PasswordBox")
+                return "PasswordEdit";
+            else if (typeName == "ListBox")
+                return "Selector";
+            else
+                return typeName;
         }
 
         public static void ParseStringPair(IParsingSourceStream sourceStream, char separator, out IDeclarationSource nameSource, out string value)

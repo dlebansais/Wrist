@@ -28,11 +28,6 @@ namespace Parser
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Grid{AttachedProperties}{visibilityBinding}{ElementProperties}/>");
         }
 
-        public override string GetStyleResourceKey(IGeneratorDesign design)
-        {
-            return null;
-        }
-
         public string GetButtonStyleResourceKey(IGeneratorDesign design)
         {
             return ComponentButton.FormatStyleResourceKey(design.XamlName, Style);

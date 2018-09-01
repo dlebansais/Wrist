@@ -80,6 +80,13 @@ namespace Parser
             return text;
         }
 
+        public override void ReportResourceKeys(IDesign design, List<string> KeyList)
+        {
+            string Key = ComponentText.FormatStyleResourceKey(design.XamlName, Style);
+            if (!KeyList.Contains(Key))
+                KeyList.Add(Key);
+        }
+
         public override string ToString()
         {
             return $"{GetType().Name} \"{Text}\"";
