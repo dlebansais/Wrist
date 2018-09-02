@@ -24,25 +24,19 @@
             if (Page == null)
             {
                 IsConnected = true;
-
-                if (GeneratorPage.GeneratorPageMap.ContainsKey(BaseOperation.Page))
-                    Page = GeneratorPage.GeneratorPageMap[BaseOperation.Page];
+                Page = GeneratorPage.GeneratorPageMap[BaseOperation.Page];
             }
 
             if (Area == null)
             {
                 IsConnected = true;
-
-                if (GeneratorArea.GeneratorAreaMap.ContainsKey(BaseOperation.Area))
-                    Area = GeneratorArea.GeneratorAreaMap[BaseOperation.Area];
+                Area = GeneratorArea.GeneratorAreaMap[BaseOperation.Area];
             }
 
             if (Component == null)
             {
-                if (GeneratorComponent.GeneratorComponentMap.ContainsKey(BaseOperation.Component))
-                    Component = GeneratorComponent.GeneratorComponentMap[BaseOperation.Component];
-
                 IsConnected = true;
+                Component = GeneratorComponent.GeneratorComponentMap[BaseOperation.Component];
             }
 
             return IsConnected;

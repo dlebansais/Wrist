@@ -9,6 +9,21 @@ namespace Parser
         public string Wrapping { get; set; }
         public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
 
+        public override ILayoutElement GetClone()
+        {
+            TextDecoration Clone = new TextDecoration();
+            InitializeClone(Clone);
+            return Clone;
+        }
+
+        protected override void InitializeClone(LayoutElement clone)
+        {
+            base.InitializeClone(clone);
+
+            ((TextDecoration)clone).Text = Text;
+            ((TextDecoration)clone).Wrapping = Wrapping;
+        }
+
         public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
             base.ConnectComponents(domain, currentDynamic, components);

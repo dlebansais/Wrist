@@ -25,10 +25,8 @@ namespace Parser
 
             if (Component == null)
             {
-                if (GeneratorComponent.GeneratorComponentMap.ContainsKey(BasePanel.Component))
-                    Component = (IGeneratorComponentIndex)GeneratorComponent.GeneratorComponentMap[BasePanel.Component];
-
                 IsConnected = true;
+                Component = (IGeneratorComponentIndex)GeneratorComponent.GeneratorComponentMap[BasePanel.Component];
             }
 
             return IsConnected;

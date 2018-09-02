@@ -61,20 +61,20 @@ namespace AppCSHtml5
         public bool IsLocationChanged { get; private set; }
         private string _Location;
 
-        public void On_UpdateFullName(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_UpdateFullName(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             IsFullNameChanged = false;
             NotifyPropertyChanged(nameof(IsFullNameChanged));
 
-            destinationPageName = null;
+            destinationPageName = PageNames.CurrentPage;
         }
 
-        public void On_UpdateLocation(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_UpdateLocation(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             IsLocationChanged = false;
             NotifyPropertyChanged(nameof(IsLocationChanged));
 
-            destinationPageName = null;
+            destinationPageName = PageNames.CurrentPage;
         }
 
         public bool IsPasswordEqual(string password)

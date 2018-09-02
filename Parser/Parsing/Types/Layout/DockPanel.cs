@@ -46,7 +46,25 @@ namespace Parser
             else
                 DockTargets.Add(AsElement, Dock);
         }
+
+        public static void CloneDock(ILayoutElement target, ILayoutElement clone)
+        {
+            if (DockTargets.ContainsKey(target))
+                DockTargets.Add(clone, DockTargets[target]);
+        }
         #endregion
+
+        public override ILayoutElement GetClone()
+        {
+            DockPanel Clone = new DockPanel();
+            InitializeClone(Clone);
+            return Clone;
+        }
+
+        protected override void InitializeClone(LayoutElement clone)
+        {
+            base.InitializeClone(clone);
+        }
 
         public override void ReportElementsWithAttachedProperties(List<IDockPanel> dockPanels, List<IGrid> grids)
         {

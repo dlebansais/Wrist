@@ -13,6 +13,7 @@ namespace Parser
         string VerticalAlignment { get; set; }
         string DynamicEnable { get; set; }
         IDynamicProperty DynamicController { get; }
+        ILayoutElement GetClone();
         void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components);
         void ReportResourceKeys(IDesign design, List<string> KeyList);
     }

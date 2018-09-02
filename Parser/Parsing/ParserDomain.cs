@@ -167,6 +167,12 @@ namespace Parser
             // Make sure areas used by other areas are first
             BubbleSort(Areas);
 
+            // Remove all layouts and use their clone.
+            //((List<ILayout>)Layouts).Clear();
+            foreach (IPage Page in Pages)
+                foreach (KeyValuePair<IArea, ILayout> Entry in Page.AreaLayouts)
+                    Layouts.Add(Entry.Value);
+
             foreach (IPage Page in Pages)
             {
                 IFormCollection<IArea> UsedAreas = new FormCollection<IArea>();

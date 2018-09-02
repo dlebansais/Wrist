@@ -22,10 +22,7 @@ namespace Parser
 
         public static IParsingSource GetCurrentSource()
         {
-            if (CurrentSource == null)
-                throw new InvalidOperationException();
-
-            return CurrentSource.FreezedPosition();
+            return CurrentSource?.FreezedPosition();
         }
 
         private static IParsingSourceStream CurrentSource;

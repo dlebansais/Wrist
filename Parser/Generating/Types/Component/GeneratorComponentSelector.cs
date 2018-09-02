@@ -28,10 +28,8 @@ namespace Parser
             {
                 IsConnected = true;
 
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseSelector.IndexObject))
-                    IndexObject = GeneratorObject.GeneratorObjectMap[BaseSelector.IndexObject];
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseSelector.IndexObjectProperty))
-                    IndexObjectProperty = (IGeneratorObjectPropertyIndex)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseSelector.IndexObjectProperty];
+                IndexObject = GeneratorObject.GeneratorObjectMap[BaseSelector.IndexObject];
+                IndexObjectProperty = (IGeneratorObjectPropertyIndex)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseSelector.IndexObjectProperty];
             }
 
             if (ItemsResource == null && (ItemsObject == null || ItemsObjectProperty == null))
@@ -40,16 +38,13 @@ namespace Parser
 
                 if (BaseSelector.ItemsResource != null)
                 {
-                    if (GeneratorResource.GeneratorResourceMap.ContainsKey(BaseSelector.ItemsResource))
-                        ItemsResource = GeneratorResource.GeneratorResourceMap[BaseSelector.ItemsResource];
+                    ItemsResource = GeneratorResource.GeneratorResourceMap[BaseSelector.ItemsResource];
                 }
 
                 else if (BaseSelector.ItemsObject != null && BaseSelector.ItemsObjectProperty != null)
                 {
-                    if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseSelector.ItemsObject))
-                        ItemsObject = GeneratorObject.GeneratorObjectMap[BaseSelector.ItemsObject];
-                    if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseSelector.ItemsObjectProperty))
-                        ItemsObjectProperty = (IGeneratorObjectPropertyStringList)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseSelector.ItemsObjectProperty];
+                    ItemsObject = GeneratorObject.GeneratorObjectMap[BaseSelector.ItemsObject];
+                    ItemsObjectProperty = (IGeneratorObjectPropertyStringList)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseSelector.ItemsObjectProperty];
                 }
             }
 

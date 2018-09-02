@@ -53,8 +53,7 @@ namespace Parser
             if (Area == null)
             {
                 IsConnected = true;
-                if (GeneratorArea.GeneratorAreaMap.ContainsKey(BasePage.Area))
-                    Area = GeneratorArea.GeneratorAreaMap[BasePage.Area];
+                Area = GeneratorArea.GeneratorAreaMap[BasePage.Area];
             }
 
             if (AreaLayouts.Count < BasePage.AreaLayouts.Count)
@@ -62,9 +61,7 @@ namespace Parser
                 IsConnected = true;
 
                 foreach (KeyValuePair<IArea, ILayout> Entry in BasePage.AreaLayouts)
-                    if (GeneratorArea.GeneratorAreaMap.ContainsKey(Entry.Key) && GeneratorLayout.GeneratorLayoutMap.ContainsKey(Entry.Value))
-                        if (!AreaLayouts.ContainsKey(GeneratorArea.GeneratorAreaMap[Entry.Key]))
-                            AreaLayouts.Add(GeneratorArea.GeneratorAreaMap[Entry.Key], GeneratorLayout.GeneratorLayoutMap[Entry.Value]);
+                    AreaLayouts.Add(GeneratorArea.GeneratorAreaMap[Entry.Key], GeneratorLayout.GeneratorLayoutMap[Entry.Value]);
 
                 foreach (KeyValuePair<IGeneratorArea, IGeneratorLayout> Entry in AreaLayouts)
                 {
@@ -76,22 +73,19 @@ namespace Parser
             if (Design == null)
             {
                 IsConnected = true;
-                if (GeneratorDesign.GeneratorDesignMap.ContainsKey(BasePage.Design))
-                    Design = GeneratorDesign.GeneratorDesignMap[BasePage.Design];
+                Design = GeneratorDesign.GeneratorDesignMap[BasePage.Design];
             }
 
             if (Background == null && BasePage.Background != null)
             {
                 IsConnected = true;
-                if (GeneratorBackground.GeneratorBackgroundMap.ContainsKey(BasePage.Background))
-                    Background = GeneratorBackground.GeneratorBackgroundMap[BasePage.Background];
+                Background = GeneratorBackground.GeneratorBackgroundMap[BasePage.Background];
             }
 
             if (Dynamic == null)
             {
                 IsConnected = true;
-                if (GeneratorDynamic.GeneratorDynamicMap.ContainsKey(BasePage.Dynamic))
-                    Dynamic = GeneratorDynamic.GeneratorDynamicMap[BasePage.Dynamic];
+                Dynamic = GeneratorDynamic.GeneratorDynamicMap[BasePage.Dynamic];
             }
 
             return IsConnected;

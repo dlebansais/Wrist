@@ -26,9 +26,7 @@ namespace Parser
             if (SourceResource == null)
             {
                 IsConnected = true;
-
-                if (GeneratorResource.GeneratorResourceMap.ContainsKey(BaseImage.SourceResource))
-                    SourceResource = GeneratorResource.GeneratorResourceMap[BaseImage.SourceResource];
+                SourceResource = GeneratorResource.GeneratorResourceMap[BaseImage.SourceResource];
             }
 
             return IsConnected;

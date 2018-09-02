@@ -71,7 +71,7 @@ namespace AppCSHtml5
         public int KeepActiveIndex { get; set; }
         public bool SignInError { get; set; }
 
-        public void On_Cleanup(string pageName, string sourceName, string sourceContent)
+        public void On_Cleanup(PageNames pageName, string sourceName, string sourceContent)
         {
             SignInMethod = SignInMethods.None;
             Name = null;
@@ -80,7 +80,7 @@ namespace AppCSHtml5
             KeepActiveIndex = -1;
         }
 
-        public void On_SignInNoMethod(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_SignInNoMethod(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string TempPassword = Password;
             Password = null;
@@ -92,17 +92,17 @@ namespace AppCSHtml5
                 FailSignIn(out destinationPageName);
         }
 
-        public void On_SignInWithMethod1(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_SignInWithMethod1(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             On_SignInWithMethod(SignInMethods.NameOnly, pageName, out destinationPageName);
         }
 
-        public void On_SignInWithMethod2(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_SignInWithMethod2(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             On_SignInWithMethod(SignInMethods.NameAndPassword, pageName, out destinationPageName);
         }
 
-        private void On_SignInWithMethod(SignInMethods signInMethod, string pageName, out string destinationPageName)
+        private void On_SignInWithMethod(SignInMethods signInMethod, PageNames pageName, out PageNames destinationPageName)
         {
             string TempPassword = Password;
             Password = null;
@@ -114,22 +114,22 @@ namespace AppCSHtml5
                 FailSignIn(out destinationPageName);
         }
 
-        private void CompleteSignIn(string pageName, out string destinationPageName)
+        private void CompleteSignIn(PageNames pageName, out PageNames destinationPageName)
         {
-            if (pageName == "home" || pageName == "sign in" || pageName == "signed out")
-                destinationPageName = "start";
+            if (pageName == PageNames.homePage || pageName == PageNames.sign_inPage || pageName == PageNames.signed_outPage)
+                destinationPageName = PageNames.startPage;
             else
-                destinationPageName = null;
+                destinationPageName = PageNames.CurrentPage;
 
             Name = null;
         }
 
-        private void FailSignIn(out string destinationPageName)
+        private void FailSignIn(out PageNames destinationPageName)
         {
             SignInError = true;
             NotifyPropertyChanged(nameof(SignInError));
 
-            destinationPageName = null;
+            destinationPageName = PageNames.CurrentPage;
         }
 
         #region Implementation of INotifyPropertyChanged

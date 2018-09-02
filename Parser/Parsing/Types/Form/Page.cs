@@ -135,7 +135,7 @@ namespace Parser
                     else if (EntryLayout == null)
                         throw new ParsingException(120, AreaSource.Source, $"Unknown layout '{LayoutName}'.");
 
-                    AreaLayouts.Add(EntryArea, EntryLayout);
+                    AreaLayouts.Add(EntryArea, EntryLayout.GetClone());
                     AreaLayoutBacktracks.Add(EntryArea, AreaSource);
                 }
 

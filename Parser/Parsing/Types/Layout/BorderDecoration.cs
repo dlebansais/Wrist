@@ -10,6 +10,22 @@ namespace Parser
         public string BorderBrush { get; set; }
         public string BorderThickness { get; set; }
 
+        public override ILayoutElement GetClone()
+        {
+            BorderDecoration Clone = new BorderDecoration();
+            InitializeClone(Clone);
+            return Clone;
+        }
+
+        protected override void InitializeClone(LayoutElement clone)
+        {
+            base.InitializeClone(clone);
+
+            ((BorderDecoration)clone).CornerRadius = CornerRadius;
+            ((BorderDecoration)clone).BorderBrush = BorderBrush;
+            ((BorderDecoration)clone).BorderThickness = BorderThickness;
+        }
+
         public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
             base.ConnectComponents(domain, currentDynamic, components);

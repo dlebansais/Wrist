@@ -71,9 +71,7 @@ namespace Parser
             if (DynamicController == null && BaseElement.DynamicController != null)
             {
                 IsConnected = true;
-
-                if (GeneratorDynamicProperty.GeneratorDynamicPropertyMap.ContainsKey(BaseElement.DynamicController))
-                    DynamicController = GeneratorDynamicProperty.GeneratorDynamicPropertyMap[BaseElement.DynamicController];
+                DynamicController = GeneratorDynamicProperty.GeneratorDynamicPropertyMap[BaseElement.DynamicController];
             }
 
             return IsConnected;

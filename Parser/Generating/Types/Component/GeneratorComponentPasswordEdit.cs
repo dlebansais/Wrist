@@ -22,10 +22,8 @@ namespace Parser
 
             if (TextObject == null || TextObjectProperty == null)
             {
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BasePasswordEdit.TextObject))
-                    TextObject = GeneratorObject.GeneratorObjectMap[BasePasswordEdit.TextObject];
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BasePasswordEdit.TextObjectProperty))
-                    TextObjectProperty = (IGeneratorObjectPropertyString)GeneratorObjectProperty.GeneratorObjectPropertyMap[BasePasswordEdit.TextObjectProperty];
+                TextObject = GeneratorObject.GeneratorObjectMap[BasePasswordEdit.TextObject];
+                TextObjectProperty = (IGeneratorObjectPropertyString)GeneratorObjectProperty.GeneratorObjectPropertyMap[BasePasswordEdit.TextObjectProperty];
             }
 
             return IsConnected;

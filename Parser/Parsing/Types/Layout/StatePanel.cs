@@ -9,6 +9,20 @@ namespace Parser
         public string Index { get; set; }
         public IComponentIndex Component { get; private set; }
 
+        public override ILayoutElement GetClone()
+        {
+            StatePanel Clone = new StatePanel();
+            InitializeClone(Clone);
+            return Clone;
+        }
+
+        protected override void InitializeClone(LayoutElement clone)
+        {
+            base.InitializeClone(clone);
+
+            ((StatePanel)clone).Index = Index;
+        }
+
         public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
             base.ConnectComponents(domain, currentDynamic, components);

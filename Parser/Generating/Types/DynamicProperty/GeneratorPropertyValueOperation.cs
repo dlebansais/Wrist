@@ -23,17 +23,13 @@ namespace Parser
             if (ValueObject == null)
             {
                 IsConnected = true;
-
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseOperation.ValueObject))
-                    ValueObject = GeneratorObject.GeneratorObjectMap[BaseOperation.ValueObject];
+                ValueObject = GeneratorObject.GeneratorObjectMap[BaseOperation.ValueObject];
             }
 
             if (ValueObjectProperty == null)
             {
                 IsConnected = true;
-
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseOperation.ValueObjectProperty))
-                    ValueObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseOperation.ValueObjectProperty];
+                ValueObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseOperation.ValueObjectProperty];
             }
 
             return IsConnected;

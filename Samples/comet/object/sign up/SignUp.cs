@@ -172,7 +172,7 @@ namespace AppCSHtml5
         public bool NameError { get; set; }
         public bool SignUpError { get; set; }
 
-        public void On_Cleanup(string pageName, string sourceName, string sourceContent)
+        public void On_Cleanup(PageNames pageName, string sourceName, string sourceContent)
         {
             Name = null;
             Password = null;
@@ -186,7 +186,7 @@ namespace AppCSHtml5
             SignInMethod = SignInMethods.None;
         }
 
-        public void On_SignUp(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_SignUp(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             Account NewAccount;
             SignInError Error = ((AccountManager)GetAccountManager).TryAddAccount(Email, SignInMethod, Name, Password, out NewAccount);
@@ -203,11 +203,11 @@ namespace AppCSHtml5
                     SignUpError = true;
                     NotifyPropertyChanged(nameof(SignUpError));
 
-                    destinationPageName = null;
+                    destinationPageName = PageNames.CurrentPage;
                     return;
             }
 
-            destinationPageName = "start";
+            destinationPageName = PageNames.startPage;
         }
 
         #region Implementation of INotifyPropertyChanged

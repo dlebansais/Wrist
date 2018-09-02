@@ -44,16 +44,13 @@ namespace Parser
 
                 if (BaseCheckBox.ContentResource != null)
                 {
-                    if (GeneratorResource.GeneratorResourceMap.ContainsKey(BaseCheckBox.ContentResource))
-                        ContentResource = GeneratorResource.GeneratorResourceMap[BaseCheckBox.ContentResource];
+                    ContentResource = GeneratorResource.GeneratorResourceMap[BaseCheckBox.ContentResource];
                 }
 
                 else if (BaseCheckBox.ContentObject != null && BaseCheckBox.ContentObjectProperty != null)
                 {
-                    if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseCheckBox.ContentObject))
-                        ContentObject = GeneratorObject.GeneratorObjectMap[BaseCheckBox.ContentObject];
-                    if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseCheckBox.ContentObjectProperty))
-                        ContentObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseCheckBox.ContentObjectProperty];
+                    ContentObject = GeneratorObject.GeneratorObjectMap[BaseCheckBox.ContentObject];
+                    ContentObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseCheckBox.ContentObjectProperty];
                 }
             }
         }
@@ -64,10 +61,8 @@ namespace Parser
             {
                 IsConnected = true;
 
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseCheckBox.CheckedObject))
-                    CheckedObject = GeneratorObject.GeneratorObjectMap[BaseCheckBox.CheckedObject];
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseCheckBox.CheckedObjectProperty))
-                    CheckedObjectProperty = (IGeneratorObjectPropertyBoolean)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseCheckBox.CheckedObjectProperty];
+                CheckedObject = GeneratorObject.GeneratorObjectMap[BaseCheckBox.CheckedObject];
+                CheckedObjectProperty = (IGeneratorObjectPropertyBoolean)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseCheckBox.CheckedObjectProperty];
             }
         }
 

@@ -7,18 +7,18 @@
     <ResourceDictionary Source="/ButtonStart.xaml"/>
     <ResourceDictionary Source="/CheckBox.xaml"/>
     <ResourceDictionary Source="/CheckBoxReadOnly.xaml"/>
+    <ResourceDictionary Source="/Edit.xaml"/>
     <ResourceDictionary Source="/Image.xaml"/>
-    <ResourceDictionary Source="/ListBox.xaml"/>
-    <ResourceDictionary Source="/PasswordBox.xaml"/>
+    <ResourceDictionary Source="/PasswordEdit.xaml"/>
     <ResourceDictionary Source="/RadioButton.xaml"/>
-    <ResourceDictionary Source="/TextBlock.xaml"/>
-    <ResourceDictionary Source="/TextBlockAccountName.xaml"/>
-    <ResourceDictionary Source="/TextBlockError.xaml"/>
-    <ResourceDictionary Source="/TextBlockFeatureHeadline.xaml"/>
-    <ResourceDictionary Source="/TextBlockFeatureTitle.xaml"/>
-    <ResourceDictionary Source="/TextBlockPageTitle.xaml"/>
-    <ResourceDictionary Source="/TextBlockPageSubtitle.xaml"/>
-    <ResourceDictionary Source="/TextBox.xaml"/>
+    <ResourceDictionary Source="/Selector.xaml"/>
+    <ResourceDictionary Source="/Text.xaml"/>
+    <ResourceDictionary Source="/TextAccountName.xaml"/>
+    <ResourceDictionary Source="/TextError.xaml"/>
+    <ResourceDictionary Source="/TextFeatureHeadline.xaml"/>
+    <ResourceDictionary Source="/TextFeatureTitle.xaml"/>
+    <ResourceDictionary Source="/TextPageTitle.xaml"/>
+    <ResourceDictionary Source="/TextPageSubtitle.xaml"/>
     <ResourceDictionary Source="/ToggleButton.xaml"/>
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

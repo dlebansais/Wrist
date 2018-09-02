@@ -25,14 +25,10 @@ namespace Parser
             if (ItemObject == null || ItemObjectProperty == null)
             {
                 IsConnected = true;
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseContainer.ItemObject))
-                    ItemObject = GeneratorObject.GeneratorObjectMap[BaseContainer.ItemObject];
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseContainer.ItemObjectProperty))
-                    ItemObjectProperty = (IGeneratorObjectPropertyItemList)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseContainer.ItemObjectProperty];
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseContainer.ItemNestedObject))
-                    ItemNestedObject = GeneratorObject.GeneratorObjectMap[BaseContainer.ItemNestedObject];
-                if (GeneratorArea.GeneratorAreaMap.ContainsKey(BaseContainer.ItemNestedArea))
-                    ItemNestedArea = GeneratorArea.GeneratorAreaMap[BaseContainer.ItemNestedArea];
+                ItemObject = GeneratorObject.GeneratorObjectMap[BaseContainer.ItemObject];
+                ItemObjectProperty = (IGeneratorObjectPropertyItemList)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseContainer.ItemObjectProperty];
+                ItemNestedObject = GeneratorObject.GeneratorObjectMap[BaseContainer.ItemNestedObject];
+                ItemNestedArea = GeneratorArea.GeneratorAreaMap[BaseContainer.ItemNestedArea];
             }
 
             return IsConnected;

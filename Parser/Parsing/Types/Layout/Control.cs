@@ -9,6 +9,21 @@ namespace Parser
         public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
         public IComponent Component { get; private set; }
 
+        public override ILayoutElement GetClone()
+        {
+            Control Clone = new Control();
+            InitializeClone(Clone);
+            return Clone;
+        }
+
+        protected override void InitializeClone(LayoutElement clone)
+        {
+            base.InitializeClone(clone);
+
+            ((Control)clone).Name = Name;
+            ((Control)clone).Wrapping = Wrapping;
+        }
+
         public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
             base.ConnectComponents(domain, currentDynamic, components);
@@ -16,17 +31,20 @@ namespace Parser
             if (string.IsNullOrEmpty(Name))
                 throw new ParsingException(218, Source, $"Control must reference a name.");
 
-            foreach (IComponent Item in components)
-                if (Item.Source.Name == Name)
-                {
-                    Component = Item;
-                    break;
-                }
-
             if (Component == null)
-                throw new ParsingException(156, Source, $"Control is referencing '{Name}' but this name doesn't exist.");
+            {
+                foreach (IComponent Item in components)
+                    if (Item.Source.Name == Name)
+                    {
+                        Component = Item;
+                        break;
+                    }
 
-            Component.SetIsUsed();
+                if (Component == null)
+                    throw new ParsingException(156, Source, $"Control is referencing '{Name}' but this name doesn't exist.");
+
+                Component.SetIsUsed();
+            }
 
             if (Wrapping == null)
                 TextWrapping = null;

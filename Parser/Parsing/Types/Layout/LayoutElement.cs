@@ -19,7 +19,24 @@ namespace Parser
         public string DynamicEnable { get; set; }
         public IDynamicProperty DynamicController { get; private set; }
 
-        public abstract void ReportResourceKeys(IDesign design, List<string> KeyList);
+        public abstract ILayoutElement GetClone();
+
+        protected virtual void InitializeClone(LayoutElement clone)
+        {
+            clone.Source = Source;
+            clone.Style = Style;
+            clone.Width = Width;
+            clone.Height = Height;
+            clone.Margin = Margin;
+            clone.HorizontalAlignment = HorizontalAlignment;
+            clone.DynamicEnable = DynamicEnable;
+
+            DockPanel.CloneDock(this, clone);
+            Grid.CloneColumn(this, clone);
+            Grid.CloneColumnSpan(this, clone);
+            Grid.CloneRow(this, clone);
+            Grid.CloneRowSpan(this, clone);
+        }
 
         public virtual void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
@@ -69,12 +86,14 @@ namespace Parser
                     }
 
                 if (DynamicController == null)
-                    throw new ParsingException(198, Source, $"Dynamic property '{DynamicEnable}' not found.");
+                    throw new ParsingException(198, Source, $"Dynamic property '{DynamicEnable}' not found in '{currentDynamic.Name}'.");
                 else if (DynamicController.Result != DynamicOperationResults.Boolean)
                     throw new ParsingException(199, Source, $"Dynamic property '{DynamicEnable}' is not boolean.");
 
                 DynamicController.SetIsUsed();
             }
         }
+
+        public abstract void ReportResourceKeys(IDesign design, List<string> KeyList);
     }
 }

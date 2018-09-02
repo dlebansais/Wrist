@@ -28,22 +28,19 @@ namespace Parser
             if (SourceResource == null)
             {
                 IsConnected = true;
-                if (GeneratorResource.GeneratorResourceMap.ContainsKey(BasePopup.SourceResource))
-                    SourceResource = GeneratorResource.GeneratorResourceMap[BasePopup.SourceResource];
+                SourceResource = GeneratorResource.GeneratorResourceMap[BasePopup.SourceResource];
             }
 
             if (SourcePressedResource == null && BasePopup.SourcePressedResource != null)
             {
                 IsConnected = true;
-                if (GeneratorResource.GeneratorResourceMap.ContainsKey(BasePopup.SourcePressedResource))
-                    SourcePressedResource = GeneratorResource.GeneratorResourceMap[BasePopup.SourcePressedResource];
+                SourcePressedResource = GeneratorResource.GeneratorResourceMap[BasePopup.SourcePressedResource];
             }
 
             if (Area == null)
             {
                 IsConnected = true;
-                if (GeneratorArea.GeneratorAreaMap.ContainsKey(BasePopup.Area))
-                    Area = GeneratorArea.GeneratorAreaMap[BasePopup.Area];
+                Area = GeneratorArea.GeneratorAreaMap[BasePopup.Area];
             }
 
             return IsConnected;

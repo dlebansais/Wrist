@@ -4,10 +4,20 @@ namespace Parser
 {
     public abstract class Panel : LayoutElement, IPanel
     {
-        public ILayoutElementCollection Items { get; } = new LayoutElementCollection();
+        public ILayoutElementCollection Items { get; private set; } = new LayoutElementCollection();
         public string Background { get; set; }
         public string MaxWidth { get; set; }
         public string MaxHeight { get; set; }
+
+        protected override void InitializeClone(LayoutElement clone)
+        {
+            base.InitializeClone(clone);
+
+            ((Panel)clone).Items = Items.GetClone();
+            ((Panel)clone).Background = Background;
+            ((Panel)clone).MaxWidth = MaxWidth;
+            ((Panel)clone).MaxHeight = MaxHeight;
+        }
 
         public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {

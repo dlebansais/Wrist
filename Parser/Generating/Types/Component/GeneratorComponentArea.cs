@@ -22,8 +22,7 @@ namespace Parser
             if (Area == null)
             {
                 IsConnected = true;
-                if (GeneratorArea.GeneratorAreaMap.ContainsKey(BaseArea))
-                    Area = GeneratorArea.GeneratorAreaMap[BaseArea];
+                Area = GeneratorArea.GeneratorAreaMap[BaseArea];
             }
 
             return IsConnected;

@@ -40,9 +40,7 @@ namespace Parser
             if (CurrentObject == null && BaseArea.CurrentObject != null)
             {
                 IsConnected = true;
-
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseArea.CurrentObject))
-                    CurrentObject = GeneratorObject.GeneratorObjectMap[BaseArea.CurrentObject];
+                CurrentObject = GeneratorObject.GeneratorObjectMap[BaseArea.CurrentObject];
             }
 
             return IsConnected;

@@ -21,9 +21,7 @@ namespace Parser
             if (NestedObject == null)
             {
                 IsConnected = true;
-
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseProperty.NestedObject))
-                    NestedObject = GeneratorObject.GeneratorObjectMap[BaseProperty.NestedObject];
+                NestedObject = GeneratorObject.GeneratorObjectMap[BaseProperty.NestedObject];
             }
 
             return IsConnected;

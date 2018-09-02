@@ -41,16 +41,13 @@ namespace Parser
 
                 if (BaseButton.ContentResource != null)
                 {
-                    if (GeneratorResource.GeneratorResourceMap.ContainsKey(BaseButton.ContentResource))
-                        ContentResource = GeneratorResource.GeneratorResourceMap[BaseButton.ContentResource];
+                    ContentResource = GeneratorResource.GeneratorResourceMap[BaseButton.ContentResource];
                 }
 
                 else if (BaseButton.ContentObject != null && BaseButton.ContentObjectProperty != null)
                 {
-                    if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseButton.ContentObject))
-                        ContentObject = GeneratorObject.GeneratorObjectMap[BaseButton.ContentObject];
-                    if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseButton.ContentObjectProperty))
-                        ContentObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseButton.ContentObjectProperty];
+                    ContentObject = GeneratorObject.GeneratorObjectMap[BaseButton.ContentObject];
+                    ContentObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseButton.ContentObjectProperty];
                 }
             }
         }
@@ -70,10 +67,8 @@ namespace Parser
             {
                 IsConnected = true;
 
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseButton.ClosePopupObject))
-                    ClosePopupObject = GeneratorObject.GeneratorObjectMap[BaseButton.ClosePopupObject];
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseButton.ClosePopupObjectProperty))
-                    ClosePopupObjectProperty = (IGeneratorObjectPropertyBoolean)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseButton.ClosePopupObjectProperty];
+                ClosePopupObject = GeneratorObject.GeneratorObjectMap[BaseButton.ClosePopupObject];
+                ClosePopupObjectProperty = (IGeneratorObjectPropertyBoolean)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseButton.ClosePopupObjectProperty];
             }
         }
 

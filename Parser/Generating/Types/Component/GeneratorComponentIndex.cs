@@ -28,11 +28,8 @@ namespace Parser
             if (IndexObject == null || IndexObjectProperty == null)
             {
                 IsConnected = true;
-
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseIndex.IndexObject))
-                    IndexObject = GeneratorObject.GeneratorObjectMap[BaseIndex.IndexObject];
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseIndex.IndexObjectProperty))
-                    IndexObjectProperty = (IGeneratorObjectPropertyIndex)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseIndex.IndexObjectProperty];
+                IndexObject = GeneratorObject.GeneratorObjectMap[BaseIndex.IndexObject];
+                IndexObjectProperty = (IGeneratorObjectPropertyIndex)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseIndex.IndexObjectProperty];
             }
 
             return IsConnected;

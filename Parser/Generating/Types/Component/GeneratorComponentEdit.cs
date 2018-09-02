@@ -30,10 +30,8 @@ namespace Parser
 
             if (TextObject == null || TextObjectProperty == null)
             {
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseEdit.TextObject))
-                    TextObject = GeneratorObject.GeneratorObjectMap[BaseEdit.TextObject];
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseEdit.TextObjectProperty))
-                    TextObjectProperty = (IGeneratorObjectPropertyString)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseEdit.TextObjectProperty];
+                TextObject = GeneratorObject.GeneratorObjectMap[BaseEdit.TextObject];
+                TextObjectProperty = (IGeneratorObjectPropertyString)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseEdit.TextObjectProperty];
             }
 
             return IsConnected;

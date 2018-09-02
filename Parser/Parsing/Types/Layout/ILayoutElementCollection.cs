@@ -6,5 +6,6 @@ namespace Parser
     public interface ILayoutElementCollection : IList<ILayoutElement>
     {
         ReadOnlyCollection<ILayoutElement> AsReadOnly();
+        ILayoutElementCollection GetClone();
     }
 }

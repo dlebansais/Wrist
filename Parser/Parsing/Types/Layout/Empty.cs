@@ -6,6 +6,20 @@ namespace Parser
     {
         public string Type { get; set; }
 
+        public override ILayoutElement GetClone()
+        {
+            Empty Clone = new Empty();
+            InitializeClone(Clone);
+            return Clone;
+        }
+
+        protected override void InitializeClone(LayoutElement clone)
+        {
+            base.InitializeClone(clone);
+
+            ((Empty)clone).Type = Type;
+        }
+
         public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {
             base.ConnectComponents(domain, currentDynamic, components);

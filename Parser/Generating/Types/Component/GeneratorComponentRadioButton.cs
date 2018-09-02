@@ -50,16 +50,13 @@ namespace Parser
 
                 if (BaseRadioButton.ContentResource != null)
                 {
-                    if (GeneratorResource.GeneratorResourceMap.ContainsKey(BaseRadioButton.ContentResource))
-                        ContentResource = GeneratorResource.GeneratorResourceMap[BaseRadioButton.ContentResource];
+                    ContentResource = GeneratorResource.GeneratorResourceMap[BaseRadioButton.ContentResource];
                 }
 
                 else if (BaseRadioButton.ContentObject != null && BaseRadioButton.ContentObjectProperty != null)
                 {
-                    if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseRadioButton.ContentObject))
-                        ContentObject = GeneratorObject.GeneratorObjectMap[BaseRadioButton.ContentObject];
-                    if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseRadioButton.ContentObjectProperty))
-                        ContentObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseRadioButton.ContentObjectProperty];
+                    ContentObject = GeneratorObject.GeneratorObjectMap[BaseRadioButton.ContentObject];
+                    ContentObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseRadioButton.ContentObjectProperty];
                 }
             }
         }
@@ -70,10 +67,8 @@ namespace Parser
             {
                 IsConnected = true;
 
-                if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseRadioButton.IndexObject))
-                    IndexObject = GeneratorObject.GeneratorObjectMap[BaseRadioButton.IndexObject];
-                if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseRadioButton.IndexObjectProperty))
-                    IndexObjectProperty = (IGeneratorObjectPropertyIndex)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseRadioButton.IndexObjectProperty];
+                IndexObject = GeneratorObject.GeneratorObjectMap[BaseRadioButton.IndexObject];
+                IndexObjectProperty = (IGeneratorObjectPropertyIndex)GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseRadioButton.IndexObjectProperty];
             }
         }
 

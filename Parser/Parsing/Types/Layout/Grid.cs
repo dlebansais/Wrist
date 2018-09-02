@@ -37,6 +37,12 @@ namespace Parser
             else
                 ColumnTargets.Add(AsElement, Column);
         }
+
+        public static void CloneColumn(ILayoutElement target, ILayoutElement clone)
+        {
+            if (ColumnTargets.ContainsKey(target))
+                ColumnTargets.Add(clone, ColumnTargets[target]);
+        }
         #endregion
 
         #region ColumnSpan Attached Property
@@ -69,6 +75,12 @@ namespace Parser
                 throw new ParsingException(189, AsElement.Source, "ColumnSpan value already specified for this element.");
             else
                 ColumnSpanTargets.Add(AsElement, ColumnSpan);
+        }
+
+        public static void CloneColumnSpan(ILayoutElement target, ILayoutElement clone)
+        {
+            if (ColumnSpanTargets.ContainsKey(target))
+                ColumnSpanTargets.Add(clone, ColumnSpanTargets[target]);
         }
         #endregion
 
@@ -103,6 +115,12 @@ namespace Parser
             else
                 RowTargets.Add(AsElement, Row);
         }
+
+        public static void CloneRow(ILayoutElement target, ILayoutElement clone)
+        {
+            if (RowTargets.ContainsKey(target))
+                RowTargets.Add(clone, RowTargets[target]);
+        }
         #endregion
 
         #region RowSpan Attached Property
@@ -136,6 +154,12 @@ namespace Parser
             else
                 RowSpanTargets.Add(AsElement, RowSpan);
         }
+
+        public static void CloneRowSpan(ILayoutElement target, ILayoutElement clone)
+        {
+            if (RowSpanTargets.ContainsKey(target))
+                RowSpanTargets.Add(clone, RowSpanTargets[target]);
+        }
         #endregion
 
         public int ColumnCount { get; set; }
@@ -144,6 +168,23 @@ namespace Parser
         public string RowHeights { get; set; }
         public double[] ColumnWidthArray { get; private set; }
         public double[] RowHeightArray { get; private set; }
+
+        public override ILayoutElement GetClone()
+        {
+            Grid Clone = new Grid();
+            InitializeClone(Clone);
+            return Clone;
+        }
+
+        protected override void InitializeClone(LayoutElement clone)
+        {
+            base.InitializeClone(clone);
+
+            ((Grid)clone).ColumnCount = ColumnCount;
+            ((Grid)clone).RowCount = RowCount;
+            ((Grid)clone).ColumnWidths = ColumnWidths;
+            ((Grid)clone).RowHeights = RowHeights;
+        }
 
         public override void ConnectComponents(IDomain domain, IDynamic currentDynamic, IReadOnlyCollection<IComponent> components)
         {

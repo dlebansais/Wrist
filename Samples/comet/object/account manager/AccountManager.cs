@@ -157,121 +157,56 @@ namespace AppCSHtml5
             return false;
         }
 
-        public void On_ChangeEmail(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_ChangeEmail(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (!ClearPasswordAndCompare())
             {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
 
-                destinationPageName = null;
+                destinationPageName = PageNames.CurrentPage;
             }
             else
-                destinationPageName = "profile";
+                destinationPageName = PageNames.profilePage;
         }
 
-        public void On_ChangePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_ChangePassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (!ClearPasswordAndCompare())
             {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
 
-                destinationPageName = null;
+                destinationPageName = PageNames.CurrentPage;
             }
             else
             {
                 ((Account)SignedInAccount).ChangePassword(NewPassword);
-                destinationPageName = "profile";
+                destinationPageName = PageNames.profilePage;
             }
         }
 
-        public void On_AddPassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
-        {
-            if (SignedInAccount == null)
-                destinationPageName = null;
-
-            else
-            {
-                ((Account)SignedInAccount).AddPassword(NewPassword);
-
-                _ChangeMethodIndex = -1;
-                destinationPageName = "profile";
-            }
-        }
-
-        public void On_RemovePassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
-        {
-            if (!ClearPasswordAndCompare())
-            {
-                IsPasswordInvalidError = true;
-                NotifyPropertyChanged(nameof(IsPasswordInvalidError));
-
-                destinationPageName = null;
-            }
-            else
-            {
-                ((Account)SignedInAccount).RemovePassword();
-
-                _ChangeMethodIndex = -1;
-                destinationPageName = "profile";
-            }
-        }
-
-        public void On_CreateUsername(string pageName, string sourceName, string sourceContent, out string destinationPageName)
-        {
-            if (SignedInAccount == null)
-                destinationPageName = null;
-
-            else
-            {
-                ((Account)SignedInAccount).CreateUsername(Username);
-
-                _ChangeMethodIndex = -1;
-                destinationPageName = "profile";
-            }
-        }
-
-        public void On_CreateUsernameAndPassword(string pageName, string sourceName, string sourceContent, out string destinationPageName)
-        {
-            if (SignedInAccount == null || string.IsNullOrEmpty(NewPassword))
-                destinationPageName = null;
-
-            else
-            {
-                ((Account)SignedInAccount).CreateUsernameAndPassword(Username, NewPassword);
-
-                _ChangeMethodIndex = -1;
-                destinationPageName = "profile";
-            }
-        }
-
-        public void On_ChangeUsername(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_ChangeUsername(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (IsPasswordRequired && !ClearPasswordAndCompare())
             {
                 IsPasswordInvalidError = true;
                 NotifyPropertyChanged(nameof(IsPasswordInvalidError));
 
-                destinationPageName = null;
+                destinationPageName = PageNames.CurrentPage;
             }
 
             else if (string.IsNullOrEmpty(NewUsername) || SignedInAccount == null)
-                destinationPageName = null;
+                destinationPageName = PageNames.CurrentPage;
 
             else
             {
                 ((Account)SignedInAccount).ChangeUsername(NewUsername);
-                destinationPageName = "profile";
+                destinationPageName = PageNames.profilePage;
             }
         }
 
-        public void On_ChangeCertificate(string pageName, string sourceName, string sourceContent, out string destinationPageName)
-        {
-            destinationPageName = null;
-        }
-
-        public void On_SignOut(string pageName, string sourceName, string sourceContent)
+        public void On_SignOut(PageNames pageName, string sourceName, string sourceContent)
         {
             SignedInAccount = null;
             IsPasswordInvalidError = false;
@@ -286,18 +221,83 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(IsPasswordInvalidError));
         }
 
-        public void On_ConfirmDelete(string pageName, string sourceName, string sourceContent, out string destinationPageName)
+        public void On_ConfirmDelete(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (MessageBox.Show("This will delete your account, and cannot be recovered, are you sure?", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                destinationPageName = "delete account";
+                destinationPageName = PageNames.delete_accountPage;
             else
-                destinationPageName = null;
+                destinationPageName = PageNames.CurrentPage;
         }
 
-        public void On_SendDeleteEmail(string pageName, string sourceName, string sourceContent)
+        public void On_SendDeleteEmail(PageNames pageName, string sourceName, string sourceContent)
         {
             On_SignOut(pageName, sourceName, sourceContent);
             MessageBox.Show("Email sent");
+        }
+
+        public void On_AddPassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (SignedInAccount == null)
+                destinationPageName = PageNames.CurrentPage;
+
+            else
+            {
+                ((Account)SignedInAccount).AddPassword(NewPassword);
+
+                _ChangeMethodIndex = -1;
+                destinationPageName = PageNames.profilePage;
+            }
+        }
+
+        public void On_RemovePassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (!ClearPasswordAndCompare())
+            {
+                IsPasswordInvalidError = true;
+                NotifyPropertyChanged(nameof(IsPasswordInvalidError));
+
+                destinationPageName = PageNames.CurrentPage;
+            }
+            else
+            {
+                ((Account)SignedInAccount).RemovePassword();
+
+                _ChangeMethodIndex = -1;
+                destinationPageName = PageNames.profilePage;
+            }
+        }
+
+        public void On_CreateUsername(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (SignedInAccount == null)
+                destinationPageName = PageNames.CurrentPage;
+
+            else
+            {
+                ((Account)SignedInAccount).CreateUsername(Username);
+
+                _ChangeMethodIndex = -1;
+                destinationPageName = PageNames.profilePage;
+            }
+        }
+
+        public void On_CreateUsernameAndPassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (SignedInAccount == null || string.IsNullOrEmpty(NewPassword))
+                destinationPageName = PageNames.CurrentPage;
+
+            else
+            {
+                ((Account)SignedInAccount).CreateUsernameAndPassword(Username, NewPassword);
+
+                _ChangeMethodIndex = -1;
+                destinationPageName = PageNames.profilePage;
+            }
+        }
+
+        public void On_ChangeCertificate(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            destinationPageName = PageNames.CurrentPage;
         }
 
         public void OnPopupClosed_IsSignedIn()

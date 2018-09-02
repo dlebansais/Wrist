@@ -31,16 +31,13 @@ namespace Parser
 
                 if (BaseText.TextResource != null)
                 {
-                    if (GeneratorResource.GeneratorResourceMap.ContainsKey(BaseText.TextResource))
-                        TextResource = GeneratorResource.GeneratorResourceMap[BaseText.TextResource];
+                    TextResource = GeneratorResource.GeneratorResourceMap[BaseText.TextResource];
                 }
 
                 else if (BaseText.TextObject != null && BaseText.TextObjectProperty != null)
                 {
-                    if (GeneratorObject.GeneratorObjectMap.ContainsKey(BaseText.TextObject))
-                        TextObject = GeneratorObject.GeneratorObjectMap[BaseText.TextObject];
-                    if (GeneratorObjectProperty.GeneratorObjectPropertyMap.ContainsKey(BaseText.TextObjectProperty))
-                        TextObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseText.TextObjectProperty];
+                    TextObject = GeneratorObject.GeneratorObjectMap[BaseText.TextObject];
+                    TextObjectProperty = GeneratorObjectProperty.GeneratorObjectPropertyMap[BaseText.TextObjectProperty];
                 }
             }
 
