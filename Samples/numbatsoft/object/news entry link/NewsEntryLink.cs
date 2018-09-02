@@ -9,7 +9,7 @@ namespace AppCSHtml5
         public NewsEntryLink(int index, string text, string link)
         {
             Index = index;
-            Text = $"[{Index + 1}] " + text;
+            Text = $"[{Index}] " + text;
             Link = link;
         }
 

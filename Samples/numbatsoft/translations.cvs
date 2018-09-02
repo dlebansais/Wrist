@@ -25,17 +25,18 @@ page-change-recovery-failed-3	Account management	Gestion du compte
 page-change-recovery-failed-4	Account management	Gestion du compte
 page-change-recovery-failed-5	Account management	Gestion du compte
 page-change-recovery-success	Account management	Gestion du compte
-page-registration-failed-01	Account management	Gestion du compte
-page-registration-failed-02	Account management	Gestion du compte
-page-registration-failed-03	Account management	Gestion du compte
-page-registration-failed-04	Account management	Gestion du compte
-page-registration-failed-05	Account management	Gestion du compte
-page-registration-failed-06	Account management	Gestion du compte
-page-registration-failed-07	Account management	Gestion du compte
-page-registration-failed-08	Account management	Gestion du compte
-page-registration-failed-09	Account management	Gestion du compte
-page-registration-failed-10	Account management	Gestion du compte
-page-registration-started	Account management	Gestion du compte
+page-registration-failed-01	Registration	Enregistrement
+page-registration-failed-02	Registration	Enregistrement
+page-registration-failed-03	Registration	Enregistrement
+page-registration-failed-04	Registration	Enregistrement
+page-registration-failed-05	Registration	Enregistrement
+page-registration-failed-06	Registration	Enregistrement
+page-registration-failed-07	Registration	Enregistrement
+page-registration-failed-08	Registration	Enregistrement
+page-registration-failed-09	Registration	Enregistrement
+page-registration-failed-10	Registration	Enregistrement
+page-registration-started	Registration	Enregistrement
+page-registration-end	Registration	Enregistrement
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -145,3 +146,5 @@ registration-failed-text-9	.	.
 registration-failed-text-10	.	.
 registration-started-title	Registration is started	L'enregistrement a démarré
 registration-started-text	Please check your email inbox to continue registration.	Veuillez consulter la boîte de réception de votre courriel pour continuer l'enregistrement.
+registration-end-title	Completing registration	Terminer l'enregistrement
+registration-end-text	You have reached this page because you are registering the following account:	Vous êtes sur cette page car vous avez demandé à enregistrer le compte suivant :

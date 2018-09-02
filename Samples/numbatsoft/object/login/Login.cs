@@ -20,6 +20,8 @@ namespace AppCSHtml5
             Remember = (Persistent.GetValue("remember", null) != null);
             LoginState = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
 
+            Database.DebugWriteResponse = true;
+
             InitSimulation();
         }
 
@@ -53,7 +55,7 @@ namespace AppCSHtml5
 
             else
             {
-                if (string.IsNullOrEmpty(RecoveryQuestion) && string.IsNullOrEmpty(RecoveryAnswer))
+                if (string.IsNullOrEmpty(RecoveryQuestion) || string.IsNullOrEmpty(RecoveryAnswer))
                     StartRegister(Name, Password, Email, "", "");
                 else
                     StartRegister(Name, Password, Email, RecoveryQuestion, RecoveryAnswer);
@@ -95,7 +97,18 @@ namespace AppCSHtml5
             if (success)
             {
                 string EncryptedPassword = (string)result;
-                RegisterAndSendEmail(name, EncryptedPassword, email, question, answer, (bool checkSuccess, object checkResult) => Register_OnEmailSent(checkSuccess, checkResult));
+                EncryptPassword(answer, name, (bool encryptSuccess, object encryptResult) => Register_OnRecoveryAnswerEncrypted(encryptSuccess, encryptResult, name, EncryptedPassword, email, question));
+            }
+            else
+                (App.Current as App).GoTo(PageNames.registration_failed_04Page);
+        }
+
+        private void Register_OnRecoveryAnswerEncrypted(bool success, object result, string name, string encryptedPassword, string email, string question)
+        {
+            if (success)
+            {
+                string EncryptedAnswer = (string)result;
+                RegisterAndSendEmail(name, encryptedPassword, email, question, EncryptedAnswer, (bool checkSuccess, object checkResult) => Register_OnEmailSent(checkSuccess, checkResult));
             }
             else
                 (App.Current as App).GoTo(PageNames.registration_failed_04Page);
@@ -548,7 +561,7 @@ namespace AppCSHtml5
         private void CheckIfEmailTaken(string email, Action<bool, object> callback)
         {
             Database.Completed += OnIsEmailAvailableChecked;
-            Database.Update(new DatabaseUpdateOperation("check email", "query_3.php", new Dictionary<string, string>() { { "email", HtmlString.Entities(email) } }, callback));
+            Database.Query(new DatabaseQueryOperation("check email", "query_3.php", new Dictionary<string, string>() { { "email", HtmlString.Entities(email) } }, callback));
         }
 
         private void OnIsEmailAvailableChecked(object sender, CompletionEventArgs e)
@@ -576,7 +589,7 @@ namespace AppCSHtml5
         private void RegisterAndSendEmail(string name, string encryptedPassword, string email, string question, string answer, Action<bool, object> callback)
         {
             Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "update_4.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "password", HtmlString.Entities(encryptedPassword) }, { "email", HtmlString.Entities(email) }, { "question", HtmlString.Entities(question) }, { "answer", HtmlString.Entities(answer) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "password", HtmlString.Entities(encryptedPassword) }, { "email", HtmlString.Entities(email) }, { "question", HtmlString.Entities(question) }, { "answer", HtmlString.Entities(answer) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e)
@@ -589,9 +602,8 @@ namespace AppCSHtml5
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
             {
-                string ChangeRecoveryResult = Result["result"];
-
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangeRecoveryResult == "1", null));
+                string EmailSentResult = Result["result"];
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(EmailSentResult == "1", null));
             }
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
@@ -609,7 +621,7 @@ namespace AppCSHtml5
             OperationHandler.Add(new OperationHandler("/request/update_2.php", OnChangeEmailRequest));
             OperationHandler.Add(new OperationHandler("/request/update_3.php", OnChangeRecoveryRequest));
             OperationHandler.Add(new OperationHandler("/request/query_3.php", OnCheckEmailMatchRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_4.php", OnSignUpRequest));
+            OperationHandler.Add(new OperationHandler("/request/insert_1.php", OnSignUpRequest));
         }
 
         private List<Dictionary<string, string>> OnEncrypt(Dictionary<string, string> parameters)
@@ -861,6 +873,12 @@ namespace AppCSHtml5
             else
                 Answer = null;
 
+            string Language;
+            if (parameters.ContainsKey("language"))
+                Language = parameters["language"];
+            else
+                Language = "0";
+
             if (Username == null || EncryptedPassword == null || Email == null || Question == null || Answer == null)
                 return Result;
 
@@ -872,8 +890,9 @@ namespace AppCSHtml5
             NewLine.Add("id", Username);
             NewLine.Add("password", EncryptedPassword);
             NewLine.Add("email", Email);
-            NewLine.Add("question", Question);
+            NewLine.Add("question", EncodedRecoveryQuestion(Question));
             NewLine.Add("answer", Answer);
+            KnownUserTable.Add(NewLine);
 
             Result.Add(new Dictionary<string, string>()
             {
