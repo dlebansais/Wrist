@@ -432,6 +432,49 @@ namespace AppCSHtml5
         }
         #endregion
 
+        #region Change Recovery
+        public void On_BeginRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (string.IsNullOrEmpty(Email))
+                destinationPageName = PageNames.recovery_failed_1Page;
+
+            else
+            {
+                StartRecovery(Email);
+                destinationPageName = PageNames.CurrentPage;
+            }
+        }
+
+        private void StartRecovery(string email)
+        {
+            CheckIfEmailTaken(email, (bool checkSuccess, object checkResult) => Recovery_OnEmailChecked(checkSuccess, checkResult, email));
+        }
+
+        private void Recovery_OnEmailChecked(bool success, object result, string email)
+        {
+            if (success)
+            {
+                if ((result is Dictionary<string, string> QueryResult) && QueryResult.ContainsKey("question"))
+                    if (!string.IsNullOrEmpty(QueryResult["question"]))
+                        BeginRecoveryAndSendEmail(email, (bool checkSuccess, object checkResult) => Recovery_OnEmailSent(checkSuccess, checkResult));
+                    else
+                        (App.Current as App).GoTo(PageNames.recovery_failed_2Page);
+                else
+                    (App.Current as App).GoTo(PageNames.recovery_failed_3Page);
+            }
+            else
+                (App.Current as App).GoTo(PageNames.recovery_failed_2Page);
+        }
+
+        private void Recovery_OnEmailSent(bool success, object result)
+        {
+            if (success)
+                (App.Current as App).GoTo(PageNames.recovery_startedPage);
+            else
+                (App.Current as App).GoTo(PageNames.recovery_failed_3Page);
+        }
+        #endregion
+
         #region Operations
         private void GetUserInfo(string name, Action<bool, object> callback)
         {
@@ -609,6 +652,29 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
         }
 
+        private void BeginRecoveryAndSendEmail(string email, Action<bool, object> callback)
+        {
+            Database.Completed += OnRecoverySendEmailCompleted;
+            Database.Update(new DatabaseUpdateOperation("start recovery", "update_4.php", new Dictionary<string, string>() { { "email", HtmlString.Entities(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+        }
+
+        private void OnRecoverySendEmailCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnRecoverySendEmailCompleted notified");
+            Database.Completed -= OnRecoverySendEmailCompleted;
+
+            Action<bool, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
+            {
+                string EmailSentResult = Result["result"];
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(EmailSentResult == "1", null));
+            }
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+
         private Database Database = Database.Current;
         #endregion
 
@@ -622,6 +688,7 @@ namespace AppCSHtml5
             OperationHandler.Add(new OperationHandler("/request/update_3.php", OnChangeRecoveryRequest));
             OperationHandler.Add(new OperationHandler("/request/query_3.php", OnCheckEmailMatchRequest));
             OperationHandler.Add(new OperationHandler("/request/insert_1.php", OnSignUpRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_4.php", OnRecoveryRequest));
         }
 
         private List<Dictionary<string, string>> OnEncrypt(Dictionary<string, string> parameters)
@@ -898,6 +965,38 @@ namespace AppCSHtml5
             {
                 { "result", "1"},
             });
+
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> OnRecoveryRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string Email;
+            if (parameters.ContainsKey("email"))
+                Email = parameters["email"];
+            else
+                Email = null;
+
+            string Language;
+            if (parameters.ContainsKey("language"))
+                Language = parameters["language"];
+            else
+                Language = "0";
+
+            if (Email == null)
+                return Result;
+
+            foreach (Dictionary<string, string> Line in KnownUserTable)
+                if (Line.ContainsKey("email") && Line["email"] == Email)
+                {
+                    Result.Add(new Dictionary<string, string>()
+                    {
+                        { "result", "1"},
+                    });
+                    break;
+                }
 
             return Result;
         }

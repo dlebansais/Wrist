@@ -37,6 +37,12 @@ page-registration-failed-09	Registration	Enregistrement
 page-registration-failed-10	Registration	Enregistrement
 page-registration-started	Registration	Enregistrement
 page-registration-end	Registration	Enregistrement
+page-recovery	Account Recovery	Récupération de compte
+page-recovery-failed-1	Account Recovery	Récupération de compte
+page-recovery-failed-2	Account Recovery	Récupération de compte
+page-recovery-failed-3	Account Recovery	Récupération de compte
+page-recovery-failed-4	Account Recovery	Récupération de compte
+page-recovery-started	Account Recovery	Récupération de compte
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -119,7 +125,6 @@ confirm-answer-colon	Confirm answer:	Confirmation :
 page-products	Products	Produits
 page-download	Download	Téléchargement
 page-feedback	Feedback	Feedback
-page-recover	Recover	Récupération
 page-register	Register	Enregistrement
 register-title	Registration information	Informations d'enregistrement
 register-text	Please fill the form below to register.\u00A0 All information is kept private and will not be communicated to anyone.	Veuillez remplir le formulaire ci-dessous pour vous enregistrer. Aucune de ces informations ne sera divulguée à quiconque.
@@ -148,3 +153,15 @@ registration-started-title	Registration is started	L'enregistrement a démarré
 registration-started-text	Please check your email inbox to continue registration.	Veuillez consulter la boîte de réception de votre courriel pour continuer l'enregistrement.
 registration-end-title	Completing registration	Terminer l'enregistrement
 registration-end-text	You have reached this page because you are registering the following account:	Vous êtes sur cette page car vous avez demandé à enregistrer le compte suivant :
+recovery-title	Recovering your login information	Récupération de vos informations d'identification
+recovery-text	Please enter your email address below.	Veuillez entrer votre adresse courriel ci-dessous.
+email-required	Required to begin recovery.	Requise pour commencer la récupération.
+recovery-procedure	If it matches a registered account, an email will be sent to you with a link to the recovery completion page.\u00A0 On this page, you'll be asked to answer your recovery question, and to provide a new password.\u00A0 If your answer is correct, your password will be changed and you will be logged in.	Si celle-ci correspond à un compte enregistré, un courriel vous sera envoyé avec un lien vers la page de confirmation de récupération. Sur cette page, il vous sera demandé de répondre à votre question de récupération, et de donner un nouveau mot de passe. Si votre réponse est correcte, votre mot de passe sera changé et vous serez identifié sur le site.
+begin-recovery	Begin recovery	Commencer
+recovery-started-title	Recovery is started	La récupération a démarré
+recovery-started-text	Please check your email inbox to continue recovery.	Veuillez consulter la boîte de réception de votre courriel pour continuer la récupération.
+recovery-failed-title	Recovery failed	La récupération a échoué
+recovery-failed-text-1	Sorry, you must enter the email address of your account to be able to recover it.	Désolé, vous devez entrer l'adresse courriel de votre compte pour pouvoir le récupérer.
+recovery-failed-text-2	Sorry, no account with this email is illegible for recovery.\u00A0 Perhaps there is no such account, or it might have no secret question and answer to allow recovery.	Désolé, aucun compte correspondant à ce courriel ne peut être récupéré. Peut-être ce compte n'existe-t-il pas, ou il peut ne pas avoir de question et réponse secrète permettant la récupération.
+recovery-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+recovery-failed-text-4	.	.
