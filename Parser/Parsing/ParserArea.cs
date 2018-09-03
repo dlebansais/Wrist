@@ -84,7 +84,7 @@ namespace Parser
 
             List<ComponentInfo> InfoList = new List<ComponentInfo>();
             for (int i = 1; i < SplittedInfo.Length; i++)
-                InfoList.Add(ParseComponentInfo(sourceStream, SplittedInfo[i]));
+                InfoList.Add(Parser.ComponentInfo.Parse(sourceStream, SplittedInfo[i]));
 
             if (ComponentTypeName == "area")
                 return ParseComponentArea(NameSource, sourceStream, InfoList);
@@ -114,38 +114,6 @@ namespace Parser
                 return ParseComponentRadioButton(NameSource, sourceStream, InfoList);
             else
                 throw new ParsingException(26, sourceStream, $"Unknown component type '{ComponentTypeName}'.");
-        }
-
-        private ComponentInfo ParseComponentInfo(IParsingSourceStream sourceStream, string infoText)
-        {
-            IDeclarationSource NameSource;
-            string MemberValue;
-            ParserDomain.ParseStringPair(sourceStream, infoText, '=', out NameSource, out MemberValue);
-
-            if (!MemberValue.Contains("."))
-                return new ComponentInfo() { NameSource = NameSource, FixedValueSource = new DeclarationSource(MemberValue, sourceStream), ObjectSource = null, MemberSource = null, KeySource = null };
-
-            else
-            {
-                IDeclarationSource ObjectSource;
-                string MemberName;
-                ParserDomain.ParseStringPair(sourceStream, MemberValue, '.', out ObjectSource, out MemberName);
-
-                string Key;
-                int StartIndex = MemberName.IndexOf("[");
-                int EndIndex = MemberName.IndexOf("]");
-                IDeclarationSource KeySource;
-                if (StartIndex > 0 && EndIndex > StartIndex)
-                {
-                    Key = MemberName.Substring(StartIndex + 1, EndIndex - StartIndex - 1);
-                    MemberName = MemberName.Substring(0, StartIndex);
-                    KeySource = new DeclarationSource(Key, sourceStream);
-                }
-                else
-                    KeySource = null;
-
-                return new ComponentInfo() { NameSource = NameSource, FixedValueSource = null, ObjectSource = ObjectSource, MemberSource = new DeclarationSource(MemberName, sourceStream), KeySource = KeySource };
-            }
         }
 
         private IComponentArea ParseComponentArea(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)

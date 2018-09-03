@@ -239,6 +239,11 @@ namespace Parser
             cSharpWriter.WriteLine("            QueryString = DatabaseManager.NetTools.GetQueryString();");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"            PageNames StartPage = int.TryParse(Persistent.GetValue(\"page\", \"\"), out int PageIndex) ? (PageNames)PageIndex : PageNames.{HomePage.XamlName};");
+
+            foreach (IGeneratorPage Page in Pages)
+                if (Page.QueryObject != null && Page.QueryObjectEvent != null)
+                    cSharpWriter.WriteLine($"            Get{Page.QueryObject.CSharpName}.On_{Page.QueryObjectEvent.CSharpName}(StartPage, null, null, out StartPage);");
+
             cSharpWriter.WriteLine($"            GoTo(StartPage);");
 
             if (SelectedUnitTest != null)
@@ -250,7 +255,7 @@ namespace Parser
 
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)
-                    cSharpWriter.WriteLine($"        public static {Object.CSharpName} Get{Object.CSharpName} {{ get; }} = new {Object.CSharpName}();");
+                    cSharpWriter.WriteLine($"        public static I{Object.CSharpName} Get{Object.CSharpName} {{ get; }} = new {Object.CSharpName}();");
 
             if (Translation != null)
                 cSharpWriter.WriteLine("        public static Translation GetTranslation { get; } = new Translation();");

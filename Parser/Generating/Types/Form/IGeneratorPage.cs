@@ -7,6 +7,8 @@ namespace Parser
         string Name { get; }
         string FileName { get; }
         string XamlName { get; }
+        IGeneratorObject QueryObject { get; }
+        IGeneratorObjectEvent QueryObjectEvent { get; }
         IGeneratorArea Area { get; }
         double Width { get; }
         double Height { get; }

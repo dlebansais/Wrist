@@ -12,11 +12,12 @@ namespace Parser
             Name = name;
         }
 
-        public Page(string name, string fileName, string xamlName, IDeclarationSource areaSource, IParsingSource allAreaLayoutsSource, Dictionary<IDeclarationSource, string> areaLayoutPairs, IDeclarationSource designSource, IDeclarationSource widthSource, IDeclarationSource heightSource, bool isScrollable, IDeclarationSource backgroundSource, IDeclarationSource backgroundColorSource)
+        public Page(string name, string fileName, string xamlName, IComponentEvent queryEvent, IDeclarationSource areaSource, IParsingSource allAreaLayoutsSource, Dictionary<IDeclarationSource, string> areaLayoutPairs, IDeclarationSource designSource, IDeclarationSource widthSource, IDeclarationSource heightSource, bool isScrollable, IDeclarationSource backgroundSource, IDeclarationSource backgroundColorSource)
         {
             Name = name;
             FileName = fileName;
             XamlName = xamlName;
+            QueryEvent = queryEvent;
             AreaSource = areaSource;
             AllAreaLayoutsSource = allAreaLayoutsSource;
             AreaLayoutPairs = areaLayoutPairs;
@@ -31,6 +32,9 @@ namespace Parser
         public string Name { get; private set; }
         public string FileName { get; private set; }
         public string XamlName { get; private set; }
+        public IComponentEvent QueryEvent { get; private set; }
+        public IObject QueryObject { get; private set; }
+        public IObjectEvent QueryObjectEvent { get; private set; }
         public IDeclarationSource AreaSource { get; private set; }
         public IArea Area { get; private set; }
         public IParsingSource AllAreaLayoutsSource { get; private set; }
@@ -55,6 +59,7 @@ namespace Parser
         {
             bool IsConnected = false;
 
+            ConnectQueryEvent(domain, ref IsConnected);
             ConnectArea(domain, ref IsConnected);
             ConnectDynamic(domain, ref IsConnected);
             ConnectLayout(domain, ref IsConnected);
@@ -62,6 +67,22 @@ namespace Parser
             ConnectBackground(domain, ref IsConnected);
 
             return IsConnected;
+        }
+
+        private void ConnectQueryEvent(IDomain domain, ref bool IsConnected)
+        {
+            if (QueryEvent != null && (QueryObject == null || QueryObjectEvent == null))
+            {
+                IObject Object = null;
+                IObjectEvent ObjectEvent = null;
+                QueryEvent.Connect(domain, ref Object, ref ObjectEvent);
+                QueryObject = Object;
+                QueryObjectEvent = ObjectEvent;
+                QueryObjectEvent.SetIsProvidingCustomPageName(QueryEvent.EventSource, true);
+
+                IsConnected = true;
+                SetIsReachable();
+            }
         }
 
         public void ConnectArea(IDomain domain, ref bool IsConnected)

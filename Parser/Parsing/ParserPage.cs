@@ -36,6 +36,7 @@ namespace Parser
 
         private IPage Parse(string name, IParsingSourceStream sourceStream)
         {
+            IComponentEvent QueryEvent = null;
             IDeclarationSource AreaSource = null;
             IParsingSource AllAreaLayoutsSource = null;
             Dictionary<IDeclarationSource, string> AreaLayoutsPairs = null;
@@ -51,7 +52,7 @@ namespace Parser
                 sourceStream.ReadLine();
                 string Line = sourceStream.Line;
                 if (!string.IsNullOrWhiteSpace(Line))
-                    ParseComponent(sourceStream, ref AreaSource, ref AllAreaLayoutsSource, ref AreaLayoutsPairs, ref DesignSource, ref WidthSource, ref HeightSource, ref IsScrollable, ref BackgroundSource, ref BackgroundColorSource);
+                    ParseComponent(sourceStream, ref QueryEvent, ref AreaSource, ref AllAreaLayoutsSource, ref AreaLayoutsPairs, ref DesignSource, ref WidthSource, ref HeightSource, ref IsScrollable, ref BackgroundSource, ref BackgroundColorSource);
             }
 
             if (AreaSource == null || string.IsNullOrEmpty(AreaSource.Name))
@@ -72,10 +73,10 @@ namespace Parser
             if (BackgroundColorSource == null || string.IsNullOrEmpty(BackgroundColorSource.Name))
                 throw new ParsingException(114, sourceStream, "Missing background color.");
 
-            return new Page(name, ParserDomain.ToCSharpName(sourceStream, name + "Page"), ParserDomain.ToXamlName(sourceStream, name, "Page"), AreaSource, AllAreaLayoutsSource, AreaLayoutsPairs, DesignSource, WidthSource, HeightSource, IsScrollable, BackgroundSource, BackgroundColorSource);
+            return new Page(name, ParserDomain.ToCSharpName(sourceStream, name + "Page"), ParserDomain.ToXamlName(sourceStream, name, "Page"), QueryEvent, AreaSource, AllAreaLayoutsSource, AreaLayoutsPairs, DesignSource, WidthSource, HeightSource, IsScrollable, BackgroundSource, BackgroundColorSource);
         }
 
-        private void ParseComponent(IParsingSourceStream sourceStream, ref IDeclarationSource areaSource, ref IParsingSource allAreaLayoutsSource, ref Dictionary<IDeclarationSource, string> areaLayoutsPairs, ref IDeclarationSource designSource, ref IDeclarationSource widthSource, ref IDeclarationSource heightSource, ref bool isScrollable, ref IDeclarationSource backgroundSource, ref IDeclarationSource backgroundColorSource)
+        private void ParseComponent(IParsingSourceStream sourceStream, ref IComponentEvent queryEvent, ref IDeclarationSource areaSource, ref IParsingSource allAreaLayoutsSource, ref Dictionary<IDeclarationSource, string> areaLayoutsPairs, ref IDeclarationSource designSource, ref IDeclarationSource widthSource, ref IDeclarationSource heightSource, ref bool isScrollable, ref IDeclarationSource backgroundSource, ref IDeclarationSource backgroundColorSource)
         {
             string Line = sourceStream.Line;
             if (Line.Trim() == "scrollable")
@@ -89,7 +90,12 @@ namespace Parser
             ParserDomain.ParseStringPair(sourceStream, ':', out ComponentSource, out ComponentValue);
             //ComponentValue = ComponentValue.ToLower();
 
-            if (ComponentSource.Name == "area")
+            if (ComponentSource.Name == "open on query")
+                if (queryEvent == null)
+                    queryEvent = ParseQueryEvent(sourceStream, ComponentValue);
+                else
+                    throw new ParsingException(0, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
+            else if (ComponentSource.Name == "area")
                 if (areaSource == null)
                     areaSource = new DeclarationSource(ComponentValue, sourceStream);
                 else
@@ -129,6 +135,12 @@ namespace Parser
                     throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else
                 throw new ParsingException(115, sourceStream, $"Specifier '{ComponentSource.Name}' was unexpected.");
+        }
+
+        private IComponentEvent ParseQueryEvent(IParsingSourceStream sourceStream, string line)
+        {
+            ComponentInfo Info = ComponentInfo.Parse(sourceStream, line);
+            return new ComponentEvent(Info);
         }
 
         private Dictionary<IDeclarationSource, string> ParseAreaLayoutsPairs(IParsingSourceStream sourceStream, string line)

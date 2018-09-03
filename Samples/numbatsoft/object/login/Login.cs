@@ -123,6 +123,15 @@ namespace AppCSHtml5
             else
                 (App.Current as App).GoTo(PageNames.registration_failed_04Page);
         }
+
+        public void On_RegisterEnd(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            Dictionary<string, string> QueryString = App.QueryString;
+            if (QueryString != null && QueryString.ContainsKey("type") && QueryString["type"] == "register")
+                destinationPageName = PageNames.registration_endPage;
+            else
+                destinationPageName = pageName;
+        }
         #endregion
 
         #region Login

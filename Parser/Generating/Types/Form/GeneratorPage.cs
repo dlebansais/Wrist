@@ -36,6 +36,8 @@ namespace Parser
         public string Name { get; private set; }
         public string FileName { get; private set; }
         public string XamlName { get; private set; }
+        public IGeneratorObject QueryObject { get; private set; }
+        public IGeneratorObjectEvent QueryObjectEvent { get; private set; }
         public IGeneratorArea Area { get; private set; }
         public Dictionary<IGeneratorArea, IGeneratorLayout> AreaLayouts { get; } = new Dictionary<IGeneratorArea, IGeneratorLayout>();
         public IGeneratorDesign Design { get; private set; }
@@ -49,6 +51,13 @@ namespace Parser
         public bool Connect(IGeneratorDomain domain)
         {
             bool IsConnected = false;
+
+            if ((BasePage.QueryObject != null && BasePage.QueryObjectEvent != null) && (QueryObject == null || QueryObjectEvent == null))
+            {
+                IsConnected = true;
+                QueryObject = GeneratorObject.GeneratorObjectMap[BasePage.QueryObject];
+                QueryObjectEvent = GeneratorObjectEvent.GeneratorObjectEventMap[BasePage.QueryObjectEvent];
+            }
 
             if (Area == null)
             {
