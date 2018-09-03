@@ -21,6 +21,8 @@
             else
                 GoToPage = GeneratorPage.GeneratorPageMap[goTo.GoToPage];
 
+            IsExternal = goTo.IsExternal;
+
             if (goTo.AfterObject != null && goTo.AfterObjectEvent != null)
             {
                 AfterObject = GeneratorObject.GeneratorObjectMap[goTo.AfterObject];
@@ -31,6 +33,7 @@
         public IGeneratorObject BeforeObject { get; private set; }
         public IGeneratorObjectEvent BeforeObjectEvent { get; private set; }
         public IGeneratorPage GoToPage { get; private set; }
+        public bool IsExternal { get; private set; }
         public IGeneratorObject AfterObject { get; private set; }
         public IGeneratorObjectEvent AfterObjectEvent { get; private set; }
         public IGeneratorComponent Source { get; private set; }
@@ -90,6 +93,7 @@
             else
                 Result.GoToPage = GoToPage;
 
+            Result.IsExternal = IsExternal;
             Result.AfterObject = AfterObject;
             Result.AfterObjectEvent = AfterObjectEvent;
             Result.Source = source;

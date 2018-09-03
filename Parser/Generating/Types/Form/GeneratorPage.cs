@@ -253,6 +253,7 @@ namespace Parser
                 IGeneratorPageNavigation GoTo = Item.Item1;
                 IGeneratorObject ClosePopupObject = Item.Item2;
                 IGeneratorObjectPropertyBoolean ClosePopupObjectProperty = Item.Item3;
+                string GoToCall = GoTo.IsExternal ? "GoToExternal" : "GoTo";
 
                 cSharpWriter.WriteLine();
                 cSharpWriter.WriteLine($"        public void {GoTo.EventName}(object sender, RoutedEventArgs e)");
@@ -269,7 +270,7 @@ namespace Parser
                             cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
                         else
                             cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
-                        cSharpWriter.WriteLine($"            (App.Current as App).GoTo(DestinationPageName);");
+                        cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(DestinationPageName);");
                     }
                     else
                     {
@@ -277,11 +278,11 @@ namespace Parser
                             cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
                         else
                             cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
-                        cSharpWriter.WriteLine($"            (App.Current as App).GoTo(PageNames.{GoTo.GoToPage.XamlName});");
+                        cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.{GoTo.GoToPage.XamlName});");
                     }
                 }
                 else
-                    cSharpWriter.WriteLine($"            (App.Current as App).GoTo(PageNames.{GoTo.GoToPage.XamlName});");
+                    cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.{GoTo.GoToPage.XamlName});");
 
                 if (ClosePopupObject != null && ClosePopupObjectProperty != null)
                 {

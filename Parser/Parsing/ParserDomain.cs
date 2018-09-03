@@ -132,7 +132,7 @@ namespace Parser
                         break;
                     }
                 if (SelectedUnitTest == null)
-                    throw new ParsingException(0, inputFolderName, $"Unit test '{unitTestName}' not found.");
+                    throw new ParsingException(239, inputFolderName, $"Unit test '{unitTestName}' not found.");
             }
 
             IDomain NewDomain = new Domain(inputFolderName, 
@@ -235,13 +235,13 @@ namespace Parser
                         else if (AsEntry.Key is Type AsTypeKey)
                             DesignKeyList.Add($"{Page.Design.XamlName}{StyleTypeConverter(AsTypeKey.Name)}");
                         else
-                            throw new ParsingException(0, "", $"Unexpected key in design '{Page.Design.Name}'.");
+                            throw new ParsingException(240, "", $"Unexpected key in design '{Page.Design.Name}'.");
                     else
-                        throw new ParsingException(0, "", $"Unexpected key in design '{Page.Design.Name}'.");
+                        throw new ParsingException(240, "", $"Unexpected key in design '{Page.Design.Name}'.");
 
                 foreach (string Key in KeyList)
                     if (!DesignKeyList.Contains(Key))
-                        throw new ParsingException(0, "", $"Resource key '{Key}' not found in design '{Page.Design.Name}'.");
+                        throw new ParsingException(241, "", $"Resource key '{Key}' not found in design '{Page.Design.Name}'.");
             }
 
             List<IDockPanel> DockPanels = new List<IDockPanel>();

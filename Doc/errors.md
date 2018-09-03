@@ -2092,4 +2092,45 @@ This error is issued when a select operation has the component parameter but it'
 
 This error is issued when a unit test operation is none of the reconginized operations such as *click*, *fill*, *select* or *toggle*.
 
+## WTE00237
+
+*Button external specifier can only have value 'true'.*
+
+This error is issued when a button component is declared with the external specifier, but not the only allowed value `external=true`.
+
+## WTE00238
+
+*Button with the external specifier cannot have an 'close popup' property or an 'after' event.*
+
+This error is issued when a button component is declared with the external specifier, but also has a *close popup* specifier, or an *after* event. Neither is allowed in this case.
+
+## WTE00239
+
+*Unit test 'x' not found.*
+
+This error is issued when the expected unit test file was not found in the unit_test folder.
+
+## WTE00240
+
+*Unexpected key in design 'x'.*
+
+This error is issued when the design file declares a resource with a key that is not a string or one of the supported control types.
+
+## WTE00241
+
+*Resource key 'x' not found in design 'y'.*
+
+This error is issued when a style is used in one of the layout files but there is no corresponding resource in the selected design.
+
+## WTE00242
+
+*Invalid wrapping for text decoration.*
+
+This error is issued when a *TextDecoration* declares a wrapping that is neither `Wrap` or `NoWrap`.
+
+## WTE00243
+
+*Invalid link to page 'x' in text decoration, page not found.*
+
+This error is issued when a *TextDecoration* declares uses the `<a href="page name">text</a>` syntax to declare a link to a page, but the page doesn't exist.
 

@@ -141,6 +141,7 @@ namespace Parser
             IComponentProperty ContentProperty = null;
             IComponentEvent BeforeEvent = null;
             IComponentProperty NavigateProperty = null;
+            IComponentProperty ExternalProperty = null;
             IComponentEvent AfterEvent = null;
             IComponentProperty ClosePopupProperty = null;
 
@@ -151,11 +152,13 @@ namespace Parser
                     BeforeEvent = new ComponentEvent(Info);
                 else if (Info.NameSource.Name == "goto" && NavigateProperty == null)
                     NavigateProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name == "external" && ExternalProperty == null)
+                    ExternalProperty = new ComponentProperty(Info);
                 else if (Info.NameSource.Name == "after" && AfterEvent == null)
                     AfterEvent = new ComponentEvent(Info);
                 else if (Info.NameSource.Name == "close popup" && ClosePopupProperty == null)
                     ClosePopupProperty = new ComponentProperty(Info);
-                else if (Info.NameSource.Name != "content" && Info.NameSource.Name != "before" && Info.NameSource.Name != "goto" && Info.NameSource.Name != "after" && Info.NameSource.Name != "close popup")
+                else if (Info.NameSource.Name != "content" && Info.NameSource.Name != "before" && Info.NameSource.Name != "goto" && Info.NameSource.Name != "external" && Info.NameSource.Name != "after" && Info.NameSource.Name != "close popup")
                     throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
                 else
                     throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
@@ -168,10 +171,21 @@ namespace Parser
             if (NavigateProperty.FixedValueSource == null)
                 throw new ParsingException(33, sourceStream, "Go to page name can only be a static name.");
 
+            bool IsExternal;
+            if (ExternalProperty != null)
+                if (ExternalProperty.FixedValueSource == null || ExternalProperty.FixedValueSource.Name.ToLower() != "true")
+                    throw new ParsingException(237, sourceStream, "Button external specifier can only have value 'true'.");
+                else if (ClosePopupProperty != null || AfterEvent != null)
+                    throw new ParsingException(238, sourceStream, "Button with the external specifier cannot have an 'close popup' property or an 'after' event.");
+                else
+                    IsExternal = true;
+            else
+                IsExternal = false;
+
             if (ClosePopupProperty != null && ClosePopupProperty.FixedValueSource != null)
                 throw new ParsingException(219, sourceStream, "Close popup can only be a property.");
 
-            return new ComponentButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Button"), ContentProperty, BeforeEvent, NavigateProperty.FixedValueSource.Name, AfterEvent, ClosePopupProperty);
+            return new ComponentButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Button"), ContentProperty, BeforeEvent, NavigateProperty.FixedValueSource.Name, IsExternal, AfterEvent, ClosePopupProperty);
         }
 
         private IComponentCheckBox ParseComponentCheckBox(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)

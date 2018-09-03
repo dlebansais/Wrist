@@ -4,9 +4,10 @@ namespace Parser
 {
     public class PageNavigation : IPageNavigation
     {
-        public PageNavigation(IDeclarationSource navigationSource, IDomain domain, IComponentEvent beforeEvent, string goToPageName, IComponentEvent afterEvent)
+        public PageNavigation(IDeclarationSource navigationSource, IDomain domain, IComponentEvent beforeEvent, string goToPageName, bool isExternal, IComponentEvent afterEvent)
         {
             NavigationSource = navigationSource;
+            IsExternal = isExternal;
             ConnectBefore(domain, beforeEvent);
             ConnectPage(domain, goToPageName);
             ConnectAfter(domain, afterEvent);
@@ -16,6 +17,7 @@ namespace Parser
         public IObject BeforeObject { get; private set; }
         public IObjectEvent BeforeObjectEvent { get; private set; }
         public IPage GoToPage { get; private set; }
+        public bool IsExternal { get; private set; }
         public IObject AfterObject { get; private set; }
         public IObjectEvent AfterObjectEvent { get; private set; }
         public IList<IPage> AlternatePages { get; } = new List<IPage>();

@@ -94,7 +94,7 @@ namespace Parser
                 if (queryEvent == null)
                     queryEvent = ParseQueryEvent(sourceStream, ComponentValue);
                 else
-                    throw new ParsingException(0, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else if (ComponentSource.Name == "area")
                 if (areaSource == null)
                     areaSource = new DeclarationSource(ComponentValue, sourceStream);

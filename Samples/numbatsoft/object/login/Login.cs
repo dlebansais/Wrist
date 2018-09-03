@@ -8,6 +8,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+/*
+            QueryString = new Dictionary<string, string>();
+            QueryString.Add("type", "register");
+            QueryString.Add("username", "test");
+            QueryString.Add("email", "test@test.com");
+            QueryString.Add("question", "");
+            //QueryString.Add("question", Login.EncodedRecoveryQuestion("foo"));
+*/
+
 namespace AppCSHtml5
 {
     public class Login : ILogin, INotifyPropertyChanged
@@ -40,6 +49,7 @@ namespace AppCSHtml5
         public string RecoveryAnswer { get; set; }
         public string ConfirmAnswer { get; set; }
         public bool Remember { get; set; }
+        public bool HasQuestion { get { return !string.IsNullOrEmpty(RecoveryQuestion); } }
 
         #region Register
         public void On_Register(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
@@ -127,10 +137,110 @@ namespace AppCSHtml5
         public void On_RegisterEnd(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             Dictionary<string, string> QueryString = App.QueryString;
-            if (QueryString != null && QueryString.ContainsKey("type") && QueryString["type"] == "register")
-                destinationPageName = PageNames.registration_endPage;
+            if (QueryString != null && QueryString.Count > 0)
+            {
+                if (QueryString.ContainsKey("type") && QueryString["type"] == "register")
+                {
+                    string QueryName = QueryString.ContainsKey("username") ? QueryString["username"] : null;
+                    string QueryEmail = QueryString.ContainsKey("email") ? QueryString["email"] : null;
+                    string QueryQuestion = QueryString.ContainsKey("question") ? QueryString["question"] : null;
+
+                    if (!string.IsNullOrEmpty(QueryName) && !string.IsNullOrEmpty(QueryEmail))
+                    {
+                        Name = QueryName;
+                        Email = QueryEmail;
+                        RecoveryQuestion = DecodedRecoveryQuestion(QueryQuestion);
+                        destinationPageName = PageNames.registration_endPage;
+                    }
+                    else
+                        destinationPageName = PageNames.invalid_operationPage;
+                }
+                else
+                    destinationPageName = PageNames.invalid_operationPage;
+            }
             else
                 destinationPageName = pageName;
+        }
+
+        public void On_CompleteRegistration(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (!Remember)
+            {
+                Persistent.SetValue("name", null);
+                Persistent.SetValue("email", null);
+                Persistent.SetValue("question", null);
+                Persistent.SetValue("remember", null);
+            }
+
+            if (string.IsNullOrEmpty(Password))
+                destinationPageName = PageNames.registration_failed_05Page;
+
+            else if (HasQuestion && string.IsNullOrEmpty(RecoveryAnswer))
+                destinationPageName = PageNames.registration_failed_06Page;
+
+            else
+            {
+                StartCompleteRegistration(Name, Password, Email, Remember, HasQuestion, RecoveryAnswer);
+                destinationPageName = PageNames.CurrentPage;
+            }
+
+            Password = null;
+        }
+
+        private void StartCompleteRegistration(string name, string testPassword, string email, bool remember, bool hasQuestion, string answer)
+        {
+            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => CompleteRegistration_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, email, remember, hasQuestion, answer));
+        }
+
+        private void CompleteRegistration_OnTestPasswordEncrypted(bool success, object result, string name, string email, bool remember, bool hasQuestion, string answer)
+        {
+            if (success)
+            {
+                string EncryptedTestPassword = (string)result;
+
+                if (hasQuestion)
+                    EncryptPassword(answer, name, (bool encryptSuccess, object encryptResult) => CompleteRegistration_OnAnswerEncrypted(encryptSuccess, encryptResult, name, email, EncryptedTestPassword, remember));
+                else
+                    ActivateAccountAndSendEmail(name, email, EncryptedTestPassword, null, (bool checkSuccess, object checkResult) => CompleteRegistration_OnGetUserInfo(checkSuccess, checkResult, remember));
+            }
+            else
+                (App.Current as App).GoTo(PageNames.registration_failed_05Page);
+        }
+
+        private void CompleteRegistration_OnAnswerEncrypted(bool success, object result, string name, string email, string encryptedTestPassword, bool remember)
+        {
+            if (success)
+            {
+                string EncryptedAnswer = (string)result;
+                ActivateAccountAndSendEmail(name, email, encryptedTestPassword, EncryptedAnswer, (bool checkSuccess, object checkResult) => CompleteRegistration_OnGetUserInfo(checkSuccess, checkResult, remember));
+            }
+            else
+                (App.Current as App).GoTo(PageNames.registration_failed_05Page);
+        }
+
+        private void CompleteRegistration_OnGetUserInfo(bool success, object result, bool remember)
+        {
+            if (success)
+            {
+                Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
+                if (remember)
+                {
+                    Persistent.SetValue("name", Name);
+                    Persistent.SetValue("email", Email);
+                    Persistent.SetValue("question", RecoveryQuestion);
+                    Persistent.SetValue("remember", "1");
+                }
+
+                LoginState = LoginStates.SignedIn;
+
+                NotifyPropertyChanged(nameof(Email));
+                NotifyPropertyChanged(nameof(RecoveryQuestion));
+                NotifyPropertyChanged(nameof(LoginState));
+
+                (App.Current as App).GoTo(PageNames.homePage);
+            }
+            else
+                (App.Current as App).GoTo(PageNames.registration_failed_05Page);
         }
         #endregion
 
@@ -441,7 +551,7 @@ namespace AppCSHtml5
         }
         #endregion
 
-        #region Change Recovery
+        #region Recovery
         public void On_BeginRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (string.IsNullOrEmpty(Email))
@@ -684,6 +794,30 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
         }
 
+        private void ActivateAccountAndSendEmail(string name, string email, string encryptedPassword, string encryptedAnswer, Action<bool, object> callback)
+        {
+            Database.Completed += OnActivateAccountCompleted;
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "email", HtmlString.Entities(email) }, { "password", HtmlString.Entities(encryptedPassword) }, { "answer", string.IsNullOrEmpty(encryptedAnswer) ? "" : HtmlString.Entities(encryptedAnswer) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+        }
+
+        private void OnActivateAccountCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnActivateAccountCompleted notified");
+            Database.Completed -= OnActivateAccountCompleted;
+
+            Action<bool, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
+            {
+                string ChangePasswordResult = Result["result"];
+
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangePasswordResult == "1", null));
+            }
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+        }
+
         private Database Database = Database.Current;
         #endregion
 
@@ -698,6 +832,7 @@ namespace AppCSHtml5
             OperationHandler.Add(new OperationHandler("/request/query_3.php", OnCheckEmailMatchRequest));
             OperationHandler.Add(new OperationHandler("/request/insert_1.php", OnSignUpRequest));
             OperationHandler.Add(new OperationHandler("/request/update_4.php", OnRecoveryRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_5.php", OnCompleteRegistrationRequest));
         }
 
         private List<Dictionary<string, string>> OnEncrypt(Dictionary<string, string> parameters)
@@ -1010,7 +1145,60 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private static string EncodedRecoveryQuestion(string text)
+        private List<Dictionary<string, string>> OnCompleteRegistrationRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string Username;
+            if (parameters.ContainsKey("name"))
+                Username = parameters["name"];
+            else
+                Username = null;
+
+            string Email;
+            if (parameters.ContainsKey("email"))
+                Email = parameters["email"];
+            else
+                Email = null;
+
+            string EncryptedPassword;
+            if (parameters.ContainsKey("password"))
+                EncryptedPassword = parameters["password"];
+            else
+                EncryptedPassword = null;
+
+            string EncryptedAnswer;
+            if (parameters.ContainsKey("answer"))
+                EncryptedAnswer = parameters["answer"];
+            else
+                EncryptedAnswer = null;
+
+            string Language;
+            if (parameters.ContainsKey("language"))
+                Language = parameters["language"];
+            else
+                Language = "0";
+
+            if (Username == null || Email == null || EncryptedPassword == null || EncryptedAnswer == null)
+                return Result;
+
+            foreach (Dictionary<string, string> Line in KnownUserTable)
+                if (Line.ContainsKey("id") && Line["id"] == Username)
+                {
+                    if ((Line.ContainsKey("password") && Line["password"] == EncryptedPassword) && (Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer))
+                    {
+                        Result.Add(new Dictionary<string, string>()
+                        {
+                            { "result", "1"},
+                        });
+                    }
+                    break;
+                }
+
+            return Result;
+        }
+
+        public static string EncodedRecoveryQuestion(string text)
         {
             string Result = "";
             foreach (char c in text)
@@ -1019,7 +1207,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private static string DecodedRecoveryQuestion(string text)
+        public static string DecodedRecoveryQuestion(string text)
         {
             string Result = "";
             foreach (char c in text)

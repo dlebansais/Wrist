@@ -4,12 +4,13 @@ namespace Parser
 {
     public class ComponentButton : Component, IComponentButton
     {
-        public ComponentButton(IDeclarationSource source, string xamlName, IComponentProperty contentProperty, IComponentEvent beforeEvent, string goToPageName, IComponentEvent afterEvent, IComponentProperty closePopupProperty)
+        public ComponentButton(IDeclarationSource source, string xamlName, IComponentProperty contentProperty, IComponentEvent beforeEvent, string goToPageName, bool isExternal, IComponentEvent afterEvent, IComponentProperty closePopupProperty)
             : base(source, xamlName)
         {
             ContentProperty = contentProperty;
             BeforeEvent = beforeEvent;
             GoToPageName = goToPageName;
+            IsExternal = isExternal;
             AfterEvent = afterEvent;
             ClosePopupProperty = closePopupProperty;
         }
@@ -22,6 +23,7 @@ namespace Parser
         public IComponentEvent BeforeEvent { get; private set; }
         public string GoToPageName { get; private set; }
         public IPageNavigation GoTo { get; private set; }
+        public bool IsExternal { get; private set; }
         public IComponentEvent AfterEvent { get; private set; }
         public IComponentProperty ClosePopupProperty { get; private set; }
         public IObject ClosePopupObject { get; private set; }
@@ -57,7 +59,7 @@ namespace Parser
         {
             if (GoTo == null)
             {
-                GoTo = new PageNavigation(Source, domain, BeforeEvent, GoToPageName, AfterEvent);
+                GoTo = new PageNavigation(Source, domain, BeforeEvent, GoToPageName, IsExternal, AfterEvent);
                 IsConnected = true;
             }
         }

@@ -10,6 +10,7 @@
         IComponentEvent BeforeEvent { get; }
         string GoToPageName { get; }
         IPageNavigation GoTo { get; }
+        bool IsExternal { get; }
         IComponentEvent AfterEvent { get; }
         IComponentProperty ClosePopupProperty { get; }
         IObject ClosePopupObject { get; }

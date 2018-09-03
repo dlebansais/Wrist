@@ -5,6 +5,7 @@
         IGeneratorObject BeforeObject { get; }
         IGeneratorObjectEvent BeforeObjectEvent { get; }
         IGeneratorPage GoToPage { get; }
+        bool IsExternal { get; }
         IGeneratorObject AfterObject { get; }
         IGeneratorObjectEvent AfterObjectEvent { get; }
         bool IsEqual(IGeneratorPageNavigation other, IGeneratorPage currentPage);

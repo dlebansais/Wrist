@@ -35,7 +35,7 @@ namespace Parser
             else if (Wrapping == Windows.UI.Xaml.TextWrapping.NoWrap.ToString())
                 TextWrapping = Windows.UI.Xaml.TextWrapping.NoWrap;
             else
-                throw new ParsingException(0, Source, $"Invalid wrapping for text decoration.");
+                throw new ParsingException(242, Source, $"Invalid wrapping for text decoration.");
 
             Dictionary<string, object> MatchTable = new Dictionary<string, object>();
             foreach (IPage Page in domain.Pages)
@@ -45,7 +45,7 @@ namespace Parser
             List<string> UnmatchedList = new List<string>();
             ReplaceUri(Text, "href", MatchTable, MatchedList, UnmatchedList, null);
             if (UnmatchedList.Count > 0)
-                throw new ParsingException(0, Source, $"Invalid link to page '{UnmatchedList[0]}' in text decoration, page not found.");
+                throw new ParsingException(243, Source, $"Invalid link to page '{UnmatchedList[0]}' in text decoration, page not found.");
 
             foreach (object Item in MatchedList)
             {
