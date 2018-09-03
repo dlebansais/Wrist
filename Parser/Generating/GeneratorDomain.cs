@@ -269,6 +269,7 @@ namespace Parser
             cSharpWriter.WriteLine("            if (pageName == PageNames.CurrentPage)");
             cSharpWriter.WriteLine("                return;");
             cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("            Page DestinationPage;");
             cSharpWriter.WriteLine("            switch (pageName)");
             cSharpWriter.WriteLine("            {");
 
@@ -276,15 +277,25 @@ namespace Parser
             {
                 IGeneratorPage Page = Pages[i];
                 if (Page == HomePage)
+                {
                     cSharpWriter.WriteLine("                default:");
-                cSharpWriter.WriteLine($"                case PageNames.{Page.XamlName}:");
-                cSharpWriter.WriteLine($"                    Window.Current.Content = new {Page.XamlName}();");
-                cSharpWriter.WriteLine("                    break;");
+                    cSharpWriter.WriteLine($"                case PageNames.{Page.XamlName}:");
+                    cSharpWriter.WriteLine($"                    pageName = PageNames.{Page.XamlName};");
+                    cSharpWriter.WriteLine($"                    DestinationPage = new {Page.XamlName}();");
+                    cSharpWriter.WriteLine("                    break;");
+                }
+                else
+                {
+                    cSharpWriter.WriteLine($"                case PageNames.{Page.XamlName}:");
+                    cSharpWriter.WriteLine($"                    DestinationPage = new {Page.XamlName}();");
+                    cSharpWriter.WriteLine("                    break;");
+                }
             }
 
             cSharpWriter.WriteLine("            }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("            Persistent.SetValue(\"page\", ((int)pageName).ToString());");
+            cSharpWriter.WriteLine("            Window.Current.Content = DestinationPage;");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        private Dictionary<Control, Brush> BrushTable = new Dictionary<Control, Brush>();");
