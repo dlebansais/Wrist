@@ -1,7 +1,7 @@
 ﻿#if HTTP
 using CSHTML5;
-using System.Collections.Generic;
 #endif
+using System.Collections.Generic;
 
 namespace DatabaseManager
 {

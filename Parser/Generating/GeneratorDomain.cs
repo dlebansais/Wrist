@@ -236,6 +236,7 @@ namespace Parser
             cSharpWriter.WriteLine("        public App()");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
+            cSharpWriter.WriteLine("            QueryString = DatabaseManager.NetTools.GetQueryString();");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"            PageNames StartPage = int.TryParse(Persistent.GetValue(\"page\", \"\"), out int PageIndex) ? (PageNames)PageIndex : PageNames.{HomePage.XamlName};");
             cSharpWriter.WriteLine($"            GoTo(StartPage);");
@@ -245,6 +246,7 @@ namespace Parser
 
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        public static Dictionary<string, string> QueryString { get; private set; }");
 
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)
