@@ -49,6 +49,11 @@ page-recovery-end-failed-1	Account Recovery	Récupération de compte
 page-recovery-end-failed-2	Account Recovery	Récupération de compte
 page-recovery-end-failed-3	Account Recovery	Récupération de compte
 page-recovery-end-failed-4	Account Recovery	Récupération de compte
+page-bug-list-eq	Everquest Multilog Parser	Everquest Multilog Parser
+page-product-eq	Everquest Multilog Parser	Everquest Multilog Parser
+page-product-pg	Project: Gorgon JSON Parser	Project: Gorgon JSON Parser
+page-product-uac	UAC pass-through	UAC pass-through
+page-release-notes-eq	Everquest Multilog Parser	Everquest Multilog Parser
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -186,3 +191,42 @@ recovery-end-failed-text-1	Sorry, you must provide the answer to the secret ques
 recovery-end-failed-text-2	Sorry, you must provide a password before you can recover your account.	Désolé, vous devez entrer un mot de passe avant de pouvoir récupérer votre compte.
 recovery-end-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 recovery-end-failed-text-4	Sorry, the answer doesn't match the expected answer for this account.	Désolé, la réponse que vous venez d'entrer ne correspond pas à la réponse attendue.
+product-pg-title	Project: Gorgon JSON Parser	Project: Gorgon JSON Parser
+product-pg-text-1	This parser can download and process public files from the Project: Gorgon MMORPG.\u00A0 It includes a build planner that helps players plan ahead for gear updates.	Ce parseur peut télécharger et traiter les fichiers public du MMORPG Project: Gorgon.  Il contient un planificateur de personnage qui aide les joueurs à prévoir comment améliorer leur matos.
+product-pg-text-2	The intented audience for this application are P:G players.	Cette application s'adresse principalement aux joueurs de P:G.
+product-description	Detailed product description	.
+product-eq-title	Everquest Multilog Parser	Everquest Multilog Parser
+product-eq-text-1	The Everquest Multilog Parser can collect, synthesize and display combat information from multiple logs in real time.\u00A0 Compared to traditional parsers, its main benefit is accuracy.	Everquest Multilog Parser est capable de rassembler, combiner et afficher les informations de combat provenant de plusieurs logs en temps réel. Comparé aux parseurs traditionnels, son avantage principal est la précision.
+product-eq-text-2	The intented audience for this application are large organisations of Everquest players: guilds or alliances.	Cette application s'adresse principalement aux grandes organisations de joueurs d'Everquest : des guildes or des alliances.
+product-uac-title	UAC pass-through	UAC pass-through
+product-uac-text-1	When User Account Control is enabled, Windows will ask for user confirmation every time a program attempts to run with elevated privileges.\u00A0 This tool can launch programs with elevated privileges but without the pop-up dialog box.	Lorsque le contrôle du compte de l'utilisateur est activée, Windows demande une confirmation à chaque fois qu'un programme essaie de s'exécuter avec des privilèges élevés. Cet outil permet de lancer des programmes avec privilèges élevés mais sans la boîte de dialogue de confirmation.
+product-uac-text-2	The intended audience for this tool are companies that distribute programs designed for Windows XP and don't want to waste money on porting their code to Vista and Windows 7.	Cet outils s'adresse principalement aux sociétés distribuant des programmes écris pour Windows XP et qui ne veulent pas dépenser argent et énergie pour porter leur code vers Windows Vista et 7.
+description	Description	Description
+product-pg-text	This parser can download and process public files from the Project: Gorgon MMORPG.  It includes a build planner that helps players plan ahead for gear updates.	Ce parseur peut télécharger et traiter les fichiers public du MMORPG Project: Gorgon. Il contient un planificateur de personnage qui aide les joueurs à prévoir comment améliorer leur armure.
+features	Features	Fonctionnalités
+features-pg-1	This program will locate the latest version of public files from the game, and download them.	Ce programme peut trouver la dernière version des fichiers public du jeu et les télécharger.
+features-pg-2	The user can choose to work with an earlier version, for example to check the effect of change in the game on the capabilities of their characters.	L'utilisateur peut choisir de travailler avec une ancienne version, par exemple pour vérifier les effets d'un changement dans le jeu sur les capacités de ses personnages.
+features-pg-3	The build planner feature allows to choose two skills, select for each gear slot a set of mods, and also select a specific item to receive these mods.	Le planificateur de personnage permet de choisir deux capacités, de sélectionner pour chaque type d'armure un ensemble de pouvoirs, et également de spécifier quelle pièce d'armure recevra ces pouvoirs.
+features-pg-4	The choice of gear is made from a list of items for each slot, and the sort order for this list can be customized in a profile to gives each item a weight depending on their innate powers.	Le choix d'une armure est effectué parmi une liste d'objets pour chaque type, et l'ordre de tri pour cette liste peut être personnalisé dans un profil pour donner à chaque objet un poids dépendant de ses pouvoirs intrinsèques.
+features-pg-5	A build can be saved in a file and reloaded later.\u00A0 The program can also put a short text description of the build in the clipboard.	Un plan de personnage peut être sauvegardé et rechargé ultérieurement. Le programme peut également placer une description textuelle du plan dans le presse-papier.
+license	License	Licence
+license-pg-text	Anyone can use this program, but all materials it manipulates is copyright © 2017, Elder Game, LLC.	N'importe qui peut utiliser ce programme, mais tous ce qu'il manipule est copyright © 2017, Elder Game, LLC.
+documentation	Documentation	Documentation
+not-available	Not available yet.	Pas encore disponible.
+product-eq-text	The Everquest Multilog Parser can collect, synthesize and display combat information from multiple logs in real time.  Compared to traditional parsers, its main benefit is accuracy.	Everquest Multilog Parser est capable de rassembler, combiner et afficher les informations de combat provenant de plusieurs logs en temps réel. Comparé aux parseurs traditionnels, son avantage principal est la précision.
+release-notes	Release notes	.
+bug-list	Bug list	.
+features-eq-1	This application creates a private network connecting all playing members of an organization (a guild or an alliance).  Logs from each player are shared and compared to obtain an overview of fights in real-time.	.
+features-eq-2	Security is enforced by requiring all players to be able to log into the organization's site.  Every time a player tries to connect to the network created by the Everquest Multilog Parser, a check is made to verify they can connect to that site.	.
+features-eq-3	Privacy is ensured. Only combat information are shared, never chat or tells.	.
+features-eq-4	The application supports English and French, and support a customized user-interface in a way similar to Everquest.	.
+features-eq-5	Names of creatures can be given the same alias (ex: Trash) in a zone.  This allows to combine parses on multiple creatures into one.	.
+features-eq-7	A live update mechanism updates everyone with the latest patches and fixes in the background (it can be turned off).	.
+features-eq-8	The result of parses is stored in a database, that can be exported to common database formats.	.
+examples	Examples	.
+benefits-of-registration	Benefits of registration	.
+benefits-eq-1	Downloading and using the Everquest Multilog Parser is free.  If you register your organization, for a modest fee you are entitled to the following services:	.
+benefits-eq-2	Your organization is listed and can be found automatically by any member installing on their computer.  For unregistered organizations, players must configure their settings manually.	.
+benefits-eq-3	You receive news, patches and fixes automatically.  You are also entitled to new features when they are developed (no promises here) for free.	.
+benefits-eq-4	You can receive technical support.	.
+doc-eq	Several documents are available to help you using this product:	.
