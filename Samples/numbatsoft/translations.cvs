@@ -43,8 +43,12 @@ page-recovery	Account Recovery	Récupération de compte
 page-recovery-failed-1	Account Recovery	Récupération de compte
 page-recovery-failed-2	Account Recovery	Récupération de compte
 page-recovery-failed-3	Account Recovery	Récupération de compte
-page-recovery-failed-4	Account Recovery	Récupération de compte
 page-recovery-started	Account Recovery	Récupération de compte
+page-recovery-end	Account Recovery	Récupération de compte
+page-recovery-end-failed-1	Account Recovery	Récupération de compte
+page-recovery-end-failed-2	Account Recovery	Récupération de compte
+page-recovery-end-failed-3	Account Recovery	Récupération de compte
+page-recovery-end-failed-4	Account Recovery	Récupération de compte
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -168,9 +172,17 @@ recovery-failed-title	Recovery failed	La récupération a échoué
 recovery-failed-text-1	Sorry, you must enter the email address of your account to be able to recover it.	Désolé, vous devez entrer l'adresse courriel de votre compte pour pouvoir le récupérer.
 recovery-failed-text-2	Sorry, no account with this email is illegible for recovery.\u00A0 Perhaps there is no such account, or it might have no secret question and answer to allow recovery.	Désolé, aucun compte correspondant à ce courriel ne peut être récupéré. Peut-être ce compte n'existe-t-il pas, ou il peut ne pas avoir de question et réponse secrète permettant la récupération.
 recovery-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
-recovery-failed-text-4	.	.
 complete-registration	Complete Registration	Terminer l'enregistrement
 register-confirm-question-text	To complete registration, please confirm the password and answer to the secret question.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe et répondre à la question secrète.
 register-confirm-text	To complete registration, please confirm the password.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe.
 invalid-operation-title	Invalid Operation	Opération non valid
 invalid-operation-text	An operation is being performed on this site, but it seems invalid.	Une opération est effectuée sur ce site, mais elle semble non valide.
+recovery-end-title	Completing recovery	Finalisation de la récupération
+recovery-end-text	You have reached this page because you have asked to recover the following account:	Vous êtes sur cette page car vous avez demandé à récupérer le compte suivant :
+recovery-confirm-text	To complete the recovery process, please answer the question below, and provide a new password.	Pour terminer la procédure, veuillez répondre à la question ci-dessous, et entrer un nouveau mot de passe.
+recover	Recover now	Récupérer
+recovery-end-failed-title	Recovery failed	La récupération a échoué
+recovery-end-failed-text-1	Sorry, you must provide the answer to the secret question before you can recover your account.	Désolé, vous devez donner la réponse secrète à la question avant de pouvoir récupérer votre compte.
+recovery-end-failed-text-2	Sorry, you must provide a password before you can recover your account.	Désolé, vous devez entrer un mot de passe avant de pouvoir récupérer votre compte.
+recovery-end-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+recovery-end-failed-text-4	Sorry, the answer doesn't match the expected answer for this account.	Désolé, la réponse que vous venez d'entrer ne correspond pas à la réponse attendue.

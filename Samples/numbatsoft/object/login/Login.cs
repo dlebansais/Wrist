@@ -21,6 +21,8 @@ namespace AppCSHtml5
             OperationFailed = 2,
             InvalidUsernameOrPassword = 3,
             InvalidUsernamePasswordOrAnswer = 4,
+            ErrorNoQuestion = 5,
+            InvalidUsernameOrAnswer = 6,
         }
 
         public Login()
@@ -602,6 +604,96 @@ namespace AppCSHtml5
             else
                 (App.Current as App).GoTo(PageNames.recovery_failed_3Page);
         }
+
+        public void On_RecoveryEnd(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            Dictionary<string, string> QueryString = App.QueryString;
+            if (QueryString != null && QueryString.Count > 0)
+            {
+                if (QueryString.ContainsKey("type") && QueryString["type"] == "recovery")
+                {
+                    string QueryName = QueryString.ContainsKey("username") ? QueryString["username"] : null;
+                    string QueryEmail = QueryString.ContainsKey("email") ? QueryString["email"] : null;
+                    string QueryQuestion = QueryString.ContainsKey("question") ? QueryString["question"] : null;
+
+                    if (!string.IsNullOrEmpty(QueryName) && !string.IsNullOrEmpty(QueryEmail) && !string.IsNullOrEmpty(QueryQuestion))
+                    {
+                        Name = QueryName;
+                        Email = QueryEmail;
+                        RecoveryQuestion = DecodedRecoveryQuestion(QueryQuestion);
+                        destinationPageName = PageNames.recovery_endPage;
+                    }
+                    else
+                        destinationPageName = PageNames.invalid_operationPage;
+                }
+                else
+                    destinationPageName = PageNames.invalid_operationPage;
+            }
+            else
+                destinationPageName = pageName;
+        }
+
+        public void On_CompleteRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            if (string.IsNullOrEmpty(RecoveryAnswer))
+                destinationPageName = PageNames.recovery_end_failed_1Page;
+
+            else if (string.IsNullOrEmpty(NewPassword))
+                destinationPageName = PageNames.recovery_end_failed_2Page;
+
+            else
+            {
+                StartCompleteRecovery(Name, RecoveryAnswer, NewPassword);
+                destinationPageName = PageNames.CurrentPage;
+            }
+
+            NewPassword = null;
+            RecoveryAnswer = null;
+        }
+
+        private void StartCompleteRecovery(string name, string answer, string newPassword)
+        {
+            EncryptString(answer, name, (int encryptError, object encryptResult) => CompleteRecovery_OnAnswerEncrypted(encryptError, encryptResult, name, newPassword));
+        }
+
+        private void CompleteRecovery_OnAnswerEncrypted(int error, object result, string name, string newPassword)
+        {
+            if (error == (int)ErrorCodes.Success)
+            {
+                string EncryptedAnswer = (string)result;
+                EncryptString(newPassword, name, (int encryptError, object encryptResult) => CompleteRecovery_OnNewPasswordEncrypted(encryptError, encryptResult, name, EncryptedAnswer));
+            }
+            else
+                (App.Current as App).GoTo(PageNames.recovery_end_failed_3Page);
+        }
+
+        private void CompleteRecovery_OnNewPasswordEncrypted(int error, object result, string name, string encryptedAnswer)
+        {
+            if (error == (int)ErrorCodes.Success)
+            {
+                string EncryptedNewPassword = (string)result;
+                RecoverAccount(name, encryptedAnswer, EncryptedNewPassword, (int checkError, object checkResult) => CompleteRecovery_OnGetUserInfo(checkError, checkResult));
+            }
+            else
+                (App.Current as App).GoTo(PageNames.recovery_end_failed_3Page);
+        }
+
+        private void CompleteRecovery_OnGetUserInfo(int error, object result)
+        {
+            if (error == (int)ErrorCodes.Success)
+            {
+                Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
+
+                LoginState = LoginStates.SignedIn;
+                NotifyPropertyChanged(nameof(LoginState));
+
+                (App.Current as App).GoTo(PageNames.accountPage);
+            }
+            else if (error == (int)ErrorCodes.InvalidUsernameOrAnswer)
+                (App.Current as App).GoTo(PageNames.recovery_end_failed_4Page);
+            else
+                (App.Current as App).GoTo(PageNames.recovery_end_failed_3Page);
+        }
         #endregion
 
         #region Operations
@@ -808,6 +900,26 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
+        private void RecoverAccount(string name, string encryptedAnswer, string encryptedPassword, Action<int, object> callback)
+        {
+            Database.Completed += OnAccountRecoveryCompleted;
+            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "answer", HtmlString.Entities(encryptedAnswer) }, { "password", HtmlString.Entities(encryptedPassword) } }, callback));
+        }
+
+        private void OnAccountRecoveryCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnAccountRecoveryCompleted notified");
+            Database.Completed -= OnAccountRecoveryCompleted;
+
+            Action<int, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+        }
+
         private Database Database = Database.Current;
         #endregion
 
@@ -823,6 +935,7 @@ namespace AppCSHtml5
             OperationHandler.Add(new OperationHandler("/request/insert_1.php", OnSignUpRequest));
             OperationHandler.Add(new OperationHandler("/request/update_4.php", OnRecoveryRequest));
             OperationHandler.Add(new OperationHandler("/request/update_5.php", OnCompleteRegistrationRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_6.php", OnCompleteRecoveryRequest));
         }
 
         private List<Dictionary<string, string>> OnEncrypt(Dictionary<string, string> parameters)
@@ -1156,16 +1269,43 @@ namespace AppCSHtml5
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("email") && Line["email"] == Email && Line.ContainsKey("is active") && Line["is active"] == "1")
+                if (Line.ContainsKey("email") && Line["email"] == Email && Line.ContainsKey("is active") && Line["is active"] == "1" && Line.ContainsKey("question") && Line["question"].Length > 0)
                 {
                     Result.Add(new Dictionary<string, string>()
                     {
                         { "result", ((int)ErrorCodes.Success).ToString()},
                     });
+
+                    string Username = Line.ContainsKey("id") ? Line["id"] : "";
+
+                    DispatcherTimer RecoveryConfirmedTimer = new DispatcherTimer();
+                    RecoveryConfirmedTimer.Interval = TimeSpan.FromSeconds(3);
+                    RecoveryConfirmedTimer.Tick += (object sender, object e) => OnRecoveryConfirmed(sender, e, Username, Email, Line["question"]);
+                    RecoveryConfirmedTimer.Start();
                     break;
                 }
 
             return Result;
+        }
+
+        private void OnRecoveryConfirmed(object sender, object e, string username, string email, string question)
+        {
+            DispatcherTimer SignUpConfirmedTimer = (DispatcherTimer)sender;
+            SignUpConfirmedTimer.Stop();
+
+            if (MessageBox.Show("Continue recovery?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            {
+                Dictionary<string, string> QueryString = App.QueryString;
+                QueryString.Clear();
+                QueryString.Add("type", "recovery");
+                QueryString.Add("username", username);
+                QueryString.Add("email", email);
+                QueryString.Add("question", question);
+
+                PageNames NextPageName;
+                On_RecoveryEnd(PageNames.homePage, null, null, out NextPageName);
+                (App.Current as App).GoTo(NextPageName);
+            }
         }
 
         private List<Dictionary<string, string>> OnCompleteRegistrationRequest(Dictionary<string, string> parameters)
@@ -1222,6 +1362,58 @@ namespace AppCSHtml5
                         Error = ErrorCodes.InvalidUsernameOrPassword;
                     else
                         Error = ErrorCodes.InvalidUsernamePasswordOrAnswer;
+
+                    Result.Add(new Dictionary<string, string>()
+                    {
+                        { "result", ((int)Error).ToString()},
+                    });
+
+                    break;
+                }
+
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> OnCompleteRecoveryRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string Username;
+            if (parameters.ContainsKey("name"))
+                Username = parameters["name"];
+            else
+                Username = null;
+
+            string EncryptedAnswer;
+            if (parameters.ContainsKey("answer"))
+                EncryptedAnswer = parameters["answer"];
+            else
+                EncryptedAnswer = null;
+
+            string EncryptedPassword;
+            if (parameters.ContainsKey("password"))
+                EncryptedPassword = parameters["password"];
+            else
+                EncryptedPassword = null;
+
+            if (Username == null || EncryptedAnswer == null || string.IsNullOrEmpty(EncryptedPassword))
+                return Result;
+
+            foreach (Dictionary<string, string> Line in KnownUserTable)
+                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("is active") && Line["is active"] == "1")
+                {
+                    ErrorCodes Error;
+                    if (Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer)
+                    {
+                        if (Line.ContainsKey("password"))
+                            Line["password"] = EncryptedPassword;
+                        else
+                            Line.Add("password", EncryptedPassword);
+
+                        Error = ErrorCodes.Success;
+                    }
+                    else
+                        Error = ErrorCodes.InvalidUsernameOrAnswer;
 
                     Result.Add(new Dictionary<string, string>()
                     {
