@@ -7,8 +7,8 @@
     <ProjectGuid>{5A9484FA-3316-4E96-9EAB-95AC997B40DA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DatabaseManager</RootNamespace>
-    <AssemblyName>Database</AssemblyName>
+    <RootNamespace>NetTools</RootNamespace>
+    <AssemblyName>NetTools</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsCSharpXamlForHtml5>true</IsCSharpXamlForHtml5>
@@ -59,7 +59,7 @@
     <Compile Include="CompletionEventArgs.cs" />
     <Compile Include="CompletionEventHandler.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="NetTools.cs" />
+    <Compile Include="UrlTools.cs" />
     <Compile Include="OperationHandler.cs" />
     <Compile Include="Operations\DatabaseEncryptOperation.cs" />
     <Compile Include="Operations\DatabaseQueryOperation.cs" />

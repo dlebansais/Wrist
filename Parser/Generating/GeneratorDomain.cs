@@ -237,7 +237,7 @@ namespace Parser
             cSharpWriter.WriteLine("        public App()");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
-            cSharpWriter.WriteLine("            QueryString = DatabaseManager.NetTools.GetQueryString();");
+            cSharpWriter.WriteLine("            QueryString = NetTools.UrlTools.GetQueryString();");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"            PageNames StartPage = int.TryParse(Persistent.GetValue(\"page\", \"\"), out int PageIndex) ? (PageNames)PageIndex : PageNames.{HomePage.XamlName};");
 
@@ -315,16 +315,9 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        private void NavigateToExternal()");
             cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine("            string Url = DatabaseManager.NetTools.GetDocumentUrl()?.ToString();");
-            cSharpWriter.WriteLine("            if (Url != null)");
-            cSharpWriter.WriteLine("            {");
-            cSharpWriter.WriteLine("                int EndIndex = Url.IndexOf('?');");
-            cSharpWriter.WriteLine("                if (EndIndex >= 0)");
-            cSharpWriter.WriteLine("                    Url = Url.Substring(0, EndIndex);");
-            cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("                if (Url.Length > 0)");
-            cSharpWriter.WriteLine("                    HtmlPage.Window.Navigate(new System.Uri(Url), \"_blank\");");
-            cSharpWriter.WriteLine("            }");
+            cSharpWriter.WriteLine("            string Url = NetTools.UrlTools.GetBaseUrl();");
+            cSharpWriter.WriteLine("            if (Url.Length > 0)");
+            cSharpWriter.WriteLine("                HtmlPage.Window.Navigate(new System.Uri(Url), \"_blank\");");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        private Dictionary<Control, Brush> BrushTable = new Dictionary<Control, Brush>();");
@@ -487,9 +480,9 @@ namespace Parser
             projectWriter.WriteLine("      <Project>{c067b9b7-a2de-45f9-af05-beb0a5e70bef}</Project>");
             projectWriter.WriteLine("      <Name>Presentation</Name>");
             projectWriter.WriteLine("    </ProjectReference>");
-            projectWriter.WriteLine("    <ProjectReference Include=\"..\\Database\\Database.csproj\">");
+            projectWriter.WriteLine("    <ProjectReference Include=\"..\\NetTools\\NetTools.csproj\">");
             projectWriter.WriteLine("      <Project>{5A9484FA-3316-4E96-9EAB-95AC997B40DA}</Project>");
-            projectWriter.WriteLine("      <Name>Database</Name>");
+            projectWriter.WriteLine("      <Name>NetTools</Name>");
             projectWriter.WriteLine("    </ProjectReference>");
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <Import Project=\"$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\InternalStuff\\Targets\\CSharpXamlForHtml5.Build.targets\"/>");

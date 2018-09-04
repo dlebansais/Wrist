@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System;
-#if HTTP
+#if USE_RESTRICTED_FEATURES
 using System.Net;
 #else
 #endif
 
-namespace DatabaseManager
+namespace NetTools
 {
     public class Database
     {

@@ -1,11 +1,11 @@
-﻿using System;
+﻿#if USE_RESTRICTED_FEATURES
+#else
+using System;
 using System.Threading;
 using Windows.UI.Xaml;
 
-namespace DatabaseManager
+namespace NetTools
 {
-#if HTTP
-#else
     public delegate void DownloadStringCompletedEventHandler(object sender, DownloadStringCompletedEventArgs e);
 
     public class DownloadStringCompletedEventArgs
@@ -54,5 +54,5 @@ namespace DatabaseManager
             }
         }
     }
-#endif
 }
+#endif

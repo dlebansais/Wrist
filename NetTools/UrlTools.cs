@@ -1,19 +1,33 @@
-﻿#if HTTP
+﻿#if USE_RESTRICTED_FEATURES
 using CSHTML5;
 #endif
 using System.Collections.Generic;
 
-namespace DatabaseManager
+namespace NetTools
 {
-    public class NetTools
+    public class UrlTools
     {
         public static object GetDocumentUrl()
         {
-#if HTTP
+#if USE_RESTRICTED_FEATURES
             return Interop.ExecuteJavaScript("document.URL");
 #else
             return null;
 #endif
+        }
+
+        public static string GetBaseUrl()
+        {
+            object Url = GetDocumentUrl();
+            if (Url == null)
+                return "";
+
+            string UrlAsString = Url.ToString();
+            int EndIndex = UrlAsString.IndexOf('?');
+            if (EndIndex >= 0)
+                UrlAsString = UrlAsString.Substring(0, EndIndex);
+
+            return UrlAsString;
         }
 
         public static Dictionary<string, string> GetQueryString()
