@@ -12,6 +12,13 @@ namespace AppCSHtml5
 {
     public class Language : ILanguage
     {
+        private enum ErrorCodes
+        {
+            AnyError = -1,
+            Success = 0,
+            Error,
+        }
+
         public Language()
         {
             LanguageState = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
@@ -90,9 +97,9 @@ namespace AppCSHtml5
             GetNews(OnNewsReceived);
         }
 
-        private void OnNewsReceived(bool success, object result)
+        private void OnNewsReceived(int error, object result)
         {
-            if (!success)
+            if (error != (int)ErrorCodes.Success)
                 return;
 
             List<Dictionary<string, string>> NewsList = (List<Dictionary<string, string>>)result;
@@ -117,7 +124,7 @@ namespace AppCSHtml5
         }
 
         #region Operations
-        private void GetNews(Action<bool, object> callback)
+        private void GetNews(Action<int, object> callback)
         {
             Database.Completed += OnGetNewsCompleted;
             Database.Query(new DatabaseQueryOperation("get news entries", "query_2.php", new Dictionary<string, string>(), callback));
@@ -128,13 +135,13 @@ namespace AppCSHtml5
             Debug.WriteLine("OnGetNewsCompleted notified");
             Database.Completed -= OnGetNewsCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             List<Dictionary<string, string>> Result;
             if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "created", "enu_summary", "enu_content", "fra_summary", "fra_content" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(true, Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
         #endregion
 

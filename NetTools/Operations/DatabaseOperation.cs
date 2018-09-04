@@ -6,7 +6,7 @@ namespace NetTools
 {
     public abstract class DatabaseOperation
     {
-        public DatabaseOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<bool, object> callback)
+        public DatabaseOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<int, object> callback)
         {
             Name = name;
             ScriptName = scriptName;
@@ -17,7 +17,7 @@ namespace NetTools
         public string Name { get; private set; }
         public string ScriptName { get; private set; }
         public Dictionary<string, string> Parameters { get; private set; }
-        public Action<bool, object> Callback { get; private set; }
+        public Action<int, object> Callback { get; private set; }
 
         public virtual string RequestString(string requestScriptPath)
         {

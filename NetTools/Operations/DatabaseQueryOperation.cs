@@ -5,7 +5,7 @@ namespace NetTools
 {
     public class DatabaseQueryOperation : DatabaseOperation
     {
-        public DatabaseQueryOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<bool, object> callback)
+        public DatabaseQueryOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<int, object> callback)
             : base(name, scriptName, parameters, callback)
         {
         }

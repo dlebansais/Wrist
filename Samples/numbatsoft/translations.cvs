@@ -25,18 +25,19 @@ page-change-recovery-failed-3	Account management	Gestion du compte
 page-change-recovery-failed-4	Account management	Gestion du compte
 page-change-recovery-failed-5	Account management	Gestion du compte
 page-change-recovery-success	Account management	Gestion du compte
-page-registration-failed-01	Registration	Enregistrement
-page-registration-failed-02	Registration	Enregistrement
-page-registration-failed-03	Registration	Enregistrement
-page-registration-failed-04	Registration	Enregistrement
-page-registration-failed-05	Registration	Enregistrement
-page-registration-failed-06	Registration	Enregistrement
-page-registration-failed-07	Registration	Enregistrement
-page-registration-failed-08	Registration	Enregistrement
-page-registration-failed-09	Registration	Enregistrement
-page-registration-failed-10	Registration	Enregistrement
+page-register-failed-1	Registration	Enregistrement
+page-register-failed-2	Registration	Enregistrement
+page-register-failed-3	Registration	Enregistrement
+page-register-failed-4	Registration	Enregistrement
+page-register-failed-5	Registration	Enregistrement
+page-register-failed-6	Registration	Enregistrement
 page-registration-started	Registration	Enregistrement
 page-registration-end	Registration	Enregistrement
+page-registration-end-failed-1	Registration	Enregistrement
+page-registration-end-failed-2	Registration	Enregistrement
+page-registration-end-failed-3	Registration	Enregistrement
+page-registration-end-failed-4	Registration	Enregistrement
+page-registration-end-failed-5	Registration	Enregistrement
 page-invalid-operation	Error	Erreur
 page-recovery	Account Recovery	Récupération de compte
 page-recovery-failed-1	Account Recovery	Récupération de compte
@@ -137,23 +138,25 @@ register-info-2	If you don't want to use a secret question and answer, you can l
 question-explanation	Enter a question for which you're the only one to know the answer.	Entrez une question à laquelle vous êtes le seul à connaitre la réponse.
 before-register	Upon clicking the button below, an email will be sent to you, with a link to the registration completion page.\u00A0 The link will remain valid for 24h.\u00A0 If your registration is not finished within this time, it will be cancelled.	Après avoir cliqué sur le bouton ci-dessous, un courriel vous sera envoyé, avec un lien vers la page de confirmation de l'enregistrement. Ce lien restera valide 24 heures. Au delà de ce délai, si votre enregistrement n'est pas confirmé, il sera annulé.
 register	Begin registration	Commencer l'enregistrement
-registration-failed-title	Registration failed	L'enregistrement a échoué
-registration-failed-text-1	Sorry, the name, password or email address you entered is not correct.	Désolé, le nom, le mot de passe ou l'adresse courriel que vous avez entré ne sont pas valides.
-registration-failed-text-2	Sorry, if there is a secret question the answer cannot be empty.	Désolé, s'il y a une question secrète la réponse ne peut pas être vide.
-registration-failed-text-3	Sorry, if there is no secret question the answer must be empty too.	Désolé, s'il n'y a pas de question la réponse doit être vide également.
-registration-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
-registration-failed-text-5	Sorry, the password you entered does not match the password used when starting registration.	Désolé, le mot de passe que vous venez d'entrer ne correspond pas au mot de passe utilisé lors de l'enregistrement.
-registration-failed-text-6	Sorry, the answer you entered does not match the answer used when begining registration.	Désolé, la réponse que vous venez d'entrer ne correspond pas à la réponse déclarée lors du début de l'enregistrement.
-registration-failed-text-7-1	Sorry, the name	Désolé, le nom
-registration-failed-text-7-2	is already used.\u00A0 Please pick another name.	est déjà utilisé. Veuillez choisir un autre nom.
-registration-failed-text-8-1	Sorry, the email address	Désolé, l'adresse courriel
-registration-failed-text-8-2	is already used.\u00A0 Please pick another address.	est déjà utilisée. Veuillez choisir une autre adresse.
-registration-failed-text-9	.	.
-registration-failed-text-10	.	.
+register-failed-title	Registration failed	L'enregistrement a échoué
+register-failed-text-1	Sorry, the name, password or email address you entered is not correct.	Désolé, le nom, le mot de passe ou l'adresse courriel que vous avez entré ne sont pas valides.
+register-failed-text-2	Sorry, if there is a secret question the answer cannot be empty.	Désolé, s'il y a une question secrète la réponse ne peut pas être vide.
+register-failed-text-3	Sorry, if there is no secret question the answer must be empty too.	Désolé, s'il n'y a pas de question la réponse doit être vide également.
+register-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+register-failed-text-5-1	Sorry, the name	Désolé, le nom
+register-failed-text-5-2	is already used.\u00A0 Please pick another name.	est déjà utilisé. Veuillez choisir un autre nom.
+register-failed-text-6-1	Sorry, the email address	Désolé, l'adresse courriel
+register-failed-text-6-2	is already used.\u00A0 Please pick another address.	est déjà utilisée. Veuillez choisir une autre adresse.
 registration-started-title	Registration is started	L'enregistrement a démarré
 registration-started-text	Please check your email inbox to continue registration.	Veuillez consulter la boîte de réception de votre courriel pour continuer l'enregistrement.
 registration-end-title	Completing registration	Terminer l'enregistrement
 registration-end-text	You have reached this page because you are registering the following account:	Vous êtes sur cette page car vous avez demandé à enregistrer le compte suivant :
+registration-end-failed-title	Registration failed	L'enregistrement a échoué
+registration-end-failed-text-1	Sorry, you must enter your password to confirm the registration.	Désolé, vous devez entrer votre mot de passe pour confirmer l'enregistrement.
+registration-end-failed-text-2	Sorry, you must enter the answer to the secret question to confirm the registration.	Désolé, vous devez entrer la réponse à la question secrète pour confirmer l'enregistrement.
+registration-end-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+registration-end-failed-text-4	Sorry, the password you entered does not match the password used when starting registration.	Désolé, le mot de passe que vous venez d'entrer ne correspond pas au mot de passe utilisé lors de l'enregistrement.
+registration-end-failed-text-5	Sorry, the password and answer you entered don't match those entered when begining registration.	Désolé, le mot de passe et la réponse que vous venez d'entrer ne correspondent pas à ceux déclarés lors du début de l'enregistrement.
 recovery-title	Recovering your login information	Récupération de vos informations d'identification
 recovery-text	Please enter your email address below.	Veuillez entrer votre adresse courriel ci-dessous.
 email-required	Required to begin recovery.	Requise pour commencer la récupération.

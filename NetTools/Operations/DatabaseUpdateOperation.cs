@@ -5,7 +5,7 @@ namespace NetTools
 {
     public class DatabaseUpdateOperation : DatabaseOperation
     {
-        public DatabaseUpdateOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<bool, object> callback)
+        public DatabaseUpdateOperation(string name, string scriptName, Dictionary<string, string> parameters, Action<int, object> callback)
             : base(name, scriptName, parameters, callback)
         {
         }

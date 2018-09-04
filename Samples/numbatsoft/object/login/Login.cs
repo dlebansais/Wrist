@@ -7,20 +7,22 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
-
-/*
-            QueryString = new Dictionary<string, string>();
-            QueryString.Add("type", "register");
-            QueryString.Add("username", "test");
-            QueryString.Add("email", "test@test.com");
-            QueryString.Add("question", "");
-            //QueryString.Add("question", Login.EncodedRecoveryQuestion("foo"));
-*/
+using Windows.UI.Xaml;
 
 namespace AppCSHtml5
 {
     public class Login : ILogin, INotifyPropertyChanged
     {
+        private enum ErrorCodes
+        {
+            AnyError = -1,
+            Success = 0,
+            ErrorNotFound = 1,
+            OperationFailed = 2,
+            InvalidUsernameOrPassword = 3,
+            InvalidUsernamePasswordOrAnswer = 4,
+        }
+
         public Login()
         {
             Name = Persistent.GetValue("name", null);
@@ -55,13 +57,13 @@ namespace AppCSHtml5
         public void On_Register(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(Email) || !Email.Contains("@"))
-                destinationPageName = PageNames.registration_failed_01Page;
+                destinationPageName = PageNames.register_failed_1Page;
 
             else if (!string.IsNullOrEmpty(RecoveryQuestion) && string.IsNullOrEmpty(RecoveryAnswer))
-                destinationPageName = PageNames.registration_failed_02Page;
+                destinationPageName = PageNames.register_failed_2Page;
 
             else if (string.IsNullOrEmpty(RecoveryQuestion) && !string.IsNullOrEmpty(RecoveryAnswer))
-                destinationPageName = PageNames.registration_failed_03Page;
+                destinationPageName = PageNames.register_failed_3Page;
 
             else
             {
@@ -79,59 +81,63 @@ namespace AppCSHtml5
 
         private void StartRegister(string name, string password, string email, string question, string answer)
         {
-            GetUserInfo(name, (bool checkSuccess, object checkResult) => Register_OnNameChecked(checkSuccess, checkResult, name, password, email, question, answer));
+            GetUserInfo(name, (int checkError, object checkResult) => Register_OnNameChecked(checkError, checkResult, name, password, email, question, answer));
         }
 
-        private void Register_OnNameChecked(bool success, object result, string name, string password, string email, string question, string answer)
+        private void Register_OnNameChecked(int error, object result, string name, string password, string email, string question, string answer)
         {
-            if (!success)
+            if (error == (int)ErrorCodes.ErrorNotFound)
             {
-                CheckIfEmailTaken(email, (bool checkSuccess, object checkResult) => Register_OnEmailChecked(checkSuccess, checkResult, name, password, email, question, answer));
+                CheckIfEmailTaken(email, (int checkError, object checkResult) => Register_OnEmailChecked(checkError, checkResult, name, password, email, question, answer));
             }
+            else if (error == (int)ErrorCodes.Success)
+                (App.Current as App).GoTo(PageNames.register_failed_5Page);
             else
-                (App.Current as App).GoTo(PageNames.registration_failed_07Page);
+                (App.Current as App).GoTo(PageNames.register_failed_4Page);
         }
 
-        private void Register_OnEmailChecked(bool success, object result, string name, string password, string email, string question, string answer)
+        private void Register_OnEmailChecked(int error, object result, string name, string password, string email, string question, string answer)
         {
-            if (!success)
+            if (error == (int)ErrorCodes.ErrorNotFound)
             {
-                EncryptPassword(password, name, (bool encryptSuccess, object encryptResult) => Register_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, email, question, answer));
+                EncryptString(password, name, (int encryptError, object encryptResult) => Register_OnTestPasswordEncrypted(encryptError, encryptResult, name, email, question, answer));
             }
+            else if (error == (int)ErrorCodes.Success)
+                (App.Current as App).GoTo(PageNames.register_failed_6Page);
             else
-                (App.Current as App).GoTo(PageNames.registration_failed_08Page);
+                (App.Current as App).GoTo(PageNames.register_failed_4Page);
         }
 
-        private void Register_OnTestPasswordEncrypted(bool success, object result, string name, string email, string question, string answer)
+        private void Register_OnTestPasswordEncrypted(int error, object result, string name, string email, string question, string answer)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedPassword = (string)result;
-                EncryptPassword(answer, name, (bool encryptSuccess, object encryptResult) => Register_OnRecoveryAnswerEncrypted(encryptSuccess, encryptResult, name, EncryptedPassword, email, question));
+                EncryptString(answer, name, (int encryptError, object encryptResult) => Register_OnRecoveryAnswerEncrypted(encryptError, encryptResult, name, EncryptedPassword, email, question));
             }
             else
-                (App.Current as App).GoTo(PageNames.registration_failed_04Page);
+                (App.Current as App).GoTo(PageNames.register_failed_4Page);
         }
 
-        private void Register_OnRecoveryAnswerEncrypted(bool success, object result, string name, string encryptedPassword, string email, string question)
+        private void Register_OnRecoveryAnswerEncrypted(int error, object result, string name, string encryptedPassword, string email, string question)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedAnswer = (string)result;
-                RegisterAndSendEmail(name, encryptedPassword, email, question, EncryptedAnswer, (bool checkSuccess, object checkResult) => Register_OnEmailSent(checkSuccess, checkResult));
+                RegisterAndSendEmail(name, encryptedPassword, email, question, EncryptedAnswer, (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
             }
             else
-                (App.Current as App).GoTo(PageNames.registration_failed_04Page);
+                (App.Current as App).GoTo(PageNames.register_failed_4Page);
         }
 
-        private void Register_OnEmailSent(bool success, object result)
+        private void Register_OnEmailSent(int error, object result)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 (App.Current as App).GoTo(PageNames.registration_startedPage);
             }
             else
-                (App.Current as App).GoTo(PageNames.registration_failed_04Page);
+                (App.Current as App).GoTo(PageNames.register_failed_4Page);
         }
 
         public void On_RegisterEnd(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
@@ -173,10 +179,10 @@ namespace AppCSHtml5
             }
 
             if (string.IsNullOrEmpty(Password))
-                destinationPageName = PageNames.registration_failed_05Page;
+                destinationPageName = PageNames.registration_end_failed_1Page;
 
             else if (HasQuestion && string.IsNullOrEmpty(RecoveryAnswer))
-                destinationPageName = PageNames.registration_failed_06Page;
+                destinationPageName = PageNames.registration_end_failed_2Page;
 
             else
             {
@@ -189,38 +195,38 @@ namespace AppCSHtml5
 
         private void StartCompleteRegistration(string name, string testPassword, string email, bool remember, bool hasQuestion, string answer)
         {
-            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => CompleteRegistration_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, email, remember, hasQuestion, answer));
+            EncryptString(testPassword, name, (int encryptError, object encryptResult) => CompleteRegistration_OnTestPasswordEncrypted(encryptError, encryptResult, name, email, remember, hasQuestion, answer));
         }
 
-        private void CompleteRegistration_OnTestPasswordEncrypted(bool success, object result, string name, string email, bool remember, bool hasQuestion, string answer)
+        private void CompleteRegistration_OnTestPasswordEncrypted(int error, object result, string name, string email, bool remember, bool hasQuestion, string answer)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedTestPassword = (string)result;
 
                 if (hasQuestion)
-                    EncryptPassword(answer, name, (bool encryptSuccess, object encryptResult) => CompleteRegistration_OnAnswerEncrypted(encryptSuccess, encryptResult, name, email, EncryptedTestPassword, remember));
+                    EncryptString(answer, name, (int encryptError, object encryptResult) => CompleteRegistration_OnAnswerEncrypted(encryptError, encryptResult, name, email, EncryptedTestPassword, remember));
                 else
-                    ActivateAccountAndSendEmail(name, email, EncryptedTestPassword, null, (bool checkSuccess, object checkResult) => CompleteRegistration_OnGetUserInfo(checkSuccess, checkResult, remember));
+                    ActivateAccountAndSendEmail(name, email, EncryptedTestPassword, null, (int checkError, object checkResult) => CompleteRegistration_OnGetUserInfo(checkError, checkResult, remember));
             }
             else
-                (App.Current as App).GoTo(PageNames.registration_failed_05Page);
+                (App.Current as App).GoTo(PageNames.registration_end_failed_3Page);
         }
 
-        private void CompleteRegistration_OnAnswerEncrypted(bool success, object result, string name, string email, string encryptedTestPassword, bool remember)
+        private void CompleteRegistration_OnAnswerEncrypted(int error, object result, string name, string email, string encryptedTestPassword, bool remember)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedAnswer = (string)result;
-                ActivateAccountAndSendEmail(name, email, encryptedTestPassword, EncryptedAnswer, (bool checkSuccess, object checkResult) => CompleteRegistration_OnGetUserInfo(checkSuccess, checkResult, remember));
+                ActivateAccountAndSendEmail(name, email, encryptedTestPassword, EncryptedAnswer, (int checkError, object checkResult) => CompleteRegistration_OnGetUserInfo(checkError, checkResult, remember));
             }
             else
-                (App.Current as App).GoTo(PageNames.registration_failed_05Page);
+                (App.Current as App).GoTo(PageNames.registration_end_failed_3Page);
         }
 
-        private void CompleteRegistration_OnGetUserInfo(bool success, object result, bool remember)
+        private void CompleteRegistration_OnGetUserInfo(int error, object result, bool remember)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
                 if (remember)
@@ -239,8 +245,12 @@ namespace AppCSHtml5
 
                 (App.Current as App).GoTo(PageNames.homePage);
             }
+            else if (error == (int)ErrorCodes.InvalidUsernameOrPassword)
+                (App.Current as App).GoTo(PageNames.registration_end_failed_4Page);
+            else if (error == (int)ErrorCodes.InvalidUsernamePasswordOrAnswer)
+                (App.Current as App).GoTo(PageNames.registration_end_failed_5Page);
             else
-                (App.Current as App).GoTo(PageNames.registration_failed_05Page);
+                (App.Current as App).GoTo(PageNames.registration_end_failed_3Page);
         }
         #endregion
 
@@ -272,23 +282,23 @@ namespace AppCSHtml5
 
         private void StartLogin(string name, string testPassword, bool remember)
         {
-            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => Login_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, remember));
+            EncryptString(testPassword, name, (int encryptError, object encryptResult) => Login_OnTestPasswordEncrypted(encryptError, encryptResult, name, remember));
         }
 
-        private void Login_OnTestPasswordEncrypted(bool success, object result, string name, bool remember)
+        private void Login_OnTestPasswordEncrypted(int error, object result, string name, bool remember)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedTestPassword = (string)result;
-                GetUserInfo(name, (bool checkSuccess, object checkResult) => Login_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, remember));
+                GetUserInfo(name, (int checkError, object checkResult) => Login_OnCurrentPasswordReceived(checkError, checkResult, EncryptedTestPassword, remember));
             }
             else
                 (App.Current as App).GoTo(PageNames.login_failedPage);
         }
 
-        private void Login_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, bool remember)
+        private void Login_OnCurrentPasswordReceived(int error, object result, string encryptedTestPassword, bool remember)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
                 string EncryptedCurrentPassword = CheckPasswordResult["password"];
@@ -361,29 +371,29 @@ namespace AppCSHtml5
 
         private void StartUpdatePassword(string name, string testPassword, string newPassword)
         {
-            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => ChangePassword_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, newPassword));
+            EncryptString(testPassword, name, (int encryptError, object encryptResult) => ChangePassword_OnTestPasswordEncrypted(encryptError, encryptResult, name, newPassword));
         }
 
-        private void ChangePassword_OnTestPasswordEncrypted(bool success, object result, string name, string newPassword)
+        private void ChangePassword_OnTestPasswordEncrypted(int error, object result, string name, string newPassword)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedTestPassword = (string)result;
-                GetUserInfo(name, (bool checkSuccess, object checkResult) => ChangePassword_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, name, newPassword));
+                GetUserInfo(name, (int checkError, object checkResult) => ChangePassword_OnCurrentPasswordReceived(checkError, checkResult, EncryptedTestPassword, name, newPassword));
             }
             else
                 (App.Current as App).GoTo(PageNames.change_password_failed_4Page);
         }
 
-        private void ChangePassword_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, string name, string newPassword)
+        private void ChangePassword_OnCurrentPasswordReceived(int error, object result, string encryptedTestPassword, string name, string newPassword)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
                 string EncryptedCurrentPassword = CheckPasswordResult["password"];
                 
                 if (encryptedTestPassword == EncryptedCurrentPassword)
-                    EncryptPassword(newPassword, name, (bool encryptSuccess, object encryptResult) => ChangePassword_OnNewPasswordEncrypted(encryptSuccess, encryptResult, name));
+                    EncryptString(newPassword, name, (int encryptError, object encryptResult) => ChangePassword_OnNewPasswordEncrypted(encryptError, encryptResult, name));
                 else
                     (App.Current as App).GoTo(PageNames.change_password_failed_5Page);
             }
@@ -391,9 +401,9 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.change_password_failed_4Page);
         }
 
-        private void ChangePassword_OnNewPasswordEncrypted(bool success, object result, string name)
+        private void ChangePassword_OnNewPasswordEncrypted(int error, object result, string name)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedNewPassword = (string)result;
                 ChangePassword(name, EncryptedNewPassword, ChangePassword_OnPasswordChanged);
@@ -402,9 +412,9 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.change_password_failed_4Page);
         }
 
-        private void ChangePassword_OnPasswordChanged(bool success, object result)
+        private void ChangePassword_OnPasswordChanged(int error, object result)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
                 (App.Current as App).GoTo(PageNames.change_password_successPage);
             else
                 (App.Current as App).GoTo(PageNames.change_password_failed_4Page);
@@ -435,29 +445,29 @@ namespace AppCSHtml5
 
         private void StartUpdateEmail(string name, string testPassword, string newEmail)
         {
-            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => ChangeEmail_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, newEmail));
+            EncryptString(testPassword, name, (int encryptError, object encryptResult) => ChangeEmail_OnTestPasswordEncrypted(encryptError, encryptResult, name, newEmail));
         }
 
-        private void ChangeEmail_OnTestPasswordEncrypted(bool success, object result, string name, string newEmail)
+        private void ChangeEmail_OnTestPasswordEncrypted(int error, object result, string name, string newEmail)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedTestPassword = (string)result;
-                GetUserInfo(name, (bool checkSuccess, object checkResult) => ChangeEmail_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, name, newEmail));
+                GetUserInfo(name, (int checkError, object checkResult) => ChangeEmail_OnCurrentPasswordReceived(checkError, checkResult, EncryptedTestPassword, name, newEmail));
             }
             else
                 (App.Current as App).GoTo(PageNames.change_email_failed_4Page);
         }
 
-        private void ChangeEmail_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, string name, string newEmail)
+        private void ChangeEmail_OnCurrentPasswordReceived(int error, object result, string encryptedTestPassword, string name, string newEmail)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
                 string EncryptedCurrentPassword = CheckPasswordResult["password"];
 
                 if (encryptedTestPassword == EncryptedCurrentPassword)
-                    ChangeEmail(name, newEmail, (bool changeSuccess, object changeResult) => ChangeEmail_OnEmailChanged(changeSuccess, changeResult, newEmail));
+                    ChangeEmail(name, newEmail, (int changeError, object changeResult) => ChangeEmail_OnEmailChanged(changeError, changeResult, newEmail));
                 else
                     (App.Current as App).GoTo(PageNames.change_email_failed_5Page);
             }
@@ -465,9 +475,9 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.change_email_failed_4Page);
         }
 
-        private void ChangeEmail_OnEmailChanged(bool success, object result, string newEmail)
+        private void ChangeEmail_OnEmailChanged(int error, object result, string newEmail)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 Email = newEmail;
                 (App.Current as App).GoTo(PageNames.change_email_successPage);
@@ -509,29 +519,29 @@ namespace AppCSHtml5
 
         private void StartUpdateRecovery(string name, string testPassword, string newQuestion, string newAnswer)
         {
-            EncryptPassword(testPassword, name, (bool encryptSuccess, object encryptResult) => ChangeRecovery_OnTestPasswordEncrypted(encryptSuccess, encryptResult, name, newQuestion, newAnswer));
+            EncryptString(testPassword, name, (int encryptError, object encryptResult) => ChangeRecovery_OnTestPasswordEncrypted(encryptError, encryptResult, name, newQuestion, newAnswer));
         }
 
-        private void ChangeRecovery_OnTestPasswordEncrypted(bool success, object result, string name, string newQuestion, string newAnswer)
+        private void ChangeRecovery_OnTestPasswordEncrypted(int error, object result, string name, string newQuestion, string newAnswer)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedTestPassword = (string)result;
-                GetUserInfo(name, (bool checkSuccess, object checkResult) => ChangeRecovery_OnCurrentPasswordReceived(checkSuccess, checkResult, EncryptedTestPassword, name, newQuestion, newAnswer));
+                GetUserInfo(name, (int checkError, object checkResult) => ChangeRecovery_OnCurrentPasswordReceived(checkError, checkResult, EncryptedTestPassword, name, newQuestion, newAnswer));
             }
             else
                 (App.Current as App).GoTo(PageNames.change_recovery_failed_4Page);
         }
 
-        private void ChangeRecovery_OnCurrentPasswordReceived(bool success, object result, string encryptedTestPassword, string name, string newQuestion, string newAnswer)
+        private void ChangeRecovery_OnCurrentPasswordReceived(int error, object result, string encryptedTestPassword, string name, string newQuestion, string newAnswer)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
                 string EncryptedCurrentPassword = CheckPasswordResult["password"];
 
                 if (encryptedTestPassword == EncryptedCurrentPassword)
-                    ChangeRecovery(name, newQuestion, newAnswer, (bool changeSuccess, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeSuccess, changeResult, newQuestion));
+                    ChangeRecovery(name, newQuestion, newAnswer, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, newQuestion));
                 else
                     (App.Current as App).GoTo(PageNames.change_recovery_failed_5Page);
             }
@@ -539,9 +549,9 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.change_recovery_failed_4Page);
         }
 
-        private void ChangeRecovery_OnRecoveryChanged(bool success, object result, string newQuestion)
+        private void ChangeRecovery_OnRecoveryChanged(int error, object result, string newQuestion)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 RecoveryQuestion = newQuestion;
                 (App.Current as App).GoTo(PageNames.change_recovery_successPage);
@@ -566,16 +576,16 @@ namespace AppCSHtml5
 
         private void StartRecovery(string email)
         {
-            CheckIfEmailTaken(email, (bool checkSuccess, object checkResult) => Recovery_OnEmailChecked(checkSuccess, checkResult, email));
+            CheckIfEmailTaken(email, (int checkError, object checkResult) => Recovery_OnEmailChecked(checkError, checkResult, email));
         }
 
-        private void Recovery_OnEmailChecked(bool success, object result, string email)
+        private void Recovery_OnEmailChecked(int error, object result, string email)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
             {
                 if ((result is Dictionary<string, string> QueryResult) && QueryResult.ContainsKey("question"))
                     if (!string.IsNullOrEmpty(QueryResult["question"]))
-                        BeginRecoveryAndSendEmail(email, (bool checkSuccess, object checkResult) => Recovery_OnEmailSent(checkSuccess, checkResult));
+                        BeginRecoveryAndSendEmail(email, (int checkError, object checkResult) => Recovery_OnEmailSent(checkError, checkResult));
                     else
                         (App.Current as App).GoTo(PageNames.recovery_failed_2Page);
                 else
@@ -585,9 +595,9 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.recovery_failed_2Page);
         }
 
-        private void Recovery_OnEmailSent(bool success, object result)
+        private void Recovery_OnEmailSent(int error, object result)
         {
-            if (success)
+            if (error == (int)ErrorCodes.Success)
                 (App.Current as App).GoTo(PageNames.recovery_startedPage);
             else
                 (App.Current as App).GoTo(PageNames.recovery_failed_3Page);
@@ -595,7 +605,7 @@ namespace AppCSHtml5
         #endregion
 
         #region Operations
-        private void GetUserInfo(string name, Action<bool, object> callback)
+        private void GetUserInfo(string name, Action<int, object> callback)
         {
             Database.Completed += OnGetUserInfoCompleted;
             Database.Query(new DatabaseQueryOperation("get user info", "query_1.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) } }, callback));
@@ -606,7 +616,7 @@ namespace AppCSHtml5
             Debug.WriteLine("OnGetUserInfoCompleted notified");
             Database.Completed -= OnGetUserInfoCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "id", "password", "email", "question" })) != null)
@@ -617,13 +627,13 @@ namespace AppCSHtml5
                 string RecoveryQuestion = Result["question"];
                 Debug.WriteLine($"Account {Id}: password={EncryptedPassword}, email={Email}, question={RecoveryQuestion}");
 
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(true, Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
             }
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.ErrorNotFound, null));
         }
 
-        private void EncryptPassword(string plainText, string key, Action<bool, object> callback)
+        private void EncryptString(string plainText, string key, Action<int, object> callback)
         {
             Database.Completed += OnEncryptPasswordCompleted;
             Database.Encrypt(new DatabaseEncryptOperation("encrypt password", "encrypt.php", "site/key", $"numbatsoft/{key}", "pt", plainText, callback));
@@ -634,7 +644,7 @@ namespace AppCSHtml5
             Debug.WriteLine("OnEncryptPasswordCompleted notified");
             Database.Completed -= OnEncryptPasswordCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "encrypted" })) != null)
@@ -642,13 +652,13 @@ namespace AppCSHtml5
                 string EncryptedPassword = Result["encrypted"];
                 Debug.WriteLine($"Encrypted Password: {EncryptedPassword}");
 
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(true, EncryptedPassword));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, EncryptedPassword));
             }
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void ChangePassword(string name, string encryptedNewPassword, Action<bool, object> callback)
+        private void ChangePassword(string name, string encryptedNewPassword, Action<int, object> callback)
         {
             Database.Completed += OnChangePasswordCompleted;
             Database.Update(new DatabaseUpdateOperation("change password", "update_1.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "password", HtmlString.Entities(encryptedNewPassword) } }, callback));
@@ -659,20 +669,18 @@ namespace AppCSHtml5
             Debug.WriteLine("OnChangePasswordCompleted notified");
             Database.Completed -= OnChangePasswordCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
             {
-                string ChangePasswordResult = Result["result"];
-
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangePasswordResult == "1", null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
             }
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(-1, null));
         }
 
-        private void ChangeEmail(string name, string newEmail, Action<bool, object> callback)
+        private void ChangeEmail(string name, string newEmail, Action<int, object> callback)
         {
             Database.Completed += OnChangeEmailCompleted;
             Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "email", HtmlString.Entities(newEmail) } }, callback));
@@ -683,20 +691,16 @@ namespace AppCSHtml5
             Debug.WriteLine("OnChangeEmailCompleted notified");
             Database.Completed -= OnChangeEmailCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-            {
-                string ChangeEmailResult = Result["result"];
-
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangeEmailResult == "1", null));
-            }
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void ChangeRecovery(string name, string newQuestion, string newAnswer, Action<bool, object> callback)
+        private void ChangeRecovery(string name, string newQuestion, string newAnswer, Action<int, object> callback)
         {
             Database.Completed += OnChangeRecoveryCompleted;
             Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "question", HtmlString.Entities(newQuestion) }, { "answer", HtmlString.Entities(newAnswer) } }, callback));
@@ -707,20 +711,16 @@ namespace AppCSHtml5
             Debug.WriteLine("OnChangeRecoveryCompleted notified");
             Database.Completed -= OnChangeRecoveryCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-            {
-                string ChangeRecoveryResult = Result["result"];
-
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangeRecoveryResult == "1", null));
-            }
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void CheckIfEmailTaken(string email, Action<bool, object> callback)
+        private void CheckIfEmailTaken(string email, Action<int, object> callback)
         {
             Database.Completed += OnIsEmailAvailableChecked;
             Database.Query(new DatabaseQueryOperation("check email", "query_3.php", new Dictionary<string, string>() { { "email", HtmlString.Entities(email) } }, callback));
@@ -731,7 +731,7 @@ namespace AppCSHtml5
             Debug.WriteLine("OnIsEmailAvailableChecked notified");
             Database.Completed -= OnIsEmailAvailableChecked;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "id", "password", "email", "question" })) != null)
@@ -742,13 +742,13 @@ namespace AppCSHtml5
                 string RecoveryQuestion = Result["question"];
                 Debug.WriteLine($"Account {Id}: password={EncryptedPassword}, email={Email}, question={RecoveryQuestion}");
 
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(true, Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
             }
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.ErrorNotFound, null));
         }
 
-        private void RegisterAndSendEmail(string name, string encryptedPassword, string email, string question, string answer, Action<bool, object> callback)
+        private void RegisterAndSendEmail(string name, string encryptedPassword, string email, string question, string answer, Action<int, object> callback)
         {
             Database.Completed += OnRegisterSendEmailCompleted;
             Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "password", HtmlString.Entities(encryptedPassword) }, { "email", HtmlString.Entities(email) }, { "question", HtmlString.Entities(question) }, { "answer", HtmlString.Entities(answer) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
@@ -759,19 +759,16 @@ namespace AppCSHtml5
             Debug.WriteLine("OnRegisterSendEmailCompleted notified");
             Database.Completed -= OnRegisterSendEmailCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-            {
-                string EmailSentResult = Result["result"];
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(EmailSentResult == "1", null));
-            }
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void BeginRecoveryAndSendEmail(string email, Action<bool, object> callback)
+        private void BeginRecoveryAndSendEmail(string email, Action<int, object> callback)
         {
             Database.Completed += OnRecoverySendEmailCompleted;
             Database.Update(new DatabaseUpdateOperation("start recovery", "update_4.php", new Dictionary<string, string>() { { "email", HtmlString.Entities(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
@@ -782,19 +779,16 @@ namespace AppCSHtml5
             Debug.WriteLine("OnRecoverySendEmailCompleted notified");
             Database.Completed -= OnRecoverySendEmailCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-            {
-                string EmailSentResult = Result["result"];
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(EmailSentResult == "1", null));
-            }
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void ActivateAccountAndSendEmail(string name, string email, string encryptedPassword, string encryptedAnswer, Action<bool, object> callback)
+        private void ActivateAccountAndSendEmail(string name, string email, string encryptedPassword, string encryptedAnswer, Action<int, object> callback)
         {
             Database.Completed += OnActivateAccountCompleted;
             Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "email", HtmlString.Entities(email) }, { "password", HtmlString.Entities(encryptedPassword) }, { "answer", string.IsNullOrEmpty(encryptedAnswer) ? "" : HtmlString.Entities(encryptedAnswer) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
@@ -805,17 +799,13 @@ namespace AppCSHtml5
             Debug.WriteLine("OnActivateAccountCompleted notified");
             Database.Completed -= OnActivateAccountCompleted;
 
-            Action<bool, object> Callback = e.Operation.Callback;
+            Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-            {
-                string ChangePasswordResult = Result["result"];
-
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ChangePasswordResult == "1", null));
-            }
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(false, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
         private Database Database = Database.Current;
@@ -897,7 +887,7 @@ namespace AppCSHtml5
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
             {
-                if (Line.ContainsKey("id") && Line["id"] == Username)
+                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("is active") && Line["is active"] == "1")
                     Result.Add(new Dictionary<string, string>()
                     {
                         { "id", Line["id"]},
@@ -930,13 +920,13 @@ namespace AppCSHtml5
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("password"))
+                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("is active") && Line["is active"] == "1" && Line.ContainsKey("password"))
                 {
                     Line["password"] = Password;
 
                     Result.Add(new Dictionary<string, string>()
                     {
-                        { "result", "1"},
+                        { "result", ((int)ErrorCodes.Success).ToString()},
                     });
 
                     break;
@@ -965,13 +955,13 @@ namespace AppCSHtml5
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("email"))
+                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("is active") && Line["is active"] == "1" && Line.ContainsKey("email"))
                 {
                     Line["email"] = Email;
 
                     Result.Add(new Dictionary<string, string>()
                     {
-                        { "result", "1"},
+                        { "result", ((int)ErrorCodes.Success).ToString()},
                     });
 
                     break;
@@ -1006,14 +996,21 @@ namespace AppCSHtml5
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("question") && Line.ContainsKey("answer"))
+                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("is active") && Line["is active"] == "1")
                 {
-                    Line["question"] = NewQuestion;
-                    Line["answer"] = NewAnswer;
+                    if (Line.ContainsKey("question"))
+                        Line["question"] = NewQuestion;
+                    else
+                        Line.Add("question", NewQuestion);
+
+                    if (Line.ContainsKey("answer"))
+                        Line["answer"] = NewAnswer;
+                    else
+                        Line.Add("answer", NewAnswer);
 
                     Result.Add(new Dictionary<string, string>()
                     {
-                        { "result", "1"},
+                        { "result", ((int)ErrorCodes.Success).ToString()},
                     });
 
                     break;
@@ -1037,7 +1034,7 @@ namespace AppCSHtml5
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
             {
-                if (Line.ContainsKey("email") && Line["email"] == Email)
+                if (Line.ContainsKey("email") && Line["email"] == Email && Line.ContainsKey("is active") && Line["is active"] == "1")
                     Result.Add(new Dictionary<string, string>()
                     {
                         { "id", Line["id"]},
@@ -1103,14 +1100,40 @@ namespace AppCSHtml5
             NewLine.Add("email", Email);
             NewLine.Add("question", EncodedRecoveryQuestion(Question));
             NewLine.Add("answer", Answer);
+            NewLine.Add("is active", "0");
             KnownUserTable.Add(NewLine);
 
             Result.Add(new Dictionary<string, string>()
             {
-                { "result", "1"},
+                { "result", ((int)ErrorCodes.Success).ToString()},
             });
 
+            DispatcherTimer SignUpConfirmedTimer = new DispatcherTimer();
+            SignUpConfirmedTimer.Interval = TimeSpan.FromSeconds(3);
+            SignUpConfirmedTimer.Tick += (object sender, object e) => OnSignUpConfirmed(sender, e, Username, Email, Question);
+            SignUpConfirmedTimer.Start();
+
             return Result;
+        }
+
+        private void OnSignUpConfirmed(object sender, object e, string username, string email, string question)
+        {
+            DispatcherTimer SignUpConfirmedTimer = (DispatcherTimer)sender;
+            SignUpConfirmedTimer.Stop();
+
+            if (MessageBox.Show("Continue registration?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            {
+                Dictionary<string, string> QueryString = App.QueryString;
+                QueryString.Clear();
+                QueryString.Add("type", "register");
+                QueryString.Add("username", username);
+                QueryString.Add("email", email);
+                QueryString.Add("question", Login.EncodedRecoveryQuestion(question));
+
+                PageNames NextPageName;
+                On_RegisterEnd(PageNames.homePage, null, null, out NextPageName);
+                (App.Current as App).GoTo(NextPageName);
+            }
         }
 
         private List<Dictionary<string, string>> OnRecoveryRequest(Dictionary<string, string> parameters)
@@ -1133,11 +1156,11 @@ namespace AppCSHtml5
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("email") && Line["email"] == Email)
+                if (Line.ContainsKey("email") && Line["email"] == Email && Line.ContainsKey("is active") && Line["is active"] == "1")
                 {
                     Result.Add(new Dictionary<string, string>()
                     {
-                        { "result", "1"},
+                        { "result", ((int)ErrorCodes.Success).ToString()},
                     });
                     break;
                 }
@@ -1185,13 +1208,26 @@ namespace AppCSHtml5
             foreach (Dictionary<string, string> Line in KnownUserTable)
                 if (Line.ContainsKey("id") && Line["id"] == Username)
                 {
+                    ErrorCodes Error;
                     if ((Line.ContainsKey("password") && Line["password"] == EncryptedPassword) && (Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer))
                     {
-                        Result.Add(new Dictionary<string, string>()
-                        {
-                            { "result", "1"},
-                        });
+                        if (Line.ContainsKey("is active"))
+                            Line["is active"] = "1";
+                        else
+                            Line.Add("is active", "1");
+
+                        Error = ErrorCodes.Success;
                     }
+                    else if (EncryptedAnswer.Length == 0)
+                        Error = ErrorCodes.InvalidUsernameOrPassword;
+                    else
+                        Error = ErrorCodes.InvalidUsernamePasswordOrAnswer;
+
+                    Result.Add(new Dictionary<string, string>()
+                    {
+                        { "result", ((int)Error).ToString()},
+                    });
+
                     break;
                 }
 
@@ -1216,6 +1252,15 @@ namespace AppCSHtml5
             return Result;
         }
 
+        public static int ParseResult(string result)
+        {
+            int IntError;
+            if (int.TryParse(result, out IntError))
+                return IntError;
+            else
+                return -1;
+        }
+
         private List<Dictionary<string, string>> KnownUserTable = new List<Dictionary<string, string>>
         {
             new Dictionary<string, string>()
@@ -1225,6 +1270,7 @@ namespace AppCSHtml5
                 { "email", "test@test.com" },
                 { "question", EncodedRecoveryQuestion("foo") },
                 { "answer", Convert.ToBase64String(Encoding.UTF8.GetBytes("not foo")) },
+                { "is active", "1" },
             }
         };
         #endregion
