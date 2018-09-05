@@ -9,6 +9,8 @@ namespace Parser
         IObjectEvent BeforeObjectEvent { get; }
         IPage GoToPage { get; }
         bool IsExternal { get; }
+        IObject GoToObject { get; }
+        IObjectPropertyString GoToObjectProperty { get; }
         IObject AfterObject { get; }
         IObjectEvent AfterObjectEvent { get; }
         IList<IPage> AlternatePages { get; }

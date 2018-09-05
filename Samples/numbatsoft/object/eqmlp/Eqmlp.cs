@@ -20,11 +20,13 @@ namespace AppCSHtml5
 
         public Eqmlp()
         {
+            InitSimulation();
         }
 
         public ILanguage GetLanguage { get { return App.GetLanguage; } }
         public ILogin GetLogin { get { return App.GetLogin; } }
         public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
+        public INews GetNews { get { return App.GetNews; } }
 
         public ObservableCollection<IEqmlpReleaseNote> AllReleases
         {
@@ -57,9 +59,11 @@ namespace AppCSHtml5
 
             foreach (Dictionary<string, string> Item in ReleasesList)
             {
-                EqmlpReleaseNote NewEntry = new EqmlpReleaseNote(GetLanguage.LanguageState, Item["revision"], Item["enu_text"], Item["fra_text"]);
+                EqmlpReleaseNote NewEntry = new EqmlpReleaseNote(Item["created"], Item["revision"], Item["binary_path"], Item["readme_path"]);
                 _AllReleases.Add(NewEntry);
             }
+
+            NotifyPropertyChanged(nameof(AllReleases));
         }
 
         #region Operations
@@ -77,7 +81,7 @@ namespace AppCSHtml5
             Action<int, object> Callback = e.Operation.Callback;
 
             List<Dictionary<string, string>> Result;
-            if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "revision", "enu_text", "fra_text" })) != null)
+            if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "created", "revision", "binary_path", "readme_path" })) != null)
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
@@ -96,9 +100,10 @@ namespace AppCSHtml5
 
             Result.Add(new Dictionary<string, string>()
             {
-                { "revision", "101" },
-                { "enu_text", "" },
-                { "fra_text", "" },
+                { "created", "2011-04-20 17:26:21" },
+                { "revision", "107" },
+                { "binary_path", "{97F3A0EB-D731-4a82-9248-88CC528938E7}.exe" },
+                { "readme_path", "readme.txt" },
             });
 
             return Result;

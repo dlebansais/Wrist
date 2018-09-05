@@ -281,8 +281,15 @@ namespace Parser
                         cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.{GoTo.GoToPage.XamlName});");
                     }
                 }
-                else
+                else if (GoTo.GoToPage != null)
                     cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.{GoTo.GoToPage.XamlName});");
+                else
+                {
+                    if (GoTo.GoToObject.IsGlobal)
+                        cSharpWriter.WriteLine($"            (App.Current as App).NavigateToExternal(Get{GoTo.GoToObject.CSharpName}.{GoTo.GoToObjectProperty.CSharpName});");
+                    else
+                        cSharpWriter.WriteLine($"            (App.Current as App).NavigateToExternal((({GoTo.GoToObject.CSharpName})(sender as Button).DataContext).{GoTo.GoToObjectProperty.CSharpName});");
+                }
 
                 if (ClosePopupObject != null && ClosePopupObjectProperty != null)
                 {

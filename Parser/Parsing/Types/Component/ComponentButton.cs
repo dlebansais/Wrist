@@ -4,12 +4,12 @@ namespace Parser
 {
     public class ComponentButton : Component, IComponentButton
     {
-        public ComponentButton(IDeclarationSource source, string xamlName, IComponentProperty contentProperty, IComponentEvent beforeEvent, string goToPageName, bool isExternal, IComponentEvent afterEvent, IComponentProperty closePopupProperty)
+        public ComponentButton(IDeclarationSource source, string xamlName, IComponentProperty contentProperty, IComponentEvent beforeEvent, IComponentProperty navigateProperty, bool isExternal, IComponentEvent afterEvent, IComponentProperty closePopupProperty)
             : base(source, xamlName)
         {
             ContentProperty = contentProperty;
             BeforeEvent = beforeEvent;
-            GoToPageName = goToPageName;
+            NavigateProperty = navigateProperty;
             IsExternal = isExternal;
             AfterEvent = afterEvent;
             ClosePopupProperty = closePopupProperty;
@@ -21,7 +21,7 @@ namespace Parser
         public IObjectProperty ContentObjectProperty { get; private set; }
         public IDeclarationSource ContentKey { get; private set; }
         public IComponentEvent BeforeEvent { get; private set; }
-        public string GoToPageName { get; private set; }
+        public IComponentProperty NavigateProperty { get; private set; }
         public IPageNavigation GoTo { get; private set; }
         public bool IsExternal { get; private set; }
         public IComponentEvent AfterEvent { get; private set; }
@@ -34,7 +34,7 @@ namespace Parser
             bool IsConnected = false;
 
             ConnectContent(domain, currentArea, currentObject, ref IsConnected);
-            ConnectGoTo(domain, ref IsConnected);
+            ConnectGoTo(domain, currentArea, currentObject, ref IsConnected);
             ConnectClosePopup(domain, currentArea, currentObject, ref IsConnected);
 
             return IsConnected;
@@ -55,11 +55,15 @@ namespace Parser
             ContentObjectProperty?.SetIsRead();
         }
 
-        private void ConnectGoTo(IDomain domain, ref bool IsConnected)
+        private void ConnectGoTo(IDomain domain, IArea currentArea, IObject currentObject, ref bool IsConnected)
         {
             if (GoTo == null)
             {
-                GoTo = new PageNavigation(Source, domain, BeforeEvent, GoToPageName, IsExternal, AfterEvent);
+                if (NavigateProperty.FixedValueSource != null)
+                    GoTo = new PageNavigation(Source, domain, BeforeEvent, NavigateProperty.FixedValueSource.Name, IsExternal, AfterEvent);
+                else
+                    GoTo = new PageNavigation(Source, domain, currentArea, currentObject, BeforeEvent, NavigateProperty, AfterEvent);
+
                 IsConnected = true;
             }
         }

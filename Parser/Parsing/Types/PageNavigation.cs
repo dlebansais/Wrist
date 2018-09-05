@@ -13,11 +13,22 @@ namespace Parser
             ConnectAfter(domain, afterEvent);
         }
 
+        public PageNavigation(IDeclarationSource navigationSource, IDomain domain, IArea currentArea, IObject currentObject, IComponentEvent beforeEvent, IComponentProperty navigateProperty, IComponentEvent afterEvent)
+        {
+            NavigationSource = navigationSource;
+            IsExternal = true;
+            ConnectBefore(domain, beforeEvent);
+            ConnectPage(domain, currentArea, currentObject, navigateProperty);
+            ConnectAfter(domain, afterEvent);
+        }
+
         public IDeclarationSource NavigationSource { get; private set; }
         public IObject BeforeObject { get; private set; }
         public IObjectEvent BeforeObjectEvent { get; private set; }
         public IPage GoToPage { get; private set; }
         public bool IsExternal { get; private set; }
+        public IObject GoToObject { get; private set; }
+        public IObjectPropertyString GoToObjectProperty { get; private set; }
         public IObject AfterObject { get; private set; }
         public IObjectEvent AfterObjectEvent { get; private set; }
         public IList<IPage> AlternatePages { get; } = new List<IPage>();
@@ -107,6 +118,17 @@ namespace Parser
                 throw new ParsingException(176, NavigationSource.Source, $"Unknown page name '{goToPageName}'.");
             if (GoToPage == Page.AnyPage && (BeforeObject == null || BeforeObjectEvent == null))
                 throw new ParsingException(177, NavigationSource.Source, "A custom page must be set with a 'before' event.");
+        }
+
+        private void ConnectPage(IDomain domain, IArea currentArea, IObject currentObject, IComponentProperty navigateProperty)
+        {
+            IObject Object = GoToObject;
+            IObjectPropertyString ObjectProperty = GoToObjectProperty;
+            navigateProperty.ConnectToObjectStringOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
+            GoToObject = Object;
+            GoToObjectProperty = ObjectProperty;
+
+            GoToObjectProperty.SetIsRead();
         }
 
         private void ConnectAfter(IDomain domain, IComponentEvent afterEvent)

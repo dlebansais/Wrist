@@ -313,11 +313,16 @@ namespace Parser
             cSharpWriter.WriteLine("                Window.Current.Content = DestinationPage;");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        private void NavigateToExternal()");
+            cSharpWriter.WriteLine("        public void NavigateToExternal()");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            string Url = NetTools.UrlTools.GetBaseUrl();");
             cSharpWriter.WriteLine("            if (Url.Length > 0)");
-            cSharpWriter.WriteLine("                HtmlPage.Window.Navigate(new System.Uri(Url), \"_blank\");");
+            cSharpWriter.WriteLine("                NavigateToExternal(Url);");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        public void NavigateToExternal(string url)");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            HtmlPage.Window.Navigate(new System.Uri(url, System.UriKind.RelativeOrAbsolute), \"_blank\");");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        private Dictionary<Control, Brush> BrushTable = new Dictionary<Control, Brush>();");

@@ -14,14 +14,26 @@
                 BeforeObjectEvent = GeneratorObjectEvent.GeneratorObjectEventMap[goTo.BeforeObjectEvent];
             }
 
-            if (goTo.GoToPage == Page.CurrentPage)
-                GoToPage = GeneratorPage.CurrentPage;
-            else if (goTo.GoToPage == Page.AnyPage)
-                GoToPage = GeneratorPage.AnyPage;
+            if (goTo.GoToObject != null && goTo.GoToObjectProperty != null)
+            {
+                GoToPage = null;
+                IsExternal = true;
+                GoToObject = GeneratorObject.GeneratorObjectMap[goTo.GoToObject];
+                GoToObjectProperty = (IGeneratorObjectPropertyString)GeneratorObjectProperty.GeneratorObjectPropertyMap[goTo.GoToObjectProperty];
+            }
             else
-                GoToPage = GeneratorPage.GeneratorPageMap[goTo.GoToPage];
+            {
+                if (goTo.GoToPage == Page.CurrentPage)
+                    GoToPage = GeneratorPage.CurrentPage;
+                else if (goTo.GoToPage == Page.AnyPage)
+                    GoToPage = GeneratorPage.AnyPage;
+                else
+                    GoToPage = GeneratorPage.GeneratorPageMap[goTo.GoToPage];
 
-            IsExternal = goTo.IsExternal;
+                IsExternal = goTo.IsExternal;
+                GoToObject = null;
+                GoToObjectProperty = null;
+            }
 
             if (goTo.AfterObject != null && goTo.AfterObjectEvent != null)
             {
@@ -34,6 +46,8 @@
         public IGeneratorObjectEvent BeforeObjectEvent { get; private set; }
         public IGeneratorPage GoToPage { get; private set; }
         public bool IsExternal { get; private set; }
+        public IGeneratorObject GoToObject { get; private set; }
+        public IGeneratorObjectPropertyString GoToObjectProperty { get; private set; }
         public IGeneratorObject AfterObject { get; private set; }
         public IGeneratorObjectEvent AfterObjectEvent { get; private set; }
         public IGeneratorComponent Source { get; private set; }
@@ -47,7 +61,7 @@
                 if (BeforeObject != null && BeforeObjectEvent != null)
                     Result += $"{BeforeObject.CSharpName}_{BeforeObjectEvent.CSharpName}__";
 
-                if (GoToPage != GeneratorPage.AnyPage)
+                if (GoToPage != null && GoToPage != GeneratorPage.AnyPage)
                     Result += GoToPage.XamlName;
                 else
                     Result += "Any";
@@ -90,10 +104,21 @@
 
             if (GoToPage == GeneratorPage.CurrentPage)
                 Result.GoToPage = currentPage;
-            else
+            else if (GoToPage != null)
+            {
                 Result.GoToPage = GoToPage;
+                Result.IsExternal = IsExternal;
+                Result.GoToObject = null;
+                Result.GoToObjectProperty = null;
+            }
+            else
+            {
+                Result.GoToPage = null;
+                Result.IsExternal = true;
+                Result.GoToObject = GoToObject;
+                Result.GoToObjectProperty = GoToObjectProperty;
+            }
 
-            Result.IsExternal = IsExternal;
             Result.AfterObject = AfterObject;
             Result.AfterObjectEvent = AfterObjectEvent;
             Result.Source = source;

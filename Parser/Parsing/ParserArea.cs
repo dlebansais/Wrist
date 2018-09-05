@@ -168,8 +168,8 @@ namespace Parser
             if (NavigateProperty == null)
                 throw new ParsingException(32, sourceStream, "Button goto page name not specified.");
 
-            if (NavigateProperty.FixedValueSource == null)
-                throw new ParsingException(33, sourceStream, "Go to page name can only be a static name.");
+            if (NavigateProperty.FixedValueSource == null && (NavigateProperty.ObjectSource == null || NavigateProperty.ObjectPropertySource == null || NavigateProperty.ObjectPropertyKey != null))
+                throw new ParsingException(33, sourceStream, "Go to page name can only be a static name or a string property.");
 
             bool IsExternal;
             if (ExternalProperty != null)
@@ -182,10 +182,18 @@ namespace Parser
             else
                 IsExternal = false;
 
+            if (NavigateProperty.FixedValueSource == null)
+            {
+                if (!IsExternal)
+                    throw new ParsingException(0, sourceStream, "Go to page name, if not a static name, can only be external.");
+                if (BeforeEvent != null || AfterEvent != null || ClosePopupProperty != null)
+                    throw new ParsingException(0, sourceStream, "Button going to a non-static page cannot have a before or after event, or a 'close popup' property.");
+            }
+
             if (ClosePopupProperty != null && ClosePopupProperty.FixedValueSource != null)
                 throw new ParsingException(219, sourceStream, "Close popup can only be a property.");
 
-            return new ComponentButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Button"), ContentProperty, BeforeEvent, NavigateProperty.FixedValueSource.Name, IsExternal, AfterEvent, ClosePopupProperty);
+            return new ComponentButton(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Button"), ContentProperty, BeforeEvent, NavigateProperty, IsExternal, AfterEvent, ClosePopupProperty);
         }
 
         private IComponentCheckBox ParseComponentCheckBox(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)

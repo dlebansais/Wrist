@@ -8,7 +8,7 @@
         IObjectProperty ContentObjectProperty { get; }
         IDeclarationSource ContentKey { get; }
         IComponentEvent BeforeEvent { get; }
-        string GoToPageName { get; }
+        IComponentProperty NavigateProperty { get; }
         IPageNavigation GoTo { get; }
         bool IsExternal { get; }
         IComponentEvent AfterEvent { get; }

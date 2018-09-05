@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -7,29 +6,33 @@ namespace AppCSHtml5
 {
     public class EqmlpReleaseNote : IEqmlpReleaseNote
     {
-        public EqmlpReleaseNote(LanguageStates languageState, string revision, string enuText, string fraText)
+        public EqmlpReleaseNote(string created, string revision, string binary_path, string readme_path)
         {
-            LanguageState = languageState;
+            string EnuDate, FraDate;
+            NewsEntry.ParseCreated(created, out EnuDate, out FraDate);
+            Created = EnuDate;
 
-            string EnglishRevision = Language.ReplaceHtml(enuText);
-            RevisionTable.Add(LanguageStates.English, EnglishRevision);
-
-            string FrenchRevision = Language.ReplaceHtml(fraText);
-            RevisionTable.Add(LanguageStates.French, FrenchRevision);
+            Revision = revision;
+            BinaryPath = binary_path;
+            ReadmePath = readme_path;
         }
 
         public ILanguage GetLanguage { get { return App.GetLanguage; } }
         public ILogin GetLogin { get { return App.GetLogin; } }
         public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
+        public INews GetNews { get { return App.GetNews; } }
 
-        public string Revision { get { return RevisionTable[GetLanguage.LanguageState]; } }
-        public Dictionary<LanguageStates, string> RevisionTable { get; } = new Dictionary<LanguageStates, string>();
-
-        private LanguageStates LanguageState;
-
-        public void SelectLanguage(LanguageStates languageState)
+        public string Created { get; private set; }
+        public string Revision { get; private set; }
+        public string BinaryPath { get; private set; }
+        public string ReadmePath { get; private set; }
+        public string ExternalLink
         {
-            LanguageState = languageState;
+            get
+            {
+                string BaseUrl = NetTools.UrlTools.GetBaseUrl();
+                return $"{BaseUrl}/download/eqmlp/patches/{Revision}/readme.txt";
+            }
         }
 
         #region Implementation of INotifyPropertyChanged

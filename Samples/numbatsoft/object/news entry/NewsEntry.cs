@@ -8,11 +8,12 @@ namespace AppCSHtml5
 {
     public class NewsEntry : INewsEntry
     {
-        public NewsEntry(LanguageStates languageState, string created, string enu_title, string enu_text, string fra_title, string fra_text)
+        public NewsEntry(string created, string enu_title, string enu_text, string fra_title, string fra_text)
         {
-            LanguageState = languageState;
-
-            ParseCreated(created);
+            string EnuDate, FraDate;
+            ParseCreated(created, out EnuDate, out FraDate);
+            CreatedTable.Add(LanguageStates.English, EnuDate);
+            CreatedTable.Add(LanguageStates.French, FraDate);
 
             string EnglishTitle = Language.ReplaceHtml(enu_title);
             TitleTable.Add(LanguageStates.English, EnglishTitle);
@@ -33,18 +34,10 @@ namespace AppCSHtml5
             LinksTable.Add(LanguageStates.French, new ObservableCollection<INewsEntryLink>(LinkList));
         }
 
-        public NewsEntry()
-        {
-        }
-
         public ILanguage GetLanguage { get { return App.GetLanguage; } }
         public ILogin GetLogin { get { return App.GetLogin; } }
         public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
-
-        public void SelectLanguage(LanguageStates languageState)
-        {
-            LanguageState = languageState;
-        }
+        public INews GetNews { get { return App.GetNews; } }
 
         public string Created { get { return CreatedTable[LanguageState]; } }
         public Dictionary<LanguageStates, string> CreatedTable { get; } = new Dictionary<LanguageStates, string>();
@@ -55,9 +48,9 @@ namespace AppCSHtml5
         public ObservableCollection<INewsEntryLink> Links { get { return LinksTable[LanguageState]; } }
         public Dictionary<LanguageStates, ObservableCollection<INewsEntryLink>> LinksTable { get; } = new Dictionary<LanguageStates, ObservableCollection<INewsEntryLink>>();
 
-        private LanguageStates LanguageState;
+        protected LanguageStates LanguageState { get { return GetLanguage.LanguageState; } }
 
-        private void ParseCreated(string s)
+        public static void ParseCreated(string s, out string enuDate, out string fraDate)
         {
             int Year, Month, Day;
             int.TryParse(s.Substring(0, 4), out Year);
@@ -66,13 +59,13 @@ namespace AppCSHtml5
             if (Year >= 2000 && Year <= 5000 && Month >= 1 && Month <= 12 && Day >= 1 && Day <= 31)
             {
                 List<string> MonthList = new List<string>() { "", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-                CreatedTable.Add(LanguageStates.English, $"{MonthList[Month]} {Day}, {Year}");
-                CreatedTable.Add(LanguageStates.French, $"{Day}/{Month}/{Year}");
+                enuDate = $"{MonthList[Month]} {Day}, {Year}";
+                fraDate = $"{Day}/{Month}/{Year}";
             }
             else
             {
-                CreatedTable.Add(LanguageStates.English, "");
-                CreatedTable.Add(LanguageStates.French, "");
+                enuDate = "";
+                fraDate = "";
             }
         }
 
