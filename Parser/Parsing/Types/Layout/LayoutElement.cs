@@ -19,6 +19,7 @@ namespace Parser
         public string DynamicEnable { get; set; }
         public IDynamicProperty DynamicController { get; private set; }
 
+        public abstract string FriendlyName { get; }
         public abstract ILayoutElement GetClone();
 
         protected virtual void InitializeClone(LayoutElement clone)

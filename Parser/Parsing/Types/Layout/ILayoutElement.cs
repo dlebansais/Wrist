@@ -5,6 +5,7 @@ namespace Parser
     public interface ILayoutElement
     {
         IParsingSource Source { get; }
+        string FriendlyName { get; }
         string Style { get; set; }
         string Width { get; set; }
         string Height { get; set; }

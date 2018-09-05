@@ -43,6 +43,14 @@ namespace Parser
             if (ColumnTargets.ContainsKey(target))
                 ColumnTargets.Add(clone, ColumnTargets[target]);
         }
+
+        public static void ValidateColumn(IPanel targetPanel, ILayoutElement targetItem)
+        {
+            IGrid AsGrid = (IGrid)targetPanel;
+
+            if (Grid.ColumnTargets[targetItem] < 0 || Grid.ColumnTargets[targetItem] >= AsGrid.ColumnCount)
+                throw new ParsingException(244, targetItem.Source, $"Grid.Column specified for '{targetItem.FriendlyName}' but outside the range of valid columns.");
+        }
         #endregion
 
         #region ColumnSpan Attached Property
@@ -81,6 +89,15 @@ namespace Parser
         {
             if (ColumnSpanTargets.ContainsKey(target))
                 ColumnSpanTargets.Add(clone, ColumnSpanTargets[target]);
+        }
+
+        public static void ValidateColumnSpan(IPanel targetPanel, ILayoutElement targetItem)
+        {
+            IGrid AsGrid = (IGrid)targetPanel;
+            int Column = Grid.ColumnTargets.ContainsKey(targetItem) ? Grid.ColumnTargets[targetItem] : 0;
+
+            if (Grid.ColumnSpanTargets[targetItem] < 0 || Column + Grid.ColumnSpanTargets[targetItem] > AsGrid.ColumnCount)
+                throw new ParsingException(244, targetItem.Source, $"Grid.ColumnSpan specified for '{targetItem.FriendlyName}' but outside the range of valid column spans.");
         }
         #endregion
 
@@ -121,6 +138,14 @@ namespace Parser
             if (RowTargets.ContainsKey(target))
                 RowTargets.Add(clone, RowTargets[target]);
         }
+
+        public static void ValidateRow(IPanel targetPanel, ILayoutElement targetItem)
+        {
+            IGrid AsGrid = (IGrid)targetPanel;
+
+            if (Grid.RowTargets[targetItem] < 0 || Grid.RowTargets[targetItem] >= AsGrid.RowCount)
+                throw new ParsingException(244, targetItem.Source, $"Grid.Row specified for '{targetItem.FriendlyName}' but outside the range of valid rows.");
+        }
         #endregion
 
         #region RowSpan Attached Property
@@ -159,6 +184,15 @@ namespace Parser
         {
             if (RowSpanTargets.ContainsKey(target))
                 RowSpanTargets.Add(clone, RowSpanTargets[target]);
+        }
+
+        public static void ValidateRowSpan(IPanel targetPanel, ILayoutElement targetItem)
+        {
+            IGrid AsGrid = (IGrid)targetPanel;
+            int Row = Grid.RowTargets.ContainsKey(targetItem) ? Grid.RowTargets[targetItem] : 0;
+
+            if (Grid.RowSpanTargets[targetItem] < 0 || Row + Grid.RowSpanTargets[targetItem] > AsGrid.RowCount)
+                throw new ParsingException(244, targetItem.Source, $"Grid.RowSpan specified for '{targetItem.FriendlyName}' but outside the range of valid row spans.");
         }
         #endregion
 

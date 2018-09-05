@@ -16,13 +16,19 @@ namespace NetTools
         {
         }
 
-        public bool DebugWriteResponse { get; set; } = false;
+        public bool DebugLog { get; set; } = false;
+        public bool DebugLogFullResponse { get; set; } = false;
         public string QueryScriptPath { get; set; } = "/request/";
         public string UpdateScriptPath { get; set; } = "/request/";
         public string EncryptScriptPath { get; set; } = "/request/";
 
         public event CompletionEventHandler Completed;
         public Dictionary<DatabaseOperation, List<Dictionary<string, object>>> RequestResultTable { get; } = new Dictionary<DatabaseOperation, List<Dictionary<string, object>>>();
+
+        public void AddLogEntry(string text)
+        {
+            Debug.WriteLine(text);
+        }
 
         public void Query(DatabaseQueryOperation operation)
         {
@@ -47,12 +53,12 @@ namespace NetTools
             if (!DownloadClientTable.ContainsKey(AddressString))
             {
                 DownloadClientTable.Add(AddressString, new KeyValuePair<DatabaseOperation, WebClient>(operation, new WebClient()));
-                Debug.WriteLine($"{operation.TypeName} added");
+                AddLogEntry($"{operation.TypeName} added");
 
                 PopRequest();
             }
             else
-                Debug.WriteLine($"An identical {operation.TypeName} request is already queued");
+                AddLogEntry($"An identical {operation.TypeName} request is already queued");
         }
 
         private void PopRequest()
@@ -65,7 +71,7 @@ namespace NetTools
                     DatabaseOperation Operation = Entry.Value.Key;
                     WebClient DownloadClient = Entry.Value.Value;
 
-                    Debug.WriteLine("Request started");
+                    AddLogEntry("Request started");
 
                     CurrentDownload = DownloadClient;
                     CurrentOperation = Operation;
@@ -74,21 +80,21 @@ namespace NetTools
                     DownloadClient.DownloadStringCompleted += OnDownloadCompleted;
                     DownloadClient.DownloadStringAsync(UriAddress);
 
-                    Debug.WriteLine("Download async started");
+                    AddLogEntry("Download async started");
                     return;
                 }
 
-                Debug.WriteLine("No more request");
+                AddLogEntry("No more request");
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                AddLogEntry(e.Message);
             }
         }
 
         public void OnDownloadCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
-            Debug.WriteLine("Download async completed");
+            AddLogEntry("Download async completed");
 
             WebClient DownloadClient = CurrentDownload;
             DatabaseOperation Operation = CurrentOperation;
@@ -101,11 +107,11 @@ namespace NetTools
                     if (DownloadClient == Entry.Value.Value)
                     {
                         DownloadClientTable.Remove(Entry.Key);
-                        Debug.WriteLine("Request withdrawn");
+                        AddLogEntry("Request withdrawn");
                         break;
                     }
 
-                Debug.WriteLine($"Request {Operation.Name} completed");
+                AddLogEntry($"Request {Operation.Name} completed");
 
                 List<Dictionary<string, object>> RequestResult = new List<Dictionary<string, object>>();
 
@@ -116,11 +122,11 @@ namespace NetTools
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    AddLogEntry(ex.Message);
                 }
 
                 RequestResultTable.Add(Operation, RequestResult);
-                Debug.WriteLine($"Request {Operation.Name} result available");
+                AddLogEntry($"Request {Operation.Name} result available");
                 Completed?.Invoke(this, new CompletionEventArgs(Operation));
             }
 
@@ -139,8 +145,8 @@ namespace NetTools
         {
             List<Dictionary<string, object>> Result = new List<Dictionary<string, object>>();
 
-            if (DebugWriteResponse)
-                Debug.WriteLine(content);
+            if (DebugLogFullResponse)
+                AddLogEntry(content);
 
             int RecordStart = 0;
             while ((RecordStart = content.IndexOf(RecordPattern, RecordStart)) >= 0)
@@ -184,15 +190,15 @@ namespace NetTools
             {
                 DatabaseOperation Operation = ResultEntry.Key;
                 List<Dictionary<string, object>> ResultList = ResultEntry.Value;
-                Debug.WriteLine($"Operation: {Operation.Name}, {ResultList.Count} entries");
+                AddLogEntry($"Operation: {Operation.Name}, {ResultList.Count} entries");
 
                 for (int i = 0; i < ResultList.Count; i++)
                 {
                     Dictionary<string, object> Item = ResultList[i];
-                    Debug.WriteLine($"#{i}, {Item.Count} keys");
+                    AddLogEntry($"#{i}, {Item.Count} keys");
 
                     foreach (KeyValuePair<string, object> Entry in Item)
-                        Debug.WriteLine($"{Entry.Key} -> {Entry.Value}");
+                        AddLogEntry($"{Entry.Key} -> {Entry.Value}");
                 }
             }
         }

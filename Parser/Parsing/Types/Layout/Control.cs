@@ -9,6 +9,8 @@ namespace Parser
         public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
         public IComponent Component { get; private set; }
 
+        public override string FriendlyName { get { return Name; } }
+
         public override ILayoutElement GetClone()
         {
             Control Clone = new Control();

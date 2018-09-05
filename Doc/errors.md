@@ -120,23 +120,19 @@ In this case, the attached property is specified but the layout object doesn't b
 
 ## WTE00014
 
-*Grid.Column specified for x not included in a Grid.*
+*Property x specified for y not included in a panel.*
 
-where *x* is some layout object, such as `StackPanel`, `Grid`, or `Control`.
+where *panel* is some layout panel, such as `StackPanel` or `Grid`.
 
-Each layout object within a Grid can specify its row and column with the `Grid.Row` and `Grid.Column` attached properties. For example, `Grid.Column="2"`. 
+Each layout object within a panel can specify for instance its row and column with the `Grid.Row` and `Grid.Column` attached properties. For example, `Grid.Column="2"`. 
 
-In this case, the attached property is specified but the layout object doesn't belong to a Grid. The attached property specification doesn't make sense, and should be removed, or the layout object moved into the proper Grid.
+In this case, the attached property is specified but the layout object doesn't belong to the expected panel. The attached property specification doesn't make sense, and should be removed, or the layout object moved into the proper panel.
 
 ## WTE00015
 
-*Grid.Row specified for x not included in a Grid.*
+*DockPanel.Dock specified for 'x' but this item is the last.*
 
-where *x* is some layout object, such as `StackPanel`, `Grid`, or `Control`.
-
-Each layout object within a Grid can specify its row and column with the `Grid.Row` and `Grid.Column` attached properties. For example, `Grid.Row="2"`. 
-
-In this case, the attached property is specified but the layout object doesn't belong to a Grid. The attached property specification doesn't make sense, and should be removed, or the layout object moved into the proper Grid.
+In this case, the item for which a Dock is specified must not be the last in the DocPanel.
 
 ## WTE00016
 
@@ -2133,4 +2129,10 @@ This error is issued when a *TextDecoration* declares a wrapping that is neither
 *Invalid link to page 'x' in text decoration, page not found.*
 
 This error is issued when a *TextDecoration* declares uses the `<a href="page name">text</a>` syntax to declare a link to a page, but the page doesn't exist.
+
+## WTE00244
+
+*Grid.Column* (or Row, or ColumnSpan, or RowSpan) *specified for 'x' but outside the range of valid columns.* (or rows)
+
+In this case, a Column, Row, ColumnSpan or RowSpan property is specified for an item, but it has an invalid value. For example, the specified row could exceed the number of rows declared in the Grid.
 

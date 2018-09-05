@@ -39,6 +39,7 @@ namespace AppCSHtml5
 
         public ILanguage GetLanguage { get { return App.GetLanguage; } }
         public ILogin GetLogin { get { return App.GetLogin; } }
+        public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
 
         public void SelectLanguage(LanguageStates languageState)
         {

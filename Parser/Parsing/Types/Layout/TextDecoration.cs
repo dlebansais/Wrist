@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Parser
 {
@@ -8,6 +9,8 @@ namespace Parser
         public string Text { get; set; }
         public string Wrapping { get; set; }
         public Windows.UI.Xaml.TextWrapping? TextWrapping { get; private set; }
+
+        public override string FriendlyName { get { return $"{GetType().Name} ({Encoding.ASCII.GetString(Encoding.Convert(Encoding.UTF8, Encoding.ASCII, Encoding.UTF8.GetBytes(Text)))})"; } }
 
         public override ILayoutElement GetClone()
         {

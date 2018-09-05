@@ -52,6 +52,15 @@ namespace Parser
             if (DockTargets.ContainsKey(target))
                 DockTargets.Add(clone, DockTargets[target]);
         }
+
+        public static void ValidateDock(IPanel targetPanel, ILayoutElement targetItem)
+        {
+            IDockPanel AsDockPanel = (IDockPanel)targetPanel;
+
+            int ControlIndex = AsDockPanel.Items.IndexOf(targetItem);
+            if (ControlIndex < 0 || ControlIndex + 1 >= AsDockPanel.Items.Count)
+                throw new ParsingException(15, targetItem.Source, $"DockPanel.Dock specified for '{targetItem.FriendlyName}' but this item is the last.");
+        }
         #endregion
 
         public override ILayoutElement GetClone()

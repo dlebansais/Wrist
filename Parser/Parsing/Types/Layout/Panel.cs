@@ -9,6 +9,8 @@ namespace Parser
         public string MaxWidth { get; set; }
         public string MaxHeight { get; set; }
 
+        public override string FriendlyName { get { return GetType().Name; } }
+
         protected override void InitializeClone(LayoutElement clone)
         {
             base.InitializeClone(clone);

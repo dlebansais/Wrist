@@ -33,13 +33,15 @@ namespace AppCSHtml5
             Remember = (Persistent.GetValue("remember", null) != null);
             LoginState = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
 
-            Database.DebugWriteResponse = true;
+            Database.DebugLog = true;
+            Database.DebugLogFullResponse = true;
 
             InitSimulation();
         }
 
         public ILanguage GetLanguage { get { return App.GetLanguage; } }
         public ILogin GetLogin { get { return App.GetLogin; } }
+        public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
 
         public LoginStates LoginState { get; set; }
         public string Name { get; set; }

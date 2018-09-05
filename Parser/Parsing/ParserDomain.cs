@@ -249,53 +249,35 @@ namespace Parser
             foreach (ILayout Layout in Layouts)
                 Layout.ReportElementsWithAttachedProperties(DockPanels, Grids);
 
-            Dictionary<ILayoutElement, Dock> DockPanelDockTargets = DockPanel.DockTargets;
-            Dictionary<ILayoutElement, int> GridColumnTargets = Grid.ColumnTargets;
-            Dictionary<ILayoutElement, int> GridRowTargets = Grid.RowTargets;
-
-            foreach (KeyValuePair<ILayoutElement, Dock> Entry in DockPanelDockTargets)
-            {
-                bool Found = false;
-                foreach (IDockPanel Item in DockPanels)
-                    if (Item.Items.Contains(Entry.Key))
-                    {
-                        Found = true;
-                        break;
-                    }
-
-                if (!Found)
-                    throw new ParsingException(13, Entry.Key.Source, $"DockPanel.Dock specified for {Entry.Key} not included in a DockPanel.");
-            }
-
-            foreach (KeyValuePair<ILayoutElement, int> Entry in GridColumnTargets)
-            {
-                bool Found = false;
-                foreach (IGrid Item in Grids)
-                    if (Item.Items.Contains(Entry.Key))
-                    {
-                        Found = true;
-                        break;
-                    }
-
-                if (!Found)
-                    throw new ParsingException(14, Entry.Key.Source, $"Grid.Column specified for {Entry.Key} not included in a Grid.");
-            }
-
-            foreach (KeyValuePair<ILayoutElement, int> Entry in GridRowTargets)
-            {
-                bool Found = false;
-                foreach (IGrid Item in Grids)
-                    if (Item.Items.Contains(Entry.Key))
-                    {
-                        Found = true;
-                        break;
-                    }
-
-                if (!Found)
-                    throw new ParsingException(15, Entry.Key.Source, $"Grid.Row specified for {Entry.Key} not included in a Grid.");
-            }
+            CheckIfAttachedPropertyIsValid(DockPanel.DockTargets.Keys, new List<IPanel>(DockPanels), "DockPanel.Dock", DockPanel.ValidateDock);
+            CheckIfAttachedPropertyIsValid(Grid.ColumnTargets.Keys, new List<IPanel>(Grids), "Grid.Column", Grid.ValidateColumn);
+            CheckIfAttachedPropertyIsValid(Grid.ColumnSpanTargets.Keys, new List<IPanel>(Grids), "Grid.ColumnSpan", Grid.ValidateColumnSpan);
+            CheckIfAttachedPropertyIsValid(Grid.RowTargets.Keys, new List<IPanel>(Grids), "Grid.Row", Grid.ValidateRow);
+            CheckIfAttachedPropertyIsValid(Grid.RowSpanTargets.Keys, new List<IPanel>(Grids), "Grid.RowSpan", Grid.ValidateRowSpan);
 
             return NewDomain;
+        }
+
+        private static void CheckIfAttachedPropertyIsValid(ICollection<ILayoutElement> targetItemTable, ICollection<IPanel> PanelList, string propertyName, Action<IPanel, ILayoutElement> handlerValidate)
+        {
+            string[] Splitted = propertyName.Split('.');
+            string PanelName = Splitted.Length > 0 ? Splitted[0] : "<unknown panel>";
+
+            foreach (ILayoutElement TargetItem in targetItemTable)
+            {
+                IPanel TargetPanel = null;
+                foreach (IPanel Item in PanelList)
+                    if (Item.Items.Contains(TargetItem))
+                    {
+                        TargetPanel = Item;
+                        break;
+                    }
+
+                if (TargetPanel == null)
+                    throw new ParsingException(14, TargetItem.Source, $"Property {propertyName} specified for {TargetItem} but not included in a {PanelName}.");
+
+                handlerValidate(TargetPanel, TargetItem);
+            }
         }
 
         private static void BubbleSort(IFormCollection<IArea> Areas)

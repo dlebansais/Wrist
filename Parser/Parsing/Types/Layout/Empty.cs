@@ -6,6 +6,8 @@ namespace Parser
     {
         public string Type { get; set; }
 
+        public override string FriendlyName { get { return GetType().Name; } }
+
         public override ILayoutElement GetClone()
         {
             Empty Clone = new Empty();

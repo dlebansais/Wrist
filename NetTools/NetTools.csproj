@@ -60,7 +60,9 @@
     <Compile Include="CompletionEventHandler.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Hash.cs" />
+    <!-- You must create your own version of this file. See Hash.cs -->
     <Compile Include="SecretUuid.cs" />
+    <!-- -->
     <Compile Include="UrlTools.cs" />
     <Compile Include="OperationHandler.cs" />
     <Compile Include="Operations\DatabaseEncryptOperation.cs" />

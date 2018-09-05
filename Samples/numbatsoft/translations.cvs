@@ -49,11 +49,24 @@ page-recovery-end-failed-1	Account Recovery	Récupération de compte
 page-recovery-end-failed-2	Account Recovery	Récupération de compte
 page-recovery-end-failed-3	Account Recovery	Récupération de compte
 page-recovery-end-failed-4	Account Recovery	Récupération de compte
-page-bug-list-eq	Everquest Multilog Parser	Everquest Multilog Parser
-page-product-eq	Everquest Multilog Parser	Everquest Multilog Parser
+page-product-eqmlp	Everquest Multilog Parser	Everquest Multilog Parser
 page-product-pg	Project: Gorgon JSON Parser	Project: Gorgon JSON Parser
 page-product-uac	UAC pass-through	UAC pass-through
-page-release-notes-eq	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-release-notes	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-bug-list	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-installation	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-update	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-privacy	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-registration-url	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-server-administration	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-skins	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-tables-structure	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-uninstallation	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-views	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-doc-xaml-tutorial	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-registered	Everquest Multilog Parser	Everquest Multilog Parser
+page-eqmlp-screenshots	Everquest Multilog Parser	Everquest Multilog Parser
+page-register-product-eqmlp	Everquest Multilog Parser	Everquest Multilog Parser
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -194,10 +207,10 @@ recovery-end-failed-text-4	Sorry, the answer doesn't match the expected answer f
 product-pg-title	Project: Gorgon JSON Parser	Project: Gorgon JSON Parser
 product-pg-text-1	This parser can download and process public files from the Project: Gorgon MMORPG.\u00A0 It includes a build planner that helps players plan ahead for gear updates.	Ce parseur peut télécharger et traiter les fichiers public du MMORPG Project: Gorgon.  Il contient un planificateur de personnage qui aide les joueurs à prévoir comment améliorer leur matos.
 product-pg-text-2	The intented audience for this application are P:G players.	Cette application s'adresse principalement aux joueurs de P:G.
-product-description	Detailed product description	.
-product-eq-title	Everquest Multilog Parser	Everquest Multilog Parser
-product-eq-text-1	The Everquest Multilog Parser can collect, synthesize and display combat information from multiple logs in real time.\u00A0 Compared to traditional parsers, its main benefit is accuracy.	Everquest Multilog Parser est capable de rassembler, combiner et afficher les informations de combat provenant de plusieurs logs en temps réel. Comparé aux parseurs traditionnels, son avantage principal est la précision.
-product-eq-text-2	The intented audience for this application are large organisations of Everquest players: guilds or alliances.	Cette application s'adresse principalement aux grandes organisations de joueurs d'Everquest : des guildes or des alliances.
+product-description	Detailed product description	Description détaillée du produit
+product-eqmlp-title	Everquest Multilog Parser	Everquest Multilog Parser
+product-eqmlp-text-1	The Everquest Multilog Parser can collect, synthesize and display combat information from multiple logs in real time.\u00A0 Compared to traditional parsers, its main benefit is accuracy.	Everquest Multilog Parser est capable de rassembler, combiner et afficher les informations de combat provenant de plusieurs logs en temps réel. Comparé aux parseurs traditionnels, son avantage principal est la précision.
+product-eqmlp-text-2	The intented audience for this application are large organisations of Everquest players: guilds or alliances.	Cette application s'adresse principalement aux grandes organisations de joueurs d'Everquest : des guildes or des alliances.
 product-uac-title	UAC pass-through	UAC pass-through
 product-uac-text-1	When User Account Control is enabled, Windows will ask for user confirmation every time a program attempts to run with elevated privileges.\u00A0 This tool can launch programs with elevated privileges but without the pop-up dialog box.	Lorsque le contrôle du compte de l'utilisateur est activée, Windows demande une confirmation à chaque fois qu'un programme essaie de s'exécuter avec des privilèges élevés. Cet outil permet de lancer des programmes avec privilèges élevés mais sans la boîte de dialogue de confirmation.
 product-uac-text-2	The intended audience for this tool are companies that distribute programs designed for Windows XP and don't want to waste money on porting their code to Vista and Windows 7.	Cet outils s'adresse principalement aux sociétés distribuant des programmes écris pour Windows XP et qui ne veulent pas dépenser argent et énergie pour porter leur code vers Windows Vista et 7.
@@ -214,19 +227,30 @@ license-pg-text	Anyone can use this program, but all materials it manipulates is
 documentation	Documentation	Documentation
 not-available	Not available yet.	Pas encore disponible.
 product-eq-text	The Everquest Multilog Parser can collect, synthesize and display combat information from multiple logs in real time.  Compared to traditional parsers, its main benefit is accuracy.	Everquest Multilog Parser est capable de rassembler, combiner et afficher les informations de combat provenant de plusieurs logs en temps réel. Comparé aux parseurs traditionnels, son avantage principal est la précision.
-release-notes	Release notes	.
-bug-list	Bug list	.
-features-eq-1	This application creates a private network connecting all playing members of an organization (a guild or an alliance).  Logs from each player are shared and compared to obtain an overview of fights in real-time.	.
-features-eq-2	Security is enforced by requiring all players to be able to log into the organization's site.  Every time a player tries to connect to the network created by the Everquest Multilog Parser, a check is made to verify they can connect to that site.	.
-features-eq-3	Privacy is ensured. Only combat information are shared, never chat or tells.	.
-features-eq-4	The application supports English and French, and support a customized user-interface in a way similar to Everquest.	.
-features-eq-5	Names of creatures can be given the same alias (ex: Trash) in a zone.  This allows to combine parses on multiple creatures into one.	.
-features-eq-7	A live update mechanism updates everyone with the latest patches and fixes in the background (it can be turned off).	.
-features-eq-8	The result of parses is stored in a database, that can be exported to common database formats.	.
-examples	Examples	.
-benefits-of-registration	Benefits of registration	.
-benefits-eq-1	Downloading and using the Everquest Multilog Parser is free.  If you register your organization, for a modest fee you are entitled to the following services:	.
-benefits-eq-2	Your organization is listed and can be found automatically by any member installing on their computer.  For unregistered organizations, players must configure their settings manually.	.
-benefits-eq-3	You receive news, patches and fixes automatically.  You are also entitled to new features when they are developed (no promises here) for free.	.
-benefits-eq-4	You can receive technical support.	.
-doc-eq	Several documents are available to help you using this product:	.
+release-notes	Release notes	Notes de révisions
+bug-list	Bug list	Liste des problèmes connus
+features-eq-1	This application creates a private network connecting all playing members of an organization (a guild or an alliance).  Logs from each player are shared and compared to obtain an overview of fights in real-time.	Cette application crée un réseau privé connectant tous les joueurs membres d'une organisation (guilde ou alliance). Les logs de chaque joueurs sont partagés et comparés pour obtenir une vue d'ensemble des combats en temps réel.
+features-eq-2	Security is enforced by requiring all players to be able to log into the organization's site.  Every time a player tries to connect to the network created by the Everquest Multilog Parser, a check is made to verify they can connect to that site.	La sécurité est assurée par l'obligation pour chaque joueur d'être capable de se connecter au site de l'organisation. Chaque fois qu'un joueur essaie de se connecter au réseau créé par Everquest Multilog Parser, un test est effectué pour vérifier qu'il peut se connecter à ce site.
+features-eq-3	Privacy is ensured. Only combat information are shared, never chat or tells.	Les données personnelles sont protégées. Seules les informations de combat sont partagées, jamais les conversations de quelque nature que ce soit.
+features-eq-4	The application supports English and French, and support a customized user-interface in a way similar to Everquest.	L'application est disponible en français et en anglais, et permet d'utiliser des interfaces utilisateurs personnalisées, sur le même principe qu'Everquest.
+features-eq-5	Names of creatures can be given the same alias (ex: Trash) in a zone.  This allows to combine parses on multiple creatures into one.	Il est possible de nommer d'un alias commun (par exemple : Trash) les créatures d'une même zone. Cela permet de combiner les parses de plusieurs créatures en un seul.
+features-eq-7	A live update mechanism updates everyone with the latest patches and fixes in the background (it can be turned off).	Un système de mise à jour en direct fournit à chacun les derniers correctifs en tache de fond (il est possible de le désactiver).
+features-eq-8	The result of parses is stored in a database, that can be exported to common database formats.	Le résultat des parses est stocké dans une base de donnée, qui peut être exportée dans des formats de fichiers standards.
+examples	Examples	Exemples
+benefits-of-registration	Benefits of registration	Les avantages d'être enregistré
+benefits-eq-1	Downloading and using the Everquest Multilog Parser is free.  If you register your organization, for a modest fee you are entitled to the following services:	Le téléchargement et l'utilisation de Everquest Multilog Parser sont gratuits. Si vous enregistrez votre organisation, pour une somme modeste vous aurez accès aux services suivants :
+benefits-eq-2	Your organization is listed and can be found automatically by any member installing on their computer.  For unregistered organizations, players must configure their settings manually.	Votre organisation est listée et peut être trouvée automatiquement par n'importe lequel de ses membres qui installera le produit sur son ordinateur. Pour les organisations non enregistrées, les joueurs doivent configurer leurs paramètres manuellement.
+benefits-eq-3	You receive news, patches and fixes automatically.  You are also entitled to new features when they are developed (no promises here) for free.	Vous recevez les nouvelles, les patchs et les correctifs automatiquement. Vous avez également droit aux nouvelles fonctionnalités (lorsqu'il y en aura) quand elles seront ajoutées, gratuitement.
+benefits-eq-4	You can receive technical support.	Vous pouvez recevoir une assistance technique.
+installation	Installation	Installation
+automatic-update	Live update	Mises à jour automatiques
+privacy	Privacy	Données personnelles
+registration-url	Registrations URLs	URLs d'enregistrement
+server-administration	Server administration	Administration du serveur
+skins	Skins	Interfaces personnalisées
+tables-structure	Tables structure	Structure des tables
+uninstallation	Uninstallation	Désinstallation
+views	Views	Vues
+xaml-tutorial	Xaml Tutorial	Tutoriel xaml
+preliminary-draft	(this is a very preliminary draft)	(brouillon)
+click-release-note	Click a revision number to see the corresponding release notes.	Cliquez sur un numéro de révision pour voir les notes correspondantes.
