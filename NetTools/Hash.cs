@@ -1,8 +1,7 @@
 ﻿#if USE_RESTRICTED_FEATURES
-using CSHTML5;
-#endif
-using System;
+#else
 using System.Text;
+#endif
 
 namespace NetTools
 {
@@ -14,10 +13,15 @@ namespace NetTools
 
     public class Hash
     {
-        public static HashVariant Variant { get; set; } = HashVariant.SHA1;
+        public static HashVariant Variant { get; set; } = HashVariant.SHA3_512;
+        // Declare this in SecretUuid.cs:
+        // public static class SecretUuid { public static readonly System.Guid Guid = new System.Guid(<your own guid>); }
+        public static string Suffix { get; } = SecretUuid.Guid.ToString("N");
 
         public static string Convert(string text)
         {
+            text += Suffix;
+
             switch (Variant)
             {
                 default:
