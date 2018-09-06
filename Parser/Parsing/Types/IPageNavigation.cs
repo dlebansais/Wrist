@@ -10,7 +10,7 @@ namespace Parser
         IPage GoToPage { get; }
         bool IsExternal { get; }
         IObject GoToObject { get; }
-        IObjectPropertyString GoToObjectProperty { get; }
+        IObjectPropertyReadonlyString GoToObjectProperty { get; }
         IObject AfterObject { get; }
         IObjectEvent AfterObjectEvent { get; }
         IList<IPage> AlternatePages { get; }

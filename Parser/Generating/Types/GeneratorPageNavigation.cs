@@ -19,7 +19,7 @@
                 GoToPage = null;
                 IsExternal = true;
                 GoToObject = GeneratorObject.GeneratorObjectMap[goTo.GoToObject];
-                GoToObjectProperty = (IGeneratorObjectPropertyString)GeneratorObjectProperty.GeneratorObjectPropertyMap[goTo.GoToObjectProperty];
+                GoToObjectProperty = (IGeneratorObjectPropertyReadonlyString)GeneratorObjectProperty.GeneratorObjectPropertyMap[goTo.GoToObjectProperty];
             }
             else
             {
@@ -47,7 +47,7 @@
         public IGeneratorPage GoToPage { get; private set; }
         public bool IsExternal { get; private set; }
         public IGeneratorObject GoToObject { get; private set; }
-        public IGeneratorObjectPropertyString GoToObjectProperty { get; private set; }
+        public IGeneratorObjectPropertyReadonlyString GoToObjectProperty { get; private set; }
         public IGeneratorObject AfterObject { get; private set; }
         public IGeneratorObjectEvent AfterObjectEvent { get; private set; }
         public IGeneratorComponent Source { get; private set; }

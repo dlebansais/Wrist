@@ -31,7 +31,7 @@
             IObject Object = ItemObject;
             IObjectPropertyItem ObjectProperty = ItemObjectProperty;
             IObject NestedObject = ItemNestedObject;
-            IsConnected = ItemProperty.ConnectToObjectItemOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty, ref NestedObject);
+            IsConnected = ItemProperty.ConnectToObjectItem(domain, currentArea, currentObject, ref Object, ref ObjectProperty, ref NestedObject);
             ItemObject = Object;
             ItemObjectProperty = ObjectProperty;
             ItemNestedObject = NestedObject;

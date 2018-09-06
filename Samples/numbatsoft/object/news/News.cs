@@ -24,11 +24,6 @@ namespace AppCSHtml5
             InitSimulation();
         }
 
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ILogin GetLogin { get { return App.GetLogin; } }
-        public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
-        public INews GetNews { get { return App.GetNews; } }
-
         public INewsEntry LastNews
         {
             get

@@ -34,11 +34,6 @@ namespace AppCSHtml5
             LinksTable.Add(LanguageStates.French, new ObservableCollection<INewsEntryLink>(LinkList));
         }
 
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ILogin GetLogin { get { return App.GetLogin; } }
-        public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
-        public INews GetNews { get { return App.GetNews; } }
-
         public string Created { get { return CreatedTable[LanguageState]; } }
         public Dictionary<LanguageStates, string> CreatedTable { get; } = new Dictionary<LanguageStates, string>();
         public string Title { get { return TitleTable[LanguageState]; } }

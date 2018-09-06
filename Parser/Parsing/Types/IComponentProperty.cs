@@ -11,12 +11,13 @@
         bool ConnectToResourceOnly(IDomain domain, ref IResource resource);
         bool ConnectToObjectOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectProperty objectProperty, ref IDeclarationSource objectPropertyKey);
         bool ConnectToStringList(IDomain domain, IArea currentArea, IObject currentObject, ref IResource resource, ref IObject obj, ref IObjectPropertyStringList objectProperty);
-        bool ConnectToObjectIntegerOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyInteger objectProperty);
-        bool ConnectToObjectBooleanOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyBoolean objectProperty);
-        bool ConnectToObjectStringOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyString objectProperty);
-        bool ConnectToObjectStringListOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyStringList objectProperty);
-        bool ConnectToObjectItemOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItem objectProperty, ref IObject nestedObject);
-        bool ConnectToObjectItemListOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItemList objectProperty, ref IObject nestedObject);
-        bool ConnectToObjectIndexOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyIndex objectProperty);
+        bool ConnectToObjectInteger(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyInteger objectProperty);
+        bool ConnectToObjectBoolean(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyBoolean objectProperty);
+        bool ConnectToObjectString(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyString objectProperty);
+        bool ConnectToObjectReadonlyString(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyReadonlyString objectProperty);
+        bool ConnectToObjectStringList(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyStringList objectProperty);
+        bool ConnectToObjectItem(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItem objectProperty, ref IObject nestedObject);
+        bool ConnectToObjectItemList(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItemList objectProperty, ref IObject nestedObject);
+        bool ConnectToObjectIndex(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyIndex objectProperty);
     }
 }

@@ -254,3 +254,20 @@ views	Views	Vues
 xaml-tutorial	Xaml Tutorial	Tutoriel xaml
 preliminary-draft	(this is a very preliminary draft)	(brouillon)
 click-release-note	Click a revision number to see the corresponding release notes.	Cliquez sur un numéro de révision pour voir les notes correspondantes.
+bug-list-description	You can click a revision number in the rightmost column to get the release notes of the revision where this bug was fixed.	Vous pouvez cliquer sur un numéro de révision dans la colonne de droite pour obtenir les notes de la révision où ce problème a été fixé.
+issue	Issue #	Problème
+found-in	Found in	Trouvé
+severity	Severity	Sévérité
+fixed-in	Fixed in	Corrigé
+details	Details	Détails
+readme	Readme	Lisezmoi
+english-screenshots		Note: ces captures d'écran ont été effectuée en anglais. L'interface utilisateur est disponible intégralement en français sur simple choix lors de l'installation.
+settings-page	A page of the Settings window:	Une page de la fenêtre des paramètres :
+viewer-page	The viewer window, modifying zone settings:	La fenêtre des vues, lors de la modification des paramètres d'une zone :
+viewer-detail-page	The viewer window, examining the details of a fight:	La fenêtre des vues, lors de l'examen des détails d'un combat :
+registered-organizations-title	List of registered organizations	Liste des organisations enregistrées
+registered-organizations-text-1	The list below enumerates all organizations that are registered.  If you believe you are a member of one of them, and cannot connect automatically to the parser server, please contact the administrator of that organization.  They have tools to sort out connection issues.	La liste ci-dessous énumère toutes les organisations qui ont été enregistrées. Si vous pensez être membre de l'une d'entre elle, et que vous ne parvenez pas à vous connecter automatiquement au serveur, veuillez contacter l'administrateur de cette organisation. Il ou elle dispose des outils nécessaires pour régler les problèmes de connexion.
+registered-organizations-text-2	Alternatively, in the Settings window, Network page, you can choose manual connection and fill the required fields with the connection information listed below.	Si cela ne suffit pas, dans la page Réseau de la fenêtre de paramétrage, vous pouvez choisir le mode Connexion manuelle et remplir les champs avec les informations de connexion qui sont visibles ci-dessous.
+login-url	Login URL:	URL de connexion :
+meeting-url	Meeting URL:	URL de réunion :
+validation-url	Validation URL:	URL de validation :

@@ -74,7 +74,7 @@ namespace Parser
             {
                 IObject Object = ClosePopupObject;
                 IObjectPropertyBoolean ObjectProperty = ClosePopupObjectProperty;
-                IsConnected |= ClosePopupProperty.ConnectToObjectBooleanOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
+                IsConnected |= ClosePopupProperty.ConnectToObjectBoolean(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
                 ClosePopupObject = Object;
                 ClosePopupObjectProperty = ObjectProperty;
 

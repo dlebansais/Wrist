@@ -18,7 +18,7 @@ namespace Parser
         {
             IObject Object = TextObject;
             IObjectPropertyString ObjectProperty = TextObjectProperty;
-            bool IsConnected = TextProperty.ConnectToObjectStringOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
+            bool IsConnected = TextProperty.ConnectToObjectString(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             TextObject = Object;
             TextObjectProperty = ObjectProperty;
 

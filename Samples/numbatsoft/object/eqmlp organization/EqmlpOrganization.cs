@@ -4,23 +4,20 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class NewsEntryLink : ObjectBase, INewsEntryLink
+    public class EqmlpOrganization : ObjectBase, IEqmlpOrganization
     {
-        public NewsEntryLink(int index, string text, string link)
+        public EqmlpOrganization(string name, string login, string meeting, string validation)
         {
-            Index = index;
-            Text = $"[{Index}] " + text;
-            Link = link;
+            Name = name;
+            LoginLink = login;
+            MeetingLink = meeting;
+            ValidationLink = validation;
         }
 
-        public int Index { get; }
-        public string Text { get; }
-        public string Link { get; }
-
-        public void On_Click(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
-        {
-            destinationPageName = PageNames.accountPage;
-        }
+        public string Name { get; private set; }
+        public string LoginLink { get; private set; }
+        public string MeetingLink { get; private set; }
+        public string ValidationLink { get; private set; }
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>

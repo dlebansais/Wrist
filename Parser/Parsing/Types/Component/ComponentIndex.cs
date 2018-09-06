@@ -27,7 +27,7 @@ namespace Parser
         {
             IObject Object = IndexObject;
             IObjectPropertyIndex ObjectProperty = IndexObjectProperty;
-            IsConnected |= IndexProperty.ConnectToObjectIndexOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
+            IsConnected |= IndexProperty.ConnectToObjectIndex(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             IndexObject = Object;
             IndexObjectProperty = ObjectProperty;
 

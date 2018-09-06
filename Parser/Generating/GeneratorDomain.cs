@@ -520,6 +520,9 @@ namespace Parser
                 if (Object.IsGlobal)
                     cSharpWriter.WriteLine($"        I{Object.CSharpName} Get{Object.CSharpName} {{ get; }}");
 
+            if (Translation != null)
+                cSharpWriter.WriteLine("        Translation GetTranslation { get; }");
+
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");
         }
@@ -547,6 +550,9 @@ namespace Parser
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)
                     cSharpWriter.WriteLine($"        public virtual I{Object.CSharpName} Get{Object.CSharpName} {{ get {{ return App.Get{Object.CSharpName}; }} }}");
+
+            if (Translation != null)
+                cSharpWriter.WriteLine("        public virtual Translation GetTranslation { get { return App.GetTranslation; } }");
 
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");

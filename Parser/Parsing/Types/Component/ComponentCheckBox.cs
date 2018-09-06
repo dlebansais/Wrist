@@ -49,7 +49,7 @@ namespace Parser
         {
             IObject Object = CheckedObject;
             IObjectPropertyBoolean ObjectProperty = CheckedObjectProperty;
-            IsConnected |= CheckedProperty.ConnectToObjectBooleanOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
+            IsConnected |= CheckedProperty.ConnectToObjectBoolean(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             CheckedObject = Object;
             CheckedObjectProperty = ObjectProperty;
 

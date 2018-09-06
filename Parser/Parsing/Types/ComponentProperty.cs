@@ -217,7 +217,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public bool ConnectToObjectIntegerOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyInteger objectProperty)
+        public bool ConnectToObjectInteger(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyInteger objectProperty)
         {
             bool IsConnected = false;
 
@@ -244,7 +244,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public bool ConnectToObjectBooleanOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyBoolean objectProperty)
+        public bool ConnectToObjectBoolean(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyBoolean objectProperty)
         {
             bool IsConnected = false;
 
@@ -271,7 +271,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public bool ConnectToObjectStringOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyString objectProperty)
+        public bool ConnectToObjectString(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyString objectProperty)
         {
             bool IsConnected = false;
 
@@ -298,7 +298,34 @@ namespace Parser
             return IsConnected;
         }
 
-        public bool ConnectToObjectStringListOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyStringList objectProperty)
+        public bool ConnectToObjectReadonlyString(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyReadonlyString objectProperty)
+        {
+            bool IsConnected = false;
+
+            if ((ObjectSource != null || ObjectPropertySource != null) && (obj == null || objectProperty == null))
+            {
+                ConnectToObject(domain, currentArea, ObjectSource, ObjectPropertySource, ObjectPropertyKey, ref obj);
+
+                foreach (IObjectProperty Property in obj.Properties)
+                    if (Property.NameSource.Name == ObjectPropertySource.Name)
+                        if (Property is IObjectPropertyReadonlyString AsObjectPropertyString)
+                        {
+                            objectProperty = AsObjectPropertyString;
+                            break;
+                        }
+                        else
+                            throw new ParsingException(0, ObjectPropertySource.Source, $"'{obj.Name}.{ObjectPropertySource.Name}' must be a readonly string property.");
+
+                if (objectProperty == null)
+                    throw new ParsingException(141, ObjectPropertySource.Source, $"Unknown property '{ObjectPropertySource.Name}' in object '{obj.Name}'.");
+
+                IsConnected = true;
+            }
+
+            return IsConnected;
+        }
+
+        public bool ConnectToObjectStringList(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyStringList objectProperty)
         {
             bool IsConnected = false;
 
@@ -325,7 +352,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public bool ConnectToObjectItemOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItem objectProperty, ref IObject ItemObject)
+        public bool ConnectToObjectItem(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItem objectProperty, ref IObject ItemObject)
         {
             bool IsConnected = false;
 
@@ -362,7 +389,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public bool ConnectToObjectItemListOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItemList objectProperty, ref IObject ItemObject)
+        public bool ConnectToObjectItemList(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyItemList objectProperty, ref IObject ItemObject)
         {
             bool IsConnected = false;
 
@@ -399,7 +426,7 @@ namespace Parser
             return IsConnected;
         }
 
-        public bool ConnectToObjectIndexOnly(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyIndex objectProperty)
+        public bool ConnectToObjectIndex(IDomain domain, IArea currentArea, IObject currentObject, ref IObject obj, ref IObjectPropertyIndex objectProperty)
         {
             bool IsConnected = false;
 

@@ -169,7 +169,7 @@ namespace Parser
                 throw new ParsingException(32, sourceStream, "Button goto page name not specified.");
 
             if (NavigateProperty.FixedValueSource == null && (NavigateProperty.ObjectSource == null || NavigateProperty.ObjectPropertySource == null || NavigateProperty.ObjectPropertyKey != null))
-                throw new ParsingException(33, sourceStream, "Go to page name can only be a static name or a string property.");
+                throw new ParsingException(33, sourceStream, "Go to page name can only be a static name or a readonly string property.");
 
             bool IsExternal;
             if (ExternalProperty != null)
@@ -365,6 +365,8 @@ namespace Parser
 
             if (SourceProperty == null)
                 throw new ParsingException(52, sourceStream, "Source not specified.");
+            if (SourceProperty.FixedValueSource == null)
+                throw new ParsingException(0, sourceStream, "Source can only be a static resource name.");
 
             bool IsResourceWidth;
             double WidthValue;

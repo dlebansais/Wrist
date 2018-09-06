@@ -28,7 +28,7 @@ namespace Parser
         public IPage GoToPage { get; private set; }
         public bool IsExternal { get; private set; }
         public IObject GoToObject { get; private set; }
-        public IObjectPropertyString GoToObjectProperty { get; private set; }
+        public IObjectPropertyReadonlyString GoToObjectProperty { get; private set; }
         public IObject AfterObject { get; private set; }
         public IObjectEvent AfterObjectEvent { get; private set; }
         public IList<IPage> AlternatePages { get; } = new List<IPage>();
@@ -123,8 +123,8 @@ namespace Parser
         private void ConnectPage(IDomain domain, IArea currentArea, IObject currentObject, IComponentProperty navigateProperty)
         {
             IObject Object = GoToObject;
-            IObjectPropertyString ObjectProperty = GoToObjectProperty;
-            navigateProperty.ConnectToObjectStringOnly(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
+            IObjectPropertyReadonlyString ObjectProperty = GoToObjectProperty;
+            navigateProperty.ConnectToObjectReadonlyString(domain, currentArea, currentObject, ref Object, ref ObjectProperty);
             GoToObject = Object;
             GoToObjectProperty = ObjectProperty;
 

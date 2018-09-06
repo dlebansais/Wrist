@@ -7,7 +7,7 @@
         IGeneratorPage GoToPage { get; }
         bool IsExternal { get; }
         IGeneratorObject GoToObject { get; }
-        IGeneratorObjectPropertyString GoToObjectProperty { get; }
+        IGeneratorObjectPropertyReadonlyString GoToObjectProperty { get; }
         IGeneratorObject AfterObject { get; }
         IGeneratorObjectEvent AfterObjectEvent { get; }
         bool IsEqual(IGeneratorPageNavigation other, IGeneratorPage currentPage);
