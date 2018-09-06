@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class NewsEntry : INewsEntry
+    public class NewsEntry : ObjectBase, INewsEntry
     {
         public NewsEntry(string created, string enu_title, string enu_text, string fra_title, string fra_text)
         {

@@ -11,7 +11,7 @@ using Windows.UI.Xaml;
 
 namespace AppCSHtml5
 {
-    public class Login : ILogin, INotifyPropertyChanged
+    public class Login : ObjectBase, ILogin
     {
         private enum ErrorCodes
         {

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class EqmlpReleaseNote : IEqmlpReleaseNote
+    public class EqmlpReleaseNote : ObjectBase, IEqmlpReleaseNote
     {
         public EqmlpReleaseNote(string created, string revision, string binary_path, string readme_path)
         {
@@ -16,11 +16,6 @@ namespace AppCSHtml5
             BinaryPath = binary_path;
             ReadmePath = readme_path;
         }
-
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ILogin GetLogin { get { return App.GetLogin; } }
-        public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
-        public INews GetNews { get { return App.GetNews; } }
 
         public string Created { get; private set; }
         public string Revision { get; private set; }

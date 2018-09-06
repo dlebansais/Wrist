@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class NewsEntryLink : INewsEntryLink
+    public class NewsEntryLink : ObjectBase, INewsEntryLink
     {
         public NewsEntryLink(int index, string text, string link)
         {

@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class Language : ILanguage
+    public class Language : ObjectBase, ILanguage
     {
         private enum ErrorCodes
         {
@@ -23,11 +23,6 @@ namespace AppCSHtml5
         {
             LanguageState = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
         }
-
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ILogin GetLogin { get { return App.GetLogin; } }
-        public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
-        public INews GetNews { get { return App.GetNews; } }
 
         public LanguageStates LanguageState { get; set; } = LanguageStates.English;
 

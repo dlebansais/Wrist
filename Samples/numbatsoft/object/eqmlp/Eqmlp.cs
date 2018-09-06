@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class Eqmlp : IEqmlp
+    public class Eqmlp : ObjectBase, IEqmlp
     {
         private enum ErrorCodes
         {
@@ -22,11 +22,6 @@ namespace AppCSHtml5
         {
             InitSimulation();
         }
-
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ILogin GetLogin { get { return App.GetLogin; } }
-        public IEqmlp GetEqmlp { get { return App.GetEqmlp; } }
-        public INews GetNews { get { return App.GetNews; } }
 
         public ObservableCollection<IEqmlpReleaseNote> AllReleases
         {

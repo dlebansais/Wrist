@@ -144,6 +144,7 @@ namespace Parser
             GenerateAppCSharp(outputFolderName, AppNamespace);
             GenerateAppProject(outputFolderName, AppNamespace);
             CopyAssemblyInfo(outputFolderName);
+            GenerateObjectBaseInterface(outputFolderName, AppNamespace);
             GenerateObjectBase(outputFolderName, AppNamespace);
             GeneratePageNames(outputFolderName, AppNamespace);
         }
@@ -469,6 +470,7 @@ namespace Parser
             }
 
             projectWriter.WriteLine($"    <Compile Include=\"Objects\\IObjectBase.cs\"/>");
+            projectWriter.WriteLine($"    <Compile Include=\"Objects\\ObjectBase.cs\"/>");
             projectWriter.WriteLine($"    <Compile Include=\"Pages\\PageNames.cs\"/>");
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");
@@ -494,9 +496,37 @@ namespace Parser
             projectWriter.WriteLine("</Project>");
         }
 
-        private void GenerateObjectBase(string outputFolderName, string appNamespace)
+        private void GenerateObjectBaseInterface(string outputFolderName, string appNamespace)
         {
             string CSharpFileName = Path.Combine(outputFolderName, "Objects/IObjectBase.cs");
+
+            using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (StreamWriter CSharpWriter = new StreamWriter(CSharpFile, Encoding.UTF8))
+                {
+                    GenerateObjectBaseInterface(outputFolderName, appNamespace, CSharpWriter);
+                }
+            }
+        }
+
+        private void GenerateObjectBaseInterface(string outputFolderName, string appNamespace, StreamWriter cSharpWriter)
+        {
+            cSharpWriter.WriteLine($"namespace {appNamespace}");
+            cSharpWriter.WriteLine("{");
+            cSharpWriter.WriteLine("    public interface IObjectBase");
+            cSharpWriter.WriteLine("    {");
+
+            foreach (IGeneratorObject Object in Objects)
+                if (Object.IsGlobal)
+                    cSharpWriter.WriteLine($"        I{Object.CSharpName} Get{Object.CSharpName} {{ get; }}");
+
+            cSharpWriter.WriteLine("    }");
+            cSharpWriter.WriteLine("}");
+        }
+
+        private void GenerateObjectBase(string outputFolderName, string appNamespace)
+        {
+            string CSharpFileName = Path.Combine(outputFolderName, "Objects/ObjectBase.cs");
 
             using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
@@ -511,12 +541,12 @@ namespace Parser
         {
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");
-            cSharpWriter.WriteLine("    public interface IObjectBase");
+            cSharpWriter.WriteLine("    public abstract class ObjectBase");
             cSharpWriter.WriteLine("    {");
 
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)
-                    cSharpWriter.WriteLine($"        I{Object.CSharpName} Get{Object.CSharpName} {{ get; }}");
+                    cSharpWriter.WriteLine($"        public virtual I{Object.CSharpName} Get{Object.CSharpName} {{ get {{ return App.Get{Object.CSharpName}; }} }}");
 
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");
