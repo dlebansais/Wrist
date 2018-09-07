@@ -63,7 +63,6 @@ page-eqmlp-doc-skins	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-doc-tables-structure	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-doc-uninstallation	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-doc-views	Everquest Multilog Parser	Everquest Multilog Parser
-page-eqmlp-doc-xaml-tutorial	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-registered	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-screenshots	Everquest Multilog Parser	Everquest Multilog Parser
 page-register-product-eqmlp	Everquest Multilog Parser	Everquest Multilog Parser
@@ -84,6 +83,8 @@ support	Support	Assistance
 contact	Contact	Contact
 choose	Read in:	Lire en :
 other-language	French	Anglais
+not-translated	Site translation in progress.	Site en cours de traduction.
+thank-you	Thank you for your patience.	Merci pour votre patience.
 home-title	Welcome to Numbatsoft.	Bienvenue sur Numbatsoft.
 home-text-2	Every product found at Numbatsoft can be downloaded and tested for free.\u00A0 The free version is full-featured and does not require registration to be used.\u00A0 It will not show popup windows or any other annoying reminder about this site.\u00A0 However, registering gives you additional benefits like flexibility and support, and entitles you to obtain the latest patches and bug fixes.	Chaque produit disponible sur Numbatsoft peut être téléchargé et testé gratuitement.La version gratuite inclut toutes les fonctionnalités et ne requiert pas d'être enregistré pour pouvoir être utilisée. Elle n'affiche pas de fenêtre intempestive et autres rappels gênants à propos de ce site.Cependant, s'enregistrer vous apporte des avantages supplémentaires tels qu'une certaine flexibilité et une assistance technique, et vous permet d'obtenir les derniers correctifs.
 home-text-3	Please check the release notes of each patch to see if your problem can be corrected, or if the feature you're looking for has been added.	Veuillez consulter les notes d'utilisation à chaque nouvelle version pour vérifier si votre problème est corrigé, ou si la fonctionnalité que vous désirez a été ajoutée.

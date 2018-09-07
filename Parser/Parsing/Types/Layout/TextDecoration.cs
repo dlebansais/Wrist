@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Markup;
 
 namespace Parser
 {
+    [ContentProperty("Text")]
     public class TextDecoration : LayoutElement, ITextDecoration
     {
         public string Text { get; set; }
@@ -59,12 +61,12 @@ namespace Parser
 
         public static string ReplaceUri(string text, string uriDeclaration, Dictionary<string, object> matchTable, List<object> matchedList, List<string> unmatchedList, Func<object, string> handler)
         {
-            string Pattern = $"{uriDeclaration}=\"";
+            string Pattern = $"{uriDeclaration}=&quot;";
             int StartIndex = 0;
 
             while ((StartIndex = text.IndexOf(Pattern, StartIndex)) >= 0)
             {
-                int EndIndex = text.IndexOf("\"", StartIndex + Pattern.Length);
+                int EndIndex = text.IndexOf("&quot;", StartIndex + Pattern.Length);
                 if (EndIndex > StartIndex + Pattern.Length)
                 {
                     string PageName = text.Substring(StartIndex + Pattern.Length, EndIndex - StartIndex - Pattern.Length);
@@ -84,7 +86,7 @@ namespace Parser
                         }
 
                     if (Replacement.Length > 0)
-                        text = text.Substring(0, StartIndex) + Replacement + text.Substring(EndIndex + 1);
+                        text = text.Substring(0, StartIndex) + Replacement + text.Substring(EndIndex + 6);
                     else
                     {
                         if (unmatchedList != null && !unmatchedList.Contains(PageName))

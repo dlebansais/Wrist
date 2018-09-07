@@ -84,6 +84,7 @@ namespace Parser
             foreach (IGeneratorPage Page in pageList)
                 PageTable.Add(Page.Name, Page);
 
+            text = text.Replace("\"", "&quot;");
             text = TextDecoration.ReplaceUri(text, "NavigateUri", PageTable, LinkedPageList, null, (object value) => $" Click=\"{ToEventHandlerName((IGeneratorPage)value)}\"");
 
             return text;

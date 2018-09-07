@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace AppCSHtml5
 {
@@ -25,6 +27,44 @@ namespace AppCSHtml5
         }
 
         public LanguageStates LanguageState { get; set; } = LanguageStates.English;
+
+        public bool IsTranslated
+        {
+            get
+            {
+                if (Window.Current.Content is Page CurrentPage)
+                {
+                    string Name = CurrentPage.GetType().Name;
+                    if (UntranslatedPageNames[LanguageState].Contains(Name))
+                        return false;
+                }
+
+                return true;
+            }
+        }
+
+        private Dictionary<LanguageStates, List<string>> UntranslatedPageNames = new Dictionary<LanguageStates, List<string>>()
+        {
+            {
+                LanguageStates.English, new List<string>()
+                {
+                }
+            },
+            {
+                LanguageStates.French, new List<string>()
+                {
+                    nameof(eqmlp_doc_installationPage),
+                    nameof(eqmlp_doc_privacyPage),
+                    nameof(eqmlp_doc_registration_urlPage),
+                    nameof(eqmlp_doc_server_administrationPage),
+                    nameof(eqmlp_doc_skinsPage),
+                    nameof(eqmlp_doc_tables_structurePage),
+                    nameof(eqmlp_doc_uninstallationPage),
+                    nameof(eqmlp_doc_updatePage),
+                    nameof(eqmlp_doc_viewsPage),
+                }
+            },
+        };
 
         public void On_Switch(PageNames pageName, string sourceName, string sourceContent)
         {
