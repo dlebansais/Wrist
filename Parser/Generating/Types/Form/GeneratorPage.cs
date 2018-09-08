@@ -8,6 +8,7 @@ namespace Parser
     public class GeneratorPage : IGeneratorPage
     {
         public static GeneratorPage CurrentPage = new GeneratorPage(Page.CurrentPage.Name);
+        public static GeneratorPage PreviousPage = new GeneratorPage(Page.PreviousPage.Name);
         public static GeneratorPage AnyPage = new GeneratorPage(Page.AnyPage.Name);
 
         private GeneratorPage(string name)
@@ -213,7 +214,7 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");
-            cSharpWriter.WriteLine($"    public partial class {XamlName} : Page, IObjectBase");
+            cSharpWriter.WriteLine($"    public partial class {XamlName} : Page, IPageBase");
             cSharpWriter.WriteLine("    {");
             cSharpWriter.WriteLine($"        public {XamlName}()");
             cSharpWriter.WriteLine("        {");
@@ -227,6 +228,9 @@ namespace Parser
             }
 
             cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine($"        public PageNames ThisPage {{ get {{ return PageNames.{XamlName}; }} }}");
+            cSharpWriter.WriteLine("        public App GetApp { get { return (App)App.Current; } }");
 
             string ObjectLine = null;
             foreach (IGeneratorObject Object in domain.Objects)
@@ -278,9 +282,15 @@ namespace Parser
                             cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
                         else
                             cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
-                        cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.{GoTo.GoToPage.XamlName});");
+
+                        if (GoTo.GoToPage == GeneratorPage.PreviousPage)
+                            cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.PreviousPage);");
+                        else
+                            cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.{GoTo.GoToPage.XamlName});");
                     }
                 }
+                else if (GoTo.GoToPage == GeneratorPage.PreviousPage)
+                    cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.PreviousPage);");
                 else if (GoTo.GoToPage != null)
                     cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.{GoTo.GoToPage.XamlName});");
                 else

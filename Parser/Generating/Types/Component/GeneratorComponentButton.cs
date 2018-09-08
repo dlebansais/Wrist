@@ -76,10 +76,20 @@ namespace Parser
         {
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"";
-            string Value = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
             string ClickEventHandler = $" Click=\"{ClickEventName(currentPage)}\"";
+            string Value = GetComponentValue(currentPage, currentObject, ContentResource, ContentObject, ContentObjectProperty, ContentKey, false);
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Button x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{ClickEventHandler} Content=\"{Value}\"/>");
+            if (ContentResource != null)
+            {
+                string ImageValue = $"<Image Source=\"{Value}\"/>";
+                colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Button x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{ClickEventHandler}>");
+                colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}    {ImageValue}");
+                colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}</Button>");
+            }
+            else
+            {
+                colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<Button x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding}{Properties}{elementProperties}{ClickEventHandler} Content=\"{Value}\"/>");
+            }
         }
 
         public string GetStyleResourceKey(IGeneratorDesign design, string styleName)

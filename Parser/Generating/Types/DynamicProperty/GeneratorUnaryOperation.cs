@@ -40,7 +40,10 @@ namespace Parser
                     break;
 
                 case DynamicOperationTypes.IS_EMPTY:
-                    ComposedValue = $"string.IsNullOrEmpty({NestedComposedValue})";
+                    if ((Operand is IGeneratorPropertyValueOperation AsValue) && AsValue.ValueObjectProperty is IGeneratorObjectPropertyItemList)
+                        ComposedValue = $"{NestedComposedValue}.Count == 0";
+                    else
+                        ComposedValue = $"string.IsNullOrEmpty({NestedComposedValue})";
                     break;
 
                 default:

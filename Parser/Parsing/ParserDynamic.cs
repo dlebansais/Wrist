@@ -101,6 +101,8 @@ namespace Parser
                     OperationStack.Push(new BinaryOperation(DynamicOperationTypes.AND));
                 else if (Text == "EQUALS")
                     OperationStack.Push(new BinaryOperation(DynamicOperationTypes.EQUALS));
+                else if (Text == "GREATER THAN")
+                    OperationStack.Push(new BinaryOperation(DynamicOperationTypes.GREATER_THAN));
                 else if (Text == "IS EMPTY")
                     OperationStack.Push(new UnaryOperation(DynamicOperationTypes.IS_EMPTY));
                 else
@@ -237,7 +239,7 @@ namespace Parser
 
         private static bool IsOperationBinary(DynamicOperationTypes type)
         {
-            return type == DynamicOperationTypes.OR || type == DynamicOperationTypes.AND || type == DynamicOperationTypes.EQUALS;
+            return type == DynamicOperationTypes.OR || type == DynamicOperationTypes.AND || type == DynamicOperationTypes.EQUALS || type == DynamicOperationTypes.GREATER_THAN;
         }
     }
 }

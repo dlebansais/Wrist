@@ -25,6 +25,8 @@
             {
                 if (goTo.GoToPage == Page.CurrentPage)
                     GoToPage = GeneratorPage.CurrentPage;
+                else if (goTo.GoToPage == Page.PreviousPage)
+                    GoToPage = GeneratorPage.PreviousPage;
                 else if (goTo.GoToPage == Page.AnyPage)
                     GoToPage = GeneratorPage.AnyPage;
                 else
@@ -61,8 +63,12 @@
                 if (BeforeObject != null && BeforeObjectEvent != null)
                     Result += $"{BeforeObject.CSharpName}_{BeforeObjectEvent.CSharpName}__";
 
-                if (GoToPage != null && GoToPage != GeneratorPage.AnyPage)
+                if (GoToPage != null && GoToPage != GeneratorPage.PreviousPage && GoToPage != GeneratorPage.AnyPage)
                     Result += GoToPage.XamlName;
+
+                else if (GoToPage == GeneratorPage.PreviousPage)
+                    Result += "Previous";
+
                 else
                     Result += "Any";
 

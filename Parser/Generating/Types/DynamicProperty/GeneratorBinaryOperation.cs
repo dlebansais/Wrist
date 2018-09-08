@@ -53,6 +53,10 @@ namespace Parser
                     ComposedValue = $"({NestedComposedValue1}) == ({NestedComposedValue2})";
                     break;
 
+                case DynamicOperationTypes.GREATER_THAN:
+                    ComposedValue = $"({NestedComposedValue1}) > ({NestedComposedValue2})";
+                    break;
+
                 default:
                     throw new InvalidOperationException();
             }

@@ -4,10 +4,15 @@ namespace Parser
 {
     public class GeneratorObjectPropertyItemList : GeneratorObjectProperty, IGeneratorObjectPropertyItemList
     {
+        public static GeneratorObjectPropertyItemList NavigationHistoryProperty = new GeneratorObjectPropertyItemList(ObjectPropertyItemList.NavigationHistoryProperty, null);
+
         public GeneratorObjectPropertyItemList(IObjectPropertyItemList property, IGeneratorObject obj)
             : base(property, obj)
         {
             BaseProperty = property;
+
+            if (property == ObjectPropertyItemList.NavigationHistoryProperty)
+                GeneratorObjectPropertyMap.Add(property, this);
         }
 
         private IObjectPropertyItemList BaseProperty;

@@ -5,6 +5,7 @@ namespace Parser
     public class Page : IPage
     {
         public static Page CurrentPage = new Page("<current page>");
+        public static Page PreviousPage = new Page("<previous page>");
         public static Page AnyPage = new Page("<custom page>");
 
         private Page(string name)

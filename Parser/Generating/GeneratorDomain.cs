@@ -147,6 +147,7 @@ namespace Parser
             GenerateObjectBaseInterface(outputFolderName, AppNamespace);
             GenerateObjectBase(outputFolderName, AppNamespace);
             GeneratePageNames(outputFolderName, AppNamespace);
+            GeneratePageBaseInterface(outputFolderName, AppNamespace);
         }
 
         private void GenerateAppXaml(string outputFolderName, string appNamespace, IGeneratorColorTheme colorTheme)
@@ -226,14 +227,15 @@ namespace Parser
         {
             cSharpWriter.WriteLine("using Presentation;");
             cSharpWriter.WriteLine("using System.Collections.Generic;");
-            cSharpWriter.WriteLine("using Windows.UI.Xaml;");
+            cSharpWriter.WriteLine("using System.ComponentModel;");
             cSharpWriter.WriteLine("using System.Windows.Browser;");
+            cSharpWriter.WriteLine("using Windows.UI.Xaml;");
             cSharpWriter.WriteLine("using Windows.UI.Xaml.Controls;");
             cSharpWriter.WriteLine("using Windows.UI.Xaml.Media;");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");
-            cSharpWriter.WriteLine("    public sealed partial class App : Application");
+            cSharpWriter.WriteLine("    public sealed partial class App : Application, INotifyPropertyChanged");
             cSharpWriter.WriteLine("    {");
             cSharpWriter.WriteLine("        public App()");
             cSharpWriter.WriteLine("        {");
@@ -246,7 +248,7 @@ namespace Parser
                 if (Page.QueryObject != null && Page.QueryObjectEvent != null)
                     cSharpWriter.WriteLine($"            Get{Page.QueryObject.CSharpName}.On_{Page.QueryObjectEvent.CSharpName}(StartPage, null, null, out StartPage);");
 
-            cSharpWriter.WriteLine($"            GoTo(StartPage);");
+            cSharpWriter.WriteLine($"            GoToPage(StartPage, false);");
 
             if (SelectedUnitTest != null)
                 cSharpWriter.WriteLine($"            GetUnitTest.Start((Page)Window.Current.Content);");
@@ -268,7 +270,30 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void GoTo(PageNames pageName)");
             cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine("            GoToPage(pageName, false);");
+            cSharpWriter.WriteLine("            if (pageName == PageNames.CurrentPage)");
+            cSharpWriter.WriteLine("                return;");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("            else if (pageName == PageNames.PreviousPage)");
+            cSharpWriter.WriteLine("            {");
+            cSharpWriter.WriteLine("                if (NavigationIndex > 0)");
+            cSharpWriter.WriteLine("                {");
+            cSharpWriter.WriteLine("                    NavigationIndex--;");
+            cSharpWriter.WriteLine("                    GoToPage(NavigationHistory[NavigationIndex], false);");
+            cSharpWriter.WriteLine("                    NotifyPropertyChanged(nameof(NavigationHistory));");
+            cSharpWriter.WriteLine("                }");
+            cSharpWriter.WriteLine("            }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("            else");
+            cSharpWriter.WriteLine("            {");
+            cSharpWriter.WriteLine("                if (NavigationHistory.Count > NavigationIndex)");
+            cSharpWriter.WriteLine("                    NavigationHistory.RemoveRange(NavigationIndex, NavigationHistory.Count - NavigationIndex);");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("                NavigationHistory.Add((Window.Current.Content as IPageBase).ThisPage);");
+            cSharpWriter.WriteLine("                NavigationIndex++;");
+            cSharpWriter.WriteLine("                NotifyPropertyChanged(nameof(NavigationHistory));");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("                GoToPage(pageName, false);");
+            cSharpWriter.WriteLine("            }");
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void GoToExternal(PageNames pageName)");
@@ -278,9 +303,6 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void GoToPage(PageNames pageName, bool isExternal)");
             cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine("            if (pageName == PageNames.CurrentPage)");
-            cSharpWriter.WriteLine("                return;");
-            cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("            Page DestinationPage;");
             cSharpWriter.WriteLine("            switch (pageName)");
             cSharpWriter.WriteLine("            {");
@@ -329,11 +351,23 @@ namespace Parser
             cSharpWriter.WriteLine("        private Dictionary<Control, Brush> BrushTable = new Dictionary<Control, Brush>();");
             cSharpWriter.WriteLine("        private Dictionary<Control, Style> StyleTable = new Dictionary<Control, Style>();");
             cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        public List<PageNames> NavigationHistory { get; } = new List<PageNames>();");
+            cSharpWriter.WriteLine("        public int NavigationIndex { get; private set; } = 0;");
+            cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            if ((sender is Control AsControl) && (e.OldValue is bool IsOldEnabled) && (e.NewValue is bool IsNewEnabled) && (IsOldEnabled != IsNewEnabled))");
             cSharpWriter.WriteLine("                ControlTools.ChangeEnabledStyleOrColor(AsControl, IsNewEnabled, BrushTable, StyleTable, Resources);");
             cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        #region Implementation of INotifyPropertyChanged");
+            cSharpWriter.WriteLine("        public event PropertyChangedEventHandler PropertyChanged;");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        internal void NotifyPropertyChanged(string propertyName)");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine("        #endregion");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");
         }
@@ -472,6 +506,7 @@ namespace Parser
             projectWriter.WriteLine($"    <Compile Include=\"Objects\\IObjectBase.cs\"/>");
             projectWriter.WriteLine($"    <Compile Include=\"Objects\\ObjectBase.cs\"/>");
             projectWriter.WriteLine($"    <Compile Include=\"Pages\\PageNames.cs\"/>");
+            projectWriter.WriteLine($"    <Compile Include=\"Pages\\IPageBase.cs\"/>");
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");
 
@@ -515,6 +550,7 @@ namespace Parser
             cSharpWriter.WriteLine("{");
             cSharpWriter.WriteLine("    public interface IObjectBase");
             cSharpWriter.WriteLine("    {");
+            cSharpWriter.WriteLine("        App GetApp { get; }");
 
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)
@@ -546,6 +582,7 @@ namespace Parser
             cSharpWriter.WriteLine("{");
             cSharpWriter.WriteLine("    public abstract class ObjectBase");
             cSharpWriter.WriteLine("    {");
+            cSharpWriter.WriteLine("        public virtual App GetApp { get { return (App)App.Current; } }");
 
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)
@@ -578,10 +615,35 @@ namespace Parser
             cSharpWriter.WriteLine("    public enum PageNames");
             cSharpWriter.WriteLine("    {");
             cSharpWriter.WriteLine("        CurrentPage,");
+            cSharpWriter.WriteLine("        PreviousPage,");
 
             foreach (IGeneratorPage Page in Pages)
                 cSharpWriter.WriteLine($"        {Page.XamlName},");
 
+            cSharpWriter.WriteLine("    }");
+            cSharpWriter.WriteLine("}");
+        }
+
+        private void GeneratePageBaseInterface(string outputFolderName, string appNamespace)
+        {
+            string CSharpFileName = Path.Combine(outputFolderName, "Pages/IPageBase.cs");
+
+            using (FileStream CSharpFile = new FileStream(CSharpFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (StreamWriter CSharpWriter = new StreamWriter(CSharpFile, Encoding.UTF8))
+                {
+                    GeneratePageBaseInterface(outputFolderName, appNamespace, CSharpWriter);
+                }
+            }
+        }
+
+        private void GeneratePageBaseInterface(string outputFolderName, string appNamespace, StreamWriter cSharpWriter)
+        {
+            cSharpWriter.WriteLine($"namespace {appNamespace}");
+            cSharpWriter.WriteLine("{");
+            cSharpWriter.WriteLine("    public interface IPageBase : IObjectBase");
+            cSharpWriter.WriteLine("    {");
+            cSharpWriter.WriteLine("        PageNames ThisPage { get; }");
             cSharpWriter.WriteLine("    }");
             cSharpWriter.WriteLine("}");
         }

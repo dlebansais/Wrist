@@ -7,17 +7,31 @@ namespace Parser
 {
     public class GeneratorObject : IGeneratorObject
     {
-        public static Dictionary<IObject, IGeneratorObject> GeneratorObjectMap { get; } = new Dictionary<IObject, IGeneratorObject>();
-        public static GeneratorObject TranslationObject = new GeneratorObject(Object.TranslationObject.Name);
+        public static Dictionary<IObject, IGeneratorObject> GeneratorObjectMap { get; }
+        public static GeneratorObject TranslationObject;
+        public static GeneratorObject ApplicationObject;
 
-        private GeneratorObject(string name)
+        static GeneratorObject()
+        {
+            GeneratorObjectMap = new Dictionary<IObject, IGeneratorObject>();
+
+            List<IGeneratorObjectProperty> LocalProperties;
+
+            TranslationObject = new GeneratorObject(Object.TranslationObject.Name, Object.TranslationObject.CSharpName);
+            LocalProperties = new List<IGeneratorObjectProperty>() { GeneratorObjectPropertyStringDictionary.StringsProperty };
+            TranslationObject.Properties = LocalProperties.AsReadOnly();
+            GeneratorObjectMap.Add(Object.TranslationObject, TranslationObject);
+
+            ApplicationObject = new GeneratorObject(Object.ApplicationObject.Name, Object.ApplicationObject.CSharpName);
+            LocalProperties = new List<IGeneratorObjectProperty>() { GeneratorObjectPropertyItemList.NavigationHistoryProperty, GeneratorObjectPropertyInteger.NavigationIndexProperty };
+            ApplicationObject.Properties = LocalProperties.AsReadOnly();
+            GeneratorObjectMap.Add(Object.ApplicationObject, ApplicationObject);
+        }
+
+        private GeneratorObject(string name, string cSharpName)
         {
             Name = name;
-
-            List<IGeneratorObjectProperty> LocalProperties = new List<IGeneratorObjectProperty>() { GeneratorObjectPropertyStringDictionary.StringsProperty };
-            Properties = LocalProperties.AsReadOnly();
-
-            GeneratorObjectMap.Add(Object.TranslationObject, this);
+            CSharpName = cSharpName;
         }
 
         public GeneratorObject(IObject obj)

@@ -62,6 +62,9 @@ namespace Parser
             if (GoToPage == null && goToPageName == Page.CurrentPage.Name)
                 GoToPage = Page.CurrentPage;
 
+            else if (GoToPage == null && goToPageName == Page.PreviousPage.Name)
+                GoToPage = Page.PreviousPage;
+
             else if (GoToPage != null)
                 GoToPage.SetIsReachable();
 
@@ -101,6 +104,11 @@ namespace Parser
                         {
                             if (!AlternatePages.Contains(Page.CurrentPage))
                                 AlternatePages.Add(Page.CurrentPage);
+                        }
+                        else if (AlternateName == Page.PreviousPage.Name)
+                        {
+                            if (!AlternatePages.Contains(Page.PreviousPage))
+                                AlternatePages.Add(Page.PreviousPage);
                         }
                         else
                             throw new ParsingException(176, NavigationSource.Source, $"Unknown page name '{TrimmedAlternate}'.");

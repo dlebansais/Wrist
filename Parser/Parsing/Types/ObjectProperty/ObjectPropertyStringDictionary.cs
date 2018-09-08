@@ -2,10 +2,10 @@
 {
     public class ObjectPropertyStringDictionary : ObjectProperty, IObjectPropertyStringDictionary
     {
-        public static ObjectPropertyStringDictionary StringsProperty = new ObjectPropertyStringDictionary("strings");
+        public static ObjectPropertyStringDictionary StringsProperty = new ObjectPropertyStringDictionary("strings", "Strings");
 
-        private ObjectPropertyStringDictionary(string name)
-            : base(new DeclarationSource(name, null), null, true, false)
+        private ObjectPropertyStringDictionary(string name, string cSharpName)
+            : base(new DeclarationSource(name, null), cSharpName, true, false)
         {
         }
 

@@ -33,7 +33,7 @@ namespace Parser
                     throw new ParsingException(137, objectPropertySource.Source, $"The only valid property for object '{objectSource.Name}' is '{ObjectPropertyStringDictionary.StringsProperty.NameSource.Name}'.");
 
                 if (objectPropertyKey == null)
-                    throw new ParsingException(138, objectSource.Source, $"For object '{objectSource.Name}' property '{ObjectPropertyStringDictionary.StringsProperty.NameSource.Name}' a key is required.");
+                    throw new ParsingException(138, objectSource.Source, $"For object '{objectSource.Name}' property '{objectPropertySource.Name}' a key is required.");
 
                 if (objectPropertyKey.Name != Page.CurrentPage.Name)
                 {
@@ -49,6 +49,16 @@ namespace Parser
                     if (!AreaWithCurrentPage.ContainsKey(currentArea))
                         AreaWithCurrentPage.Add(currentArea, objectPropertyKey);
                 }
+            }
+
+            else if (objectSource.Name == Object.ApplicationObject.Name)
+            {
+                obj = Object.ApplicationObject;
+                if (objectPropertySource.Name != ObjectPropertyItemList.NavigationHistoryProperty.NameSource.Name && objectPropertySource.Name != ObjectPropertyInteger.NavigationIndexProperty.NameSource.Name)
+                    throw new ParsingException(137, objectPropertySource.Source, $"The only valid property for object '{objectSource.Name}' is '{ObjectPropertyItemList.NavigationHistoryProperty.NameSource.Name}' or '{ObjectPropertyInteger.NavigationIndexProperty.NameSource.Name}'.");
+
+                if (objectPropertyKey != null)
+                    throw new ParsingException(0, objectSource.Source, $"For object '{objectSource.Name}' property '{objectPropertySource.Name}' there must be no key.");
             }
             else
             {

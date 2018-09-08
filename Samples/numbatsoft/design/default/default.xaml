@@ -3,6 +3,7 @@
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/Button.xaml"/>
     <ResourceDictionary Source="/ButtonBasic.xaml"/>
+    <ResourceDictionary Source="/ButtonImage.xaml"/>
     <ResourceDictionary Source="/ButtonLogin.xaml"/>
     <ResourceDictionary Source="/ButtonSimpleLink.xaml"/>
     <ResourceDictionary Source="/ButtonTextLink.xaml"/>

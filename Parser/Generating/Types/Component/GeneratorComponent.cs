@@ -94,6 +94,10 @@ namespace Parser
         {
             if (objectValue == GeneratorObject.TranslationObject && objectPropertyValue == GeneratorObjectPropertyStringDictionary.StringsProperty)
                 return "GetTranslation.Strings";
+            else if (objectValue == GeneratorObject.ApplicationObject && objectPropertyValue == GeneratorObjectPropertyItemList.NavigationHistoryProperty)
+                return "App.NavigationHistory";
+            else if (objectValue == GeneratorObject.ApplicationObject && objectPropertyValue == GeneratorObjectPropertyInteger.NavigationIndexProperty)
+                return "App.NavigationIndex";
             else if (objectValue == currentObject)
                 return objectPropertyValue.CSharpName;
             else

@@ -4,14 +4,26 @@ namespace Parser
 {
     public class Object : IObject
     {
-        public static Object TranslationObject = new Object("translation");
+        public static Object TranslationObject;
+        public static Object ApplicationObject;
 
-        private Object(string name)
+        static Object()
+        {
+            List<IObjectProperty> LocalProperties;
+
+            TranslationObject = new Object("translation", "Translation");
+            LocalProperties = new List<IObjectProperty>() { ObjectPropertyStringDictionary.StringsProperty };
+            TranslationObject.Properties = LocalProperties.AsReadOnly();
+
+            ApplicationObject = new Object("application", "App");
+            LocalProperties = new List<IObjectProperty>() { ObjectPropertyItemList.NavigationHistoryProperty, ObjectPropertyInteger.NavigationIndexProperty };
+            ApplicationObject.Properties = LocalProperties.AsReadOnly();
+        }
+
+        private Object(string name, string cSharpName)
         {
             Name = name;
-
-            List<IObjectProperty> LocalProperties = new List<IObjectProperty>() { ObjectPropertyStringDictionary.StringsProperty };
-            Properties = LocalProperties.AsReadOnly();
+            CSharpName = cSharpName;
         }
 
         public Object(string name, string cSharpName, bool isGlobal, IObjectPropertyCollection properties, List<IObjectEvent> events)

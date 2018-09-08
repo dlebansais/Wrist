@@ -2,6 +2,13 @@
 {
     public class ObjectPropertyItemList : ObjectProperty, IObjectPropertyItemList
     {
+        public static ObjectPropertyItemList NavigationHistoryProperty = new ObjectPropertyItemList("navigation history", "NavigationHistory");
+
+        private ObjectPropertyItemList(string name, string cSharpName)
+            : base(new DeclarationSource(name, null), cSharpName, true, false)
+        {
+        }
+
         public ObjectPropertyItemList(IDeclarationSource nameSource, string cSharpName, IDeclarationSource objectSource)
             : base(nameSource, cSharpName, true, false)
         {

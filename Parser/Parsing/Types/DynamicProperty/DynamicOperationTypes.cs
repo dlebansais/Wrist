@@ -7,6 +7,7 @@
         OR,
         AND,
         IS_EMPTY,
-        EQUALS
+        EQUALS,
+        GREATER_THAN
     }
 }
