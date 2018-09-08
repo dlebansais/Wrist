@@ -23,14 +23,7 @@ namespace AppCSHtml5
             InitSimulation();
         }
 
-        public string TutorialLink
-        {
-            get
-            {
-                string BaseUrl = NetTools.UrlTools.GetBaseUrl();
-                return $"{BaseUrl}/products/eqmlp/documentation/xaml_tutorial%20(draft).txt";
-            }
-        }
+        public string TutorialLink { get { return $"https://www.enu.numbatsoft.com/products/eqmlp/documentation/xaml_tutorial%20(draft).txt"; } }
 
         #region Release Notes
         public ObservableCollection<IEqmlpReleaseNote> AllReleases

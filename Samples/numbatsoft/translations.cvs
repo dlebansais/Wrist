@@ -51,7 +51,7 @@ page-recovery-end-failed-3	Account Recovery	Récupération de compte
 page-recovery-end-failed-4	Account Recovery	Récupération de compte
 page-product-eqmlp	Everquest Multilog Parser	Everquest Multilog Parser
 page-product-pg	Project: Gorgon JSON Parser	Project: Gorgon JSON Parser
-page-product-uac	UAC pass-through	UAC pass-through
+page-product-uacpt	UAC pass-through	UAC pass-through
 page-eqmlp-release-notes	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-bug-list	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-doc-installation	Everquest Multilog Parser	Everquest Multilog Parser
@@ -66,6 +66,8 @@ page-eqmlp-doc-views	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-registered	Everquest Multilog Parser	Everquest Multilog Parser
 page-eqmlp-screenshots	Everquest Multilog Parser	Everquest Multilog Parser
 page-register-product-eqmlp	Everquest Multilog Parser	Everquest Multilog Parser
+page-uacpt-format	UAC pass-through	UAC pass-through
+page-uacpt-command-line	UAC pass-through	UAC pass-through
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -272,3 +274,9 @@ registered-organizations-text-2	Alternatively, in the Settings window, Network p
 login-url	Login URL:	URL de connexion :
 meeting-url	Meeting URL:	URL de réunion :
 validation-url	Validation URL:	URL de validation :
+product-uac-text	When User Account Control is enabled, Windows will ask for user confirmation every time a program attempts to run with elevated privileges.  This tool can launch programs with elevated privileges but without the pop-up dialog box.	Lorsque le contrôle du compte de l'utilisateur est activée, Windows demande une confirmation à chaque fois qu'un programme essaie de s'exécuter avec des privilèges élevés. Cet outil permet de lancer des programmes avec privilèges élevés mais sans la boîte de dialogue de confirmation.
+features-uac-1	UAC (User Account Control) is a Windows security feature that controls if programs have full access to the system, or only restricted access.	UAC (User Account Control) est la fonctions de sécurité qui contrôle si un programme peut obtenir l'accès complet au système, ou seulement un accès restreint.
+features-uac-2	This tool operates as a service (the Windows meaning of the word).  When installed for the first time, if UAC is enabled the system will ask for a confirmation pop-up.  If the user accepts, the service is installed on the computer and will launch programs with full access, even after a reboot.	Cet outil opère en tant que service (au sens de Windows). Lorsqu'il est installé pour la première fois, si l'UAC est activé le système affichera une boîte de dialogue de confirmation. Si l'utilisateur accepte, le service est installé sur l'ordinateur et il lancera des programmes avec les droits d'accès complets, même après un reboot.
+features-uac-3	Programs can be launched when the user logs in, logs off, or even when the service is started, stopped, installed, or uninstalled.	Les programmes peuvent être lancés lorsque l'utilisateur ouvre une session, ferme une session, ou même lorsque le service est démarré, arrêté, installé ou désinstallé.
+features-uac-4	For demonstration purpose, the service starts a command prompt at install time, and every time the user logs in.  This is controlled by resource strings that can be modified.	A titre de démonstration, le service démarre une invite de commande à l'installation, et chaque fois que l'utilisateur ouvre une session. ceci est contrôlé par des ressources chaînes de caractères qui peuvent être modifiées.
+license-uac-text	Anyone can use this program as long as they just use the command prompt to start more programs with unrestricted access.  If you would like to use it to start them directly, you must contact me.	N'importe qui peut utiliser ce programme tant que vous ne faite que lancer d'autres programmes avec accès complet à partir de l'invite de commande. Si vous voulez utiliser UAC pass-through pour lancer ces programmes directement, vous devez me contacter.
