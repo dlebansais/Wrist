@@ -68,6 +68,8 @@ page-eqmlp-screenshots	Everquest Multilog Parser	Everquest Multilog Parser
 page-register-product-eqmlp	Everquest Multilog Parser	Everquest Multilog Parser
 page-uacpt-format	UAC pass-through	UAC pass-through
 page-uacpt-command-line	UAC pass-through	UAC pass-through
+page-register-product-eqmlp-failed-1	Product Registration	Enregistrement d'un produit
+page-register-product-eqmlp-failed-2	Product Registration	Enregistrement d'un produit
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -280,3 +282,27 @@ features-uac-2	This tool operates as a service (the Windows meaning of the word)
 features-uac-3	Programs can be launched when the user logs in, logs off, or even when the service is started, stopped, installed, or uninstalled.	Les programmes peuvent être lancés lorsque l'utilisateur ouvre une session, ferme une session, ou même lorsque le service est démarré, arrêté, installé ou désinstallé.
 features-uac-4	For demonstration purpose, the service starts a command prompt at install time, and every time the user logs in.  This is controlled by resource strings that can be modified.	A titre de démonstration, le service démarre une invite de commande à l'installation, et chaque fois que l'utilisateur ouvre une session. ceci est contrôlé par des ressources chaînes de caractères qui peuvent être modifiées.
 license-uac-text	Anyone can use this program as long as they just use the command prompt to start more programs with unrestricted access.  If you would like to use it to start them directly, you must contact me.	N'importe qui peut utiliser ce programme tant que vous ne faite que lancer d'autres programmes avec accès complet à partir de l'invite de commande. Si vous voulez utiliser UAC pass-through pour lancer ces programmes directement, vous devez me contacter.
+register-product-eqmlp-title	Registering Everquest Multilog Parser	Enregistrement de Everquest Multilog Parser
+product-eqmlp-summary-title	Product Summary: Everquest Multilog Parser	Produit: Everquest Multilog Parser
+register-product-eqmlp-text	Sorry, registration is disabled at this time.	Désolé, l'enregistrement est désactivé pour l'instant.
+product-ccs-title	Custom Controls Suite	Custom Controls Suite
+product-ccs-text-1	This is a set of Windows Presentation Framework (WPF) custom controls.  It includes the three controls that were previously available separately, and adds new controls.	Il s'agit d'une série de contrôles WPF (Windows Presentation Framework) personnalisés. Elle remplace les 3 contrôles existant auparavant séparément, et en ajoute de nouveaux.
+product-ccs-text-2	The current version is July 13th 2015.	La version actuelle est du 13 juillet 2015.
+product-ccs-text-3	Control list:	Liste des contrôles :
+ccs-control-1	Editable TextBlock: a classic TextBlock that can be clicked and edited.	Editable TextBlock : un TextBlock classique qui peut être cliqué et édité.
+ccs-control-2	Enum ComboBox: a combo box to select an enum value. Fits the largest of them.	Enum ComboBox : un combo box pour sélectionner une valeur énumérée. Assez large pour les contenir toutes.
+ccs-control-3	Enum RadioButton: a radio button to select an enum value.	Enum RadioButton : un bouton radio pour sélectionner une valeur énumérée.
+ccs-control-4	Extended ToolBar Button: a button for the Extended ToolBar (see below).	Extended ToolBar Button : un bouton pour Extended ToolBar (voir ci-dessous).
+ccs-control-5	Extended ToolBar MenuItem: a menu item for the Extended ToolBar (see below).	Extended ToolBar MenuItem : un élément de menu pour Extended ToolBar (voir ci-dessous).
+ccs-control-6	Extended PasswordBox: a password textbox that can display its content in plain text or retain security.	Extended PasswordBox : un TextBox pour mot de passe, qui peut l'afficher ou le garder sécurisé.
+ccs-control-7	Extended ScrollBar: a scroll bar that can be bound to a scroll viewer to follow its size and position.	Extended ScrollBar : une barre de défilement qui peut être liée à une vue défilante pour suivre sa taille et sa position.
+ccs-control-8	Extended ToolBar: a tool bar where buttons can be customized to appear or not, and is linked to a menu offering the same commands.	Extended ToolBar : une barre d'outils dont les boutons peuvent être affichés ou cachés à volonté, et liée à un menu offrant les mêmes commandes.
+ccs-control-9	Solution Explorer: a control dedicated to solutions similar to those found in Visual Studio.	Solution Explorer : un contrôle dédié à des solutions identiques à celles que l'on trouve par exemple dans Visual Studio.
+ccs-control-10	Solution Status Bar: a status bar with a queue of operations showning the status of the most recent of them.	Solution Status Bar : une barre d'état avec une file d'opérations où l'on peut voir le status de l'opération la plus récente.
+ccs-control-11	Solution ToolBar: a tool bar to perform operations on a solution.	Solution ToolBar : une barre d'outils pour effectuer des opérations sur une solution.
+ccs-control-12	Solution Presenter: a full blown control to display and manage solutions similar to Visual Studio.	Solution Presenter : un contrôle complet pour afficher et gérer des solutions similaires à celles de Visual Studio.
+ccs-control-13	Split View: displays another control such as a RichEdit with one or two views.	Split View : permet d'afficher un autre contrôle comme par exemple un RichEdit mais avec une ou deux vues.
+ccs-control-14	Tightfitting Tab Control: a tab control that fits the largest of its pages at initialization.	Tightfitting Tab Control : un contrôle tabulé dont la taille est assez large pour contenir toutes ses pages à l'initialisation.
+ccs-control-15	Undo Redo Manager: a container for undo/redo operations and their queues.	Undo Redo Manager : un conteneur pour des opérations que l'on peut annuler ou refaire, avec leurs files d'attente.
+download-title	Your download will start shortly	Votre téléchargement va commencer dans quelques secondes
+certification-title	Certification	Certification

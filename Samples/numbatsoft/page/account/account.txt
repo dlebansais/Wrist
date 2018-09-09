@@ -1,5 +1,5 @@
 ﻿area: account
-default area layout: header logout=header logout, language selection=language selection, legal=legal, account=account
+default area layout: header logout=header logout, language selection=language selection, legal=legal, account=account, eqmlp organization=eqmlp organization
 design: default
 width: 1000
 height: infinite

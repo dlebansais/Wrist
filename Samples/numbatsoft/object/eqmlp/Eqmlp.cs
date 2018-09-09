@@ -23,7 +23,37 @@ namespace AppCSHtml5
             InitSimulation();
         }
 
+        public LoginStates LoginState { get { return CurrentOrganization == null ? LoginStates.LoggedOff : LoginStates.SignedIn; } }
+        public IEqmlpOrganization CurrentOrganization
+        {
+            get
+            {
+                foreach (IEqmlpOrganization Item in AllOrganizations)
+                    if (Item.Name == OrganizationName)
+                        return Item;
+
+                return null;
+            }
+        }
+        public string OrganizationName { get; set; }
         public string TutorialLink { get { return $"https://www.enu.numbatsoft.com/products/eqmlp/documentation/xaml_tutorial%20(draft).txt"; } }
+
+        public void Login(string organizationName)
+        {
+            if (organizationName.Length > 0)
+                OrganizationName = organizationName;
+            else
+                OrganizationName = null;
+            NotifyPropertyChanged(nameof(LoginState));
+            NotifyPropertyChanged(nameof(CurrentOrganization));
+        }
+
+        public void Logout()
+        {
+            OrganizationName = null;
+            NotifyPropertyChanged(nameof(LoginState));
+            NotifyPropertyChanged(nameof(CurrentOrganization));
+        }
 
         #region Release Notes
         public ObservableCollection<IEqmlpReleaseNote> AllReleases
@@ -211,6 +241,9 @@ namespace AppCSHtml5
         #region Simulation
         private void InitSimulation()
         {
+            if (!string.IsNullOrEmpty(NetTools.UrlTools.GetBaseUrl()))
+                return;
+
             OperationHandler.Add(new OperationHandler("/request/query_4.php", OnQueryReleases));
             OperationHandler.Add(new OperationHandler("/request/query_5.php", OnQueryBugs));
             OperationHandler.Add(new OperationHandler("/request/query_6.php", OnQueryOrganizations));
@@ -276,18 +309,19 @@ namespace AppCSHtml5
 
         private List<Dictionary<string, string>> OnQueryOrganizations(Dictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            return KnownOrganizationTable;
+        }
 
-            Result.Add(new Dictionary<string, string>()
+        public static List<Dictionary<string, string>> KnownOrganizationTable = new List<Dictionary<string, string>>
+        {
+            new Dictionary<string, string>()
             {
                 { "name", "Shadows of Doom, a guild on Antonius Bayle" },
                 { "login_url", "http://www.sodeq.org/login.php" },
                 { "meeting_url", "http://www.sodeq.org/meeting.php" },
                 { "validation_url", "http://www.sodeq.org/membercheck.php" },
-            });
-
-            return Result;
-        }
+            }
+        };
         #endregion
 
         private Database Database = Database.Current;

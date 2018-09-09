@@ -12,3 +12,8 @@ account management text: text, text=translation.strings[account-management-colon
 change password: button, content=translation.strings[change-password], goto=change password
 change email: button, content=translation.strings[change-email], goto=change email
 change recovery: button, content=translation.strings[change-recovery], goto=change recovery
+eqmlp login state: index, index=eqmlp.login state
+language: index, index=language.language state
+product eqmlp title: text, text=translation.strings[product-eqmlp-title]
+product eqmlp summary title: text, text=translation.strings[product-eqmlp-summary-title]
+current organization: container, item=eqmlp.current organization, area=eqmlp organization

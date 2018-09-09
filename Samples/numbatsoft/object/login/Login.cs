@@ -322,6 +322,9 @@ namespace AppCSHtml5
                     NotifyPropertyChanged(nameof(RecoveryQuestion));
                     NotifyPropertyChanged(nameof(LoginState));
 
+                    string OrganizationName = CheckPasswordResult["name"];
+                    ((Eqmlp)GetEqmlp).Login(OrganizationName);
+
                     (App.Current as App).GoTo(PageNames.accountPage);
                 }
                 else
@@ -339,6 +342,7 @@ namespace AppCSHtml5
             Name = null;
             Email = null;
             RecoveryQuestion = null;
+            ((Eqmlp)GetEqmlp).Logout();
 
             Persistent.SetValue("name", null);
             Persistent.SetValue("email", null);
@@ -709,12 +713,16 @@ namespace AppCSHtml5
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
-            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "id", "password", "email", "question" })) != null)
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "id", "password", "email", "question", "name", "login_url", "meeting_url", "validation_url" })) != null)
             {
                 string Id = Result["id"];
                 string EncryptedPassword = Result["password"];
                 string Email = Result["email"];
                 string RecoveryQuestion = Result["question"];
+                string Name = Result["name"];
+                string LoginUrl = Result["login_url"];
+                string MeetingUrl = Result["meeting_url"];
+                string ValidationUrl = Result["validation_url"];
                 Debug.WriteLine($"Account {Id}: password={EncryptedPassword}, email={Email}, question={RecoveryQuestion}");
 
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
@@ -924,6 +932,9 @@ namespace AppCSHtml5
         #region Simulation
         private void InitSimulation()
         {
+            if (!string.IsNullOrEmpty(NetTools.UrlTools.GetBaseUrl()))
+                return;
+
             OperationHandler.Add(new OperationHandler("/request/encrypt.php", OnEncrypt));
             OperationHandler.Add(new OperationHandler("/request/query_1.php", OnSignInMatchRequest));
             OperationHandler.Add(new OperationHandler("/request/update_1.php", OnChangePasswordRequest));
@@ -1005,6 +1016,10 @@ namespace AppCSHtml5
                         { "password", Line["password"] },
                         { "email", Line["email"] },
                         { "question", Line["question"] },
+                        { "name", Line["name"] },
+                        { "login_url", Line["login_url"] },
+                        { "meeting_url", Line["meeting_url"] },
+                        { "validation_url", Line["validation_url"] },
                     });
             }
 
@@ -1461,6 +1476,10 @@ namespace AppCSHtml5
                 { "question", EncodedRecoveryQuestion("foo") },
                 { "answer", Convert.ToBase64String(Encoding.UTF8.GetBytes("not foo")) },
                 { "is active", "1" },
+                { "name", Eqmlp.KnownOrganizationTable[0]["name"] },
+                { "login_url", Eqmlp.KnownOrganizationTable[0]["login_url"] },
+                { "meeting_url", Eqmlp.KnownOrganizationTable[0]["meeting_url"] },
+                { "validation_url", Eqmlp.KnownOrganizationTable[0]["validation_url"] },
             }
         };
         #endregion
