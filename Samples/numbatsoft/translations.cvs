@@ -70,6 +70,14 @@ page-uacpt-format	UAC pass-through	UAC pass-through
 page-uacpt-command-line	UAC pass-through	UAC pass-through
 page-register-product-eqmlp-failed-1	Product Registration	Enregistrement d'un produit
 page-register-product-eqmlp-failed-2	Product Registration	Enregistrement d'un produit
+page-certification-ie	CAcert root certificates	Certificats racines CAcert
+page-certification-firefox	CAcert root certificates	Certificats racines CAcert
+page-download-ccs	Download Custom Controls Suite	Télécharger Custom Controls Suite
+page-download-pg	Download Project: Gorgon JSON Parser	Télécharger Project: Gorgon JSON Parser
+page-download-uacpt	Download UAC pass-through	Télécharger UAC pass-through
+page-download-eqmlp	Download Everquest Multilog Parser	Télécharger Everquest Multilog Parser
+page-support	Support	Assistance
+page-contact	Contact	Contact
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -153,7 +161,7 @@ answer-colon	Answer:	Réponse :
 confirm-answer-colon	Confirm answer:	Confirmation :
 page-products	Products	Produits
 page-download	Download	Téléchargement
-page-feedback	Feedback	Feedback
+page-feedback	Feedback	Envoyer votre opinion
 page-register	Register	Enregistrement
 register-title	Registration information	Informations d'enregistrement
 register-text	Please fill the form below to register.\u00A0 All information is kept private and will not be communicated to anyone.	Veuillez remplir le formulaire ci-dessous pour vous enregistrer. Aucune de ces informations ne sera divulguée à quiconque.
@@ -306,3 +314,34 @@ ccs-control-14	Tightfitting Tab Control: a tab control that fits the largest of 
 ccs-control-15	Undo Redo Manager: a container for undo/redo operations and their queues.	Undo Redo Manager : un conteneur pour des opérations que l'on peut annuler ou refaire, avec leurs files d'attente.
 download-title	Your download will start shortly	Votre téléchargement va commencer dans quelques secondes
 certification-title	Certification	Certification
+instruction-firefox-title	Instructions for Mozilla Firefox	Instructions pour Mozilla Firefox
+instruction-ie-title	Instructions for Internet Explorer	Instructions pour Internet Explorer
+instruction-text-1	The procedure described below will install CAcert root certificates on your computer.  All applications downloaded from this site are signed.  This signature is a proof of two things:	La procédure décrite ci-dessous permet d'installer les certificats racines CAcert sur votre ordinateur. Toutes les applications téléchargées depuis ce site sont signées. Cette signature garantit deux choses :
+instruction-text-2	The downloaded program hasn't been modified by viruses and other malicious software.	Le programme téléchargé n'a pas été modifié par des virus et autres logiciels malfaisants.
+instruction-text-3	My identity has been verified by CAcert assurers, they know who I am.	Mon identité a été vérifiée par les assureurs de CAcert, ils savent qui je suis.
+instruction-text-4	To proceed to the installation of root certificates on your computer, do the following:	Pour procéder à l'installation des certificats racines sur votre ordinateur, suivez ces instructions :
+instruction-firefox-text-1	Check the 'identify software developers' box.  You can also check the other boxes.	Cochez la case 'identifier les développeurs de logiciel'. Vous pouvez également cocher les autres cases.
+instruction-firefox-text-2	Click OK to complete the process.	Cliquez sur OK pour terminer la procédure.
+instruction-ie-text-1	In Internet Explorer, click View -> Tools -> Internet Options -> Content -> Personal -> Certificates.	Dans Internet Explorer, cliquez Vue -> Outils -> Options Internet -> Contenu -> Informations personnelles -> Certificats.
+instruction-ie-text-2	Choose the Trusted Root Certification Authorities tab.	Choisissez la page 'Autorités principales de confiance'.
+instruction-ie-text-3	Import the certificates you downloaded.	Importez les certificats que vous avez téléchargés.
+support-title	Product Support	Assistance sur un produit
+support-text	Sorry, support is not available at this time.	Désolé, aucune assistance n'est disponible pour l'instant.
+contact-title	Who am I?	Qui suis-je ?
+contact-text-1	I created this site after 20 years working as software programmer.  My experience includes writing programs in many languages, but also at many levels of abstraction, from hardware drivers in assembly to user interfaces in modern languages.	J'ai créé ce site après avoir travaillé 20 ans comme développeur de logiciels. Mon expérience inclut l'écriture de programmes en de nombreux langages, mais également à de nombreux niveaux d'abstraction, depuis les pilotes de périphériques en assembleur jusqu'aux interfaces visuelles écrites dans des langages modernes.
+contact-text-2	The Internet is an opportunity for me to offer for download many tools that are the result of my researches along the years.  I hope you'll find them useful.	L'internet m'offre l'occasion de mettre en téléchargement de nombreux outils qui sont le résultat de mes recherches conduites au long de toutes ces années. J'espère qu'ils vous seront utiles.
+skills-title	Expertise	Connaissances
+skills-text-1	Languages: ADA, C, C++, C#, Eiffel, Java, Modula, Pascal. Assembly: x86.	Langages : ADA, C, C++, C#, Eiffel, Java, Modula, Pascal. Assembleur : x86.
+skills-text-2	Tools: EiffelStudio, Visual Studio, Windows SDK & WDK.	Outils : EiffelStudio, Visual Studio, Windows SDK & WDK.
+skills-text-3	Operating systems: all Windows versions, from 98 to Seven.	Systèmes d'exploitation : toutes les versions de Windows, de 98 à Seven.
+skills-text-4	Frameworks: .NET, Win32	Environnements: .NET, Win32
+skills-text-5	Designer of a small real-time operating system to execute critical code and run Windows as a background task.	Auteur d'un système d'exploitation en temps réel léger, destiné à exécuter du code critique et qui laisse Windows en tâche de fond.
+feedback-title	Product feedback	Votre opinion sur les produits
+feedback-text	You can send feedback about this site, and all products you found there, using the form at the bottom of this page.	Vous pouvez envoyer votre opinion sur ce site, ainsi que sur tous les produits qui s'y trouvent, en utilisant le formulaire au bas de cette page.
+no-support-title	Why feedback and not support?	Pourquoi juste mon opinion et pas une assistance ?
+no-support-text-1	The difference is that feedback is one-way.  I will read what you have to say, and will use it to improve the quality of this site and the products I make.	La différence est qu'envoyer votre opinion n'entraine pas de réponse. J'en lirais le contenu, et je l'utiliserais pour améliorer la qualité de ce site ainsi que celle de mes programmes.
+no-support-text-2	When you have filled the form, please click on the Send button.  This will return you to the home page.	Lorsque vous avez entré le texte, veuillez cliquer sur le bouton Envoyer. Cela vous renverra sur la page d'accueil.
+no-support-text-3	You can also send more elaborate feedback with an email at the following address: feedback@numbatsoft.com.	Vous pouvez également envoyer votre opinion de façon plus complète par courriel à l'adresse suivante : feedback@numbatsoft.com.
+no-support-text-4	If you post a link in your message, please surround it with parenthesis or it will not get through my spam filter.  If you don't post a link, please start it with 'Hello'.	Si votre message contient un lien, veuillez l'entourer de parenthèses sinon il ne passera pas mon filtre de spam. Si vous ne postez pas de lien, vous pouvez le commencer par un 'Bonjour'.
+no-support-text-5	Thank you!	Merci !
+send	Send	Envoyer

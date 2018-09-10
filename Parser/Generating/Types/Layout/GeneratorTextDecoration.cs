@@ -60,6 +60,7 @@ namespace Parser
             */
 
             string SpanText = TextToSpan(Text, pageList);
+
             if (SpanText == Text)
                 colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<TextBlock{AttachedProperties}{visibilityBinding} Text=\"{SpanText}\"{Properties}{ElementProperties}{WrappingProperty}/>");
             else
@@ -78,7 +79,7 @@ namespace Parser
             text = ReplaceTag(text, pageList, "u", "Underline", false);
             text = ReplaceTag(text, pageList, "p", "LineBreak", true);
             text = ReplaceTag(text, pageList, "font", "Span", false, new Dictionary<string, string>() { { "size", "FontSize" }, { "color", "Foreground" }, { "background", "Background" }, { "face", "FontFamily" } });
-            text = ReplaceTag(text, pageList, "a", "Hyperlink", false, new Dictionary<string, string>() { { "href", "NavigateUri" } });
+            text = ReplaceTag(text, pageList, "a", "Hyperlink", false, new Dictionary<string, string>() { { "href", "NavigateUri" }, { "tag", "Tag" } });
 
             Dictionary<string, object> PageTable = new Dictionary<string, object>();
             foreach (IGeneratorPage Page in pageList)

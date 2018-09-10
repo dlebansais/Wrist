@@ -62,6 +62,11 @@ namespace Parser
                 sourceStream.ReadLine();
 
                 IComponent NewComponent = ParseComponent(sourceStream);
+
+                foreach (IComponent Component in ComponentList)
+                    if (Component.Source.Name == NewComponent.Source.Name)
+                        throw new ParsingException(0, sourceStream, $"Component with name '{NewComponent.Source.Name}' found more than once.");
+
                 ComponentList.Add(NewComponent);
             }
 

@@ -114,7 +114,7 @@ namespace AppCSHtml5
         #region Simulation
         private void InitSimulation()
         {
-            if (!string.IsNullOrEmpty(NetTools.UrlTools.GetBaseUrl()))
+            if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
             OperationHandler.Add(new OperationHandler("/request/query_2.php", OnQueryNews));

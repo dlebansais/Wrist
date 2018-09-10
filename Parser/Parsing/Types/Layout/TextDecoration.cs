@@ -89,7 +89,17 @@ namespace Parser
                         text = text.Substring(0, StartIndex) + Replacement + text.Substring(EndIndex + 1);
                     else
                     {
-                        if (unmatchedList != null && !unmatchedList.Contains(PageName))
+                        bool IsExternal = false;
+                        int TextIndex = text.IndexOf('>', EndIndex + 1);
+                        if (TextIndex > EndIndex + 1)
+                        {
+                            string Options = text.Substring(EndIndex + 1, TextIndex - EndIndex - 1);
+                            if (Options.Contains("tag=\"external\""))
+                                IsExternal = true;
+
+                        }
+
+                        if (!IsExternal && unmatchedList != null && !unmatchedList.Contains(PageName))
                             unmatchedList.Add(PageName);
                     }
 

@@ -7,6 +7,18 @@ namespace NetTools
 {
     public class UrlTools
     {
+        public static bool IsUsingRestrictedFeatures
+        {
+            get
+            {
+#if USE_RESTRICTED_FEATURES
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
         public static object GetDocumentUrl()
         {
 #if USE_RESTRICTED_FEATURES
