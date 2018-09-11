@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTools", "NetTools\NetToo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "Presentation\Presentation.csproj", "{C067B9B7-A2DE-45F9-AF05-BEB0A5E70BEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallArgon2d", "SmallArgon2d\SmallArgon2d.csproj", "{60FAF97D-1086-4753-9FA8-4D736B31D8B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C067B9B7-A2DE-45F9-AF05-BEB0A5E70BEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C067B9B7-A2DE-45F9-AF05-BEB0A5E70BEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C067B9B7-A2DE-45F9-AF05-BEB0A5E70BEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60FAF97D-1086-4753-9FA8-4D736B31D8B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60FAF97D-1086-4753-9FA8-4D736B31D8B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60FAF97D-1086-4753-9FA8-4D736B31D8B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60FAF97D-1086-4753-9FA8-4D736B31D8B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
