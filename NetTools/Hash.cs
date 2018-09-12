@@ -15,7 +15,8 @@ namespace NetTools
     {
         public static HashVariant Variant { get; set; } = HashVariant.SHA3_512;
         // Declare this in SecretUuid.cs:
-        // public static class SecretUuid { public static readonly System.Guid Guid = new System.Guid(<your own guid>); }
+        // public static readonly byte[] GuidBytes = new byte[16] { <your own guid> };
+        // public static readonly System.Guid Guid = new System.Guid(GuidBytes);
         public static string Suffix { get; } = SecretUuid.Guid.ToString("N");
 
         public static string Convert(string text)

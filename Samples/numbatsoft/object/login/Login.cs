@@ -1,5 +1,6 @@
 ﻿using NetTools;
 using Presentation;
+using SmallArgon2d;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +24,8 @@ namespace AppCSHtml5
             InvalidUsernamePasswordOrAnswer = 4,
             ErrorNoQuestion = 5,
             InvalidUsernameOrAnswer = 6,
+            UsernameAlreadyUsed = 7,
+            EmailAlreadyUsed = 8,
         }
 
         public Login()
@@ -53,6 +56,30 @@ namespace AppCSHtml5
         public bool Remember { get; set; }
         public bool HasQuestion { get { return !string.IsNullOrEmpty(RecoveryQuestion); } }
 
+        #region Encryption
+        public string EncryptedValue(string value, string salt)
+        {
+            string NormalizedValue = value.Normalize(NormalizationForm.FormD);
+
+            string Hash = "";
+            using (Argon2d Argon2 = new Argon2d(Encoding.UTF8.GetBytes(NormalizedValue)))
+            {
+                Argon2.Salt = Encoding.ASCII.GetBytes(salt);
+                Argon2.KnownSecret = SecretUuid.GuidBytes;
+                byte[] HashBytes = Argon2.GetBytes(128);
+                foreach (byte b in HashBytes)
+                    Hash += b.ToString("X2");
+            }
+
+            return Hash;
+        }
+
+        public string MixedSalt(string salt)
+        {
+            return salt;
+        }
+        #endregion
+
         #region Register
         public void On_Register(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
@@ -80,6 +107,42 @@ namespace AppCSHtml5
         }
 
         private void StartRegister(string name, string password, string email, string question, string answer)
+        {
+            QueryNewCredential(name, email, (int getError, object getResult) => Register_OnNewCredentialReceived(getError, getResult, name, password, email, question, answer));
+        }
+
+        private void Register_OnNewCredentialReceived(int error, object result, string name, string password, string email, string question, string answer)
+        {
+            if (error == (int)ErrorCodes.Success)
+            {
+                //CheckIfNameTaken(name, password, email, question, answer);
+                Dictionary<string, string> NewCredentialResult = (Dictionary<string, string>)result;
+                string Salt = NewCredentialResult["salt"];
+                Salt = MixedSalt(Salt);
+
+                string EncryptedPassword = EncryptedValue(password, Salt);
+                Debug.WriteLine("EncryptedPassword: " + EncryptedPassword);
+
+                string EncryptedAnswer;
+                if (!string.IsNullOrEmpty(answer))
+                {
+                    EncryptedAnswer = EncryptedValue(answer, Salt);
+                    Debug.WriteLine("EncryptedAnswer: " + EncryptedAnswer);
+                }
+                else
+                    EncryptedAnswer = "";
+
+                RegisterAndSendEmail(name, EncryptedPassword, email, question, EncryptedAnswer, Salt, (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
+            }
+            else if (error == (int)ErrorCodes.UsernameAlreadyUsed)
+                (App.Current as App).GoTo(PageNames.register_failed_5Page);
+            else if (error == (int)ErrorCodes.EmailAlreadyUsed)
+                (App.Current as App).GoTo(PageNames.register_failed_6Page);
+            else
+                (App.Current as App).GoTo(PageNames.register_failed_4Page);
+        }
+
+        private void CheckIfNameTaken(string name, string password, string email, string question, string answer)
         {
             GetUserInfo(name, (int checkError, object checkResult) => Register_OnNameChecked(checkError, checkResult, name, password, email, question, answer));
         }
@@ -124,7 +187,7 @@ namespace AppCSHtml5
             if (error == (int)ErrorCodes.Success)
             {
                 string EncryptedAnswer = (string)result;
-                RegisterAndSendEmail(name, encryptedPassword, email, question, EncryptedAnswer, (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
+                RegisterAndSendEmail(name, encryptedPassword, email, question, EncryptedAnswer, "", (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
             }
             else
                 (App.Current as App).GoTo(PageNames.register_failed_4Page);
@@ -699,6 +762,26 @@ namespace AppCSHtml5
         #endregion
 
         #region Operations
+        private void QueryNewCredential(string name, string email, Action<int, object> callback)
+        {
+            Database.Completed += OnQueryNewCredentialCompleted;
+            Database.Query(new DatabaseQueryOperation("new credential", "query_7.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "email", HtmlString.Entities(email) } }, callback));
+        }
+
+        private void OnQueryNewCredentialCompleted(object sender, CompletionEventArgs e)
+        {
+            Debug.WriteLine("OnQueryNewCredentialCompleted notified");
+            Database.Completed -= OnQueryNewCredentialCompleted;
+
+            Action<int, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result", "salt" })) != null)
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
+        }
+
         private void GetUserInfo(string name, Action<int, object> callback)
         {
             Database.Completed += OnGetUserInfoCompleted;
@@ -846,10 +929,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.ErrorNotFound, null));
         }
 
-        private void RegisterAndSendEmail(string name, string encryptedPassword, string email, string question, string answer, Action<int, object> callback)
+        private void RegisterAndSendEmail(string name, string encryptedPassword, string email, string question, string answer, string salt, Action<int, object> callback)
         {
             Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "password", HtmlString.Entities(encryptedPassword) }, { "email", HtmlString.Entities(email) }, { "question", HtmlString.Entities(question) }, { "answer", HtmlString.Entities(answer) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "name", HtmlString.Entities(name) }, { "password", HtmlString.Entities(encryptedPassword) }, { "email", HtmlString.Entities(email) }, { "question", HtmlString.Entities(question) }, { "answer", HtmlString.Entities(answer) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e)
