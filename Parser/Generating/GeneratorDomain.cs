@@ -526,6 +526,10 @@ namespace Parser
             projectWriter.WriteLine("      <Project>{5A9484FA-3316-4E96-9EAB-95AC997B40DA}</Project>");
             projectWriter.WriteLine("      <Name>NetTools</Name>");
             projectWriter.WriteLine("    </ProjectReference>");
+            projectWriter.WriteLine("    <ProjectReference Include=\"..\\SmallArgon2d\\SmallArgon2d.csproj\">");
+            projectWriter.WriteLine("      <Project>{60faf97d-1086-4753-9fa8-4d736b31d8b2}</Project>");
+            projectWriter.WriteLine("      <Name>SmallArgon2d</Name>");
+            projectWriter.WriteLine("    </ProjectReference>");
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <Import Project=\"$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\InternalStuff\\Targets\\CSharpXamlForHtml5.Build.targets\"/>");
             projectWriter.WriteLine("</Project>");
