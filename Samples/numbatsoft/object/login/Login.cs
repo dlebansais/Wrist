@@ -57,26 +57,73 @@ namespace AppCSHtml5
         public bool HasQuestion { get { return !string.IsNullOrEmpty(RecoveryQuestion); } }
 
         #region Encryption
-        public string EncryptedValue(string value, string salt)
+        public string EncryptedValue(string value, byte[] salt)
         {
-            string NormalizedValue = value.Normalize(NormalizationForm.FormD);
-
-            string Hash = "";
-            using (Argon2d Argon2 = new Argon2d(Encoding.UTF8.GetBytes(NormalizedValue)))
+            using (Argon2d Argon2 = new Argon2d(Encoding.UTF8.GetBytes(value)))
             {
-                Argon2.Salt = Encoding.ASCII.GetBytes(salt);
+                Argon2.Salt = salt;
                 Argon2.KnownSecret = SecretUuid.GuidBytes;
-                byte[] HashBytes = Argon2.GetBytes(128);
-                foreach (byte b in HashBytes)
-                    Hash += b.ToString("X2");
-            }
+                Argon2.Iterations = 1;
+                Argon2.MemorySize = 1024;
+                string EncodedHash = Argon2.GetEncoded(128);
 
-            return Hash;
+                return EncodedHash;
+            }
         }
 
         public string MixedSalt(string salt)
         {
-            return salt;
+            long Ticks = DateTime.Now.Ticks;
+            return salt + Ticks.ToString("X8");
+        }
+
+        public bool TryParseHash(string hashString, out byte[] hash)
+        {
+            if (hashString == null || hashString.Length < 2)
+            {
+                hash = null;
+                return false;
+            }
+
+            hash = new byte[hashString.Length / 2];
+
+            for (int i = 0; i < hash.Length; i++)
+            {
+                byte bh, bl;
+                if (!TryParseHex(hashString[(i * 2) + 0], out bh) || !TryParseHex(hashString[(i * 2) + 1], out bl))
+                    return false;
+
+                hash[i] = (byte)(bh * 16 + bl);
+            }
+
+            return true;
+        }
+
+        public bool TryParseHex(char c, out byte b)
+        {
+            if (c >= '0' && c <= '9')
+            {
+                b = (byte)(c - '0');
+                return true;
+            }
+
+            else if (c >= 'a' && c <= 'f')
+            {
+                b = (byte)(c - 'a' + 10);
+                return true;
+            }
+
+            else if (c >= 'A' && c <= 'F')
+            {
+                b = (byte)(c - 'A' + 10);
+                return true;
+            }
+
+            else
+            {
+                b = 0;
+                return false;
+            }
         }
         #endregion
 
@@ -117,22 +164,31 @@ namespace AppCSHtml5
             {
                 //CheckIfNameTaken(name, password, email, question, answer);
                 Dictionary<string, string> NewCredentialResult = (Dictionary<string, string>)result;
-                string Salt = NewCredentialResult["salt"];
-                Salt = MixedSalt(Salt);
+                string SaltString = NewCredentialResult["salt"];
+                SaltString = MixedSalt(SaltString);
 
-                string EncryptedPassword = EncryptedValue(password, Salt);
-                Debug.WriteLine("EncryptedPassword: " + EncryptedPassword);
-
-                string EncryptedAnswer;
-                if (!string.IsNullOrEmpty(answer))
+                byte[] Salt;
+                if (TryParseHash(SaltString, out Salt))
                 {
-                    EncryptedAnswer = EncryptedValue(answer, Salt);
-                    Debug.WriteLine("EncryptedAnswer: " + EncryptedAnswer);
+                    string EncryptedPassword = EncryptedValue(password, Salt);
+                    Debug.WriteLine("EncryptedPassword: " + EncryptedPassword);
+
+                    string EncryptedAnswer;
+                    if (!string.IsNullOrEmpty(answer))
+                    {
+                        EncryptedAnswer = EncryptedValue(answer, Salt);
+                        Debug.WriteLine("EncryptedAnswer: " + EncryptedAnswer);
+                    }
+                    else
+                        EncryptedAnswer = "";
+
+                    RegisterAndSendEmail(name, EncryptedPassword, email, question, EncryptedAnswer, SaltString.ToLower(), (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
                 }
                 else
-                    EncryptedAnswer = "";
-
-                RegisterAndSendEmail(name, EncryptedPassword, email, question, EncryptedAnswer, Salt, (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
+                {
+                    Debug.WriteLine("Failed to parse salt");
+                    (App.Current as App).GoTo(PageNames.register_failed_4Page);
+                }
             }
             else if (error == (int)ErrorCodes.UsernameAlreadyUsed)
                 (App.Current as App).GoTo(PageNames.register_failed_5Page);
@@ -1015,7 +1071,8 @@ namespace AppCSHtml5
         #region Simulation
         private void InitSimulation()
         {
-            if (NetTools.UrlTools.IsUsingRestrictedFeatures)
+            //if (NetTools.UrlTools.IsUsingRestrictedFeatures)
+            if (NetTools.UrlTools.GetDocumentUrl() != null)
                 return;
 
             OperationHandler.Add(new OperationHandler("/request/encrypt.php", OnEncrypt));

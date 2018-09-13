@@ -61,7 +61,7 @@ namespace SmallArgon2d
         /// <summary>
         /// Implementation of GetString
         /// </summary>
-        public string GetString(int bc)
+        public string GetEncoded(int bc)
         {
             ValidateParameters(bc);
 
