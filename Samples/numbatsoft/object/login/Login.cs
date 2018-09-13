@@ -74,7 +74,17 @@ namespace AppCSHtml5
         public string MixedSalt(string salt)
         {
             long Ticks = DateTime.Now.Ticks;
-            return salt + Ticks.ToString("X8");
+
+            string TickString = "";
+            for (int i = 0; i < 4; i++)
+            {
+                byte b = (byte)(Ticks & 0xFF);
+                TickString += b.ToString("X2");
+
+                Ticks >>= 8;
+            }
+
+            return salt + TickString;
         }
 
         public bool TryParseHash(string hashString, out byte[] hash)
