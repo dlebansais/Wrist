@@ -20,6 +20,11 @@ namespace SmallArgon2d
         }
 
         /// <summary>
+        /// The version number
+        /// </summary>
+        public int Version { get { return 1; } }
+
+        /// <summary>
         /// The password hashing salt
         /// </summary>
         public byte[] Salt { get; set; }
@@ -51,6 +56,21 @@ namespace SmallArgon2d
         {
             ValidateParameters(bc);
             return GetBytesAsyncImpl(bc);
+        }
+
+        /// <summary>
+        /// Implementation of GetString
+        /// </summary>
+        public string GetString(int bc)
+        {
+            ValidateParameters(bc);
+
+            string Hash = "";
+            byte[] HashBytes = GetBytesAsyncImpl(bc);
+            foreach (byte b in HashBytes)
+                Hash += b.ToString("X2");
+
+            return $"PHS={GetType().Name};Version={Version};Iterations={Iterations};MemorySize={MemorySize};Hash={Hash}";
         }
 
         internal abstract Argon2Core BuildCore(int bc);
