@@ -32,9 +32,9 @@ namespace SmallArgon2d
 
             int readSize = Math.Min((data.Length / 8), length);
 
-            var mstream = new MemoryStream(data);
+            MemoryStream mstream = new MemoryStream(data);
             mstream.Seek(srcOffset, SeekOrigin.Begin);
-            var reader = new BinaryReader(mstream);
+            BinaryReader reader = new BinaryReader(mstream);
 
             readSize += destOffset;
             int i = destOffset;
@@ -48,7 +48,7 @@ namespace SmallArgon2d
                 ulong extra = 0;
 
                 // get the remainder as a few bytes
-                for (var n = 0; n < remainder; ++n)
+                for (int n = 0; n < remainder; ++n)
                     extra = extra | ((ulong)reader.ReadByte() << (8 * n));
 
                 this[i++] = extra;
@@ -62,8 +62,8 @@ namespace SmallArgon2d
 
         public void Set(ulong value)
         {
-            var off = Offset;
-            for (var i = 0; i < 128; i++)
+            int off = Offset;
+            for (int i = 0; i < 128; i++)
             {
                 Data[off++] = value;
             }
@@ -83,39 +83,35 @@ namespace SmallArgon2d
         {
             get
             {
+#if ARGUMENT_CHECK
                 if (index < 0 || index > 128)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
-
+#endif
                 return Data[Offset + index];
             }
             set
             {
+#if ARGUMENT_CHECK
                 if (index < 0 || index > 128)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
+#endif
 
                 Data[Offset + index] = value;
             }
         }
 
-        internal unsafe class Stream : UnmanagedMemoryStream
+        public void GetBuffer(byte[] result)
         {
-            public Stream(Argon2Memory memory)
+            for (int i = 0; i < result.Length / 8; i++)
             {
-                Data = GCHandle.Alloc(memory.Data, GCHandleType.Pinned);
-                base.Initialize((byte*)Data.AddrOfPinnedObject() + (memory.Offset * 8), 1024, 1024, FileAccess.Read);
+                byte[] b = BitConverter.GetBytes(Data[Offset + i]);
+                int Length = ((i + 1) * 8) <= result.Length ? 8 : (result.Length - (i * 8));
+                Array.Copy(b, 0, result, i * 8, Length);
             }
-
-            protected override void Dispose(bool isDispose)
-            {
-                base.Dispose(isDispose);
-                Data.Free();
-            }
-
-            private GCHandle Data;
         }
 
         private class Enumerator : IEnumerator<ulong>

@@ -12,9 +12,9 @@ namespace SmallArgon2d
             ulong[] v = new ulong[16];
             ulong[] m = new ulong[16];
 
-            for (var i = 0; i < 8; ++i)
+            for (int i = 0; i < 8; ++i)
                 v[i] = Hash[i];
-            for (var i = 0; i < 8; ++i)
+            for (int i = 0; i < 8; ++i)
                 v[i + 8] = Blake2Constants.IV[i];
 
             v[12] ^= TotalSegmentsLow;
@@ -23,7 +23,7 @@ namespace SmallArgon2d
             if (isFinal)
                 v[14] = ~v[14];
 
-            for (var i = 0; i < 16; ++i)
+            for (int i = 0; i < 16; ++i)
             {
                 int DataBufferOffset = 8 * i;
 
@@ -37,10 +37,10 @@ namespace SmallArgon2d
                     (((ulong)DataBuffer[DataBufferOffset + 7]) << 56);
             }
 
-            for (var i = 0; i < 12; ++i)
+            for (int i = 0; i < 12; ++i)
             {
                 v[0] = v[0] + v[4] + m[Blake2Constants.Sigma[i][0]];
-                var temp = v[12] ^ v[0];
+                ulong temp = v[12] ^ v[0];
                 v[12] = (temp >> 32) ^ (temp << 32);
                 v[8] = v[8] + v[12];
                 temp = v[4] ^ v[8];
@@ -144,7 +144,7 @@ namespace SmallArgon2d
                 v[4] = (temp >> 63) ^ (temp << 1);
             }
 
-            for (var i = 0; i < 8; ++i)
+            for (int i = 0; i < 8; ++i)
                 Hash[i] ^= v[i] ^ v[i + 8];
         }
     }

@@ -59,7 +59,9 @@ namespace SmallArgon2d
         {
             if (memory != null)
             {
-                Expose(new Argon2Memory.Stream(memory));
+                byte[] buff = new byte[0x80 * 8];
+                memory.GetBuffer(buff);
+                Expose(buff);
             }
         }
 
@@ -128,7 +130,7 @@ namespace SmallArgon2d
         private void BufferSubStream(Stream stream)
         {
             ReserveBuffer(1024);
-            var result = stream.Read(_buffer, 0, 1024);
+            int result = stream.Read(_buffer, 0, 1024);
             if (result == 1024)
             {
                 _bufferSetupActions.Insert(0, () => BufferSubStream(stream));

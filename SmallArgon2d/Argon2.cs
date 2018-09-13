@@ -69,7 +69,7 @@ namespace SmallArgon2d
 
         private byte[] GetBytesAsyncImpl(int bc)
         {
-            var n = BuildCore(bc);
+            Argon2Core n = BuildCore(bc);
             n.Salt = Salt;
             n.Secret = KnownSecret;
             n.AssociatedData = AssociatedData;

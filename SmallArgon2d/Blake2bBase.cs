@@ -21,7 +21,7 @@ namespace SmallArgon2d
         {
             if ((key?.Length ?? 0) > B.Length)
                 throw new ArgumentException($"Blake2 key size is too large. Max size is {B.Length} bytes", nameof(key));
-            
+
             Array.Copy(Blake2Constants.IV, H, 8);
             H[0] ^= 0x01010000UL ^ (((ulong)(key?.Length ?? 0)) << 8) ^ HashSize;
 
@@ -70,9 +70,9 @@ namespace SmallArgon2d
             C = 0;
 
             this.Compress(true);
-            var hashByteSize = HashSize;
+            uint hashByteSize = HashSize;
             byte[] result = new byte[hashByteSize];
-            for (var i = 0; i < hashByteSize; ++i)
+            for (int i = 0; i < hashByteSize; ++i)
             {
                 result[i] = (byte)((H[i >> 3] >> (8 * (i & 7))) & 0xff);
             }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SmallArgon2d
@@ -25,31 +26,31 @@ namespace SmallArgon2d
         // Private stuff starts here
         internal void InitializeLanesTask(int l, int s, int i, Argon2Lane[] lanes, int start)
         {
-            var lane = lanes[l];
-            var segmentLength = lane.BlockCount / 4;
-            var curOffset = s * segmentLength + start;
+            Argon2Lane lane = lanes[l];
+            int segmentLength = lane.BlockCount / 4;
+            int curOffset = s * segmentLength + start;
 
-            var prevLane = l;
-            var prevOffset = curOffset - 1;
+            int prevLane = l;
+            int prevOffset = curOffset - 1;
             if (curOffset == 0)
             {
                 prevOffset = lane.BlockCount - 1;
             }
 
-            var state = GenerateState(lanes, segmentLength, i, l, s);
-            for (var c = start; c < segmentLength; ++c, curOffset++)
+            IArgon2PseudoRands state = GenerateState(lanes, segmentLength, i, l, s);
+            for (int c = start; c < segmentLength; ++c, curOffset++)
             {
-                var pseudoRand = state.PseudoRand(c, prevLane, prevOffset);
-                var refLane = (uint)(pseudoRand >> 32) % lanes.Length;
+                ulong pseudoRand = state.PseudoRand(c, prevLane, prevOffset);
+                int refLane = (int)((uint)(pseudoRand >> 32) % lanes.Length);
 
                 if (i == 0 && s == 0)
                 {
                     refLane = l;
                 }
 
-                var refIndex = IndexAlpha(l == refLane, (uint)pseudoRand, lane.BlockCount, segmentLength, i, s, c);
-                var refBlock = lanes[refLane][refIndex];
-                var curBlock = lane[curOffset];
+                int refIndex = IndexAlpha(l == refLane, (uint)pseudoRand, lane.BlockCount, segmentLength, i, s, c);
+                Argon2Memory refBlock = lanes[refLane][refIndex];
+                Argon2Memory curBlock = lane[curOffset];
 
                 Compress(curBlock, refBlock, lanes[prevLane][prevOffset]);
                 prevOffset = curOffset;
@@ -60,12 +61,12 @@ namespace SmallArgon2d
         {
             Argon2Lane[] lanes = InitializeLanes(password);
 
-            var start = 2;
-            for (var i = 0; i < Iterations; ++i)
+            int start = 2;
+            for (int i = 0; i < Iterations; ++i)
             {
-                for (var s = 0; s < 4; s++)
+                for (int s = 0; s < 4; s++)
                 {
-                    var segment = Enumerable.Range(0, lanes.Length).Select(l => new Action(() =>
+                    IEnumerable<Action> segment = Enumerable.Range(0, lanes.Length).Select(l => new Action(() =>
                     {
                         InitializeLanesTask(l, s, i, lanes, start);
                     }));
@@ -82,13 +83,13 @@ namespace SmallArgon2d
 
         private static void XorLanes(Argon2Lane[] lanes)
         {
-            var data = lanes[0][lanes[0].BlockCount - 1];
+            Argon2Memory data = lanes[0][lanes[0].BlockCount - 1];
 
-            foreach (var lane in lanes.Skip(1))
+            foreach (Argon2Lane lane in lanes.Skip(1))
             {
-                var block = lane[lane.BlockCount-1];
+                Argon2Memory block = lane[lane.BlockCount-1];
 
-                for (var b = 0; b < 128; ++b)
+                for (int b = 0; b < 128; ++b)
                 {
                     if (!BitConverter.IsLittleEndian)
                     {
@@ -111,35 +112,32 @@ namespace SmallArgon2d
         {
             XorLanes(lanes);
 
-            var ds = new LittleEndianActiveStream();
+            LittleEndianActiveStream ds = new LittleEndianActiveStream();
             ds.Expose(lanes[0][lanes[0].BlockCount - 1]);
 
             ModifiedBlake2.Blake2Prime(lanes[0][1], ds, TagLine);
-            var result = new byte[TagLine];
-
-            using (var stream = new Argon2Memory.Stream(lanes[0][1]))
-            {
-                stream.Read(result, 0, TagLine);
-            }
+            byte[] result = new byte[TagLine];
+            Argon2Memory memory = lanes[0][1];
+            memory.GetBuffer(result);
 
             return result;
         }
 
-        internal unsafe static void Compress(Argon2Memory dest, Argon2Memory refb, Argon2Memory prev)
+        internal static void Compress(Argon2Memory dest, Argon2Memory refb, Argon2Memory prev)
         {
-            var tmpblock = stackalloc ulong[dest.Length];
-            for (var n = 0; n < 128; ++n)
+            ulong[] tmpblock = new ulong[dest.Length];
+            for (int n = 0; n < 128; ++n)
             {
                 tmpblock[n] = refb[n] ^ prev[n];
                 dest[n] ^= tmpblock[n];
             }
 
-            for (var i = 0; i < 8; ++i)
+            for (int i = 0; i < 8; ++i)
                 ModifiedBlake2.DoRoundColumns(tmpblock, i);
-            for (var i = 0; i < 8; ++i)
+            for (int i = 0; i < 8; ++i)
                 ModifiedBlake2.DoRoundRows(tmpblock, i);
 
-            for (var n = 0; n < 128; ++n)
+            for (int n = 0; n < 128; ++n)
                 dest[n] ^= tmpblock[n];
         }
 
@@ -147,14 +145,14 @@ namespace SmallArgon2d
 
         internal Argon2Lane[] InitializeLanes(byte[] password)
         {
-            var blockHash = Initialize(password);
+            byte[] blockHash = Initialize(password);
 
-            var lanes = new Argon2Lane[1];
+            Argon2Lane[] lanes = new Argon2Lane[1];
 
             // Adjust memory size if needed so that each segment has an even size
-            var segmentLength = MemorySize / (lanes.Length * 4);
+            int segmentLength = MemorySize / (lanes.Length * 4);
             MemorySize = segmentLength * 4 * lanes.Length;
-            var blocksPerLane = MemorySize / lanes.Length;
+            int blocksPerLane = MemorySize / lanes.Length;
 
             if (blocksPerLane < 4)
             {
@@ -162,14 +160,14 @@ namespace SmallArgon2d
             }
 
             Action[] init = new Action[lanes.Length * 2];
-            for (var i = 0; i < lanes.Length; ++i)
+            for (int i = 0; i < lanes.Length; ++i)
             {
                 lanes[i] = new Argon2Lane(blocksPerLane);
 
                 int taskIndex = i * 2;
                 int iClosure = i;
                 init[taskIndex] = () => {
-                    var stream = new LittleEndianActiveStream();
+                    LittleEndianActiveStream stream = new LittleEndianActiveStream();
                     stream.Expose(blockHash);
                     stream.Expose(0);
                     stream.Expose(iClosure);
@@ -178,7 +176,7 @@ namespace SmallArgon2d
                 };
 
                 init[taskIndex + 1] = () => {
-                    var stream = new LittleEndianActiveStream();
+                    LittleEndianActiveStream stream = new LittleEndianActiveStream();
                     stream.Expose(blockHash);
                     stream.Expose(1);
                     stream.Expose(iClosure);
@@ -197,8 +195,8 @@ namespace SmallArgon2d
         internal byte[] Initialize(byte[] password)
         {
             // Initialize the lanes
-            var blake2 = new HMACBlake2B(512);
-            var dataStream = new LittleEndianActiveStream();
+            HMACBlake2B blake2 = new HMACBlake2B(512);
+            LittleEndianActiveStream dataStream = new LittleEndianActiveStream();
 
             dataStream.Expose(1);
             dataStream.Expose(TagLine);
@@ -216,7 +214,7 @@ namespace SmallArgon2d
             dataStream.Expose(AssociatedData);
 
             blake2.Initialize();
-            var blockhash = blake2.ComputeHash(dataStream);
+            byte[] blockhash = blake2.ComputeHash(dataStream);
 
             dataStream.ClearBuffer();
             return blockhash;
@@ -249,39 +247,6 @@ namespace SmallArgon2d
 
             return (int)(((ulong)startPos + relativePos) % (ulong)laneLength);
         }
-
-#if DEBUG
-        private static void DebugWrite(Argon2Memory mem)
-        {
-            DebugWrite(mem.ToArray());
-        }
-
-        private unsafe static void DebugWrite(ulong[] data)
-        {
-            fixed (ulong *dat = &data[0])
-            {
-                DebugWrite(dat, data.Length);
-            }
-        }
-
-        private unsafe static void DebugWrite(ulong *data, int len)
-        {
-            int offset = 0;
-            while (offset < len)
-            {
-                for (int i = 0; i < 8; i++, offset++)
-                {
-                    if (offset == len)
-                        break;
-
-                    Console.Write("0x{0:x16} ", data[offset]);
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine();
-            Console.WriteLine();
-        }
-#endif
 
         private int TagLine;
     }

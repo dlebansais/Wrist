@@ -13,11 +13,12 @@ namespace SmallArgon2d
         {
             get
             {
+#if ARGUMENT_CHECK
                 if (index < 0 || index > BlockCount)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
-
+#endif
                 return new Argon2Memory(Memory, 128 * index);
             }
         }
