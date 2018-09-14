@@ -65,7 +65,8 @@ namespace AppCSHtml5
                 Argon2.KnownSecret = SecretUuid.GuidBytes;
                 Argon2.Iterations = 1;
                 Argon2.MemorySize = 1024;
-                string EncodedHash = Argon2.GetEncoded(128);
+                byte[] Hash = Argon2.GetBytes(128);
+                string EncodedHash = Argon2.GetEncoded(HashTools.GetString(Hash));
 
                 return EncodedHash;
             }
@@ -74,67 +75,12 @@ namespace AppCSHtml5
         public string MixedSalt(string salt)
         {
             long Ticks = DateTime.Now.Ticks;
-
-            string TickString = "";
-            for (int i = 0; i < 4; i++)
-            {
-                byte b = (byte)(Ticks & 0xFF);
-                TickString += b.ToString("X2");
-
-                Ticks >>= 8;
-            }
+            byte[] TickBytes = BitConverter.GetBytes(Ticks);
+            string TickString = HashTools.GetString(TickBytes);
 
             return salt + TickString;
         }
 
-        public bool TryParseHash(string hashString, out byte[] hash)
-        {
-            if (hashString == null || hashString.Length < 2)
-            {
-                hash = null;
-                return false;
-            }
-
-            hash = new byte[hashString.Length / 2];
-
-            for (int i = 0; i < hash.Length; i++)
-            {
-                byte bh, bl;
-                if (!TryParseHex(hashString[(i * 2) + 0], out bh) || !TryParseHex(hashString[(i * 2) + 1], out bl))
-                    return false;
-
-                hash[i] = (byte)(bh * 16 + bl);
-            }
-
-            return true;
-        }
-
-        public bool TryParseHex(char c, out byte b)
-        {
-            if (c >= '0' && c <= '9')
-            {
-                b = (byte)(c - '0');
-                return true;
-            }
-
-            else if (c >= 'a' && c <= 'f')
-            {
-                b = (byte)(c - 'a' + 10);
-                return true;
-            }
-
-            else if (c >= 'A' && c <= 'F')
-            {
-                b = (byte)(c - 'A' + 10);
-                return true;
-            }
-
-            else
-            {
-                b = 0;
-                return false;
-            }
-        }
         #endregion
 
         #region Register
@@ -178,7 +124,7 @@ namespace AppCSHtml5
                 SaltString = MixedSalt(SaltString);
 
                 byte[] Salt;
-                if (TryParseHash(SaltString, out Salt))
+                if (HashTools.TryParse(SaltString, out Salt))
                 {
                     string EncryptedPassword = EncryptedValue(password, Salt);
                     Debug.WriteLine("EncryptedPassword: " + EncryptedPassword);
@@ -1081,8 +1027,7 @@ namespace AppCSHtml5
         #region Simulation
         private void InitSimulation()
         {
-            //if (NetTools.UrlTools.IsUsingRestrictedFeatures)
-            if (NetTools.UrlTools.GetDocumentUrl() != null)
+            if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
             OperationHandler.Add(new OperationHandler("/request/encrypt.php", OnEncrypt));

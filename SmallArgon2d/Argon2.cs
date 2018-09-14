@@ -59,18 +59,11 @@ namespace SmallArgon2d
         }
 
         /// <summary>
-        /// Implementation of GetString
+        /// Implementation of GetEncoded
         /// </summary>
-        public string GetEncoded(int bc)
+        public string GetEncoded(string hash)
         {
-            ValidateParameters(bc);
-
-            string Hash = "";
-            byte[] HashBytes = GetBytesAsyncImpl(bc);
-            foreach (byte b in HashBytes)
-                Hash += b.ToString("X2");
-
-            return $"PHS={GetType().Name};Version={Version};Iterations={Iterations};MemorySize={MemorySize};Hash={Hash}";
+            return $"PHS={GetType().Name};Version={Version};Iterations={Iterations};MemorySize={MemorySize};Hash={hash}";
         }
 
         internal abstract Argon2Core BuildCore(int bc);

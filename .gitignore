@@ -262,4 +262,4 @@ __pycache__/
 
 /AppCSHtml5/Properties/*.cs
 /AppCSHtml5/*
-/NetTools/SecretUuid.cs
+#/NetTools/SecretUuid.cs
