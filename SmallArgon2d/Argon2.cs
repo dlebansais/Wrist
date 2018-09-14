@@ -37,7 +37,7 @@ namespace SmallArgon2d
         /// <summary>
         /// Any extra associated data to use while hashing the password
         /// </summary>
-        public byte[] AssociatedData { get; set; }
+        public int AssociatedUse { get; set; }
 
         /// <summary>
         /// The number of iterations to apply to the password hash
@@ -63,7 +63,7 @@ namespace SmallArgon2d
         /// </summary>
         public string GetEncoded(string hash)
         {
-            return $"PHS={GetType().Name};Version={Version};Iterations={Iterations};MemorySize={MemorySize};Hash={hash}";
+            return $"PHS={GetType().Name};Version={Version};Iterations={Iterations};MemorySize={MemorySize};AssociatedUse={AssociatedUse};Hash={hash}";
         }
 
         internal abstract Argon2Core BuildCore(int bc);
@@ -85,7 +85,7 @@ namespace SmallArgon2d
             Argon2Core n = BuildCore(bc);
             n.Salt = Salt;
             n.Secret = KnownSecret;
-            n.AssociatedData = AssociatedData;
+            n.AssociatedData = BitConverter.GetBytes(AssociatedUse);
             n.Iterations = Iterations;
             n.MemorySize = MemorySize;
 

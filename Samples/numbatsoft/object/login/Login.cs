@@ -28,6 +28,12 @@ namespace AppCSHtml5
             EmailAlreadyUsed = 8,
         }
 
+        public enum EncryptionUse
+        {
+            Password = 1,
+            SecretAnswer,
+        }
+
         public Login()
         {
             Name = Persistent.GetValue("name", null);
@@ -57,7 +63,7 @@ namespace AppCSHtml5
         public bool HasQuestion { get { return !string.IsNullOrEmpty(RecoveryQuestion); } }
 
         #region Encryption
-        public string EncryptedValue(string value, byte[] salt)
+        public string EncryptedValue(string value, byte[] salt, EncryptionUse use)
         {
             using (Argon2d Argon2 = new Argon2d(Encoding.UTF8.GetBytes(value)))
             {
@@ -65,6 +71,7 @@ namespace AppCSHtml5
                 Argon2.KnownSecret = SecretUuid.GuidBytes;
                 Argon2.Iterations = 1;
                 Argon2.MemorySize = 1024;
+                Argon2.AssociatedUse = (int)use;
                 byte[] Hash = Argon2.GetBytes(128);
                 string EncodedHash = Argon2.GetEncoded(HashTools.GetString(Hash));
 
@@ -118,7 +125,6 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success)
             {
-                //CheckIfNameTaken(name, password, email, question, answer);
                 Dictionary<string, string> NewCredentialResult = (Dictionary<string, string>)result;
                 string SaltString = NewCredentialResult["salt"];
                 SaltString = MixedSalt(SaltString);
@@ -126,15 +132,11 @@ namespace AppCSHtml5
                 byte[] Salt;
                 if (HashTools.TryParse(SaltString, out Salt))
                 {
-                    string EncryptedPassword = EncryptedValue(password, Salt);
-                    Debug.WriteLine("EncryptedPassword: " + EncryptedPassword);
+                    string EncryptedPassword = EncryptedValue(password, Salt, EncryptionUse.Password);
 
                     string EncryptedAnswer;
                     if (!string.IsNullOrEmpty(answer))
-                    {
-                        EncryptedAnswer = EncryptedValue(answer, Salt);
-                        Debug.WriteLine("EncryptedAnswer: " + EncryptedAnswer);
-                    }
+                        EncryptedAnswer = EncryptedValue(answer, Salt, EncryptionUse.SecretAnswer);
                     else
                         EncryptedAnswer = "";
 
@@ -154,63 +156,10 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.register_failed_4Page);
         }
 
-        private void CheckIfNameTaken(string name, string password, string email, string question, string answer)
-        {
-            GetUserInfo(name, (int checkError, object checkResult) => Register_OnNameChecked(checkError, checkResult, name, password, email, question, answer));
-        }
-
-        private void Register_OnNameChecked(int error, object result, string name, string password, string email, string question, string answer)
-        {
-            if (error == (int)ErrorCodes.ErrorNotFound)
-            {
-                CheckIfEmailTaken(email, (int checkError, object checkResult) => Register_OnEmailChecked(checkError, checkResult, name, password, email, question, answer));
-            }
-            else if (error == (int)ErrorCodes.Success)
-                (App.Current as App).GoTo(PageNames.register_failed_5Page);
-            else
-                (App.Current as App).GoTo(PageNames.register_failed_4Page);
-        }
-
-        private void Register_OnEmailChecked(int error, object result, string name, string password, string email, string question, string answer)
-        {
-            if (error == (int)ErrorCodes.ErrorNotFound)
-            {
-                EncryptString(password, name, (int encryptError, object encryptResult) => Register_OnTestPasswordEncrypted(encryptError, encryptResult, name, email, question, answer));
-            }
-            else if (error == (int)ErrorCodes.Success)
-                (App.Current as App).GoTo(PageNames.register_failed_6Page);
-            else
-                (App.Current as App).GoTo(PageNames.register_failed_4Page);
-        }
-
-        private void Register_OnTestPasswordEncrypted(int error, object result, string name, string email, string question, string answer)
-        {
-            if (error == (int)ErrorCodes.Success)
-            {
-                string EncryptedPassword = (string)result;
-                EncryptString(answer, name, (int encryptError, object encryptResult) => Register_OnRecoveryAnswerEncrypted(encryptError, encryptResult, name, EncryptedPassword, email, question));
-            }
-            else
-                (App.Current as App).GoTo(PageNames.register_failed_4Page);
-        }
-
-        private void Register_OnRecoveryAnswerEncrypted(int error, object result, string name, string encryptedPassword, string email, string question)
-        {
-            if (error == (int)ErrorCodes.Success)
-            {
-                string EncryptedAnswer = (string)result;
-                RegisterAndSendEmail(name, encryptedPassword, email, question, EncryptedAnswer, "", (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
-            }
-            else
-                (App.Current as App).GoTo(PageNames.register_failed_4Page);
-        }
-
         private void Register_OnEmailSent(int error, object result)
         {
             if (error == (int)ErrorCodes.Success)
-            {
                 (App.Current as App).GoTo(PageNames.registration_startedPage);
-            }
             else
                 (App.Current as App).GoTo(PageNames.register_failed_4Page);
         }
