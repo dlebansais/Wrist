@@ -54,8 +54,10 @@
         public static string GetString(byte[] hash)
         {
             string HashString = "";
-            for (int i = 0; i < hash.Length; i++)
-                HashString += hash[i].ToString("X2");
+
+            if (hash != null)
+                for (int i = 0; i < hash.Length; i++)
+                    HashString += hash[i].ToString("X2");
 
             return HashString;
         }

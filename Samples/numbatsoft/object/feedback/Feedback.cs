@@ -35,7 +35,7 @@ namespace AppCSHtml5
         private void SendFeedback(string content, Action<int, object> callback)
         {
             Database.Completed += OnSendFeedbackCompleted;
-            Database.Query(new DatabaseQueryOperation("send feedback", "update_7.php", new Dictionary<string, string>() { { "content", HtmlString.Entities(content) } }, callback));
+            Database.Query(new DatabaseQueryOperation("send feedback", "update_7.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, callback));
         }
 
         private void OnSendFeedbackCompleted(object sender, CompletionEventArgs e)

@@ -205,7 +205,7 @@ namespace NetTools
 
         public Dictionary<string, string> ProcessSingleResponse(DatabaseOperation operation, List<string> keyList)
         {
-            Dictionary<string, string>  Result = null;
+            Dictionary<string, string> Result = null;
 
             if (RequestResultTable.ContainsKey(operation))
             {
