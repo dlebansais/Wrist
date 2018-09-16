@@ -6,14 +6,8 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class Language : ILanguage
+    public class Language : ObjectBase, ILanguage
     {
-        public Translation GetTranslation { get { return App.GetTranslation; } }
-        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ISignIn GetSignIn { get { return App.GetSignIn; } }
-        public ISignUp GetSignUp { get { return App.GetSignUp; } }
-
         public ObservableCollection<string> KeepActiveOptions
         {
             get

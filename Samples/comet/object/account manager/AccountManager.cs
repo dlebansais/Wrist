@@ -6,7 +6,7 @@ using Windows.UI.Xaml;
 
 namespace AppCSHtml5
 {
-    public class AccountManager : IAccountManager
+    public class AccountManager : ObjectBase, IAccountManager
     {
         public AccountManager()
         {
@@ -20,12 +20,6 @@ namespace AppCSHtml5
 
             _ChangeMethodIndex = -1;
         }
-
-        public Translation GetTranslation { get { return App.GetTranslation; } }
-        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ISignIn GetSignIn { get { return App.GetSignIn; } }
-        public ISignUp GetSignUp { get { return App.GetSignUp; } }
 
         public IAccount SignedInAccount { get; private set; }
 

@@ -4,19 +4,13 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class SignIn : ISignIn
+    public class SignIn : ObjectBase, ISignIn
     {
         public SignIn()
         {
             KeepActiveIndex = -1;
             _SignInMethod = SignInMethods.None;
         }
-
-        public Translation GetTranslation { get { return App.GetTranslation; } }
-        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ISignIn GetSignIn { get { return App.GetSignIn; } }
-        public ISignUp GetSignUp { get { return App.GetSignUp; } }
 
         public string Name
         {

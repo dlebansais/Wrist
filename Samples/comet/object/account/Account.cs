@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace AppCSHtml5
 {
-    public class Account : IAccount
+    public class Account : ObjectBase, IAccount
     {
         public Account(string email, SignInMethods signInMethod, string username, string password)
         {
@@ -14,12 +14,6 @@ namespace AppCSHtml5
             Password = (signInMethod == SignInMethods.NameAndPassword ? password : null);
             KeepActiveIndex = -1;
         }
-
-        public Translation GetTranslation { get { return App.GetTranslation; } }
-        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ISignIn GetSignIn { get { return App.GetSignIn; } }
-        public ISignUp GetSignUp { get { return App.GetSignUp; } }
 
         public string Email { get; private set; }
         public SignInMethods SignInMethod { get; private set; }

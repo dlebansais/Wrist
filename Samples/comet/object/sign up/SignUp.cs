@@ -11,19 +11,13 @@ namespace AppCSHtml5
         NameAlreadyInUse,
     }
 
-    public class SignUp : ISignUp
+    public class SignUp : ObjectBase, ISignUp
     {
         public SignUp()
         {
             _SignInMethod = SignInMethods.None;
             KeepActiveIndex = -1;
         }
-
-        public Translation GetTranslation { get { return App.GetTranslation; } }
-        public IAccountManager GetAccountManager { get { return App.GetAccountManager; } }
-        public ILanguage GetLanguage { get { return App.GetLanguage; } }
-        public ISignIn GetSignIn { get { return App.GetSignIn; } }
-        public ISignUp GetSignUp { get { return App.GetSignUp; } }
 
         public bool IsReady
         {
