@@ -23,10 +23,34 @@ namespace AppCSHtml5
 
         public Language()
         {
-            LanguageState = ((Persistent.GetValue("language", "english") == "french") ? LanguageStates.French : LanguageStates.English);
+            string SystemLanguage = Translation.Selected;
+            Debug.WriteLine("System set the language to " + SystemLanguage);
+
+            string UserLanguage = Persistent.GetValue("language", null);
+            if (UserLanguage == null)
+                UserLanguage = SystemLanguage;
+            else
+            {
+                Debug.WriteLine("User set the language to " + UserLanguage);
+
+                Translation TranslationObject = GetTranslation;
+                if (TranslationObject != null)
+                {
+                    Debug.WriteLine("Setting language to " + UserLanguage);
+                    TranslationObject.SetLanguage(UserLanguage);
+                }
+                else
+                {
+                    Translation.SetSelected(UserLanguage);
+                    UserLanguage = Translation.Selected;
+                }
+            }
+
+            Debug.WriteLine("Language: " + UserLanguage);
+            LanguageState = ((UserLanguage == "fr-FR") ? LanguageStates.French : LanguageStates.English);
         }
 
-        public LanguageStates LanguageState { get; set; } = LanguageStates.English;
+        public LanguageStates LanguageState { get; set; }
 
         public bool IsTranslated
         {
@@ -68,18 +92,25 @@ namespace AppCSHtml5
 
         public void On_Switch(PageNames pageName, string sourceName, string sourceContent)
         {
-            LanguageState = (LanguageState == LanguageStates.English) ? LanguageStates.French : LanguageStates.English;
+            LanguageStates NewState = (LanguageState == LanguageStates.English) ? LanguageStates.French : LanguageStates.English;
+            string LanguageName = StateToLanguage[NewState];
+            App.GetTranslation.SetLanguage(LanguageName);
+            string UserLanguage = Translation.Selected;
 
-            Persistent.SetValue("language", LanguageState.ToString().ToLower());
-            App.GetTranslation.SetLanguage(StateToLanguage[LanguageState]);
+            Persistent.SetValue("language", UserLanguage);
+            LanguageState = ((UserLanguage == "fr-FR") ? LanguageStates.French : LanguageStates.English);
 
             NotifyPropertyChanged(nameof(LanguageState));
         }
 
+        private void OnLanguageSwitched(LanguageStates newState)
+        {
+        }
+
         private Dictionary<LanguageStates, string> StateToLanguage = new Dictionary<LanguageStates, string>()
         {
-            { LanguageStates.English, "English" },
-            { LanguageStates.French, "Français" },
+            { LanguageStates.English, "en-US" },
+            { LanguageStates.French, "fr-FR" },
         };
 
         public static string ReplaceHtml(string text)

@@ -35,12 +35,30 @@ namespace Parser
         {
             cSharpWriter.WriteLine("using System.Collections.Generic;");
             cSharpWriter.WriteLine("using System.ComponentModel;");
+            cSharpWriter.WriteLine("using System.Globalization;");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"namespace {appNamespace}");
             cSharpWriter.WriteLine("{");
             cSharpWriter.WriteLine("    public class Translation");
             cSharpWriter.WriteLine("    {");
-            cSharpWriter.WriteLine("        public IDictionary<string, IDictionary<string, string>> AllStrings { get; } = new Dictionary<string, IDictionary<string, string>>()");
+            cSharpWriter.WriteLine("        static Translation()");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            string CurrentCultureName = CultureInfo.CurrentCulture.Name;");
+            cSharpWriter.WriteLine("            if (CurrentCultureName != null && AllStrings.ContainsKey(CurrentCultureName))");
+            cSharpWriter.WriteLine("                Selected = CurrentCultureName;");
+            cSharpWriter.WriteLine("            else");
+            cSharpWriter.WriteLine("                Selected = \"en-US\";");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        public static void SetSelected(string language)");
+            cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            if (language != Selected && AllStrings.ContainsKey(language))");
+            cSharpWriter.WriteLine("                Selected = language;");
+            cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        public static string Selected { get; private set; }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        public static IDictionary<string, IDictionary<string, string>> AllStrings { get; } = new Dictionary<string, IDictionary<string, string>>()");
             cSharpWriter.WriteLine("        {");
 
             string FirstLanguage = null;
@@ -71,18 +89,19 @@ namespace Parser
 
             cSharpWriter.WriteLine("        };");
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        public IDictionary<string, string> Strings { get; private set; }");
-            cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public Translation()");
             cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine($"            Strings = AllStrings[\"{FirstLanguage}\"];");
+            cSharpWriter.WriteLine("            Strings = AllStrings[Selected];");
             cSharpWriter.WriteLine("        }");
+            cSharpWriter.WriteLine();
+            cSharpWriter.WriteLine("        public IDictionary<string, string> Strings { get; private set; }");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void SetLanguage(string language)");
             cSharpWriter.WriteLine("        {");
-            cSharpWriter.WriteLine("            if (AllStrings.ContainsKey(language))");
+            cSharpWriter.WriteLine("            if (language != Selected && AllStrings.ContainsKey(language))");
             cSharpWriter.WriteLine("            {");
-            cSharpWriter.WriteLine("                Strings = AllStrings[language];");
+            cSharpWriter.WriteLine("                Selected = language;");
+            cSharpWriter.WriteLine("                Strings = AllStrings[Selected];");
             cSharpWriter.WriteLine("                NotifyLanguageChanged();");
             cSharpWriter.WriteLine("            }");
             cSharpWriter.WriteLine("        }");
