@@ -63,6 +63,44 @@ namespace AppCSHtml5
         public bool HasQuestion { get { return !string.IsNullOrEmpty(RecoveryQuestion); } }
         private byte[] Salt;
 
+        public void On_CheckLoggedIn(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            switch (pageName)
+            {
+                case PageNames.accountPage:
+                case PageNames.change_emailPage:
+                case PageNames.change_email_failed_1Page:
+                case PageNames.change_email_failed_2Page:
+                case PageNames.change_email_failed_3Page:
+                case PageNames.change_email_failed_4Page:
+                case PageNames.change_email_failed_5Page:
+                case PageNames.change_email_successPage:
+                case PageNames.change_passwordPage:
+                case PageNames.change_password_failed_1Page:
+                case PageNames.change_password_failed_2Page:
+                case PageNames.change_password_failed_3Page:
+                case PageNames.change_password_failed_4Page:
+                case PageNames.change_password_failed_5Page:
+                case PageNames.change_password_successPage:
+                case PageNames.change_recoveryPage:
+                case PageNames.change_recovery_failed_1Page:
+                case PageNames.change_recovery_failed_2Page:
+                case PageNames.change_recovery_failed_3Page:
+                case PageNames.change_recovery_failed_4Page:
+                case PageNames.change_recovery_failed_5Page:
+                case PageNames.change_recovery_successPage:
+                    if (LoginState != LoginStates.SignedIn)
+                        destinationPageName = PageNames.loginPage;
+                    else
+                        destinationPageName = pageName;
+                    break;
+
+                default:
+                    destinationPageName = pageName;
+                    break;
+            }
+        }
+
         #region Encryption
         public string EncryptedValue(string value, byte[] salt, EncryptionUse use)
         {
