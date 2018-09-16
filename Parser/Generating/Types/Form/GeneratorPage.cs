@@ -336,10 +336,20 @@ namespace Parser
                         cSharpWriter.WriteLine();
                         cSharpWriter.WriteLine($"        public void {HandlerName}(object sender, RoutedEventArgs e)");
                         cSharpWriter.WriteLine("        {");
-
                         cSharpWriter.WriteLine("            ListBox Ctrl = (ListBox)sender;");
                         cSharpWriter.WriteLine($"            {ObjectName} Item = ({ObjectName})Ctrl.DataContext;");
                         cSharpWriter.WriteLine($"            Item.NotifyPropertyChanged(nameof({ObjectName}.{ObjectPropertyName}));");
+                        cSharpWriter.WriteLine("        }");
+                    }
+
+                    else if (Component is IGeneratorComponentPasswordEdit AsPasswordEdit)
+                    {
+                        cSharpWriter.WriteLine();
+                        cSharpWriter.WriteLine($"        public void {HandlerName}(object sender, RoutedEventArgs e)");
+                        cSharpWriter.WriteLine("        {");
+                        cSharpWriter.WriteLine("            PasswordBox Ctrl = (PasswordBox)sender;");
+                        cSharpWriter.WriteLine($"            string BindingName = $\"{{nameof({ObjectName})}}.{{nameof({ObjectName}.{ObjectPropertyName})}}\";");
+                        cSharpWriter.WriteLine("            GetApp.AddPasswordControl(BindingName, Ctrl);");
                         cSharpWriter.WriteLine("        }");
                     }
                 }

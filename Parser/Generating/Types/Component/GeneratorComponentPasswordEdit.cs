@@ -34,10 +34,11 @@ namespace Parser
             string Indentation = GeneratorLayout.IndentationString(indentation);
             string MaximumLengthProperty = ((TextObjectProperty != null && TextObjectProperty.MaximumLength > 0) ? $" MaxLength=\"{TextObjectProperty.MaximumLength}\"" : "");
             string Properties = $" Style=\"{{StaticResource {GetStyleResourceKey(design, styleName)}}}\"{MaximumLengthProperty}";
-            string Value = GetComponentValue(currentPage, currentObject, null, TextObject, TextObjectProperty, null, true);
-            string ValueChangedEvent = currentPage.Dynamic.HasProperties ? $" PasswordChanged=\"{PasswordChangedEventName}\"" : "";
+            //string Value = GetComponentValue(currentPage, currentObject, null, TextObject, TextObjectProperty, null, true);
+            string Events = currentPage.Dynamic.HasProperties ? $" Loaded=\"{LoadedEventName}\" PasswordChanged=\"{PasswordChangedEventName}\"" : "";
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding} Password=\"{Value}\"{ValueChangedEvent}{Properties}{elementProperties}/>");
+            //colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding} Password=\"{Value}\"{ValueChangedEvent}{LoadedEvent}{Properties}{elementProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<PasswordBox x:Name=\"{ControlName}\"{attachedProperties}{visibilityBinding}{Events}{Properties}{elementProperties}/>");
         }
 
         public string GetStyleResourceKey(IGeneratorDesign design, string styleName)
@@ -48,6 +49,11 @@ namespace Parser
         public string PasswordChangedEventName
         {
             get { return GetChangedHandlerName(TextObject, TextObjectProperty); }
+        }
+
+        public string LoadedEventName
+        {
+            get { return GetLoadedHandlerName(TextObject, TextObjectProperty); }
         }
 
         public IGeneratorObject BoundObject { get { return TextObject; } }

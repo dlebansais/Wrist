@@ -99,27 +99,30 @@ namespace AppCSHtml5
         #region Register
         public void On_Register(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(Email) || !Email.Contains("@"))
+            string PasswordValue;
+            string AnswerValue;
+
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
+
+            if (string.IsNullOrEmpty(Name) || !IsPasswordValid || string.IsNullOrEmpty(Email) || !Email.Contains("@"))
                 destinationPageName = PageNames.register_failed_1Page;
 
-            else if (!string.IsNullOrEmpty(RecoveryQuestion) && string.IsNullOrEmpty(RecoveryAnswer))
+            else if (!string.IsNullOrEmpty(RecoveryQuestion) && !IsAnswerValid)
                 destinationPageName = PageNames.register_failed_2Page;
 
-            else if (string.IsNullOrEmpty(RecoveryQuestion) && !string.IsNullOrEmpty(RecoveryAnswer))
+            else if (string.IsNullOrEmpty(RecoveryQuestion) && IsAnswerValid)
                 destinationPageName = PageNames.register_failed_3Page;
 
             else
             {
-                if (string.IsNullOrEmpty(RecoveryQuestion) || string.IsNullOrEmpty(RecoveryAnswer))
-                    StartRegister(Name, Password, Email, "", "");
+                if (string.IsNullOrEmpty(RecoveryQuestion) || !IsAnswerValid)
+                    StartRegister(Name, PasswordValue, Email, "", "");
                 else
-                    StartRegister(Name, Password, Email, RecoveryQuestion, RecoveryAnswer);
+                    StartRegister(Name, PasswordValue, Email, RecoveryQuestion, AnswerValue);
 
                 destinationPageName = PageNames.CurrentPage;
             }
-
-            Password = null;
-            RecoveryAnswer = null;
         }
 
         private void StartRegister(string name, string password, string email, string question, string answer)
@@ -207,24 +210,27 @@ namespace AppCSHtml5
                 Persistent.SetValue("remember", null);
             }
 
-            if (string.IsNullOrEmpty(Password))
+            string PasswordValue;
+            string AnswerValue;
+
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
+
+            if (!IsPasswordValid)
                 destinationPageName = PageNames.registration_end_failed_1Page;
 
-            else if (HasQuestion && string.IsNullOrEmpty(RecoveryAnswer))
+            else if (HasQuestion && !IsAnswerValid)
                 destinationPageName = PageNames.registration_end_failed_2Page;
 
             else
             {
-                string EncryptedPassword = EncryptedValue(Password, Salt, EncryptionUse.Password);
-                string EncryptedAnswer = HasQuestion ? EncryptedValue(RecoveryAnswer, Salt, EncryptionUse.SecretAnswer) : "";
+                string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
+                string EncryptedAnswer = HasQuestion ? EncryptedValue(AnswerValue, Salt, EncryptionUse.SecretAnswer) : "";
 
                 ActivateAccountAndSendEmail(Name, Email, EncryptedPassword, EncryptedAnswer, (int checkError, object checkResult) => CompleteRegistration_AccountActivated(checkError, checkResult, Remember));
 
                 destinationPageName = PageNames.CurrentPage;
             }
-
-            Password = null;
-            RecoveryAnswer = null;
         }
 
         private void CompleteRegistration_AccountActivated(int error, object result, bool remember)
@@ -270,27 +276,26 @@ namespace AppCSHtml5
                 Persistent.SetValue("remember", null);
             }
 
-            if (string.IsNullOrEmpty(Name))
+            string PasswordValue;
+            if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
                 destinationPageName = PageNames.login_failedPage;
 
-            else if (string.IsNullOrEmpty(Password))
+            else if (string.IsNullOrEmpty(Name))
                 destinationPageName = PageNames.login_failedPage;
 
             else
             {
-                StartLogin(Name, Password, Remember);
+                StartLogin(Name, PasswordValue, Remember);
                 destinationPageName = PageNames.CurrentPage;
             }
-
-            Password = null;
         }
 
-        private void StartLogin(string name, string testPassword, bool remember)
+        private void StartLogin(string name, string currentPassword, bool remember)
         {
-            GetUserSalt(name, (int getError, object getResult) => Login_OnSaltReceived(getError, getResult, name, testPassword, remember));
+            GetUserSalt(name, (int getError, object getResult) => Login_OnSaltReceived(getError, getResult, name, currentPassword, remember));
         }
 
-        private void Login_OnSaltReceived(int error, object result, string name, string testPassword, bool remember)
+        private void Login_OnSaltReceived(int error, object result, string name, string currentPassword, bool remember)
         {
             if (error == (int)ErrorCodes.Success)
             {
@@ -300,8 +305,8 @@ namespace AppCSHtml5
                 byte[] TestSalt;
                 if (HashTools.TryParse(SaltString, out TestSalt))
                 {
-                    string EncryptedPassword = EncryptedValue(testPassword, TestSalt, EncryptionUse.Password);
-                    SignIn(name, EncryptedPassword, (int signInError, object signInResult) => Login_OnSignIn(signInError, signInResult, TestSalt, remember));
+                    string EncryptedCurrentPassword = EncryptedValue(currentPassword, TestSalt, EncryptionUse.Password);
+                    SignIn(name, EncryptedCurrentPassword, (int signInError, object signInResult) => Login_OnSignIn(signInError, signInResult, TestSalt, remember));
                 }
                 else
                 {
@@ -368,27 +373,31 @@ namespace AppCSHtml5
         #region Change Password
         public void On_ChangePassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            if (string.IsNullOrEmpty(Password))
+            string PasswordValue;
+            string NewPasswordValue;
+            string ConfirmPasswordValue;
+
+            bool IsCurrentPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
+            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.NewPassword)}", out NewPasswordValue);
+            bool IsConfirmPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.ConfirmPassword)}", out ConfirmPasswordValue);
+
+            if (!IsCurrentPasswordValid)
                 destinationPageName = PageNames.change_password_failed_1Page;
 
-            else if (string.IsNullOrEmpty(NewPassword) || string.IsNullOrEmpty(ConfirmPassword))
+            else if (!IsNewPasswordValid || !IsConfirmPasswordValid)
                 destinationPageName = PageNames.change_password_failed_2Page;
 
-            else if (NewPassword != ConfirmPassword)
+            else if (NewPasswordValue != ConfirmPasswordValue)
                 destinationPageName = PageNames.change_password_failed_3Page;
 
             else
             {
-                string EncryptedCurrentPassword = EncryptedValue(Password, Salt, EncryptionUse.Password);
-                string EncryptedNewPassword = EncryptedValue(NewPassword, Salt, EncryptionUse.Password);
+                string EncryptedCurrentPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
+                string EncryptedNewPassword = EncryptedValue(NewPasswordValue, Salt, EncryptionUse.Password);
                 ChangePassword(Name, EncryptedCurrentPassword, EncryptedNewPassword, ChangePassword_OnPasswordChanged);
 
                 destinationPageName = PageNames.CurrentPage;
             }
-
-            Password = null;
-            NewPassword = null;
-            ConfirmPassword = null;
         }
 
         private void ChangePassword_OnPasswordChanged(int error, object result)
@@ -405,7 +414,8 @@ namespace AppCSHtml5
         #region Change Email
         public void On_ChangeEmail(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            if (string.IsNullOrEmpty(Password))
+            string PasswordValue;
+            if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
                 destinationPageName = PageNames.change_email_failed_1Page;
 
             else if (string.IsNullOrEmpty(NewEmail))
@@ -416,13 +426,11 @@ namespace AppCSHtml5
 
             else
             {
-                string EncryptedPassword = EncryptedValue(Password, Salt, EncryptionUse.Password);
+                string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
                 ChangeEmail(Name, EncryptedPassword, NewEmail, (int changeError, object changeResult) => ChangeEmail_OnEmailChanged(changeError, changeResult, NewEmail));
 
                 destinationPageName = PageNames.CurrentPage;
             }
-
-            Password = null;
         }
 
         private void ChangeEmail_OnEmailChanged(int error, object result, string newEmail)
@@ -443,33 +451,37 @@ namespace AppCSHtml5
         #region Change Recovery
         public void On_ChangeRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            if (string.IsNullOrEmpty(Password))
+            string PasswordValue;
+            string AnswerValue;
+            string ConfirmAnswerValue;
+
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
+            bool IsConfirmAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.ConfirmAnswer)}", out ConfirmAnswerValue);
+
+            if (!IsPasswordValid)
                 destinationPageName = PageNames.change_recovery_failed_1Page;
 
-            else if (string.IsNullOrEmpty(NewQuestion) && string.IsNullOrEmpty(RecoveryAnswer) && string.IsNullOrEmpty(ConfirmAnswer))
+            else if (string.IsNullOrEmpty(NewQuestion) && !IsAnswerValid && !IsConfirmAnswerValid)
             {
-                string EncryptedPassword = EncryptedValue(Password, Salt, EncryptionUse.Password);
+                string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
                 ChangeRecovery(Name, EncryptedPassword, "", "", (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, NewQuestion));
                 destinationPageName = PageNames.CurrentPage;
             }
 
-            else if (string.IsNullOrEmpty(NewQuestion) || string.IsNullOrEmpty(RecoveryAnswer) || string.IsNullOrEmpty(ConfirmAnswer))
+            else if (string.IsNullOrEmpty(NewQuestion) || !IsAnswerValid || !IsConfirmAnswerValid)
                 destinationPageName = PageNames.change_recovery_failed_2Page;
 
-            else if (RecoveryAnswer != ConfirmAnswer)
+            else if (AnswerValue != ConfirmAnswerValue)
                 destinationPageName = PageNames.change_recovery_failed_3Page;
 
             else
             {
-                string EncryptedPassword = EncryptedValue(Password, Salt, EncryptionUse.Password);
-                string EncryptedNewAnswer = EncryptedValue(RecoveryAnswer, Salt, EncryptionUse.SecretAnswer);
+                string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
+                string EncryptedNewAnswer = EncryptedValue(AnswerValue, Salt, EncryptionUse.SecretAnswer);
                 ChangeRecovery(Name, EncryptedPassword, NewQuestion, EncryptedNewAnswer, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, NewQuestion));
                 destinationPageName = PageNames.CurrentPage;
             }
-
-            Password = null;
-            RecoveryAnswer = null;
-            ConfirmAnswer = null;
         }
 
         private void ChangeRecovery_OnRecoveryChanged(int error, object result, string newQuestion)
@@ -553,23 +565,26 @@ namespace AppCSHtml5
 
         public void On_CompleteRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            if (string.IsNullOrEmpty(RecoveryAnswer))
+            string AnswerValue;
+            string NewPasswordValue;
+
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
+            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.NewPassword)}", out NewPasswordValue);
+
+            if (!IsAnswerValid)
                 destinationPageName = PageNames.recovery_end_failed_1Page;
 
-            else if (string.IsNullOrEmpty(NewPassword))
+            else if (!IsNewPasswordValid)
                 destinationPageName = PageNames.recovery_end_failed_2Page;
 
             else
             {
-                string EncryptedAnswer = EncryptedValue(RecoveryAnswer, Salt, EncryptionUse.SecretAnswer);
-                string EncryptedNewPassword = EncryptedValue(NewPassword, Salt, EncryptionUse.Password);
+                string EncryptedAnswer = EncryptedValue(AnswerValue, Salt, EncryptionUse.SecretAnswer);
+                string EncryptedNewPassword = EncryptedValue(NewPasswordValue, Salt, EncryptionUse.Password);
 
                 RecoverAccount(Name, EncryptedAnswer, EncryptedNewPassword, CompleteRecovery_OnGetUserInfo);
                 destinationPageName = PageNames.CurrentPage;
             }
-
-            NewPassword = null;
-            RecoveryAnswer = null;
         }
 
         private void CompleteRecovery_OnGetUserInfo(int error, object result)
