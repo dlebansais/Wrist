@@ -73,20 +73,20 @@ namespace AppCSHtml5
 
         private void OnNewsReceived(int error, object result)
         {
-            if (error != (int)ErrorCodes.Success)
-                return;
-
-            List<Dictionary<string, string>> NewsList = (List<Dictionary<string, string>>)result;
-            Debug.WriteLine($"{NewsList.Count} news entries received");
-
-            foreach (Dictionary<string, string> Item in NewsList)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
-                NewsEntry NewEntry = new NewsEntry(Item["created"], Item["enu_summary"], Item["enu_content"], Item["fra_summary"], Item["fra_content"]);
-                _AllNews.Add(NewEntry);
-            }
+                List<Dictionary<string, string>> NewsList = (List<Dictionary<string, string>>)result;
+                Debug.WriteLine($"{NewsList.Count} news entries received");
 
-            NotifyPropertyChanged(nameof(LastNews));
-            NotifyPropertyChanged(nameof(ArchiveNews));
+                foreach (Dictionary<string, string> Item in NewsList)
+                {
+                    NewsEntry NewEntry = new NewsEntry(Item["created"], Item["enu_summary"], Item["enu_content"], Item["fra_summary"], Item["fra_content"]);
+                    _AllNews.Add(NewEntry);
+                }
+
+                NotifyPropertyChanged(nameof(LastNews));
+                NotifyPropertyChanged(nameof(ArchiveNews));
+            }
         }
 
         #region Operations

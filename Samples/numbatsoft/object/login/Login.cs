@@ -170,7 +170,7 @@ namespace AppCSHtml5
 
         private void Register_OnNewCredentialReceived(int error, object result, string name, string password, string email, string question, string answer)
         {
-            if (error == (int)ErrorCodes.Success)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
                 Dictionary<string, string> NewCredentialResult = (Dictionary<string, string>)result;
                 string SaltString = NewCredentialResult["salt"];
@@ -273,7 +273,7 @@ namespace AppCSHtml5
 
         private void CompleteRegistration_AccountActivated(int error, object result, bool remember)
         {
-            if (error == (int)ErrorCodes.Success)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
                 if (remember)
@@ -335,7 +335,7 @@ namespace AppCSHtml5
 
         private void Login_OnSaltReceived(int error, object result, string name, string currentPassword, bool remember)
         {
-            if (error == (int)ErrorCodes.Success)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
                 Dictionary<string, string> GetCredentialResult = (Dictionary<string, string>)result;
                 string SaltString = GetCredentialResult["salt"];
@@ -358,7 +358,7 @@ namespace AppCSHtml5
 
         private void Login_OnSignIn(int error, object result, byte[] TestSalt, bool remember)
         {
-            if (error == (int)ErrorCodes.Success)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
                 Dictionary<string, string> SignInResult = (Dictionary<string, string>)result;
                 Name = SignInResult["id"];
@@ -627,7 +627,7 @@ namespace AppCSHtml5
 
         private void CompleteRecovery_OnGetUserInfo(int error, object result)
         {
-            if (error == (int)ErrorCodes.Success)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
 

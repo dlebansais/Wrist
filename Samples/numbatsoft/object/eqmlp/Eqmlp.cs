@@ -79,19 +79,19 @@ namespace AppCSHtml5
 
         private void OnReleasesReceived(int error, object result)
         {
-            if (error != (int)ErrorCodes.Success)
-                return;
-
-            List<Dictionary<string, string>> ReleasesList = (List<Dictionary<string, string>>)result;
-            Debug.WriteLine($"{ReleasesList.Count} release notes received");
-
-            foreach (Dictionary<string, string> Item in ReleasesList)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
-                EqmlpReleaseNote NewEntry = new EqmlpReleaseNote(Item["created"], Item["revision"], Item["binary_path"], Item["readme_path"]);
-                _AllReleases.Add(NewEntry);
-            }
+                List<Dictionary<string, string>> ReleasesList = (List<Dictionary<string, string>>)result;
+                Debug.WriteLine($"{ReleasesList.Count} release notes received");
 
-            NotifyPropertyChanged(nameof(AllReleases));
+                foreach (Dictionary<string, string> Item in ReleasesList)
+                {
+                    EqmlpReleaseNote NewEntry = new EqmlpReleaseNote(Item["created"], Item["revision"], Item["binary_path"], Item["readme_path"]);
+                    _AllReleases.Add(NewEntry);
+                }
+
+                NotifyPropertyChanged(nameof(AllReleases));
+            }
         }
         #endregion
 
@@ -119,20 +119,20 @@ namespace AppCSHtml5
 
         private void OnBugsReceived(int error, object result)
         {
-            if (error != (int)ErrorCodes.Success)
-                return;
-
-            List<Dictionary<string, string>> BugsList = (List<Dictionary<string, string>>)result;
-            Debug.WriteLine($"{BugsList.Count} bugs received");
-
-            int issue = 1;
-            foreach (Dictionary<string, string> Item in BugsList)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
-                EqmlpBug NewEntry = new EqmlpBug(issue++, Item["appeared"], Item["severity"], Item["fixed"], Item["description"], Item["analysis"], Item["fix"], Item["binary_path"], Item["readme_path"]);
-                _AllBugs.Add(NewEntry);
-            }
+                List<Dictionary<string, string>> BugsList = (List<Dictionary<string, string>>)result;
+                Debug.WriteLine($"{BugsList.Count} bugs received");
 
-            NotifyPropertyChanged(nameof(AllBugs));
+                int issue = 1;
+                foreach (Dictionary<string, string> Item in BugsList)
+                {
+                    EqmlpBug NewEntry = new EqmlpBug(issue++, Item["appeared"], Item["severity"], Item["fixed"], Item["description"], Item["analysis"], Item["fix"], Item["binary_path"], Item["readme_path"]);
+                    _AllBugs.Add(NewEntry);
+                }
+
+                NotifyPropertyChanged(nameof(AllBugs));
+            }
         }
         #endregion
 
@@ -160,19 +160,19 @@ namespace AppCSHtml5
 
         private void OnOrganizationsReceived(int error, object result)
         {
-            if (error != (int)ErrorCodes.Success)
-                return;
-
-            List<Dictionary<string, string>> OrganizationsList = (List<Dictionary<string, string>>)result;
-            Debug.WriteLine($"{OrganizationsList.Count} organizations received");
-
-            foreach (Dictionary<string, string> Item in OrganizationsList)
+            if (error == (int)ErrorCodes.Success && result != null)
             {
-                EqmlpOrganization NewEntry = new EqmlpOrganization(Item["name"], Item["login_url"], Item["meeting_url"], Item["validation_url"]);
-                _AllOrganizations.Add(NewEntry);
-            }
+                List<Dictionary<string, string>> OrganizationsList = (List<Dictionary<string, string>>)result;
+                Debug.WriteLine($"{OrganizationsList.Count} organizations received");
 
-            NotifyPropertyChanged(nameof(AllOrganizations));
+                foreach (Dictionary<string, string> Item in OrganizationsList)
+                {
+                    EqmlpOrganization NewEntry = new EqmlpOrganization(Item["name"], Item["login_url"], Item["meeting_url"], Item["validation_url"]);
+                    _AllOrganizations.Add(NewEntry);
+                }
+
+                NotifyPropertyChanged(nameof(AllOrganizations));
+            }
         }
         #endregion
 
@@ -192,7 +192,11 @@ namespace AppCSHtml5
 
             List<Dictionary<string, string>> Result;
             if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "created", "revision", "binary_path", "readme_path" })) != null)
+            {
+                Debug.WriteLine("result != null");
+                Debug.WriteLine($"{Result.GetType().Name}");
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
+            }
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }

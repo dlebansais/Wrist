@@ -117,7 +117,7 @@ recovery-colon-1	Recovery question:	Question :
 recovery-colon-2		(Pour récupération)
 account-management-colon	Account management:	Gestion du compte :
 change-password	change password	changer le mot de passe
-change-email	change email address	changer l'addresse courriel
+change-email	change email address	changer l'adresse courriel
 change-recovery	change recovery question and answer	changer la question de récupération et sa réponse
 change-password-title	Change password	Changer le mot de passe
 change-password-text	Please enter your current password, followed by the new password with confirmation.	Veuillez entrer votre mot de passe actuel, suivi par le nouveau mot de passe avec confirmation.
@@ -125,14 +125,14 @@ current-password-colon	Current password:	Mot de passe actuel :
 new-password-colon	New password:	Nouveau :
 confirm-password-colon	Confirm password:	Confirmation :
 change	Change now	Changer
-change-email-title	Change email address	Changer l'addresse courriel
+change-email-title	Change email address	Changer l'adresse courriel
 change-email-text	Please enter your current password, followed by the new email address.	Veuillez entrer votre mot de passe actuel, et la nouvelle adresse courriel.
 change-email-failed-title	Changing the email address failed	Le changement d'adresse courriel a échoué
 change-email-failed-text-1	Sorry, you must enter your password to be able to change the email address.	Désolé, vous devez entrer un mot de passe pour pouvoir changer l'adresse courriel.
 change-email-failed-text-2	Sorry, you did not enter a new email address.	Désolé, vous n'avez pas entré une nouvelle adresse courriel.
 change-email-failed-text-3	Sorry, the email address you entered appears to be invalid.	Désolé, l'adresse courriel que vous avez entré semble incorrecte.
 change-email-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
-change-email-failed-text-5	Sorry, you misspelled your current password.	Désolé, vous avez entré un mot de passe erroné.
+change-email-failed-text-5	Sorry, you misspelled your current password, or this email address is taken.	Désolé, vous avez entré un mot de passe erroné, ou bien cette adresse est déjà prise.
 change-email-success-title	Email address changed	Adresse courriel changée
 change-email-success-text	Congratulation, your email address has been changed.	Félicitation, votre adresse courriel a bien été changée.
 change-password-failed-title	Changing the password failed	Le changement de mot de passe a échoué
