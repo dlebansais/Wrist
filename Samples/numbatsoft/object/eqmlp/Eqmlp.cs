@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -82,7 +81,6 @@ namespace AppCSHtml5
             if (error == (int)ErrorCodes.Success && result != null)
             {
                 List<Dictionary<string, string>> ReleasesList = (List<Dictionary<string, string>>)result;
-                Debug.WriteLine($"{ReleasesList.Count} release notes received");
 
                 foreach (Dictionary<string, string> Item in ReleasesList)
                 {
@@ -122,7 +120,6 @@ namespace AppCSHtml5
             if (error == (int)ErrorCodes.Success && result != null)
             {
                 List<Dictionary<string, string>> BugsList = (List<Dictionary<string, string>>)result;
-                Debug.WriteLine($"{BugsList.Count} bugs received");
 
                 int issue = 1;
                 foreach (Dictionary<string, string> Item in BugsList)
@@ -163,7 +160,6 @@ namespace AppCSHtml5
             if (error == (int)ErrorCodes.Success && result != null)
             {
                 List<Dictionary<string, string>> OrganizationsList = (List<Dictionary<string, string>>)result;
-                Debug.WriteLine($"{OrganizationsList.Count} organizations received");
 
                 foreach (Dictionary<string, string> Item in OrganizationsList)
                 {
@@ -185,18 +181,13 @@ namespace AppCSHtml5
 
         private void OnGetReleasesCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnGetReleasesCompleted notified");
             Database.Completed -= OnGetReleasesCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
             List<Dictionary<string, string>> Result;
             if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "created", "revision", "binary_path", "readme_path" })) != null)
-            {
-                Debug.WriteLine("result != null");
-                Debug.WriteLine($"{Result.GetType().Name}");
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
-            }
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
@@ -209,7 +200,6 @@ namespace AppCSHtml5
 
         private void OnGetBugsCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnGetBugsCompleted notified");
             Database.Completed -= OnGetBugsCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
@@ -229,7 +219,6 @@ namespace AppCSHtml5
 
         private void OnGetOrganizationsCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnGetOrganizationsCompleted notified");
             Database.Completed -= OnGetOrganizationsCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;

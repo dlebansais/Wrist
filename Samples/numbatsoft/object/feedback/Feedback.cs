@@ -3,7 +3,6 @@ using Presentation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -40,7 +39,6 @@ namespace AppCSHtml5
 
         private void OnSendFeedbackCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnSendFeedbackCompleted notified");
             Database.Completed -= OnSendFeedbackCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;

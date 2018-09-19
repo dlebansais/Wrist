@@ -1,10 +1,6 @@
-﻿using NetTools;
-using Presentation;
-using System;
+﻿using Presentation;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
@@ -24,21 +20,15 @@ namespace AppCSHtml5
         public Language()
         {
             string SystemLanguage = Translation.Selected;
-            Debug.WriteLine("System set the language to " + SystemLanguage);
 
             string UserLanguage = Persistent.GetValue("language", null);
             if (UserLanguage == null)
                 UserLanguage = SystemLanguage;
             else
             {
-                Debug.WriteLine("User set the language to " + UserLanguage);
-
                 Translation TranslationObject = GetTranslation;
                 if (TranslationObject != null)
-                {
-                    Debug.WriteLine("Setting language to " + UserLanguage);
                     TranslationObject.SetLanguage(UserLanguage);
-                }
                 else
                 {
                     Translation.SetSelected(UserLanguage);
@@ -46,7 +36,6 @@ namespace AppCSHtml5
                 }
             }
 
-            Debug.WriteLine("Language: " + UserLanguage);
             LanguageState = ((UserLanguage == "fr-FR") ? LanguageStates.French : LanguageStates.English);
         }
 

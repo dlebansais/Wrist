@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
 namespace Presentation
@@ -33,7 +27,7 @@ namespace Presentation
                 else if (StyleTable.ContainsKey(AsControl))
                 {
                     AsControl.Style = StyleTable[AsControl] as Style;
-                    Debug.WriteLine($"Control {AsControl.ToString()} enabled.");
+                    //Debug.WriteLine($"Control {AsControl.ToString()} enabled.");
                     if (AsControl is ListBox)
                         UpdateItems = true;
                 }
@@ -58,7 +52,7 @@ namespace Presentation
                         StyleTable.Add(AsControl, AsControl.Style);
 
                     AsControl.Style = DisabledStyle;
-                    Debug.WriteLine($"Control {AsControl.ToString()} disabled.");
+                    //Debug.WriteLine($"Control {AsControl.ToString()} disabled.");
                     if (AsControl is ListBox)
                         UpdateItems = true;
                 }
@@ -74,7 +68,7 @@ namespace Presentation
             if (UpdateItems)
             {
                 //ListBox lb = (ListBox)AsControl;
-                Debug.WriteLine("TODO: change item styles");
+                //Debug.WriteLine("TODO: change item styles");
             }
         }
     }

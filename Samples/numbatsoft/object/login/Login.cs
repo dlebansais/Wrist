@@ -4,7 +4,6 @@ using SmallArgon2d;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -42,8 +41,8 @@ namespace AppCSHtml5
             Remember = (Persistent.GetValue("remember", null) != null);
             LoginState = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
 
-            Database.DebugLog = true;
-            Database.DebugLogFullResponse = true;
+            //Database.DebugLog = true;
+            //Database.DebugLogFullResponse = true;
 
             InitSimulation();
         }
@@ -190,10 +189,7 @@ namespace AppCSHtml5
                     RegisterAndSendEmail(name, EncryptedPassword, email, question, EncryptedAnswer, SaltString.ToLower(), (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
                 }
                 else
-                {
-                    Debug.WriteLine("Failed to parse salt");
                     (App.Current as App).GoTo(PageNames.register_failed_4Page);
-                }
             }
             else if (error == (int)ErrorCodes.UsernameAlreadyUsed)
                 (App.Current as App).GoTo(PageNames.register_failed_5Page);
@@ -291,7 +287,7 @@ namespace AppCSHtml5
                 NotifyPropertyChanged(nameof(RecoveryQuestion));
                 NotifyPropertyChanged(nameof(LoginState));
 
-                (App.Current as App).GoTo(PageNames.homePage);
+                (App.Current as App).GoToExternal(PageNames.homePage);
             }
             else if (error == (int)ErrorCodes.InvalidUsernameOrPassword)
                 (App.Current as App).GoTo(PageNames.registration_end_failed_4Page);
@@ -347,10 +343,7 @@ namespace AppCSHtml5
                     SignIn(name, EncryptedCurrentPassword, (int signInError, object signInResult) => Login_OnSignIn(signInError, signInResult, TestSalt, remember));
                 }
                 else
-                {
-                    Debug.WriteLine("Failed to parse salt");
                     (App.Current as App).GoTo(PageNames.login_failedPage);
-                }
             }
             else
                 (App.Current as App).GoTo(PageNames.login_failedPage);
@@ -634,7 +627,7 @@ namespace AppCSHtml5
                 LoginState = LoginStates.SignedIn;
                 NotifyPropertyChanged(nameof(LoginState));
 
-                (App.Current as App).GoTo(PageNames.accountPage);
+                (App.Current as App).GoToExternal(PageNames.accountPage);
             }
             else if (error == (int)ErrorCodes.InvalidUsernameOrAnswer)
                 (App.Current as App).GoTo(PageNames.recovery_end_failed_4Page);
@@ -652,7 +645,6 @@ namespace AppCSHtml5
 
         private void OnQueryNewCredentialCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnQueryNewCredentialCompleted notified");
             Database.Completed -= OnQueryNewCredentialCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
@@ -672,16 +664,13 @@ namespace AppCSHtml5
 
         private void OnChangePasswordCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnChangePasswordCompleted notified");
             Database.Completed -= OnChangePasswordCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-            {
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
-            }
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(-1, null));
         }
@@ -694,14 +683,13 @@ namespace AppCSHtml5
 
         private void OnChangeEmailCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnChangeEmailCompleted notified");
             Database.Completed -= OnChangeEmailCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
@@ -714,14 +702,13 @@ namespace AppCSHtml5
 
         private void OnChangeRecoveryCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnChangeRecoveryCompleted notified");
             Database.Completed -= OnChangeRecoveryCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
@@ -734,7 +721,6 @@ namespace AppCSHtml5
 
         private void OnIsEmailValidityChecked(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnIsEmailValidityChecked notified");
             Database.Completed -= OnIsEmailValidityChecked;
 
             Action<int, object> Callback = e.Operation.Callback;
@@ -754,14 +740,13 @@ namespace AppCSHtml5
 
         private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnRegisterSendEmailCompleted notified");
             Database.Completed -= OnRegisterSendEmailCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
@@ -774,14 +759,13 @@ namespace AppCSHtml5
 
         private void OnRecoverySendEmailCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnRecoverySendEmailCompleted notified");
             Database.Completed -= OnRecoverySendEmailCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
@@ -794,14 +778,13 @@ namespace AppCSHtml5
 
         private void OnActivateAccountCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnActivateAccountCompleted notified");
             Database.Completed -= OnActivateAccountCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
@@ -814,14 +797,13 @@ namespace AppCSHtml5
 
         private void OnAccountRecoveryCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnAccountRecoveryCompleted notified");
             Database.Completed -= OnAccountRecoveryCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
@@ -834,7 +816,6 @@ namespace AppCSHtml5
 
         private void OnGetUserSaltCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnGetUserSaltCompleted notified");
             Database.Completed -= OnGetUserSaltCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
@@ -854,7 +835,6 @@ namespace AppCSHtml5
 
         private void OnSignInCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnSignInCompleted notified");
             Database.Completed -= OnSignInCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;

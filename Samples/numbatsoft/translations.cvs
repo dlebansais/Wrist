@@ -122,7 +122,7 @@ change-recovery	change recovery question and answer	changer la question de récu
 change-password-title	Change password	Changer le mot de passe
 change-password-text	Please enter your current password, followed by the new password with confirmation.	Veuillez entrer votre mot de passe actuel, suivi par le nouveau mot de passe avec confirmation.
 current-password-colon	Current password:	Mot de passe actuel :
-new-password-colon	New password:	Nouveau :
+new-password-colon	New password:	Nouveau mot de passe :
 confirm-password-colon	Confirm password:	Confirmation :
 change	Change now	Changer
 change-email-title	Change email address	Changer l'adresse courriel

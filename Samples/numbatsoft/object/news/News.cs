@@ -1,10 +1,8 @@
 ﻿using NetTools;
-using Presentation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -76,7 +74,6 @@ namespace AppCSHtml5
             if (error == (int)ErrorCodes.Success && result != null)
             {
                 List<Dictionary<string, string>> NewsList = (List<Dictionary<string, string>>)result;
-                Debug.WriteLine($"{NewsList.Count} news entries received");
 
                 foreach (Dictionary<string, string> Item in NewsList)
                 {
@@ -98,7 +95,6 @@ namespace AppCSHtml5
 
         private void OnGetAllNewsCompleted(object sender, CompletionEventArgs e)
         {
-            Debug.WriteLine("OnGetAllNewsCompleted notified");
             Database.Completed -= OnGetAllNewsCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;

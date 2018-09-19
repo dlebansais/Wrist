@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Security;
-using System.Security.Permissions;
 using System.Text;
 
 namespace Presentation
@@ -205,7 +201,7 @@ namespace Presentation
 
         private static bool SaveToIsolatedStorageFile(string fileName, byte[] content)
         {
-            Debug.WriteLine($"Writing {content.Length} bytes in file {fileName}");
+            //Debug.WriteLine($"Writing {content.Length} bytes in file {fileName}");
 
             try
             {
@@ -300,7 +296,7 @@ namespace Presentation
 
         private static void PrintException(Exception e, string Operation, string fileName)
         {
-            Debug.WriteLine("Isolated Storage Error, Operation=" + Operation + ", Filename=" + fileName + ": " + e.Message);
+            //Debug.WriteLine("Isolated Storage Error, Operation=" + Operation + ", Filename=" + fileName + ": " + e.Message);
         }
         #endregion
     }
