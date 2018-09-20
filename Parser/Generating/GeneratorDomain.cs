@@ -376,7 +376,7 @@ namespace Parser
             cSharpWriter.WriteLine("            if (PasswordControlTable.ContainsKey(bindingName))");
             cSharpWriter.WriteLine("            {");
             cSharpWriter.WriteLine("                PasswordBox Ctrl = PasswordControlTable[bindingName];");
-            cSharpWriter.WriteLine("                value = Ctrl.Password;");
+            cSharpWriter.WriteLine("                value = Ctrl.Password.Trim();");
             cSharpWriter.WriteLine("                Ctrl.Password = null;");
             cSharpWriter.WriteLine("                if (!string.IsNullOrEmpty(value))");
             cSharpWriter.WriteLine("                    return true;");

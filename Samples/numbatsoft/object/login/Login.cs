@@ -136,27 +136,31 @@ namespace AppCSHtml5
         #region Register
         public void On_Register(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
+            string NameValue = Name.Trim();
+            string EmailValue = Email.Trim();
+            string QuestionValue = RecoveryQuestion.Trim();
+
             string PasswordValue;
             string AnswerValue;
 
             bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
             bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
 
-            if (string.IsNullOrEmpty(Name) || !IsPasswordValid || string.IsNullOrEmpty(Email) || !Email.Contains("@"))
+            if (string.IsNullOrEmpty(NameValue) || !IsPasswordValid || string.IsNullOrEmpty(EmailValue) || !EmailValue.Contains("@"))
                 destinationPageName = PageNames.register_failed_1Page;
 
-            else if (!string.IsNullOrEmpty(RecoveryQuestion) && !IsAnswerValid)
+            else if (!string.IsNullOrEmpty(QuestionValue) && !IsAnswerValid)
                 destinationPageName = PageNames.register_failed_2Page;
 
-            else if (string.IsNullOrEmpty(RecoveryQuestion) && IsAnswerValid)
+            else if (string.IsNullOrEmpty(QuestionValue) && IsAnswerValid)
                 destinationPageName = PageNames.register_failed_3Page;
 
             else
             {
-                if (string.IsNullOrEmpty(RecoveryQuestion) || !IsAnswerValid)
-                    StartRegister(Name, PasswordValue, Email, "", "");
+                if (string.IsNullOrEmpty(QuestionValue) || !IsAnswerValid)
+                    StartRegister(NameValue, PasswordValue, EmailValue, "", "");
                 else
-                    StartRegister(Name, PasswordValue, Email, RecoveryQuestion, AnswerValue);
+                    StartRegister(NameValue, PasswordValue, EmailValue, QuestionValue, AnswerValue);
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -310,16 +314,18 @@ namespace AppCSHtml5
                 Persistent.SetValue("remember", null);
             }
 
+            string NameValue = Name.Trim();
+
             string PasswordValue;
             if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
                 destinationPageName = PageNames.login_failedPage;
 
-            else if (string.IsNullOrEmpty(Name))
+            else if (string.IsNullOrEmpty(NameValue))
                 destinationPageName = PageNames.login_failedPage;
 
             else
             {
-                StartLogin(Name, PasswordValue, Remember);
+                StartLogin(NameValue, PasswordValue, Remember);
                 destinationPageName = PageNames.CurrentPage;
             }
         }
@@ -448,20 +454,22 @@ namespace AppCSHtml5
         #region Change Email
         public void On_ChangeEmail(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
+            string EmailValue = NewEmail.Trim();
+
             string PasswordValue;
             if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
                 destinationPageName = PageNames.change_email_failed_1Page;
 
-            else if (string.IsNullOrEmpty(NewEmail))
+            else if (string.IsNullOrEmpty(EmailValue))
                 destinationPageName = PageNames.change_email_failed_2Page;
 
-            else if (!NewEmail.Contains("@"))
+            else if (!EmailValue.Contains("@"))
                 destinationPageName = PageNames.change_email_failed_3Page;
 
             else
             {
                 string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
-                ChangeEmail(Name, EncryptedPassword, NewEmail, (int changeError, object changeResult) => ChangeEmail_OnEmailChanged(changeError, changeResult, NewEmail));
+                ChangeEmail(Name, EncryptedPassword, EmailValue, (int changeError, object changeResult) => ChangeEmail_OnEmailChanged(changeError, changeResult, EmailValue));
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -485,6 +493,8 @@ namespace AppCSHtml5
         #region Change Recovery
         public void On_ChangeRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
+            string QuestionValue = NewQuestion.Trim();
+
             string PasswordValue;
             string AnswerValue;
             string ConfirmAnswerValue;
@@ -496,14 +506,14 @@ namespace AppCSHtml5
             if (!IsPasswordValid)
                 destinationPageName = PageNames.change_recovery_failed_1Page;
 
-            else if (string.IsNullOrEmpty(NewQuestion) && !IsAnswerValid && !IsConfirmAnswerValid)
+            else if (string.IsNullOrEmpty(QuestionValue) && !IsAnswerValid && !IsConfirmAnswerValid)
             {
                 string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
-                ChangeRecovery(Name, EncryptedPassword, "", "", (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, NewQuestion));
+                ChangeRecovery(Name, EncryptedPassword, "", "", (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
                 destinationPageName = PageNames.CurrentPage;
             }
 
-            else if (string.IsNullOrEmpty(NewQuestion) || !IsAnswerValid || !IsConfirmAnswerValid)
+            else if (string.IsNullOrEmpty(QuestionValue) || !IsAnswerValid || !IsConfirmAnswerValid)
                 destinationPageName = PageNames.change_recovery_failed_2Page;
 
             else if (AnswerValue != ConfirmAnswerValue)
@@ -513,7 +523,7 @@ namespace AppCSHtml5
             {
                 string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
                 string EncryptedNewAnswer = EncryptedValue(AnswerValue, Salt, EncryptionUse.SecretAnswer);
-                ChangeRecovery(Name, EncryptedPassword, NewQuestion, EncryptedNewAnswer, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, NewQuestion));
+                ChangeRecovery(Name, EncryptedPassword, QuestionValue, EncryptedNewAnswer, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
                 destinationPageName = PageNames.CurrentPage;
             }
         }
@@ -536,12 +546,14 @@ namespace AppCSHtml5
         #region Recovery
         public void On_BeginRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            if (string.IsNullOrEmpty(Email))
+            string EmailValue = Email.Trim();
+
+            if (string.IsNullOrEmpty(EmailValue))
                 destinationPageName = PageNames.recovery_failed_1Page;
 
             else
             {
-                StartRecovery(Email);
+                StartRecovery(EmailValue);
                 destinationPageName = PageNames.CurrentPage;
             }
         }
