@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace AppCSHtml5
 {
@@ -24,7 +25,7 @@ namespace AppCSHtml5
 
         public void On_Send(PageNames pageName, string sourceName, string sourceContent)
         {
-            string ContentToSend = Content;
+            string ContentToSend = Convert.ToBase64String(Encoding.UTF8.GetBytes(Content));
             Content = null;
 
             SendFeedback(ContentToSend, (int errorCode, object result) => { });
@@ -34,7 +35,7 @@ namespace AppCSHtml5
         private void SendFeedback(string content, Action<int, object> callback)
         {
             Database.Completed += OnSendFeedbackCompleted;
-            Database.Query(new DatabaseQueryOperation("send feedback", "update_7.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("send feedback", "update_7.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, callback));
         }
 
         private void OnSendFeedbackCompleted(object sender, CompletionEventArgs e)
