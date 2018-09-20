@@ -362,6 +362,9 @@ namespace Parser
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public void AddPasswordControl(string bindingName, PasswordBox control)");
             cSharpWriter.WriteLine("        {");
+            cSharpWriter.WriteLine("            if (!ControlTools.IsControlVisible(control))");
+            cSharpWriter.WriteLine("                return;");
+            cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("            if (PasswordControlTable.ContainsKey(bindingName))");
             cSharpWriter.WriteLine("                PasswordControlTable[bindingName] = control;");
             cSharpWriter.WriteLine("            else");

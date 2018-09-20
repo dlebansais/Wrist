@@ -8,6 +8,20 @@ namespace Presentation
 {
     public class ControlTools
     {
+        public static bool IsControlVisible(DependencyObject control)
+        {
+            while (control != null)
+            {
+                if (control is FrameworkElement AsElement)
+                    if (AsElement.Visibility != Visibility.Visible)
+                        return false;
+
+                control = VisualTreeHelper.GetParent(control);
+            }
+
+            return true;
+        }
+
         public static void ChangeEnabledStyleOrColor(Control AsControl, bool IsEnabled, Dictionary<Control, Brush> BrushTable, Dictionary<Control, Style> StyleTable, ResourceDictionary Resources)
         {
             string StyleKey = null;
