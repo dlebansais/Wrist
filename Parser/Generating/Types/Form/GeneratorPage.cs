@@ -188,7 +188,9 @@ namespace Parser
 
             s = GeneratorLayout.IndentationString(Indentation - 1);
 
-            xamlWriter.WriteLine($"{s}<Grid PointerPressed=\"OnPointerPressed\">");
+            string PageHeight = double.IsNaN(Height) ? "" : $" Height=\"{Height}\"";
+
+            xamlWriter.WriteLine($"{s}<Grid PointerPressed=\"OnPointerPressed\"{PageHeight}>");
 
             if (Background != null)
                 Background.Generate(xamlWriter, Indentation, colorTheme);

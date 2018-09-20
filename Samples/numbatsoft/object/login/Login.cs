@@ -287,7 +287,7 @@ namespace AppCSHtml5
                 NotifyPropertyChanged(nameof(RecoveryQuestion));
                 NotifyPropertyChanged(nameof(LoginState));
 
-                (App.Current as App).GoToExternal(PageNames.homePage);
+                (App.Current as App).GoTo(PageNames.registration_completePage);
             }
             else if (error == (int)ErrorCodes.InvalidUsernameOrPassword)
                 (App.Current as App).GoTo(PageNames.registration_end_failed_4Page);
@@ -417,6 +417,9 @@ namespace AppCSHtml5
 
             else if (!IsNewPasswordValid || !IsConfirmPasswordValid)
                 destinationPageName = PageNames.change_password_failed_2Page;
+
+            else if (NewPasswordValue == PasswordValue)
+                destinationPageName = PageNames.change_password_failed_6Page;
 
             else if (NewPasswordValue != ConfirmPasswordValue)
                 destinationPageName = PageNames.change_password_failed_3Page;
@@ -627,7 +630,7 @@ namespace AppCSHtml5
                 LoginState = LoginStates.SignedIn;
                 NotifyPropertyChanged(nameof(LoginState));
 
-                (App.Current as App).GoToExternal(PageNames.accountPage);
+                (App.Current as App).GoTo(PageNames.recovery_completePage);
             }
             else if (error == (int)ErrorCodes.InvalidUsernameOrAnswer)
                 (App.Current as App).GoTo(PageNames.recovery_end_failed_4Page);

@@ -27,7 +27,8 @@ namespace NetTools
 
         public void AddLogEntry(string text)
         {
-            Debug.WriteLine(text);
+            if (DebugLog)
+                Debug.WriteLine(text);
         }
 
         public void Query(DatabaseQueryOperation operation)
@@ -47,7 +48,8 @@ namespace NetTools
 
         private void StartRequest(DatabaseOperation operation)
         {
-            operation.DebugStart();
+            if (DebugLog)
+                operation.DebugStart();
 
             string AddressString = operation.RequestString(QueryScriptPath);
             if (!DownloadClientTable.ContainsKey(AddressString))

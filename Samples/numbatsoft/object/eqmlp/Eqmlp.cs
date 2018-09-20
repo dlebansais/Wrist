@@ -35,7 +35,7 @@ namespace AppCSHtml5
             }
         }
         public string OrganizationName { get; set; }
-        public string TutorialLink { get { return $"https://www.enu.numbatsoft.com/products/eqmlp/documentation/xaml_tutorial%20(draft).txt"; } }
+        public string TutorialLink { get { return $"https://www.numbatsoft.com/products/eqmlp/documentation/xaml_tutorial%20(draft).txt"; } }
 
         public void Login(string organizationName)
         {

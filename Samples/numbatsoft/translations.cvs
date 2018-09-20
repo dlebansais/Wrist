@@ -12,6 +12,7 @@ page-change-password-failed-2	Account management	Gestion du compte
 page-change-password-failed-3	Account management	Gestion du compte
 page-change-password-failed-4	Account management	Gestion du compte
 page-change-password-failed-5	Account management	Gestion du compte
+page-change-password-failed-6	Account management	Gestion du compte
 page-change-password-success	Account management	Gestion du compte
 page-change-email-failed-1	Account management	Gestion du compte
 page-change-email-failed-2	Account management	Gestion du compte
@@ -141,6 +142,7 @@ change-password-failed-text-2	Sorry, you did not enter a new password or did not
 change-password-failed-text-3	Sorry, you misspelled your password in the confirmation box.	Désolé, vous avez entré un mot de passe incorrect dans la ligne de confirmation.
 change-password-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 change-password-failed-text-5	Sorry, you misspelled your current password.	Désolé, vous avez entré un mot de passe actuel erroné.
+change-password-failed-text-6	Sorry, you must use a different password.	Désolé, vous devez utiliser un mot de passe différent.
 change-password-success-title	Password changed	Le changement de mot de passe a réussi
 change-password-success-text	Congratulation, your password has been changed.	Félicitation, votre mot de passe a bien été changé.
 new-email-colon	New email address:	Nouvelle adresse courriel :
@@ -206,7 +208,7 @@ recovery-failed-text-3	Sorry, the site encountered an unrecoverable error.	Déso
 complete-registration	Complete Registration	Terminer l'enregistrement
 register-confirm-question-text	To complete registration, please confirm the password and answer to the secret question.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe et répondre à la question secrète.
 register-confirm-text	To complete registration, please confirm the password.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe.
-invalid-operation-title	Invalid Operation	Opération non valid
+invalid-operation-title	Invalid Operation	Opération non valide
 invalid-operation-text	An operation is being performed on this site, but it seems invalid.	Une opération est effectuée sur ce site, mais elle semble non valide.
 recovery-end-title	Completing recovery	Finalisation de la récupération
 recovery-end-text	You have reached this page because you have asked to recover the following account:	Vous êtes sur cette page car vous avez demandé à récupérer le compte suivant :
@@ -345,3 +347,5 @@ no-support-text-3	You can also send more elaborate feedback with an email at the
 no-support-text-4	If you post a link in your message, please surround it with parenthesis or it will not get through my spam filter.  If you don't post a link, please start it with 'Hello'.	Si votre message contient un lien, veuillez l'entourer de parenthèses sinon il ne passera pas mon filtre de spam. Si vous ne postez pas de lien, vous pouvez le commencer par un 'Bonjour'.
 no-support-text-5	Thank you!	Merci !
 send	Send	Envoyer
+recovery-complete	Account recovery complete, click to continue	Récupération du compte terminée, cliquez pour continuer
+registration-complete	Account activation complete, click to continue	Activation du compte terminée, cliquez pour continuer

@@ -1,0 +1,1 @@
+﻿complete: button, content=translation.strings[registration-complete], goto=login, external = true
