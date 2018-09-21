@@ -41,8 +41,8 @@ namespace AppCSHtml5
             Remember = (Persistent.GetValue("remember", null) != null);
             LoginState = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
 
-            //Database.DebugLog = true;
-            //Database.DebugLogFullResponse = true;
+            Database.DebugLog = true;
+            Database.DebugLogFullResponse = true;
 
             InitSimulation();
         }
@@ -101,7 +101,7 @@ namespace AppCSHtml5
         }
 
         #region Encryption
-        public string EncryptedValue(string value, byte[] salt, EncryptionUse use)
+        public void Encrypt(string value, byte[] salt, EncryptionUse use, out string HashString, out string HashSettings)
         {
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
             {
@@ -113,13 +113,16 @@ namespace AppCSHtml5
                     Argon2.MemorySize = 1024;
                     Argon2.AssociatedUse = (int)use;
                     byte[] Hash = Argon2.GetBytes(128);
-                    string EncodedHash = Argon2.GetEncoded(HashTools.GetString(Hash));
-
-                    return EncodedHash;
+                    HashString = HashTools.GetString(Hash);
+                    HashSettings = Argon2.GetSettings();
+                    //string EncodedHash = Argon2.GetEncoded();
                 }
             }
             else
-                return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+            {
+                HashString = Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+                HashSettings = "Base64";
+            }
         }
 
         public string MixedSalt(string salt)
@@ -182,15 +185,21 @@ namespace AppCSHtml5
                 byte[] NewSalt;
                 if (HashTools.TryParse(SaltString, out NewSalt))
                 {
-                    string EncryptedPassword = EncryptedValue(password, NewSalt, EncryptionUse.Password);
+                    string EncryptedPassword;
+                    string EncryptedPasswordSettings;
+                    Encrypt(password, NewSalt, EncryptionUse.Password, out EncryptedPassword, out EncryptedPasswordSettings);
 
                     string EncryptedAnswer;
+                    string EncryptedAnswerSettings;
                     if (!string.IsNullOrEmpty(answer))
-                        EncryptedAnswer = EncryptedValue(answer, NewSalt, EncryptionUse.SecretAnswer);
+                        Encrypt(answer, NewSalt, EncryptionUse.SecretAnswer, out EncryptedAnswer, out EncryptedAnswerSettings);
                     else
+                    {
                         EncryptedAnswer = "";
+                        EncryptedAnswerSettings = "";
+                    }
 
-                    RegisterAndSendEmail(name, EncryptedPassword, email, question, EncryptedAnswer, SaltString.ToLower(), (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
+                    RegisterAndSendEmail(name, EncryptedPassword, EncryptedPasswordSettings, email, question, EncryptedAnswer, EncryptedAnswerSettings, SaltString.ToLower(), (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
                 }
                 else
                     (App.Current as App).GoTo(PageNames.register_failed_4Page);
@@ -262,10 +271,21 @@ namespace AppCSHtml5
 
             else
             {
-                string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
-                string EncryptedAnswer = HasQuestion ? EncryptedValue(AnswerValue, Salt, EncryptionUse.SecretAnswer) : "";
+                string EncryptedPassword;
+                string EncryptedPasswordSettings;
+                Encrypt(PasswordValue, Salt, EncryptionUse.Password, out EncryptedPassword, out EncryptedPasswordSettings);
 
-                ActivateAccountAndSendEmail(Name, Email, EncryptedPassword, EncryptedAnswer, (int checkError, object checkResult) => CompleteRegistration_AccountActivated(checkError, checkResult, Remember));
+                string EncryptedAnswer;
+                string EncryptedAnswerSettings;
+                if (HasQuestion)
+                    Encrypt(AnswerValue, Salt, EncryptionUse.SecretAnswer, out EncryptedAnswer, out EncryptedAnswerSettings);
+                else
+                {
+                    EncryptedAnswer = "";
+                    EncryptedAnswerSettings = "";
+                }
+
+                ActivateAccountAndSendEmail(Name, Email, EncryptedPassword, EncryptedPasswordSettings, EncryptedAnswer, EncryptedAnswerSettings, (int checkError, object checkResult) => CompleteRegistration_AccountActivated(checkError, checkResult, Remember));
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -345,8 +365,10 @@ namespace AppCSHtml5
                 byte[] TestSalt;
                 if (HashTools.TryParse(SaltString, out TestSalt))
                 {
-                    string EncryptedCurrentPassword = EncryptedValue(currentPassword, TestSalt, EncryptionUse.Password);
-                    SignIn(name, EncryptedCurrentPassword, (int signInError, object signInResult) => Login_OnSignIn(signInError, signInResult, TestSalt, remember));
+                    string EncryptedCurrentPassword;
+                    string EncryptedCurrentPasswordSettings;
+                    Encrypt(currentPassword, TestSalt, EncryptionUse.Password, out EncryptedCurrentPassword, out EncryptedCurrentPasswordSettings);
+                    SignIn(name, EncryptedCurrentPassword, EncryptedCurrentPasswordSettings, (int signInError, object signInResult) => Login_OnSignIn(signInError, signInResult, TestSalt, remember));
                 }
                 else
                     (App.Current as App).GoTo(PageNames.login_failedPage);
@@ -432,9 +454,14 @@ namespace AppCSHtml5
 
             else
             {
-                string EncryptedCurrentPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
-                string EncryptedNewPassword = EncryptedValue(NewPasswordValue, Salt, EncryptionUse.Password);
-                ChangePassword(Name, EncryptedCurrentPassword, EncryptedNewPassword, ChangePassword_OnPasswordChanged);
+                string EncryptedCurrentPassword;
+                string EncryptedCurrentPasswordSettings;
+                Encrypt(PasswordValue, Salt, EncryptionUse.Password, out EncryptedCurrentPassword, out EncryptedCurrentPasswordSettings);
+
+                string EncryptedNewPassword;
+                string EncryptedNewPasswordSettings;
+                Encrypt(NewPasswordValue, Salt, EncryptionUse.Password, out EncryptedNewPassword, out EncryptedNewPasswordSettings);
+                ChangePassword(Name, EncryptedCurrentPassword, EncryptedCurrentPasswordSettings, EncryptedNewPassword, EncryptedNewPasswordSettings, ChangePassword_OnPasswordChanged);
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -468,8 +495,10 @@ namespace AppCSHtml5
 
             else
             {
-                string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
-                ChangeEmail(Name, EncryptedPassword, EmailValue, (int changeError, object changeResult) => ChangeEmail_OnEmailChanged(changeError, changeResult, EmailValue));
+                string EncryptedPassword;
+                string EncryptedPasswordSettings;
+                Encrypt(PasswordValue, Salt, EncryptionUse.Password, out EncryptedPassword, out EncryptedPasswordSettings);
+                ChangeEmail(Name, EncryptedPassword, EncryptedPasswordSettings, EmailValue, (int changeError, object changeResult) => ChangeEmail_OnEmailChanged(changeError, changeResult, EmailValue));
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -508,8 +537,10 @@ namespace AppCSHtml5
 
             else if (string.IsNullOrEmpty(QuestionValue) && !IsAnswerValid && !IsConfirmAnswerValid)
             {
-                string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
-                ChangeRecovery(Name, EncryptedPassword, "", "", (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
+                string EncryptedPassword;
+                string EncryptedPasswordSettings;
+                Encrypt(PasswordValue, Salt, EncryptionUse.Password, out EncryptedPassword, out EncryptedPasswordSettings);
+                ChangeRecovery(Name, EncryptedPassword, EncryptedPasswordSettings, "", "", "", (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
                 destinationPageName = PageNames.CurrentPage;
             }
 
@@ -521,9 +552,14 @@ namespace AppCSHtml5
 
             else
             {
-                string EncryptedPassword = EncryptedValue(PasswordValue, Salt, EncryptionUse.Password);
-                string EncryptedNewAnswer = EncryptedValue(AnswerValue, Salt, EncryptionUse.SecretAnswer);
-                ChangeRecovery(Name, EncryptedPassword, QuestionValue, EncryptedNewAnswer, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
+                string EncryptedPassword;
+                string EncryptedPasswordSettings;
+                Encrypt(PasswordValue, Salt, EncryptionUse.Password, out EncryptedPassword, out EncryptedPasswordSettings);
+
+                string EncryptedNewAnswer;
+                string EncryptedNewAnswerSettings;
+                Encrypt(AnswerValue, Salt, EncryptionUse.SecretAnswer, out EncryptedNewAnswer, out EncryptedNewAnswerSettings);
+                ChangeRecovery(Name, EncryptedPassword, EncryptedPasswordSettings, QuestionValue, EncryptedNewAnswer, EncryptedNewAnswerSettings, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
                 destinationPageName = PageNames.CurrentPage;
             }
         }
@@ -625,10 +661,15 @@ namespace AppCSHtml5
 
             else
             {
-                string EncryptedAnswer = EncryptedValue(AnswerValue, Salt, EncryptionUse.SecretAnswer);
-                string EncryptedNewPassword = EncryptedValue(NewPasswordValue, Salt, EncryptionUse.Password);
+                string EncryptedAnswer;
+                string EncryptedAnswerSettings;
+                Encrypt(AnswerValue, Salt, EncryptionUse.SecretAnswer, out EncryptedAnswer, out EncryptedAnswerSettings);
 
-                RecoverAccount(Name, EncryptedAnswer, EncryptedNewPassword, CompleteRecovery_OnGetUserInfo);
+                string EncryptedNewPassword;
+                string EncryptedNewPasswordSettings;
+                Encrypt(NewPasswordValue, Salt, EncryptionUse.Password, out EncryptedNewPassword, out EncryptedNewPasswordSettings);
+
+                RecoverAccount(Name, EncryptedAnswer, EncryptedAnswerSettings, EncryptedNewPassword, EncryptedNewPasswordSettings, CompleteRecovery_OnGetUserInfo);
                 destinationPageName = PageNames.CurrentPage;
             }
         }
@@ -671,10 +712,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
         }
 
-        private void ChangePassword(string name, string encryptedCurrentPassword, string encryptedNewPassword, Action<int, object> callback)
+        private void ChangePassword(string name, string encryptedCurrentPassword, string encryptedCurrentPasswordSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnChangePasswordCompleted;
-            Database.Update(new DatabaseUpdateOperation("change password", "update_1.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedCurrentPassword }, { "newpassword", encryptedNewPassword } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change password", "update_1.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
         }
 
         private void OnChangePasswordCompleted(object sender, CompletionEventArgs e)
@@ -690,10 +731,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(-1, null));
         }
 
-        private void ChangeEmail(string name, string encryptedPassword, string newEmail, Action<int, object> callback)
+        private void ChangeEmail(string name, string encryptedPassword, string encryptedPasswordSettings, string newEmail, Action<int, object> callback)
         {
             Database.Completed += OnChangeEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "email", HtmlString.PercentEncoded(newEmail) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email", HtmlString.PercentEncoded(newEmail) } }, callback));
         }
 
         private void OnChangeEmailCompleted(object sender, CompletionEventArgs e)
@@ -709,10 +750,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void ChangeRecovery(string name, string encryptedPassword, string newQuestion, string encryptedNewAnswer, Action<int, object> callback)
+        private void ChangeRecovery(string name, string encryptedPassword, string encryptedPasswordSettings, string newQuestion, string encryptedNewAnswer, string encryptedNewAnswerSettings, Action<int, object> callback)
         {
             Database.Completed += OnChangeRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "question", HtmlString.PercentEncoded(newQuestion) }, { "answer", encryptedNewAnswer } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "question", HtmlString.PercentEncoded(newQuestion) }, { "answer", encryptedNewAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, callback));
         }
 
         private void OnChangeRecoveryCompleted(object sender, CompletionEventArgs e)
@@ -747,10 +788,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void RegisterAndSendEmail(string name, string encryptedPassword, string email, string question, string encryptedAnswer, string salt, Action<int, object> callback)
+        private void RegisterAndSendEmail(string name, string encryptedPassword, string encryptedPasswordSettings, string email, string question, string encryptedAnswer, string encryptedAnswerSettings, string salt, Action<int, object> callback)
         {
             Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "email", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e)
@@ -785,10 +826,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void ActivateAccountAndSendEmail(string name, string email, string encryptedPassword, string encryptedAnswer, Action<int, object> callback)
+        private void ActivateAccountAndSendEmail(string name, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, Action<int, object> callback)
         {
             Database.Completed += OnActivateAccountCompleted;
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "email", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "answer", encryptedAnswer }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "email", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnActivateAccountCompleted(object sender, CompletionEventArgs e)
@@ -804,10 +845,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void RecoverAccount(string name, string encryptedAnswer, string encryptedNewPassword, Action<int, object> callback)
+        private void RecoverAccount(string name, string encryptedAnswer, string encryptedAnswerSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnAccountRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "answer", encryptedAnswer }, { "password", encryptedNewPassword } }, callback));
+            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
         }
 
         private void OnAccountRecoveryCompleted(object sender, CompletionEventArgs e)
@@ -842,10 +883,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
         }
 
-        private void SignIn(string name, string encryptedPassword, Action<int, object> callback)
+        private void SignIn(string name, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnSignInCompleted;
-            Database.Query(new DatabaseQueryOperation("sign in", "query_9.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword } }, callback));
+            Database.Query(new DatabaseQueryOperation("sign in", "query_9.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, callback));
         }
 
         private void OnSignInCompleted(object sender, CompletionEventArgs e)

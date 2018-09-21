@@ -59,11 +59,19 @@ namespace SmallArgon2d
         }
 
         /// <summary>
+        /// Implementation of GetSettings
+        /// </summary>
+        public string GetSettings()
+        {
+            return $"PHS={GetType().Name};Version={Version};Iterations={Iterations};MemorySize={MemorySize};AssociatedUse={AssociatedUse}";
+        }
+
+        /// <summary>
         /// Implementation of GetEncoded
         /// </summary>
         public string GetEncoded(string hash)
         {
-            return $"PHS={GetType().Name};Version={Version};Iterations={Iterations};MemorySize={MemorySize};AssociatedUse={AssociatedUse};Hash={hash}";
+            return $"{GetSettings()};Hash={hash}";
         }
 
         internal abstract Argon2Core BuildCore(int bc);
