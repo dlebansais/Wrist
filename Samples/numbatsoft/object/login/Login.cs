@@ -169,12 +169,12 @@ namespace AppCSHtml5
             }
         }
 
-        private void StartRegister(string name, string password, string email, string question, string answer)
+        private void StartRegister(string username, string password, string email, string question, string answer)
         {
-            QueryNewCredential(name, email, (int getError, object getResult) => Register_OnNewCredentialReceived(getError, getResult, name, password, email, question, answer));
+            QueryNewCredential(username, email, (int getError, object getResult) => Register_OnNewCredentialReceived(getError, getResult, username, password, email, question, answer));
         }
 
-        private void Register_OnNewCredentialReceived(int error, object result, string name, string password, string email, string question, string answer)
+        private void Register_OnNewCredentialReceived(int error, object result, string username, string password, string email, string question, string answer)
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
@@ -199,7 +199,7 @@ namespace AppCSHtml5
                         EncryptedAnswerSettings = "";
                     }
 
-                    RegisterAndSendEmail(name, EncryptedPassword, EncryptedPasswordSettings, email, question, EncryptedAnswer, EncryptedAnswerSettings, SaltString.ToLower(), (int checkError, object checkResult) => Register_OnEmailSent(checkError, checkResult));
+                    RegisterAndSendEmail(username, EncryptedPassword, EncryptedPasswordSettings, email, question, EncryptedAnswer, EncryptedAnswerSettings, SaltString.ToLower(), Register_OnEmailSent);
                 }
                 else
                     (App.Current as App).GoTo(PageNames.register_failed_4Page);
@@ -350,12 +350,12 @@ namespace AppCSHtml5
             }
         }
 
-        private void StartLogin(string name, string currentPassword, bool remember)
+        private void StartLogin(string identifier, string currentPassword, bool remember)
         {
-            GetUserSalt(name, (int getError, object getResult) => Login_OnSaltReceived(getError, getResult, name, currentPassword, remember));
+            GetUserSalt(identifier, (int getError, object getResult) => Login_OnSaltReceived(getError, getResult, identifier, currentPassword, remember));
         }
 
-        private void Login_OnSaltReceived(int error, object result, string name, string currentPassword, bool remember)
+        private void Login_OnSaltReceived(int error, object result, string identifier, string currentPassword, bool remember)
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
@@ -368,7 +368,7 @@ namespace AppCSHtml5
                     string EncryptedCurrentPassword;
                     string EncryptedCurrentPasswordSettings;
                     Encrypt(currentPassword, TestSalt, EncryptionUse.Password, out EncryptedCurrentPassword, out EncryptedCurrentPasswordSettings);
-                    SignIn(name, EncryptedCurrentPassword, EncryptedCurrentPasswordSettings, (int signInError, object signInResult) => Login_OnSignIn(signInError, signInResult, TestSalt, remember));
+                    SignIn(identifier, EncryptedCurrentPassword, EncryptedCurrentPasswordSettings, (int signInError, object signInResult) => Login_OnSignIn(signInError, signInResult, TestSalt, remember));
                 }
                 else
                     (App.Current as App).GoTo(PageNames.login_failedPage);
@@ -382,7 +382,7 @@ namespace AppCSHtml5
             if (error == (int)ErrorCodes.Success && result != null)
             {
                 Dictionary<string, string> SignInResult = (Dictionary<string, string>)result;
-                Name = SignInResult["id"];
+                Name = SignInResult["username"];
                 Email = SignInResult["email"];
                 Salt = TestSalt;
                 RecoveryQuestion = SignInResult["question"];
@@ -693,10 +693,10 @@ namespace AppCSHtml5
         #endregion
 
         #region Operations
-        private void QueryNewCredential(string name, string email, Action<int, object> callback)
+        private void QueryNewCredential(string username, string email, Action<int, object> callback)
         {
             Database.Completed += OnQueryNewCredentialCompleted;
-            Database.Query(new DatabaseQueryOperation("new credential", "query_7.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "email", HtmlString.PercentEncoded(email) } }, callback));
+            Database.Query(new DatabaseQueryOperation("new credential", "query_7.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email", HtmlString.PercentEncoded(email) } }, callback));
         }
 
         private void OnQueryNewCredentialCompleted(object sender, CompletionEventArgs e)
@@ -712,10 +712,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
         }
 
-        private void ChangePassword(string name, string encryptedCurrentPassword, string encryptedCurrentPasswordSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
+        private void ChangePassword(string username, string encryptedCurrentPassword, string encryptedCurrentPasswordSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnChangePasswordCompleted;
-            Database.Update(new DatabaseUpdateOperation("change password", "update_1.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change password", "update_1.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
         }
 
         private void OnChangePasswordCompleted(object sender, CompletionEventArgs e)
@@ -731,10 +731,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(-1, null));
         }
 
-        private void ChangeEmail(string name, string encryptedPassword, string encryptedPasswordSettings, string newEmail, Action<int, object> callback)
+        private void ChangeEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string newEmail, Action<int, object> callback)
         {
             Database.Completed += OnChangeEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email", HtmlString.PercentEncoded(newEmail) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email", HtmlString.PercentEncoded(newEmail) } }, callback));
         }
 
         private void OnChangeEmailCompleted(object sender, CompletionEventArgs e)
@@ -750,10 +750,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void ChangeRecovery(string name, string encryptedPassword, string encryptedPasswordSettings, string newQuestion, string encryptedNewAnswer, string encryptedNewAnswerSettings, Action<int, object> callback)
+        private void ChangeRecovery(string username, string encryptedPassword, string encryptedPasswordSettings, string newQuestion, string encryptedNewAnswer, string encryptedNewAnswerSettings, Action<int, object> callback)
         {
             Database.Completed += OnChangeRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "question", HtmlString.PercentEncoded(newQuestion) }, { "answer", encryptedNewAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "question", HtmlString.PercentEncoded(newQuestion) }, { "answer", encryptedNewAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, callback));
         }
 
         private void OnChangeRecoveryCompleted(object sender, CompletionEventArgs e)
@@ -788,10 +788,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void RegisterAndSendEmail(string name, string encryptedPassword, string encryptedPasswordSettings, string email, string question, string encryptedAnswer, string encryptedAnswerSettings, string salt, Action<int, object> callback)
+        private void RegisterAndSendEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string email, string question, string encryptedAnswer, string encryptedAnswerSettings, string salt, Action<int, object> callback)
         {
             Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e)
@@ -826,10 +826,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void ActivateAccountAndSendEmail(string name, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, Action<int, object> callback)
+        private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, Action<int, object> callback)
         {
             Database.Completed += OnActivateAccountCompleted;
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "email", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnActivateAccountCompleted(object sender, CompletionEventArgs e)
@@ -845,10 +845,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void RecoverAccount(string name, string encryptedAnswer, string encryptedAnswerSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
+        private void RecoverAccount(string username, string encryptedAnswer, string encryptedAnswerSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnAccountRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
         }
 
         private void OnAccountRecoveryCompleted(object sender, CompletionEventArgs e)
@@ -864,10 +864,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void GetUserSalt(string name, Action<int, object> callback)
+        private void GetUserSalt(string identifier, Action<int, object> callback)
         {
             Database.Completed += OnGetUserSaltCompleted;
-            Database.Query(new DatabaseQueryOperation("get user salt", "query_8.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) } }, callback));
+            Database.Query(new DatabaseQueryOperation("get user salt", "query_8.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) } }, callback));
         }
 
         private void OnGetUserSaltCompleted(object sender, CompletionEventArgs e)
@@ -883,10 +883,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
         }
 
-        private void SignIn(string name, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
+        private void SignIn(string identifier, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnSignInCompleted;
-            Database.Query(new DatabaseQueryOperation("sign in", "query_9.php", new Dictionary<string, string>() { { "name", HtmlString.PercentEncoded(name) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, callback));
+            Database.Query(new DatabaseQueryOperation("sign in", "query_9.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, callback));
         }
 
         private void OnSignInCompleted(object sender, CompletionEventArgs e)
@@ -896,7 +896,7 @@ namespace AppCSHtml5
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
-            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "id", "email", "question", "name", "login_url", "meeting_url", "validation_url", "result" })) != null && Result.ContainsKey("result"))
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "username", "email", "question", "name", "login_url", "meeting_url", "validation_url", "result" })) != null && Result.ContainsKey("result"))
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
@@ -929,8 +929,8 @@ namespace AppCSHtml5
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
             string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            if (parameters.ContainsKey("username"))
+                Username = parameters["username"];
             else
                 Username = null;
 
@@ -951,7 +951,7 @@ namespace AppCSHtml5
 
             ErrorCodes ErrorCode = ErrorCodes.ErrorNotFound;
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("password") && Line["password"] == EncryptedPassword)
+                if (Line.ContainsKey("username") && Line["username"] == Username && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("password") && Line["password"] == EncryptedPassword)
                 {
                     Line["password"] = EncryptedNewPassword;
                     ErrorCode = ErrorCodes.Success;
@@ -971,8 +971,8 @@ namespace AppCSHtml5
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
             string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            if (parameters.ContainsKey("username"))
+                Username = parameters["username"];
             else
                 Username = null;
 
@@ -993,7 +993,7 @@ namespace AppCSHtml5
 
             ErrorCodes ErrorCode = ErrorCodes.ErrorNotFound;
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("password") && Line["password"] == EncryptedPassword && Line.ContainsKey("email"))
+                if (Line.ContainsKey("username") && Line["username"] == Username && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("password") && Line["password"] == EncryptedPassword && Line.ContainsKey("email"))
                 {
                     Line["email"] = NewEmail;
                     ErrorCode = ErrorCodes.Success;
@@ -1013,8 +1013,8 @@ namespace AppCSHtml5
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
             string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            if (parameters.ContainsKey("username"))
+                Username = parameters["username"];
             else
                 Username = null;
 
@@ -1041,7 +1041,7 @@ namespace AppCSHtml5
 
             ErrorCodes ErrorCode = ErrorCodes.ErrorNotFound;
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("password") && Line["password"] == EncryptedPassword && Line.ContainsKey("active") && Line["active"] == "1")
+                if (Line.ContainsKey("username") && Line["username"] == Username && Line.ContainsKey("password") && Line["password"] == EncryptedPassword && Line.ContainsKey("active") && Line["active"] == "1")
                 {
                     if (NewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
                     {
@@ -1102,8 +1102,8 @@ namespace AppCSHtml5
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
             string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            if (parameters.ContainsKey("username"))
+                Username = parameters["username"];
             else
                 Username = null;
 
@@ -1147,11 +1147,11 @@ namespace AppCSHtml5
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if ((Line.ContainsKey("id") && Line["id"] == Username) || (Line.ContainsKey("email") && Line["email"] == Email))
+                if ((Line.ContainsKey("username") && Line["username"] == Username) || (Line.ContainsKey("email") && Line["email"] == Email))
                     return Result;
 
             Dictionary<string, string> NewLine = new Dictionary<string, string>();
-            NewLine.Add("id", Username);
+            NewLine.Add("username", Username);
             NewLine.Add("password", EncryptedPassword);
             NewLine.Add("email", Email);
             NewLine.Add("salt", Salt);
@@ -1225,7 +1225,7 @@ namespace AppCSHtml5
                         { "result", ((int)ErrorCodes.Success).ToString()},
                     });
 
-                    string Username = Line.ContainsKey("id") ? Line["id"] : "";
+                    string Username = Line.ContainsKey("username") ? Line["username"] : "";
 
                     DispatcherTimer RecoveryConfirmedTimer = new DispatcherTimer();
                     RecoveryConfirmedTimer.Interval = TimeSpan.FromSeconds(3);
@@ -1262,8 +1262,8 @@ namespace AppCSHtml5
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
             string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            if (parameters.ContainsKey("username"))
+                Username = parameters["username"];
             else
                 Username = null;
 
@@ -1295,7 +1295,7 @@ namespace AppCSHtml5
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("id") && Line["id"] == Username)
+                if (Line.ContainsKey("username") && Line["username"] == Username)
                 {
                     ErrorCodes Error;
                     if ((Line.ContainsKey("password") && Line["password"] == EncryptedPassword) && (Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer))
@@ -1328,8 +1328,8 @@ namespace AppCSHtml5
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
             string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            if (parameters.ContainsKey("username"))
+                Username = parameters["username"];
             else
                 Username = null;
 
@@ -1350,7 +1350,7 @@ namespace AppCSHtml5
 
             ErrorCodes Error = ErrorCodes.InvalidUsernameOrAnswer;
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("id") && Line["id"] == Username && Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("question") && !string.IsNullOrEmpty(Line["question"]))
+                if (Line.ContainsKey("username") && Line["username"] == Username && Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("question") && !string.IsNullOrEmpty(Line["question"]))
                 {
                     Line["password"] = EncryptedNewPassword;
                     Error = ErrorCodes.Success;
@@ -1370,8 +1370,8 @@ namespace AppCSHtml5
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
             string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            if (parameters.ContainsKey("username"))
+                Username = parameters["username"];
             else
                 Username = null;
 
@@ -1386,7 +1386,7 @@ namespace AppCSHtml5
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
             {
-                if (Line.ContainsKey("id") && Line["id"] == Username)
+                if (Line.ContainsKey("username") && Line["username"] == Username)
                 {
                     Result.Add(new Dictionary<string, string>()
                     {
@@ -1423,18 +1423,18 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            string Identifier;
+            if (parameters.ContainsKey("identifier"))
+                Identifier = parameters["identifier"];
             else
-                Username = null;
+                Identifier = null;
 
-            if (string.IsNullOrEmpty(Username))
+            if (string.IsNullOrEmpty(Identifier))
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
             {
-                if (Line.ContainsKey("active") && Line["active"] == "1" && ((Line.ContainsKey("id") && Line["id"] == Username) || (Line.ContainsKey("email") && Line["email"] == Username)))
+                if (Line.ContainsKey("active") && Line["active"] == "1" && ((Line.ContainsKey("username") && Line["username"] == Identifier) || (Line.ContainsKey("email") && Line["email"] == Identifier)))
                 {
                     Result.Add(new Dictionary<string, string>()
                     {
@@ -1457,11 +1457,11 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
-            if (parameters.ContainsKey("name"))
-                Username = parameters["name"];
+            string Identifier;
+            if (parameters.ContainsKey("identifier"))
+                Identifier = parameters["identifier"];
             else
-                Username = null;
+                Identifier = null;
 
             string EncryptedPassword;
             if (parameters.ContainsKey("password"))
@@ -1469,15 +1469,15 @@ namespace AppCSHtml5
             else
                 EncryptedPassword = null;
 
-            if (Username == null || EncryptedPassword == null)
+            if (Identifier == null || EncryptedPassword == null)
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
             {
-                if (Line.ContainsKey("active") && Line["active"] == "1" && ((Line.ContainsKey("id") && Line["id"] == Username) || (Line.ContainsKey("email") && Line["email"] == Username)) && Line.ContainsKey("password") && Line["password"] == EncryptedPassword)
+                if (Line.ContainsKey("active") && Line["active"] == "1" && ((Line.ContainsKey("username") && Line["username"] == Identifier) || (Line.ContainsKey("email") && Line["email"] == Identifier)) && Line.ContainsKey("password") && Line["password"] == EncryptedPassword)
                     Result.Add(new Dictionary<string, string>()
                     {
-                        { "id", Line["id"]},
+                        { "username", Line["username"]},
                         { "email", Line["email"] },
                         { "question", DecodedRecoveryQuestion(Line["question"]) },
                         { "name", Line["name"] },
@@ -1522,7 +1522,7 @@ namespace AppCSHtml5
         {
             new Dictionary<string, string>()
             {
-                { "id", "test" },
+                { "username", "test" },
                 { "password", Convert.ToBase64String(Encoding.UTF8.GetBytes("toto")) },
                 { "email", "test@test.com" },
                 { "salt", "c32e25dca5caa30aa442eb2e9190e08cc93868ea60fd91eff53f53b5bc420bd2e5079d3fb5197046f806936b5ae6d1eab72a49a5bd22a0522890423266b993350064ec298e1ad608" },
