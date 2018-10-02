@@ -2,12 +2,12 @@
 legal: area, name=legal
 account title: text, text=translation.strings[account-title]
 name text: text, text=translation.strings[name-colon]
-name: text, text=login.name
+name: text, text=login.username
 email text: text, text=translation.strings[email-colon]
-email: text, text=login.email
+email: text, text=login.email address
 recovery question text #1: text, text=translation.strings[recovery-colon-1]
 recovery question text #2: text, text=translation.strings[recovery-colon-2]
-recovery question: text, text=login.recovery question
+recovery question: text, text=login.question
 account management text: text, text=translation.strings[account-management-colon]
 change password: button, content=translation.strings[change-password], goto=change password
 change email: button, content=translation.strings[change-email], goto=change email

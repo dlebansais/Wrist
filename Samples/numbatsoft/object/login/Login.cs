@@ -24,22 +24,150 @@ namespace AppCSHtml5
             ErrorNoQuestion = 5,
             InvalidUsernameOrAnswer = 6,
             UsernameAlreadyUsed = 7,
-            EmailAlreadyUsed = 8,
+            EmailAddressAlreadyUsed = 8,
         }
 
-        public enum EncryptionUse
+        private enum EncryptionUse
         {
             Password = 1,
             SecretAnswer,
         }
 
+        private class Credential
+        {
+            public Credential(string username, string password, string password_settings, string email_address, string salt, bool active, string name, string login_url, string meeting_url, string validation_url)
+            {
+                this.username = username;
+                this.password = password;
+                this.password_settings = password_settings;
+                this.email_address = email_address;
+                this.salt = salt;
+                this.question = null;
+                this.answer = null;
+                this.answer_settings = null;
+                this.operation = null;
+                this.end_date = null;
+                this.active = active;
+                this.name = name;
+                this.login_url = login_url;
+                this.meeting_url = meeting_url;
+                this.validation_url = validation_url;
+            }
+
+            public Credential(string username, string password, string password_settings, string email_address, string salt, string question, string answer, string answer_settings, bool active, string name, string login_url, string meeting_url, string validation_url)
+            {
+                this.username = username;
+                this.password = password;
+                this.password_settings = password_settings;
+                this.email_address = email_address;
+                this.salt = salt;
+                this.question = question;
+                this.answer = answer;
+                this.answer_settings = answer_settings;
+                this.operation = null;
+                this.end_date = null;
+                this.active = active;
+                this.name = name;
+                this.login_url = login_url;
+                this.meeting_url = meeting_url;
+                this.validation_url = validation_url;
+            }
+
+            public string username { get; set; }
+            public string password { private get; set; }
+            public string password_settings { get; set; }
+            public string email_address { get; set; }
+            public string salt { get; set; }
+            public string question { get; set; }
+            public string answer { private get; set; }
+            public string answer_settings { get; set; }
+            public string operation { private get; set; }
+            public string end_date { private get; set; }
+            public bool active { get; set; }
+            public string name { get; set; }
+            public string login_url { get; set; }
+            public string meeting_url { get; set; }
+            public string validation_url { get; set; }
+
+            public static bool query_3(IEnumerable<Credential> credentials, string param_email)
+            {
+                int UpdateCount = 0;
+                foreach (Credential Row in credentials)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                    {
+                        Row.password = param_newPassword;
+                        Row.password_settings = param_newPasswordSettings;
+                        UpdateCount++;
+                    }
+
+                return UpdateCount > 0;
+            }
+
+            public static bool update_1(IEnumerable<Credential> credentials, string param_username, string param_password, string param_passwordSettings, string param_newPassword, string param_newPasswordSettings)
+            {
+                int UpdateCount = 0;
+                foreach (Credential Row in credentials)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                    {
+                        Row.password = param_newPassword;
+                        Row.password_settings = param_newPasswordSettings;
+                        UpdateCount++;
+                    }
+
+                return UpdateCount > 0;
+            }
+
+            public static bool update_2(IEnumerable<Credential> credentials, string param_username, string param_password, string param_passwordSettings, string param_newEmailAddress)
+            {
+                int UpdateCount = 0;
+                foreach (Credential Row in credentials)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                    {
+                        Row.email_address = param_newEmailAddress;
+                        UpdateCount++;
+                    }
+
+                return UpdateCount > 0;
+            }
+
+            public static bool update_3_1(IEnumerable<Credential> credentials, string param_username, string param_password, string param_passwordSettings, string param_newQuestion, string param_newAnswer, string param_newAnswerSettings)
+            {
+                int UpdateCount = 0;
+                foreach (Credential Row in credentials)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                    {
+                        Row.question = param_newQuestion;
+                        Row.answer = param_newAnswer;
+                        Row.answer_settings = param_newAnswerSettings;
+                        UpdateCount++;
+                    }
+
+                return UpdateCount > 0;
+            }
+
+            public static bool update_3_2(IEnumerable<Credential> credentials, string param_username, string param_password, string param_passwordSettings)
+            {
+                int UpdateCount = 0;
+                foreach (Credential Row in credentials)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                    {
+                        Row.question = null;
+                        Row.answer = null;
+                        Row.answer_settings = null;
+                        UpdateCount++;
+                    }
+
+                return UpdateCount > 0;
+            }
+        }
+
         public Login()
         {
-            Name = Persistent.GetValue("name", null);
-            Email = Persistent.GetValue("email", null);
-            RecoveryQuestion = Persistent.GetValue("question", null);
+            Username = Persistent.GetValue("username", null);
+            EmailAddress = Persistent.GetValue("email_address", null);
+            Question = Persistent.GetValue("question", null);
             Remember = (Persistent.GetValue("remember", null) != null);
-            LoginState = (Name != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
+            LoginState = (Username != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
 
             Database.DebugLog = true;
             Database.DebugLogFullResponse = true;
@@ -48,18 +176,18 @@ namespace AppCSHtml5
         }
 
         public LoginStates LoginState { get; set; }
-        public string Name { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }
-        public string Email { get; set; }
-        public string NewEmail { get; set; }
-        public string RecoveryQuestion { get; set; }
+        public string EmailAddress { get; set; }
+        public string NewEmailAddress { get; set; }
+        public string Question { get; set; }
         public string NewQuestion { get; set; }
-        public string RecoveryAnswer { get; set; }
+        public string Answer { get; set; }
         public string ConfirmAnswer { get; set; }
         public bool Remember { get; set; }
-        public bool HasQuestion { get { return !string.IsNullOrEmpty(RecoveryQuestion); } }
+        public bool HasQuestion { get { return !string.IsNullOrEmpty(Question); } }
         private byte[] Salt;
 
         public void On_CheckLoggedIn(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
@@ -139,17 +267,17 @@ namespace AppCSHtml5
         #region Register
         public void On_Register(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            string NameValue = Name.Trim();
-            string EmailValue = Email.Trim();
-            string QuestionValue = RecoveryQuestion.Trim();
+            string NameValue = Username.Trim();
+            string EmailAddressValue = EmailAddress.Trim();
+            string QuestionValue = Question.Trim();
 
             string PasswordValue;
             string AnswerValue;
 
             bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
 
-            if (string.IsNullOrEmpty(NameValue) || !IsPasswordValid || string.IsNullOrEmpty(EmailValue) || !EmailValue.Contains("@"))
+            if (string.IsNullOrEmpty(NameValue) || !IsPasswordValid || string.IsNullOrEmpty(EmailAddressValue) || !EmailAddressValue.Contains("@"))
                 destinationPageName = PageNames.register_failed_1Page;
 
             else if (!string.IsNullOrEmpty(QuestionValue) && !IsAnswerValid)
@@ -161,9 +289,9 @@ namespace AppCSHtml5
             else
             {
                 if (string.IsNullOrEmpty(QuestionValue) || !IsAnswerValid)
-                    StartRegister(NameValue, PasswordValue, EmailValue, "", "");
+                    StartRegister(NameValue, PasswordValue, EmailAddressValue, "", "");
                 else
-                    StartRegister(NameValue, PasswordValue, EmailValue, QuestionValue, AnswerValue);
+                    StartRegister(NameValue, PasswordValue, EmailAddressValue, QuestionValue, AnswerValue);
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -206,7 +334,7 @@ namespace AppCSHtml5
             }
             else if (error == (int)ErrorCodes.UsernameAlreadyUsed)
                 (App.Current as App).GoTo(PageNames.register_failed_5Page);
-            else if (error == (int)ErrorCodes.EmailAlreadyUsed)
+            else if (error == (int)ErrorCodes.EmailAddressAlreadyUsed)
                 (App.Current as App).GoTo(PageNames.register_failed_6Page);
             else
                 (App.Current as App).GoTo(PageNames.register_failed_4Page);
@@ -226,17 +354,17 @@ namespace AppCSHtml5
             if (QueryString != null && QueryString.ContainsKey("type") && QueryString["type"] == "register")
             {
                 string QueryName = QueryString.ContainsKey("username") ? QueryString["username"] : null;
-                string QueryEmail = QueryString.ContainsKey("email") ? QueryString["email"] : null;
+                string QueryEmailAddress = QueryString.ContainsKey("email_address") ? QueryString["email_address"] : null;
                 string SaltString = QueryString.ContainsKey("salt") ? QueryString["salt"] : null;
                 string QueryQuestion = QueryString.ContainsKey("question") ? QueryString["question"] : null;
 
                 byte[] QuerySalt;
-                if (!string.IsNullOrEmpty(QueryName) && !string.IsNullOrEmpty(QueryEmail) && HashTools.TryParse(SaltString, out QuerySalt))
+                if (!string.IsNullOrEmpty(QueryName) && !string.IsNullOrEmpty(QueryEmailAddress) && HashTools.TryParse(SaltString, out QuerySalt))
                 {
-                    Name = QueryName;
-                    Email = QueryEmail;
+                    Username = QueryName;
+                    EmailAddress = QueryEmailAddress;
                     Salt = QuerySalt;
-                    RecoveryQuestion = QueryQuestion;
+                    Question = QueryQuestion;
                     destinationPageName = PageNames.registration_endPage;
                 }
                 else
@@ -250,8 +378,8 @@ namespace AppCSHtml5
         {
             if (!Remember)
             {
-                Persistent.SetValue("name", null);
-                Persistent.SetValue("email", null);
+                Persistent.SetValue("username", null);
+                Persistent.SetValue("email_address", null);
                 Persistent.SetValue("salt", null);
                 Persistent.SetValue("question", null);
                 Persistent.SetValue("remember", null);
@@ -261,7 +389,7 @@ namespace AppCSHtml5
             string AnswerValue;
 
             bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
 
             if (!IsPasswordValid)
                 destinationPageName = PageNames.registration_end_failed_1Page;
@@ -285,7 +413,7 @@ namespace AppCSHtml5
                     EncryptedAnswerSettings = "";
                 }
 
-                ActivateAccountAndSendEmail(Name, Email, EncryptedPassword, EncryptedPasswordSettings, EncryptedAnswer, EncryptedAnswerSettings, (int checkError, object checkResult) => CompleteRegistration_AccountActivated(checkError, checkResult, Remember));
+                ActivateAccountAndSendEmail(Username, EmailAddress, EncryptedPassword, EncryptedPasswordSettings, EncryptedAnswer, EncryptedAnswerSettings, (int checkError, object checkResult) => CompleteRegistration_AccountActivated(checkError, checkResult, Remember));
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -298,17 +426,17 @@ namespace AppCSHtml5
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
                 if (remember)
                 {
-                    Persistent.SetValue("name", Name);
-                    Persistent.SetValue("email", Email);
+                    Persistent.SetValue("username", Username);
+                    Persistent.SetValue("email_address", EmailAddress);
                     Persistent.SetValue("salt", HashTools.GetString(Salt));
-                    Persistent.SetValue("question", RecoveryQuestion);
+                    Persistent.SetValue("question", Question);
                     Persistent.SetValue("remember", "1");
                 }
 
                 LoginState = LoginStates.SignedIn;
 
-                NotifyPropertyChanged(nameof(Email));
-                NotifyPropertyChanged(nameof(RecoveryQuestion));
+                NotifyPropertyChanged(nameof(EmailAddress));
+                NotifyPropertyChanged(nameof(Question));
                 NotifyPropertyChanged(nameof(LoginState));
 
                 (App.Current as App).GoTo(PageNames.registration_completePage);
@@ -327,14 +455,14 @@ namespace AppCSHtml5
         {
             if (!Remember)
             {
-                Persistent.SetValue("name", null);
-                Persistent.SetValue("email", null);
+                Persistent.SetValue("username", null);
+                Persistent.SetValue("email_address", null);
                 Persistent.SetValue("salt", null);
                 Persistent.SetValue("question", null);
                 Persistent.SetValue("remember", null);
             }
 
-            string NameValue = Name.Trim();
+            string NameValue = Username.Trim();
 
             string PasswordValue;
             if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
@@ -382,24 +510,24 @@ namespace AppCSHtml5
             if (error == (int)ErrorCodes.Success && result != null)
             {
                 Dictionary<string, string> SignInResult = (Dictionary<string, string>)result;
-                Name = SignInResult["username"];
-                Email = SignInResult["email"];
+                Username = SignInResult["username"];
+                EmailAddress = SignInResult["email_address"];
                 Salt = TestSalt;
-                RecoveryQuestion = SignInResult["question"];
+                Question = SignInResult["question"];
 
                 if (remember)
                 {
-                    Persistent.SetValue("name", Name);
-                    Persistent.SetValue("email", Email);
+                    Persistent.SetValue("username", Username);
+                    Persistent.SetValue("email_address", EmailAddress);
                     Persistent.SetValue("salt", HashTools.GetString(Salt));
-                    Persistent.SetValue("question", RecoveryQuestion);
+                    Persistent.SetValue("question", Question);
                     Persistent.SetValue("remember", "1");
                 }
 
                 LoginState = LoginStates.SignedIn;
 
-                NotifyPropertyChanged(nameof(Email));
-                NotifyPropertyChanged(nameof(RecoveryQuestion));
+                NotifyPropertyChanged(nameof(EmailAddress));
+                NotifyPropertyChanged(nameof(Question));
                 NotifyPropertyChanged(nameof(LoginState));
 
                 string OrganizationName = SignInResult["name"];
@@ -416,14 +544,14 @@ namespace AppCSHtml5
         public void On_Logout(PageNames pageName, string sourceName, string sourceContent)
         {
             LoginState = LoginStates.LoggedOff;
-            Name = null;
-            Email = null;
+            Username = null;
+            EmailAddress = null;
             Salt = null;
-            RecoveryQuestion = null;
+            Question = null;
             ((Eqmlp)GetEqmlp).Logout();
 
-            Persistent.SetValue("name", null);
-            Persistent.SetValue("email", null);
+            Persistent.SetValue("username", null);
+            Persistent.SetValue("email_address", null);
             Persistent.SetValue("salt", null);
             Persistent.SetValue("question", null);
         }
@@ -461,7 +589,7 @@ namespace AppCSHtml5
                 string EncryptedNewPassword;
                 string EncryptedNewPasswordSettings;
                 Encrypt(NewPasswordValue, Salt, EncryptionUse.Password, out EncryptedNewPassword, out EncryptedNewPasswordSettings);
-                ChangePassword(Name, EncryptedCurrentPassword, EncryptedCurrentPasswordSettings, EncryptedNewPassword, EncryptedNewPasswordSettings, ChangePassword_OnPasswordChanged);
+                ChangePassword(Username, EncryptedCurrentPassword, EncryptedCurrentPasswordSettings, EncryptedNewPassword, EncryptedNewPasswordSettings, ChangePassword_OnPasswordChanged);
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -478,19 +606,19 @@ namespace AppCSHtml5
         }
         #endregion
 
-        #region Change Email
-        public void On_ChangeEmail(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        #region Change Email Address
+        public void On_ChangeEmailAddress(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            string EmailValue = NewEmail.Trim();
+            string EmailAddressValue = NewEmailAddress.Trim();
 
             string PasswordValue;
             if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
                 destinationPageName = PageNames.change_email_failed_1Page;
 
-            else if (string.IsNullOrEmpty(EmailValue))
+            else if (string.IsNullOrEmpty(EmailAddressValue))
                 destinationPageName = PageNames.change_email_failed_2Page;
 
-            else if (!EmailValue.Contains("@"))
+            else if (!EmailAddressValue.Contains("@"))
                 destinationPageName = PageNames.change_email_failed_3Page;
 
             else
@@ -498,18 +626,18 @@ namespace AppCSHtml5
                 string EncryptedPassword;
                 string EncryptedPasswordSettings;
                 Encrypt(PasswordValue, Salt, EncryptionUse.Password, out EncryptedPassword, out EncryptedPasswordSettings);
-                ChangeEmail(Name, EncryptedPassword, EncryptedPasswordSettings, EmailValue, (int changeError, object changeResult) => ChangeEmail_OnEmailChanged(changeError, changeResult, EmailValue));
+                ChangeEmailAddress(Username, EncryptedPassword, EncryptedPasswordSettings, EmailAddressValue, (int changeError, object changeResult) => ChangeEmail_OnEmailAddressChanged(changeError, changeResult, EmailAddressValue));
 
                 destinationPageName = PageNames.CurrentPage;
             }
         }
 
-        private void ChangeEmail_OnEmailChanged(int error, object result, string newEmail)
+        private void ChangeEmail_OnEmailAddressChanged(int error, object result, string newEmailAddress)
         {
             if (error == (int)ErrorCodes.Success)
             {
-                Email = newEmail;
-                NewEmail = null;
+                EmailAddress = newEmailAddress;
+                NewEmailAddress = null;
                 (App.Current as App).GoTo(PageNames.change_email_successPage);
             }
             else if (error == (int)ErrorCodes.ErrorNotFound)
@@ -529,7 +657,7 @@ namespace AppCSHtml5
             string ConfirmAnswerValue;
 
             bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
             bool IsConfirmAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.ConfirmAnswer)}", out ConfirmAnswerValue);
 
             if (!IsPasswordValid)
@@ -540,7 +668,7 @@ namespace AppCSHtml5
                 string EncryptedPassword;
                 string EncryptedPasswordSettings;
                 Encrypt(PasswordValue, Salt, EncryptionUse.Password, out EncryptedPassword, out EncryptedPasswordSettings);
-                ChangeRecovery(Name, EncryptedPassword, EncryptedPasswordSettings, "", "", "", (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
+                ChangeRecovery(Username, EncryptedPassword, EncryptedPasswordSettings, "", "", "", (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
                 destinationPageName = PageNames.CurrentPage;
             }
 
@@ -559,7 +687,7 @@ namespace AppCSHtml5
                 string EncryptedNewAnswer;
                 string EncryptedNewAnswerSettings;
                 Encrypt(AnswerValue, Salt, EncryptionUse.SecretAnswer, out EncryptedNewAnswer, out EncryptedNewAnswerSettings);
-                ChangeRecovery(Name, EncryptedPassword, EncryptedPasswordSettings, QuestionValue, EncryptedNewAnswer, EncryptedNewAnswerSettings, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
+                ChangeRecovery(Username, EncryptedPassword, EncryptedPasswordSettings, QuestionValue, EncryptedNewAnswer, EncryptedNewAnswerSettings, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
                 destinationPageName = PageNames.CurrentPage;
             }
         }
@@ -568,7 +696,7 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success)
             {
-                RecoveryQuestion = newQuestion;
+                Question = newQuestion;
                 NewQuestion = null;
                 (App.Current as App).GoTo(PageNames.change_recovery_successPage);
             }
@@ -582,24 +710,24 @@ namespace AppCSHtml5
         #region Recovery
         public void On_BeginRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            string EmailValue = Email.Trim();
+            string EmailAddressValue = EmailAddress.Trim();
 
-            if (string.IsNullOrEmpty(EmailValue))
+            if (string.IsNullOrEmpty(EmailAddressValue))
                 destinationPageName = PageNames.recovery_failed_1Page;
 
             else
             {
-                StartRecovery(EmailValue);
+                StartRecovery(EmailAddressValue);
                 destinationPageName = PageNames.CurrentPage;
             }
         }
 
         private void StartRecovery(string email)
         {
-            CheckIfEmailValid(email, (int checkError, object checkResult) => Recovery_OnEmailChecked(checkError, checkResult, email));
+            CheckIfEmailAddressValid(email, (int checkError, object checkResult) => Recovery_OnEmailAddressChecked(checkError, checkResult, email));
         }
 
-        private void Recovery_OnEmailChecked(int error, object result, string email)
+        private void Recovery_OnEmailAddressChecked(int error, object result, string email)
         {
             if (error == (int)ErrorCodes.Success)
                 BeginRecoveryAndSendEmail(email, Recovery_OnEmailSent);
@@ -625,16 +753,16 @@ namespace AppCSHtml5
             if (QueryString != null && QueryString.ContainsKey("type") && QueryString["type"] == "recovery")
             {
                 string QueryName = QueryString.ContainsKey("username") ? QueryString["username"] : null;
-                string QueryEmail = QueryString.ContainsKey("email") ? QueryString["email"] : null;
+                string QueryEmailAddress = QueryString.ContainsKey("email_address") ? QueryString["email_address"] : null;
                 string SaltString = QueryString.ContainsKey("salt") ? QueryString["salt"] : null;
                 string QueryQuestion = QueryString.ContainsKey("question") ? QueryString["question"] : null;
 
                 byte[] QuerySalt;
-                if (!string.IsNullOrEmpty(QueryName) && !string.IsNullOrEmpty(QueryEmail) && !string.IsNullOrEmpty(QueryQuestion) && HashTools.TryParse(SaltString, out QuerySalt))
+                if (!string.IsNullOrEmpty(QueryName) && !string.IsNullOrEmpty(QueryEmailAddress) && !string.IsNullOrEmpty(QueryQuestion) && HashTools.TryParse(SaltString, out QuerySalt))
                 {
-                    Name = QueryName;
-                    Email = QueryEmail;
-                    RecoveryQuestion = QueryQuestion;
+                    Username = QueryName;
+                    EmailAddress = QueryEmailAddress;
+                    Question = QueryQuestion;
                     Salt = QuerySalt;
                     destinationPageName = PageNames.recovery_endPage;
                 }
@@ -650,7 +778,7 @@ namespace AppCSHtml5
             string AnswerValue;
             string NewPasswordValue;
 
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.RecoveryAnswer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
             bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.NewPassword)}", out NewPasswordValue);
 
             if (!IsAnswerValid)
@@ -669,7 +797,7 @@ namespace AppCSHtml5
                 string EncryptedNewPasswordSettings;
                 Encrypt(NewPasswordValue, Salt, EncryptionUse.Password, out EncryptedNewPassword, out EncryptedNewPasswordSettings);
 
-                RecoverAccount(Name, EncryptedAnswer, EncryptedAnswerSettings, EncryptedNewPassword, EncryptedNewPasswordSettings, CompleteRecovery_OnGetUserInfo);
+                RecoverAccount(Username, EncryptedAnswer, EncryptedAnswerSettings, EncryptedNewPassword, EncryptedNewPasswordSettings, CompleteRecovery_OnGetUserInfo);
                 destinationPageName = PageNames.CurrentPage;
             }
         }
@@ -696,7 +824,7 @@ namespace AppCSHtml5
         private void QueryNewCredential(string username, string email, Action<int, object> callback)
         {
             Database.Completed += OnQueryNewCredentialCompleted;
-            Database.Query(new DatabaseQueryOperation("new credential", "query_7.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email", HtmlString.PercentEncoded(email) } }, callback));
+            Database.Query(new DatabaseQueryOperation("new credential", "query_7.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) } }, callback));
         }
 
         private void OnQueryNewCredentialCompleted(object sender, CompletionEventArgs e)
@@ -731,15 +859,15 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(-1, null));
         }
 
-        private void ChangeEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string newEmail, Action<int, object> callback)
+        private void ChangeEmailAddress(string username, string encryptedPassword, string encryptedPasswordSettings, string newEmailAddress, Action<int, object> callback)
         {
-            Database.Completed += OnChangeEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email", HtmlString.PercentEncoded(newEmail) } }, callback));
+            Database.Completed += OnChangeEmailAddressCompleted;
+            Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_email_address", HtmlString.PercentEncoded(newEmailAddress) } }, callback));
         }
 
-        private void OnChangeEmailCompleted(object sender, CompletionEventArgs e)
+        private void OnChangeEmailAddressCompleted(object sender, CompletionEventArgs e)
         {
-            Database.Completed -= OnChangeEmailCompleted;
+            Database.Completed -= OnChangeEmailAddressCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
@@ -753,7 +881,7 @@ namespace AppCSHtml5
         private void ChangeRecovery(string username, string encryptedPassword, string encryptedPasswordSettings, string newQuestion, string encryptedNewAnswer, string encryptedNewAnswerSettings, Action<int, object> callback)
         {
             Database.Completed += OnChangeRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "question", HtmlString.PercentEncoded(newQuestion) }, { "answer", encryptedNewAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_question", HtmlString.PercentEncoded(newQuestion) }, { "new_answer", encryptedNewAnswer }, { "new_answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, callback));
         }
 
         private void OnChangeRecoveryCompleted(object sender, CompletionEventArgs e)
@@ -769,15 +897,15 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void CheckIfEmailValid(string email, Action<int, object> callback)
+        private void CheckIfEmailAddressValid(string email, Action<int, object> callback)
         {
-            Database.Completed += OnIsEmailValidityChecked;
-            Database.Query(new DatabaseQueryOperation("check email", "query_3.php", new Dictionary<string, string>() { { "email", HtmlString.PercentEncoded(email) } }, callback));
+            Database.Completed += OnIsEmailAddressValidityChecked;
+            Database.Query(new DatabaseQueryOperation("check email", "query_3.php", new Dictionary<string, string>() { { "email_address", HtmlString.PercentEncoded(email) } }, callback));
         }
 
-        private void OnIsEmailValidityChecked(object sender, CompletionEventArgs e)
+        private void OnIsEmailAddressValidityChecked(object sender, CompletionEventArgs e)
         {
-            Database.Completed -= OnIsEmailValidityChecked;
+            Database.Completed -= OnIsEmailAddressValidityChecked;
 
             Action<int, object> Callback = e.Operation.Callback;
 
@@ -791,7 +919,7 @@ namespace AppCSHtml5
         private void RegisterAndSendEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string email, string question, string encryptedAnswer, string encryptedAnswerSettings, string salt, Action<int, object> callback)
         {
             Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e)
@@ -810,7 +938,7 @@ namespace AppCSHtml5
         private void BeginRecoveryAndSendEmail(string email, Action<int, object> callback)
         {
             Database.Completed += OnRecoverySendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start recovery", "update_4.php", new Dictionary<string, string>() { { "email", HtmlString.PercentEncoded(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start recovery", "update_4.php", new Dictionary<string, string>() { { "email_address", HtmlString.PercentEncoded(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnRecoverySendEmailCompleted(object sender, CompletionEventArgs e)
@@ -829,7 +957,7 @@ namespace AppCSHtml5
         private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, Action<int, object> callback)
         {
             Database.Completed += OnActivateAccountCompleted;
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnActivateAccountCompleted(object sender, CompletionEventArgs e)
@@ -896,7 +1024,7 @@ namespace AppCSHtml5
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
-            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "username", "email", "question", "name", "login_url", "meeting_url", "validation_url", "result" })) != null && Result.ContainsKey("result"))
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "username", "email_address", "question", "name", "login_url", "meeting_url", "validation_url", "result" })) != null && Result.ContainsKey("result"))
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
@@ -912,9 +1040,9 @@ namespace AppCSHtml5
                 return;
 
             OperationHandler.Add(new OperationHandler("/request/update_1.php", OnChangePasswordRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_2.php", OnChangeEmailRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_2.php", OnChangeEmailAddressRequest));
             OperationHandler.Add(new OperationHandler("/request/update_3.php", OnChangeRecoveryRequest));
-            OperationHandler.Add(new OperationHandler("/request/query_3.php", OnCheckEmailValidityRequest));
+            OperationHandler.Add(new OperationHandler("/request/query_3.php", OnCheckEmailAddressValidityRequest));
             OperationHandler.Add(new OperationHandler("/request/insert_1.php", OnSignUpRequest));
             OperationHandler.Add(new OperationHandler("/request/update_4.php", OnRecoveryRequest));
             OperationHandler.Add(new OperationHandler("/request/update_5.php", OnCompleteRegistrationRequest));
@@ -928,11 +1056,11 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
+            string QueryUsername;
             if (parameters.ContainsKey("username"))
-                Username = parameters["username"];
+                QueryUsername = parameters["username"];
             else
-                Username = null;
+                QueryUsername = null;
 
             string EncryptedPassword;
             if (parameters.ContainsKey("password"))
@@ -940,23 +1068,32 @@ namespace AppCSHtml5
             else
                 EncryptedPassword = null;
 
+            string PasswordSettings;
+            if (parameters.ContainsKey("password_settings"))
+                PasswordSettings = parameters["password_settings"];
+            else
+                PasswordSettings = null;
+
             string EncryptedNewPassword;
-            if (parameters.ContainsKey("newpassword"))
-                EncryptedNewPassword = parameters["newpassword"];
+            if (parameters.ContainsKey("new_password"))
+                EncryptedNewPassword = parameters["new_password"];
             else
                 EncryptedNewPassword = null;
 
-            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(EncryptedPassword) || string.IsNullOrEmpty(EncryptedNewPassword))
+            string NewPasswordSettings;
+            if (parameters.ContainsKey("new_password_settings"))
+                NewPasswordSettings = parameters["new_password_settings"];
+            else
+                NewPasswordSettings = null;
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(EncryptedNewPassword) || NewPasswordSettings == null)
                 return Result;
 
-            ErrorCodes ErrorCode = ErrorCodes.ErrorNotFound;
-            foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("username") && Line["username"] == Username && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("password") && Line["password"] == EncryptedPassword)
-                {
-                    Line["password"] = EncryptedNewPassword;
-                    ErrorCode = ErrorCodes.Success;
-                    break;
-                }
+            ErrorCodes ErrorCode;
+            if (Credential.update_1(KnownUserTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedNewPassword, NewPasswordSettings))
+                ErrorCode = ErrorCodes.Success;
+            else
+                ErrorCode = ErrorCodes.ErrorNotFound;
 
             Result.Add(new Dictionary<string, string>()
             {
@@ -966,15 +1103,15 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnChangeEmailRequest(Dictionary<string, string> parameters)
+        private List<Dictionary<string, string>> OnChangeEmailAddressRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
+            string QueryUsername;
             if (parameters.ContainsKey("username"))
-                Username = parameters["username"];
+                QueryUsername = parameters["username"];
             else
-                Username = null;
+                QueryUsername = null;
 
             string EncryptedPassword;
             if (parameters.ContainsKey("password"))
@@ -982,24 +1119,26 @@ namespace AppCSHtml5
             else
                 EncryptedPassword = null;
 
-            string NewEmail;
-            if (parameters.ContainsKey("email"))
-                NewEmail = parameters["email"];
+            string PasswordSettings;
+            if (parameters.ContainsKey("password_settings"))
+                PasswordSettings = parameters["password_settings"];
             else
-                NewEmail = null;
+                PasswordSettings = null;
 
-            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(EncryptedPassword) || string.IsNullOrEmpty(NewEmail))
+            string QueryNewEmailAddress;
+            if (parameters.ContainsKey("new_email_address"))
+                QueryNewEmailAddress = parameters["new_email_address"];
+            else
+                QueryNewEmailAddress = null;
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(QueryNewEmailAddress))
                 return Result;
 
-            ErrorCodes ErrorCode = ErrorCodes.ErrorNotFound;
-            foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("username") && Line["username"] == Username && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("password") && Line["password"] == EncryptedPassword && Line.ContainsKey("email"))
-                {
-                    Line["email"] = NewEmail;
-                    ErrorCode = ErrorCodes.Success;
-                    break;
-                }
-
+            ErrorCodes ErrorCode;
+            if (Credential.update_2(KnownUserTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewEmailAddress))
+                ErrorCode = ErrorCodes.Success;
+            else
+                ErrorCode = ErrorCodes.ErrorNotFound;
 
             Result.Add(new Dictionary<string, string>()
             {
@@ -1012,11 +1151,11 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
+            string QueryUsername;
             if (parameters.ContainsKey("username"))
-                Username = parameters["username"];
+                QueryUsername = parameters["username"];
             else
-                Username = null;
+                QueryUsername = null;
 
             string EncryptedPassword;
             if (parameters.ContainsKey("password"))
@@ -1024,39 +1163,51 @@ namespace AppCSHtml5
             else
                 EncryptedPassword = null;
 
-            string NewQuestion;
-            if (parameters.ContainsKey("question"))
-                NewQuestion = parameters["question"];
+            string PasswordSettings;
+            if (parameters.ContainsKey("password_settings"))
+                PasswordSettings = parameters["password_settings"];
             else
-                NewQuestion = null;
+                PasswordSettings = null;
+
+            string QueryNewQuestion;
+            if (parameters.ContainsKey("new_question"))
+                QueryNewQuestion = parameters["new_question"];
+            else
+                QueryNewQuestion = null;
 
             string EncryptedNewAnswer;
-            if (parameters.ContainsKey("answer"))
-                EncryptedNewAnswer = parameters["answer"];
+            if (parameters.ContainsKey("new_answer"))
+                EncryptedNewAnswer = parameters["new_answer"];
             else
                 EncryptedNewAnswer = null;
 
-            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(EncryptedPassword) || NewQuestion == null || EncryptedNewAnswer == null)
+            string NewAnswerSettings;
+            if (parameters.ContainsKey("new_answer_settings"))
+                NewAnswerSettings = parameters["new_answer_settings"];
+            else
+                NewAnswerSettings = null;
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || QueryNewQuestion == null || EncryptedNewAnswer == null || NewAnswerSettings == null)
                 return Result;
 
-            ErrorCodes ErrorCode = ErrorCodes.ErrorNotFound;
-            foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("username") && Line["username"] == Username && Line.ContainsKey("password") && Line["password"] == EncryptedPassword && Line.ContainsKey("active") && Line["active"] == "1")
-                {
-                    if (NewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
-                    {
-                        Line["question"] = EncodedRecoveryQuestion(NewQuestion);
-                        Line["answer"] = EncryptedNewAnswer;
-                    }
-                    else
-                    {
-                        Line["question"] = null;
-                        Line["answer"] = null;
-                    }
+            if ((QueryNewQuestion.Length == 0 && EncryptedNewAnswer.Length > 0) || (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length == 0))
+                return Result;
 
+            ErrorCodes ErrorCode;
+            if (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
+            {
+                if (Credential.update_3_1(KnownUserTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewQuestion, EncryptedNewAnswer, NewAnswerSettings))
                     ErrorCode = ErrorCodes.Success;
-                    break;
-                }
+                else
+                    ErrorCode = ErrorCodes.ErrorNotFound;
+            }
+            else
+            {
+                if (Credential.update_3_2(KnownUserTable, QueryUsername, EncryptedPassword, PasswordSettings))
+                    ErrorCode = ErrorCodes.Success;
+                else
+                    ErrorCode = ErrorCodes.ErrorNotFound;
+            }
 
             Result.Add(new Dictionary<string, string>()
             {
@@ -1065,22 +1216,22 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnCheckEmailValidityRequest(Dictionary<string, string> parameters)
+        private List<Dictionary<string, string>> OnCheckEmailAddressValidityRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Email;
-            if (parameters.ContainsKey("email"))
-                Email = parameters["email"];
+            string QueryEmailAddress;
+            if (parameters.ContainsKey("email_address"))
+                QueryEmailAddress = parameters["email_address"];
             else
-                Email = null;
+                QueryEmailAddress = null;
 
-            if (string.IsNullOrEmpty(Email))
+            if (string.IsNullOrEmpty(QueryEmailAddress))
                 return Result;
 
             ErrorCodes ErrorCode = ErrorCodes.ErrorNotFound;
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("email") && Line["email"] == Email && Line.ContainsKey("active") && Line["active"] == "1")
+                if (Line.ContainsKey("email_address") && Line["email_address"] == QueryEmailAddress && Line.ContainsKey("active") && Line["active"] == "1")
                 {
                     if (Line.ContainsKey("question") && !string.IsNullOrEmpty(Line["question"]))
                         ErrorCode = ErrorCodes.Success;
@@ -1101,11 +1252,11 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
+            string QueryUsername;
             if (parameters.ContainsKey("username"))
-                Username = parameters["username"];
+                QueryUsername = parameters["username"];
             else
-                Username = null;
+                QueryUsername = null;
 
             string EncryptedPassword;
             if (parameters.ContainsKey("password"))
@@ -1113,50 +1264,50 @@ namespace AppCSHtml5
             else
                 EncryptedPassword = null;
 
-            string Email;
-            if (parameters.ContainsKey("email"))
-                Email = parameters["email"];
+            string QueryEmailAddress;
+            if (parameters.ContainsKey("email_address"))
+                QueryEmailAddress = parameters["email_address"];
             else
-                Email = null;
+                QueryEmailAddress = null;
 
-            string Question;
+            string QueryQuestion;
             if (parameters.ContainsKey("question"))
-                Question = parameters["question"];
+                QueryQuestion = parameters["question"];
             else
-                Question = null;
+                QueryQuestion = null;
 
-            string Answer;
+            string EncryptedAnswer;
             if (parameters.ContainsKey("answer"))
-                Answer = parameters["answer"];
+                EncryptedAnswer = parameters["answer"];
             else
-                Answer = null;
+                EncryptedAnswer = null;
 
-            string Salt;
+            string QuerySalt;
             if (parameters.ContainsKey("salt"))
-                Salt = parameters["salt"];
+                QuerySalt = parameters["salt"];
             else
-                Salt = null;
+                QuerySalt = null;
 
-            string Language;
+            string QueryLanguage;
             if (parameters.ContainsKey("language"))
-                Language = parameters["language"];
+                QueryLanguage = parameters["language"];
             else
-                Language = "0";
+                QueryLanguage = "0";
 
-            if (Username == null || EncryptedPassword == null || Email == null || Question == null || Answer == null || Salt == null)
+            if (QueryUsername == null || EncryptedPassword == null || QueryEmailAddress == null || QueryQuestion == null || EncryptedAnswer == null || QuerySalt == null)
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if ((Line.ContainsKey("username") && Line["username"] == Username) || (Line.ContainsKey("email") && Line["email"] == Email))
+                if ((Line.ContainsKey("username") && Line["username"] == QueryUsername) || (Line.ContainsKey("email_address") && Line["email_address"] == QueryEmailAddress))
                     return Result;
 
             Dictionary<string, string> NewLine = new Dictionary<string, string>();
-            NewLine.Add("username", Username);
+            NewLine.Add("username", QueryUsername);
             NewLine.Add("password", EncryptedPassword);
-            NewLine.Add("email", Email);
-            NewLine.Add("salt", Salt);
-            NewLine.Add("question", EncodedRecoveryQuestion(Question));
-            NewLine.Add("answer", Answer);
+            NewLine.Add("email_address", QueryEmailAddress);
+            NewLine.Add("salt", QuerySalt);
+            NewLine.Add("question", EncodedQuestion(QueryQuestion));
+            NewLine.Add("answer", EncryptedAnswer);
             NewLine.Add("active", "0");
             NewLine.Add("name", "");
             NewLine.Add("login_url", "");
@@ -1172,7 +1323,7 @@ namespace AppCSHtml5
 
             DispatcherTimer SignUpConfirmedTimer = new DispatcherTimer();
             SignUpConfirmedTimer.Interval = TimeSpan.FromSeconds(3);
-            SignUpConfirmedTimer.Tick += (object sender, object e) => OnSignUpConfirmed(sender, e, Username, Email, Question);
+            SignUpConfirmedTimer.Tick += (object sender, object e) => OnSignUpConfirmed(sender, e, QueryUsername, QueryEmailAddress, QueryQuestion);
             SignUpConfirmedTimer.Start();
 
             return Result;
@@ -1189,7 +1340,7 @@ namespace AppCSHtml5
                 QueryString.Clear();
                 QueryString.Add("type", "register");
                 QueryString.Add("username", username);
-                QueryString.Add("email", email);
+                QueryString.Add("email_address", email);
                 QueryString.Add("question", question);
 
                 PageNames NextPageName;
@@ -1202,34 +1353,34 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Email;
-            if (parameters.ContainsKey("email"))
-                Email = parameters["email"];
+            string QueryEmailAddress;
+            if (parameters.ContainsKey("email_address"))
+                QueryEmailAddress = parameters["email_address"];
             else
-                Email = null;
+                QueryEmailAddress = null;
 
-            string Language;
+            string QueryLanguage;
             if (parameters.ContainsKey("language"))
-                Language = parameters["language"];
+                QueryLanguage = parameters["language"];
             else
-                Language = "0";
+                QueryLanguage = "0";
 
-            if (Email == null)
+            if (QueryEmailAddress == null)
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("email") && Line["email"] == Email && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("question") && Line["question"].Length > 0)
+                if (Line.ContainsKey("email_address") && Line["email_address"] == QueryEmailAddress && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("question") && Line["question"].Length > 0)
                 {
                     Result.Add(new Dictionary<string, string>()
                     {
                         { "result", ((int)ErrorCodes.Success).ToString()},
                     });
 
-                    string Username = Line.ContainsKey("username") ? Line["username"] : "";
+                    string QueryUsername = Line.ContainsKey("username") ? Line["username"] : "";
 
                     DispatcherTimer RecoveryConfirmedTimer = new DispatcherTimer();
                     RecoveryConfirmedTimer.Interval = TimeSpan.FromSeconds(3);
-                    RecoveryConfirmedTimer.Tick += (object sender, object e) => OnRecoveryConfirmed(sender, e, Username, Email, DecodedRecoveryQuestion(Line["question"]));
+                    RecoveryConfirmedTimer.Tick += (object sender, object e) => OnRecoveryConfirmed(sender, e, QueryUsername, QueryEmailAddress, DecodedQuestion(Line["question"]));
                     RecoveryConfirmedTimer.Start();
                     break;
                 }
@@ -1248,7 +1399,7 @@ namespace AppCSHtml5
                 QueryString.Clear();
                 QueryString.Add("type", "recovery");
                 QueryString.Add("username", username);
-                QueryString.Add("email", email);
+                QueryString.Add("email_address", email);
                 QueryString.Add("question", question);
 
                 PageNames NextPageName;
@@ -1261,17 +1412,17 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
+            string QueryUsername;
             if (parameters.ContainsKey("username"))
-                Username = parameters["username"];
+                QueryUsername = parameters["username"];
             else
-                Username = null;
+                QueryUsername = null;
 
-            string Email;
-            if (parameters.ContainsKey("email"))
-                Email = parameters["email"];
+            string QueryEmailAddress;
+            if (parameters.ContainsKey("email_address"))
+                QueryEmailAddress = parameters["email_address"];
             else
-                Email = null;
+                QueryEmailAddress = null;
 
             string EncryptedPassword;
             if (parameters.ContainsKey("password"))
@@ -1285,17 +1436,17 @@ namespace AppCSHtml5
             else
                 EncryptedAnswer = null;
 
-            string Language;
+            string QueryLanguage;
             if (parameters.ContainsKey("language"))
-                Language = parameters["language"];
+                QueryLanguage = parameters["language"];
             else
-                Language = "0";
+                QueryLanguage = "0";
 
-            if (Username == null || Email == null || EncryptedPassword == null || EncryptedAnswer == null)
+            if (QueryUsername == null || QueryEmailAddress == null || EncryptedPassword == null || EncryptedAnswer == null)
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("username") && Line["username"] == Username)
+                if (Line.ContainsKey("username") && Line["username"] == QueryUsername)
                 {
                     ErrorCodes Error;
                     if ((Line.ContainsKey("password") && Line["password"] == EncryptedPassword) && (Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer))
@@ -1327,11 +1478,11 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
+            string QueryUsername;
             if (parameters.ContainsKey("username"))
-                Username = parameters["username"];
+                QueryUsername = parameters["username"];
             else
-                Username = null;
+                QueryUsername = null;
 
             string EncryptedAnswer;
             if (parameters.ContainsKey("answer"))
@@ -1345,12 +1496,12 @@ namespace AppCSHtml5
             else
                 EncryptedNewPassword = null;
 
-            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(EncryptedAnswer) || string.IsNullOrEmpty(EncryptedNewPassword))
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedAnswer) || string.IsNullOrEmpty(EncryptedNewPassword))
                 return Result;
 
             ErrorCodes Error = ErrorCodes.InvalidUsernameOrAnswer;
             foreach (Dictionary<string, string> Line in KnownUserTable)
-                if (Line.ContainsKey("username") && Line["username"] == Username && Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("question") && !string.IsNullOrEmpty(Line["question"]))
+                if (Line.ContainsKey("username") && Line["username"] == QueryUsername && Line.ContainsKey("answer") && Line["answer"] == EncryptedAnswer && Line.ContainsKey("active") && Line["active"] == "1" && Line.ContainsKey("question") && !string.IsNullOrEmpty(Line["question"]))
                 {
                     Line["password"] = EncryptedNewPassword;
                     Error = ErrorCodes.Success;
@@ -1369,24 +1520,24 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Username;
+            string QueryUsername;
             if (parameters.ContainsKey("username"))
-                Username = parameters["username"];
+                QueryUsername = parameters["username"];
             else
-                Username = null;
+                QueryUsername = null;
 
-            string Email;
-            if (parameters.ContainsKey("email"))
-                Email = parameters["email"];
+            string QueryEmailAddress;
+            if (parameters.ContainsKey("email_address"))
+                QueryEmailAddress = parameters["email_address"];
             else
-                Email = null;
+                QueryEmailAddress = null;
 
-            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Email))
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(QueryEmailAddress))
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
             {
-                if (Line.ContainsKey("username") && Line["username"] == Username)
+                if (Line.ContainsKey("username") && Line["username"] == QueryUsername)
                 {
                     Result.Add(new Dictionary<string, string>()
                     {
@@ -1395,11 +1546,11 @@ namespace AppCSHtml5
                     return Result;
                 }
 
-                else if (Line.ContainsKey("email") && Line["email"] == Email)
+                else if (Line.ContainsKey("email_address") && Line["email_address"] == QueryEmailAddress)
                 {
                     Result.Add(new Dictionary<string, string>()
                     {
-                        { "result", ((int)ErrorCodes.EmailAlreadyUsed).ToString() },
+                        { "result", ((int)ErrorCodes.EmailAddressAlreadyUsed).ToString() },
                     });
                     return Result;
                 }
@@ -1423,18 +1574,18 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Identifier;
+            string QueryIdentifier;
             if (parameters.ContainsKey("identifier"))
-                Identifier = parameters["identifier"];
+                QueryIdentifier = parameters["identifier"];
             else
-                Identifier = null;
+                QueryIdentifier = null;
 
-            if (string.IsNullOrEmpty(Identifier))
+            if (string.IsNullOrEmpty(QueryIdentifier))
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
             {
-                if (Line.ContainsKey("active") && Line["active"] == "1" && ((Line.ContainsKey("username") && Line["username"] == Identifier) || (Line.ContainsKey("email") && Line["email"] == Identifier)))
+                if (Line.ContainsKey("active") && Line["active"] == "1" && ((Line.ContainsKey("username") && Line["username"] == QueryIdentifier) || (Line.ContainsKey("email_address") && Line["email_address"] == QueryIdentifier)))
                 {
                     Result.Add(new Dictionary<string, string>()
                     {
@@ -1457,11 +1608,11 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string Identifier;
+            string QueryIdentifier;
             if (parameters.ContainsKey("identifier"))
-                Identifier = parameters["identifier"];
+                QueryIdentifier = parameters["identifier"];
             else
-                Identifier = null;
+                QueryIdentifier = null;
 
             string EncryptedPassword;
             if (parameters.ContainsKey("password"))
@@ -1469,17 +1620,17 @@ namespace AppCSHtml5
             else
                 EncryptedPassword = null;
 
-            if (Identifier == null || EncryptedPassword == null)
+            if (QueryIdentifier == null || EncryptedPassword == null)
                 return Result;
 
             foreach (Dictionary<string, string> Line in KnownUserTable)
             {
-                if (Line.ContainsKey("active") && Line["active"] == "1" && ((Line.ContainsKey("username") && Line["username"] == Identifier) || (Line.ContainsKey("email") && Line["email"] == Identifier)) && Line.ContainsKey("password") && Line["password"] == EncryptedPassword)
+                if (Line.ContainsKey("active") && Line["active"] == "1" && ((Line.ContainsKey("username") && Line["username"] == QueryIdentifier) || (Line.ContainsKey("email_address") && Line["email_address"] == QueryIdentifier)) && Line.ContainsKey("password") && Line["password"] == EncryptedPassword)
                     Result.Add(new Dictionary<string, string>()
                     {
                         { "username", Line["username"]},
-                        { "email", Line["email"] },
-                        { "question", DecodedRecoveryQuestion(Line["question"]) },
+                        { "email_address", Line["email_address"] },
+                        { "question", DecodedQuestion(Line["question"]) },
                         { "name", Line["name"] },
                         { "login_url", Line["login_url"] },
                         { "meeting_url", Line["meeting_url"] },
@@ -1491,7 +1642,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        public static string EncodedRecoveryQuestion(string text)
+        public static string EncodedQuestion(string text)
         {
             string Result = "";
             foreach (char c in text)
@@ -1500,7 +1651,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        public static string DecodedRecoveryQuestion(string text)
+        public static string DecodedQuestion(string text)
         {
             string Result = "";
             foreach (char c in text)
@@ -1518,22 +1669,22 @@ namespace AppCSHtml5
                 return -1;
         }
 
-        private List<Dictionary<string, string>> KnownUserTable = new List<Dictionary<string, string>>
+        private List<Credential> KnownUserTable = new List<Credential>
         {
-            new Dictionary<string, string>()
-            {
-                { "username", "test" },
-                { "password", Convert.ToBase64String(Encoding.UTF8.GetBytes("toto")) },
-                { "email", "test@test.com" },
-                { "salt", "c32e25dca5caa30aa442eb2e9190e08cc93868ea60fd91eff53f53b5bc420bd2e5079d3fb5197046f806936b5ae6d1eab72a49a5bd22a0522890423266b993350064ec298e1ad608" },
-                { "question", EncodedRecoveryQuestion("foo") },
-                { "answer", Convert.ToBase64String(Encoding.UTF8.GetBytes("not foo")) },
-                { "active", "1" },
-                { "name", Eqmlp.KnownOrganizationTable[0]["name"] },
-                { "login_url", Eqmlp.KnownOrganizationTable[0]["login_url"] },
-                { "meeting_url", Eqmlp.KnownOrganizationTable[0]["meeting_url"] },
-                { "validation_url", Eqmlp.KnownOrganizationTable[0]["validation_url"] },
-            }
+            new Credential(
+                "test",
+                Convert.ToBase64String(Encoding.UTF8.GetBytes("toto")),
+                "",
+                "test@test.com",
+                "c32e25dca5caa30aa442eb2e9190e08cc93868ea60fd91eff53f53b5bc420bd2e5079d3fb5197046f806936b5ae6d1eab72a49a5bd22a0522890423266b993350064ec298e1ad608",
+                EncodedQuestion("foo"),
+                Convert.ToBase64String(Encoding.UTF8.GetBytes("not foo")),
+                "",
+                1,
+                Eqmlp.KnownOrganizationTable[0]["name"],
+                Eqmlp.KnownOrganizationTable[0]["login_url"],
+                Eqmlp.KnownOrganizationTable[0]["meeting_url"],
+                Eqmlp.KnownOrganizationTable[0]["validation_url"]),
         };
         #endregion
 
