@@ -61,7 +61,7 @@ namespace AppCSHtml5
                 this.password = password;
                 this.password_settings = password_settings;
                 this.active = active;
-                operation = null;
+                transaction = null;
                 end_date = null;
                 question = null;
                 answer = null;
@@ -80,7 +80,7 @@ namespace AppCSHtml5
                 this.password = password;
                 this.password_settings = password_settings;
                 this.active = active;
-                operation = null;
+                transaction = null;
                 end_date = null;
                 this.question = question;
                 this.answer = answer;
@@ -97,7 +97,7 @@ namespace AppCSHtml5
             public string password { private get; set; }
             public string password_settings { get; set; }
             public bool active { get; set; }
-            public string operation { private get; set; }
+            public string transaction { private get; set; }
             public DateTime? end_date { private get; set; }
             public string question { get; set; }
             public string answer { private get; set; }
@@ -107,7 +107,7 @@ namespace AppCSHtml5
             public string meeting_url { get; set; }
             public string validation_url { get; set; }
 
-            public static bool insert_1_1(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_operation, DateTime param_begin, DateTime param_endDate)
+            public static bool insert_1_1(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_transaction, DateTime param_begin, DateTime param_endDate)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username || Row.email_address == param_emailAddress)
@@ -118,7 +118,7 @@ namespace AppCSHtml5
                 return true;
             }
 
-            public static bool insert_1_2(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_operation, DateTime param_begin, DateTime param_endDate)
+            public static bool insert_1_2(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transaction, DateTime param_begin, DateTime param_endDate)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username || Row.email_address == param_emailAddress)
@@ -129,10 +129,10 @@ namespace AppCSHtml5
                 return true;
             }
 
-            public static bool query_1(IEnumerable<CredentialRecord> credentials, bool param_active, string param_operation, out string username, out string emailAddress, out string salt, out string question)
+            public static bool query_1(IEnumerable<CredentialRecord> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string question)
             {
                 foreach (CredentialRecord Row in credentials)
-                    if (Row.active == param_active && Row.operation == param_operation && DateTime.UtcNow < Row.end_date)
+                    if (Row.active == param_active && Row.transaction == param_transaction && DateTime.UtcNow < Row.end_date)
                     {
                         username = Row.username;
                         emailAddress = Row.email_address;
@@ -267,12 +267,12 @@ namespace AppCSHtml5
                 return false;
             }
 
-            public static bool update_4(IEnumerable<CredentialRecord> credentials, string param_emailAddress, string param_operation, DateTime param_endDate)
+            public static bool update_4(IEnumerable<CredentialRecord> credentials, string param_emailAddress, string param_transaction, DateTime param_endDate)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.email_address == param_emailAddress && Row.active == true && !string.IsNullOrEmpty(Row.question))
                     {
-                        Row.operation = param_operation;
+                        Row.transaction = param_transaction;
                         Row.end_date = param_endDate;
                         return true;
                     }
@@ -280,13 +280,13 @@ namespace AppCSHtml5
                 return false;
             }
 
-            public static bool update_5_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_operation)
+            public static bool update_5_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.operation == param_operation && DateTime.UtcNow < Row.end_date)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.transaction == param_transaction && DateTime.UtcNow < Row.end_date)
                     {
                         Row.active = true;
-                        Row.operation = null;
+                        Row.transaction = null;
                         Row.end_date = null;
                         return true;
                     }
@@ -294,13 +294,13 @@ namespace AppCSHtml5
                 return false;
             }
 
-            public static bool update_5_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_operation)
+            public static bool update_5_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.operation == param_operation && DateTime.UtcNow < Row.end_date)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction == param_transaction && DateTime.UtcNow < Row.end_date)
                     {
                         Row.active = true;
-                        Row.operation = null;
+                        Row.transaction = null;
                         Row.end_date = null;
                         return true;
                     }
@@ -308,14 +308,14 @@ namespace AppCSHtml5
                 return false;
             }
 
-            public static bool update_6(IEnumerable<CredentialRecord> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_operation)
+            public static bool update_6(IEnumerable<CredentialRecord> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.active == true && !string.IsNullOrEmpty(Row.question) && Row.operation == param_operation && DateTime.UtcNow < Row.end_date)
+                    if (Row.username == param_username && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.active == true && !string.IsNullOrEmpty(Row.question) && Row.transaction == param_transaction && DateTime.UtcNow < Row.end_date)
                     {
                         Row.password = param_newPassword;
                         Row.password_settings = param_newPasswordSettings;
-                        Row.operation = null;
+                        Row.transaction = null;
                         Row.end_date = null;
                         return true;
                     }
@@ -350,7 +350,7 @@ namespace AppCSHtml5
         public string Answer { get; set; }
         public string ConfirmAnswer { get; set; }
         public bool Remember { get; set; }
-        public string Operation { get; set; }
+        public string Transaction { get; set; }
         public bool HasQuestion { get { return !string.IsNullOrEmpty(Question); } }
         private byte[] Salt;
 
@@ -509,7 +509,7 @@ namespace AppCSHtml5
                 string QueryEmailAddress = QueryString.ContainsKey("email_address") ? QueryString["email_address"] : null;
                 string SaltString = QueryString.ContainsKey("salt") ? QueryString["salt"] : null;
                 string QueryQuestion = QueryString.ContainsKey("question") ? QueryString["question"] : null;
-                string QueryOperation = QueryString.ContainsKey("operation") ? QueryString["operation"] : null;
+                string QueryTransaction = QueryString.ContainsKey("transaction_code") ? QueryString["transaction_code"] : null;
 
                 byte[] QuerySalt;
                 if (!string.IsNullOrEmpty(QueryName) && !string.IsNullOrEmpty(QueryEmailAddress) && HashTools.TryParse(SaltString, out QuerySalt))
@@ -518,7 +518,7 @@ namespace AppCSHtml5
                     EmailAddress = QueryEmailAddress;
                     Salt = QuerySalt;
                     Question = QueryQuestion;
-                    Operation = QueryOperation;
+                    Transaction = QueryTransaction;
                     destinationPageName = PageNames.registration_endPage;
                 }
                 else
@@ -567,7 +567,7 @@ namespace AppCSHtml5
                     EncryptedAnswerSettings = "";
                 }
 
-                ActivateAccountAndSendEmail(Username, EmailAddress, EncryptedPassword, EncryptedPasswordSettings, EncryptedAnswer, EncryptedAnswerSettings, Operation, (int checkError, object checkResult) => CompleteRegistration_AccountActivated(checkError, checkResult, Remember));
+                ActivateAccountAndSendEmail(Username, EmailAddress, EncryptedPassword, EncryptedPasswordSettings, EncryptedAnswer, EncryptedAnswerSettings, Transaction, (int checkError, object checkResult) => CompleteRegistration_AccountActivated(checkError, checkResult, Remember));
 
                 destinationPageName = PageNames.CurrentPage;
             }
@@ -910,7 +910,7 @@ namespace AppCSHtml5
                 string QueryEmailAddress = QueryString.ContainsKey("email_address") ? QueryString["email_address"] : null;
                 string SaltString = QueryString.ContainsKey("salt") ? QueryString["salt"] : null;
                 string QueryQuestion = QueryString.ContainsKey("question") ? QueryString["question"] : null;
-                string QueryOperation = QueryString.ContainsKey("operation") ? QueryString["operation"] : null;
+                string QueryTransaction = QueryString.ContainsKey("transaction_code") ? QueryString["transaction_code"] : null;
 
                 byte[] QuerySalt;
                 if (!string.IsNullOrEmpty(QueryName) && !string.IsNullOrEmpty(QueryEmailAddress) && !string.IsNullOrEmpty(QueryQuestion) && HashTools.TryParse(SaltString, out QuerySalt))
@@ -919,7 +919,7 @@ namespace AppCSHtml5
                     EmailAddress = QueryEmailAddress;
                     Question = QueryQuestion;
                     Salt = QuerySalt;
-                    Operation = QueryOperation;
+                    Transaction = QueryTransaction;
                     destinationPageName = PageNames.recovery_endPage;
                 }
                 else
@@ -953,7 +953,7 @@ namespace AppCSHtml5
                 string EncryptedNewPasswordSettings;
                 Encrypt(NewPasswordValue, Salt, EncryptionUsePassword, out EncryptedNewPassword, out EncryptedNewPasswordSettings);
 
-                RecoverAccount(Username, EncryptedAnswer, EncryptedAnswerSettings, EncryptedNewPassword, EncryptedNewPasswordSettings, Operation, CompleteRecovery_OnGetUserInfo);
+                RecoverAccount(Username, EncryptedAnswer, EncryptedAnswerSettings, EncryptedNewPassword, EncryptedNewPasswordSettings, Transaction, CompleteRecovery_OnGetUserInfo);
                 destinationPageName = PageNames.CurrentPage;
             }
         }
@@ -976,7 +976,7 @@ namespace AppCSHtml5
         }
         #endregion
 
-        #region Operations
+        #region Transactions
         private void QueryNewCredential(string username, string email, Action<int, object> callback)
         {
             Database.Completed += OnQueryNewCredentialCompleted;
@@ -1110,10 +1110,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, string operation, Action<int, object> callback)
+        private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, string transaction, Action<int, object> callback)
         {
             Database.Completed += OnActivateAccountCompleted;
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "operation", operation }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transaction }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnActivateAccountCompleted(object sender, CompletionEventArgs e)
@@ -1129,10 +1129,10 @@ namespace AppCSHtml5
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
         }
 
-        private void RecoverAccount(string username, string encryptedAnswer, string encryptedAnswerSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, string operation, Action<int, object> callback)
+        private void RecoverAccount(string username, string encryptedAnswer, string encryptedAnswerSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, string transaction, Action<int, object> callback)
         {
             Database.Completed += OnAccountRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "operation", operation } }, callback));
+            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "transaction_code", transaction } }, callback));
         }
 
         private void OnAccountRecoveryCompleted(object sender, CompletionEventArgs e)
@@ -1461,18 +1461,18 @@ namespace AppCSHtml5
                 return Result;
 
             ErrorCodes ErrorCode;
-            string RegisterOperation = CreateOperation();
+            string RegisterTransaction = CreateTransactionCode();
 
             if (QueryQuestion.Length > 0 && EncryptedAnswer.Length > 0)
             {
-                if (CredentialRecord.insert_1_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, QueryQuestion, EncryptedAnswer, AnswerSettings, RegisterOperation, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
+                if (CredentialRecord.insert_1_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, QueryQuestion, EncryptedAnswer, AnswerSettings, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.OperationFailed;
             }
             else
             {
-                if (CredentialRecord.insert_1_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterOperation, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
+                if (CredentialRecord.insert_1_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.OperationFailed;
@@ -1487,14 +1487,14 @@ namespace AppCSHtml5
             {
                 DispatcherTimer SignUpConfirmedTimer = new DispatcherTimer();
                 SignUpConfirmedTimer.Interval = TimeSpan.FromSeconds(3);
-                SignUpConfirmedTimer.Tick += (object sender, object e) => OnSignUpConfirmed(sender, e, RegisterOperation);
+                SignUpConfirmedTimer.Tick += (object sender, object e) => OnSignUpConfirmed(sender, e, RegisterTransaction);
                 SignUpConfirmedTimer.Start();
             }
 
             return Result;
         }
 
-        private void OnSignUpConfirmed(object sender, object e, string operation)
+        private void OnSignUpConfirmed(object sender, object e, string transaction)
         {
             DispatcherTimer SignUpConfirmedTimer = (DispatcherTimer)sender;
             SignUpConfirmedTimer.Stop();
@@ -1503,7 +1503,7 @@ namespace AppCSHtml5
             string ResultEmailAddress;
             string ResultSalt;
             string ResultQuestion;
-            if (CredentialRecord.query_1(DatabaseCredentialTable, false, operation, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultQuestion))
+            if (CredentialRecord.query_1(DatabaseCredentialTable, false, transaction, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultQuestion))
             {
                 if (MessageBox.Show("Continue registration?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -1513,7 +1513,7 @@ namespace AppCSHtml5
                     QueryString.Add("username", ResultUsername);
                     QueryString.Add("email_address", ResultEmailAddress);
                     QueryString.Add("question", ResultQuestion);
-                    QueryString.Add("operation", operation);
+                    QueryString.Add("transaction_code", transaction);
 
                     PageNames NextPageName;
                     On_RegisterEnd(PageNames.homePage, null, null, out NextPageName);
@@ -1562,11 +1562,11 @@ namespace AppCSHtml5
             else
                 AnswerSettings = null;
 
-            string QueryOperation;
-            if (parameters.ContainsKey("operation"))
-                QueryOperation = parameters["operation"];
+            string QueryTransaction;
+            if (parameters.ContainsKey("transaction_code"))
+                QueryTransaction = parameters["transaction_code"];
             else
-                QueryOperation = null;
+                QueryTransaction = null;
 
             string QueryLanguage;
             if (parameters.ContainsKey("language"))
@@ -1574,20 +1574,20 @@ namespace AppCSHtml5
             else
                 QueryLanguage = "0";
 
-            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(QueryEmailAddress) || string.IsNullOrEmpty(EncryptedPassword) || EncryptedAnswer == null || string.IsNullOrEmpty(QueryOperation))
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(QueryEmailAddress) || string.IsNullOrEmpty(EncryptedPassword) || EncryptedAnswer == null || string.IsNullOrEmpty(QueryTransaction))
                 return Result;
 
             ErrorCodes ErrorCode;
             if (EncryptedAnswer.Length > 0)
             {
-                if (CredentialRecord.update_5_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedAnswer, AnswerSettings, QueryOperation))
+                if (CredentialRecord.update_5_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedAnswer, AnswerSettings, QueryTransaction))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.InvalidUsernamePasswordOrAnswer;
             }
             else
             {
-                if (CredentialRecord.update_5_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryOperation))
+                if (CredentialRecord.update_5_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.InvalidUsernameOrPassword;
@@ -1621,9 +1621,9 @@ namespace AppCSHtml5
                 return Result;
 
             ErrorCodes ErrorCode;
-            string RecoveryOperation = CreateOperation();
+            string RecoveryTransaction = CreateTransactionCode();
 
-            if (CredentialRecord.update_4(DatabaseCredentialTable, QueryEmailAddress, RecoveryOperation, DateTime.UtcNow))
+            if (CredentialRecord.update_4(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
@@ -1632,7 +1632,7 @@ namespace AppCSHtml5
             {
                 DispatcherTimer RecoveryConfirmedTimer = new DispatcherTimer();
                 RecoveryConfirmedTimer.Interval = TimeSpan.FromSeconds(3);
-                RecoveryConfirmedTimer.Tick += (object sender, object e) => OnRecoveryConfirmed(sender, e, RecoveryOperation);
+                RecoveryConfirmedTimer.Tick += (object sender, object e) => OnRecoveryConfirmed(sender, e, RecoveryTransaction);
                 RecoveryConfirmedTimer.Start();
             }
 
@@ -1644,7 +1644,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private void OnRecoveryConfirmed(object sender, object e, string operation)
+        private void OnRecoveryConfirmed(object sender, object e, string transaction)
         {
             DispatcherTimer SignUpConfirmedTimer = (DispatcherTimer)sender;
             SignUpConfirmedTimer.Stop();
@@ -1653,7 +1653,7 @@ namespace AppCSHtml5
             string ResultEmailAddress;
             string ResultSalt;
             string ResultQuestion;
-            if (CredentialRecord.query_1(DatabaseCredentialTable, false, operation, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultQuestion))
+            if (CredentialRecord.query_1(DatabaseCredentialTable, false, transaction, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultQuestion))
             {
                 if (MessageBox.Show("Continue recovery?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -1663,7 +1663,7 @@ namespace AppCSHtml5
                     QueryString.Add("username", ResultUsername);
                     QueryString.Add("email_address", ResultEmailAddress);
                     QueryString.Add("question", ResultQuestion);
-                    QueryString.Add("operation", operation);
+                    QueryString.Add("transaction_code", transaction);
 
                     PageNames NextPageName;
                     On_RecoveryEnd(PageNames.homePage, null, null, out NextPageName);
@@ -1706,17 +1706,17 @@ namespace AppCSHtml5
             else
                 NewPasswordSettings = null;
 
-            string QueryOperation;
-            if (parameters.ContainsKey("operation"))
-                QueryOperation = parameters["operation"];
+            string QueryTransaction;
+            if (parameters.ContainsKey("transaction_code"))
+                QueryTransaction = parameters["transaction_code"];
             else
-                QueryOperation = null;
+                QueryTransaction = null;
 
-            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedAnswer) || string.IsNullOrEmpty(EncryptedNewPassword) || string.IsNullOrEmpty(QueryOperation))
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedAnswer) || string.IsNullOrEmpty(EncryptedNewPassword) || string.IsNullOrEmpty(QueryTransaction))
                 return Result;
 
             ErrorCodes ErrorCode;
-            if (CredentialRecord.update_6(DatabaseCredentialTable, QueryUsername, EncryptedAnswer, AnswerSettings, EncryptedNewPassword, NewPasswordSettings, QueryOperation))
+            if (CredentialRecord.update_6(DatabaseCredentialTable, QueryUsername, EncryptedAnswer, AnswerSettings, EncryptedNewPassword, NewPasswordSettings, QueryTransaction))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.InvalidUsernameOrAnswer;
@@ -1902,15 +1902,15 @@ namespace AppCSHtml5
             return Result;
         }
 
-        public string CreateOperation()
+        public string CreateTransactionCode()
         {
             long Ticks = DateTime.Now.Ticks;
             byte[] TickBytes = BitConverter.GetBytes(Ticks);
 
             string TickString = HashTools.GetString(TickBytes);
-            string OperationString = TickString + TickString;
+            string TransactionString = TickString + TickString;
 
-            return OperationString;
+            return TransactionString;
         }
 
         public static int ParseResult(string result)
