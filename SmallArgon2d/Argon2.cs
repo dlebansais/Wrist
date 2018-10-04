@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace SmallArgon2d
 {
@@ -37,7 +38,7 @@ namespace SmallArgon2d
         /// <summary>
         /// Any extra associated data to use while hashing the password
         /// </summary>
-        public int AssociatedUse { get; set; }
+        public string AssociatedUse { get; set; }
 
         /// <summary>
         /// The number of iterations to apply to the password hash
@@ -93,7 +94,7 @@ namespace SmallArgon2d
             Argon2Core n = BuildCore(bc);
             n.Salt = Salt;
             n.Secret = KnownSecret;
-            n.AssociatedData = BitConverter.GetBytes(AssociatedUse);
+            n.AssociatedData = Encoding.UTF8.GetBytes(AssociatedUse);
             n.Iterations = Iterations;
             n.MemorySize = MemorySize;
 
