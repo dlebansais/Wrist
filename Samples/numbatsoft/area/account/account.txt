@@ -11,6 +11,7 @@ recovery question: text, text=login.question
 account management text: text, text=translation.strings[account-management-colon]
 change password: button, content=translation.strings[change-password], goto=change password
 change email: button, content=translation.strings[change-email], goto=change email
+change username: button, content=translation.strings[change-username], goto=change username
 change recovery: button, content=translation.strings[change-recovery], goto=change recovery
 eqmlp login state: index, index=eqmlp.login state
 language: index, index=language.language state

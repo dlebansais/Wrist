@@ -68,6 +68,51 @@ namespace SmallArgon2d
         }
 
         /// <summary>
+        /// Implementation of SetSettings
+        /// </summary>
+        public bool SetSettings(string settings)
+        {
+            if (!string.IsNullOrEmpty(settings))
+            {
+                int setIteration;
+                int setMemorySize;
+                if (FindSetting(settings, "Iterations", out setIteration) && FindSetting(settings, "MemorySize", out setMemorySize))
+                {
+                    string ExpectedSettings = $"PHS={GetType().Name};Version={Version};Iterations={setIteration};MemorySize={setMemorySize};AssociatedUse={AssociatedUse}";
+
+                    if (settings == ExpectedSettings)
+                    {
+                        Iterations = setIteration;
+                        MemorySize = setMemorySize;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool FindSetting(string setting, string pattern, out int result)
+        {
+            int StartIndex = setting.IndexOf(pattern + "=");
+            if (StartIndex >= 0)
+            {
+                int EndIndex = setting.IndexOf(";", StartIndex);
+                if (EndIndex < 0)
+                    EndIndex = setting.Length;
+
+                if (EndIndex > StartIndex + pattern.Length + 1)
+                {
+                    if (int.TryParse(setting.Substring(StartIndex + pattern.Length + 1, EndIndex - pattern.Length), out result))
+                        return true;
+                }
+            }
+
+            result = 0;
+            return false;
+        }
+
+        /// <summary>
         /// Implementation of GetEncoded
         /// </summary>
         public string GetEncoded(string hash)
