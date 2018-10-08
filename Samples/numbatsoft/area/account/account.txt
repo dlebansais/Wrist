@@ -1,6 +1,8 @@
 ﻿header logout: area, name=header logout
 legal: area, name=legal
 account title: text, text=translation.strings[account-title]
+is delete canceled: index, index=login.is delete canceled
+deletion canceled: text, text=translation.strings[deletion-canceled]
 name text: text, text=translation.strings[name-colon]
 name: text, text=login.username
 email text: text, text=translation.strings[email-colon]
@@ -13,6 +15,7 @@ change password: button, content=translation.strings[change-password], goto=chan
 change email: button, content=translation.strings[change-email], goto=change email
 change username: button, content=translation.strings[change-username], goto=change username
 change recovery: button, content=translation.strings[change-recovery], goto=change recovery
+delete account: button, content=translation.strings[delete-account], goto=delete account
 eqmlp login state: index, index=eqmlp.login state
 language: index, index=language.language state
 product eqmlp title: text, text=translation.strings[product-eqmlp-title]

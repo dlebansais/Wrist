@@ -36,7 +36,6 @@ page-delete-account	Account management	Gestion du compte
 page-delete-account-failed-1	Account management	Gestion du compte
 page-delete-account-failed-2	Account management	Gestion du compte
 page-delete-account-failed-3	Account management	Gestion du compte
-page-delete-account-failed-4	Account management	Gestion du compte
 page-delete-account-success	Account management	Gestion du compte
 page-register-failed-1	Registration	Enregistrement
 page-register-failed-2	Registration	Enregistrement
@@ -169,12 +168,11 @@ change-password-failed-text-6	Sorry, you must use a different password.	Désolé
 change-password-success-title	Password changed	Le changement de mot de passe a réussi
 change-password-success-text	Congratulation, your password has been changed.	Félicitation, votre mot de passe a bien été changé.
 delete-account-title	Delete account	Suppression du compte
-delete-account-text	Please enter your current password, and the secret answer to the question.	Veuillez entrer votre mot de passe actuel, et la réponse à la question secrète.
+delete-account-text	Please enter your password. After your click the 'Delete' button, your account will be scheduled for deletion in 24h. If you change your mind, just log in and the operation will be automatically canceled.	Veuillez entrer votre mot de passe. Après avoir cliqué sur le bouton 'Supprimer', votre compte sera supprimé dans un délai de 24h. Si vous changez d'avis, reconnectez-vous et l'opération sera automatiquement annulée.
 delete-account-failed-title	Deleting the account failed	La suppression du compte a échouée
 delete-account-failed-text-1	Sorry, you must enter your password to be able to delete the account.	Désolé, vous devez entrer un mot de passe pour pouvoir supprimer le compte.
-delete-account-failed-text-2	.	.
-delete-account-failed-text-3	.	.
-delete-account-failed-text-4	.	.
+delete-account-failed-text-2	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+delete-account-failed-text-3	Sorry, the password and answer you entered don't match those entered when begining registration.	Désolé, le mot de passe et la réponse que vous venez d'entrer ne correspondent pas à ceux déclarés lors du début de l'enregistrement.
 delete-account-success-title	Account deleted	Compte supprimé
 delete-account-success-text	Your account has been deleted.	Votre compte a été supprimé.
 new-email-colon	New email address:	Nouvelle adresse courriel :
@@ -383,3 +381,4 @@ send	Send	Envoyer
 recovery-complete	Account recovery complete, click to continue	Récupération du compte terminée, cliquez pour continuer
 registration-complete	Account activation complete, click to continue	Activation du compte terminée, cliquez pour continuer
 delete	Delete	Supprimer
+deletion-canceled	Your account was scheduled to be deleted, but this operation has been canceled	Votre compte était prêt à être supprimé, mais cette opération a été annulée.

@@ -20,6 +20,7 @@
     <ResourceDictionary Source="/TextNewsTitle.xaml"/>
     <ResourceDictionary Source="/TextPageTitle.xaml"/>
     <ResourceDictionary Source="/TextTitle.xaml"/>
+    <ResourceDictionary Source="/TextWarning.xaml"/>
     <ResourceDictionary Source="/ToggleButton.xaml"/>
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

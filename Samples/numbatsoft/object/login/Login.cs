@@ -67,10 +67,12 @@ namespace AppCSHtml5
                 this.password_settings = password_settings;
                 this.active = active;
                 transaction = null;
-                end_date = null;
+                transaction_end = null;
                 question = null;
                 answer = null;
                 answer_settings = null;
+                delete_date = null;
+                language = null;
                 this.name = name;
                 this.login_url = login_url;
                 this.meeting_url = meeting_url;
@@ -86,10 +88,12 @@ namespace AppCSHtml5
                 this.password_settings = password_settings;
                 this.active = active;
                 transaction = null;
-                end_date = null;
+                transaction_end = null;
                 this.question = question;
                 this.answer = answer;
                 this.answer_settings = answer_settings;
+                delete_date = null;
+                language = null;
                 this.name = name;
                 this.login_url = login_url;
                 this.meeting_url = meeting_url;
@@ -103,14 +107,77 @@ namespace AppCSHtml5
             public string password_settings { get; set; }
             public bool active { get; set; }
             public string transaction { private get; set; }
-            public DateTime? end_date { private get; set; }
+            public DateTime? transaction_end { private get; set; }
             public string question { get; set; }
             public string answer { private get; set; }
             public string answer_settings { get; set; }
+            public DateTime? delete_date { private get; set; }
+            public string language { private get; set; }
             public string name { get; set; }
             public string login_url { get; set; }
             public string meeting_url { get; set; }
             public string validation_url { get; set; }
+
+            public static void cleanup_inactive_credentials(IList<CredentialRecord> credentials, IList<SaltRecord> salts)
+            {
+                List<CredentialRecord> ToRemove = new List<CredentialRecord>();
+
+                foreach (CredentialRecord Row in credentials)
+                    if (Row.active == false && (!Row.transaction_end.HasValue || DateTime.UtcNow >= Row.transaction_end.Value))
+                        ToRemove.Add(Row);
+
+                foreach (CredentialRecord Row in ToRemove)
+                {
+                    foreach (SaltRecord Salt in salts)
+                        if (Salt.salt == Row.salt)
+                        {
+                            salts.Remove(Salt);
+                            break;
+                        }
+
+                    credentials.Remove(Row);
+                }
+            }
+
+            public static void get_deleted_credentials(IList<CredentialRecord> credentials, out IList<Tuple<string, string, string>> UserList)
+            {
+                UserList = new List<Tuple<string, string, string>>();
+
+                foreach (CredentialRecord Row in credentials)
+                    if (Row.active == true && Row.delete_date.HasValue && DateTime.UtcNow >= Row.delete_date.Value)
+                        UserList.Add(new Tuple<string, string, string>(Row.username, Row.email_address, Row.language));
+            }
+
+            public static void cleanup_deleted_credentials(IList<CredentialRecord> credentials, IList<SaltRecord> salts)
+            {
+                List<CredentialRecord> ToRemove = new List<CredentialRecord>();
+
+                foreach (CredentialRecord Row in credentials)
+                    if (Row.active == true && Row.delete_date.HasValue && DateTime.UtcNow >= Row.delete_date.Value)
+                        ToRemove.Add(Row);
+
+                foreach (CredentialRecord Row in ToRemove)
+                {
+                    foreach (SaltRecord Salt in salts)
+                        if (Salt.salt == Row.salt)
+                        {
+                            salts.Remove(Salt);
+                            break;
+                        }
+
+                    credentials.Remove(Row);
+                }
+            }
+
+            public static void cleanup_outdated_transactions(IList<CredentialRecord> credentials)
+            {
+                foreach (CredentialRecord Row in credentials)
+                    if (Row.active == true && Row.transaction != null && Row.transaction_end.HasValue && DateTime.UtcNow >= Row.transaction_end.Value)
+                    {
+                        Row.transaction = null;
+                        Row.transaction_end = null;
+                    }
+            }
 
             public static bool insert_1_1(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_transaction, DateTime param_begin, DateTime param_endDate)
             {
@@ -137,7 +204,7 @@ namespace AppCSHtml5
             public static bool query_1(IEnumerable<CredentialRecord> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings, out string question, out string answerSettings)
             {
                 foreach (CredentialRecord Row in credentials)
-                    if (Row.active == param_active && Row.transaction == param_transaction && DateTime.UtcNow < Row.end_date)
+                    if (Row.active == param_active && Row.transaction == param_transaction && Row.transaction_end.HasValue && DateTime.UtcNow < Row.transaction_end.Value)
                     {
                         username = Row.username;
                         emailAddress = Row.email_address;
@@ -288,7 +355,7 @@ namespace AppCSHtml5
                     if (Row.email_address == param_emailAddress && Row.active == true && !string.IsNullOrEmpty(Row.question))
                     {
                         Row.transaction = param_transaction;
-                        Row.end_date = param_endDate;
+                        Row.transaction_end = param_endDate;
                         return true;
                     }
 
@@ -298,11 +365,11 @@ namespace AppCSHtml5
             public static bool update_5_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.transaction == param_transaction && DateTime.UtcNow < Row.end_date)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.transaction == param_transaction && Row.transaction_end.HasValue && DateTime.UtcNow < Row.transaction_end.Value)
                     {
                         Row.active = true;
                         Row.transaction = null;
-                        Row.end_date = null;
+                        Row.transaction_end = null;
                         return true;
                     }
 
@@ -312,11 +379,11 @@ namespace AppCSHtml5
             public static bool update_5_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction == param_transaction && DateTime.UtcNow < Row.end_date)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction == param_transaction && Row.transaction_end.HasValue && DateTime.UtcNow < Row.transaction_end.Value)
                     {
                         Row.active = true;
                         Row.transaction = null;
-                        Row.end_date = null;
+                        Row.transaction_end = null;
                         return true;
                     }
 
@@ -326,12 +393,14 @@ namespace AppCSHtml5
             public static bool update_6(IEnumerable<CredentialRecord> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.active == true && !string.IsNullOrEmpty(Row.question) && Row.transaction == param_transaction && DateTime.UtcNow < Row.end_date)
+                    if (Row.username == param_username && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.active == true && !string.IsNullOrEmpty(Row.question) && Row.transaction == param_transaction && Row.transaction_end.HasValue && DateTime.UtcNow < Row.transaction_end.Value)
                     {
                         Row.password = param_newPassword;
                         Row.password_settings = param_newPasswordSettings;
                         Row.transaction = null;
-                        Row.end_date = null;
+                        Row.transaction_end = null;
+                        Row.delete_date = null;
+                        Row.language = null;
                         return true;
                     }
 
@@ -344,6 +413,32 @@ namespace AppCSHtml5
                     if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
                     {
                         Row.username = param_newUsername;
+                        return true;
+                    }
+
+                return false;
+            }
+
+            public static bool update_9(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, DateTime param_deleteDate, string param_language)
+            {
+                foreach (CredentialRecord Row in credentials)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                    {
+                        Row.delete_date = param_deleteDate;
+                        Row.language = param_language;
+                        return true;
+                    }
+
+                return false;
+            }
+
+            public static bool cancel_credential_deletion(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings)
+            {
+                foreach (CredentialRecord Row in credentials)
+                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true && Row.delete_date.HasValue)
+                    {
+                        Row.delete_date = null;
+                        Row.language = null;
                         return true;
                     }
 
@@ -424,6 +519,7 @@ namespace AppCSHtml5
         public string NewUsername { get; set; }
         public bool Remember { get; set; }
         public string Transaction { get; set; }
+        public bool IsDeleteCanceled { get; private set; }
         public bool HasQuestion { get { return !string.IsNullOrEmpty(Question); } }
         private byte[] Salt;
         #endregion
@@ -723,6 +819,7 @@ namespace AppCSHtml5
                 PasswordSettings = SignInResult["password_settings"];
                 Question = SignInResult["question"];
                 AnswerSettings = SignInResult["answer_settings"];
+                IsDeleteCanceled = (SignInResult["delete_canceled"] == "1");
 
                 if (remember)
                 {
@@ -759,6 +856,7 @@ namespace AppCSHtml5
             EmailAddress = null;
             Salt = null;
             Question = null;
+            IsDeleteCanceled = false;
             ((Eqmlp)GetEqmlp).Logout();
 
             Persistent.SetValue("username", null);
@@ -1068,19 +1166,13 @@ namespace AppCSHtml5
         #endregion
 
         #region Delete Account
-        public void On_Delete(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_DeleteAccount(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string PasswordValue;
-            string AnswerValue;
-
             bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
 
             if (!IsPasswordValid)
                 destinationPageName = PageNames.delete_account_failed_1Page;
-
-            else if (HasQuestion && !IsAnswerValid)
-                destinationPageName = PageNames.delete_account_failed_2Page;
 
             else
             {
@@ -1088,29 +1180,19 @@ namespace AppCSHtml5
                 string EncryptedPassword;
                 Encrypt(PasswordValue, Salt, EncryptionUsePassword, ref EncryptedPasswordSettings, out EncryptedPassword);
 
-                string EncryptedAnswer;
-                string EncryptedAnswerSettings = AnswerSettings;
-                if (HasQuestion)
-                    Encrypt(AnswerValue, Salt, EncryptionUseAnswer, ref EncryptedAnswerSettings, out EncryptedAnswer);
-                else
-                {
-                    EncryptedAnswer = "";
-                    EncryptedAnswerSettings = "";
-                }
-
-                DeleteAccount(Username, EncryptedPassword, EncryptedPasswordSettings, EncryptedAnswer, EncryptedAnswerSettings, DeleteAccount_OnAccountTagged);
+                DeleteAccount(Username, EncryptedPassword, EncryptedPasswordSettings, DeleteAccount_OnAccountTagged);
                 destinationPageName = PageNames.CurrentPage;
             }
         }
 
-        private void DeleteAccount_OnAccountTagged(int error, object result, string newUsernameValue)
+        private void DeleteAccount_OnAccountTagged(int error, object result)
         {
             if (error == (int)ErrorCodes.Success)
                 (App.Current as App).GoTo(PageNames.delete_account_successPage);
-            else if (error == (int)ErrorCodes.ErrorNoQuestion)
-                (App.Current as App).GoTo(PageNames.delete_account_failed_4Page);
-            else
+            else if (error == (int)ErrorCodes.ErrorNotFound)
                 (App.Current as App).GoTo(PageNames.delete_account_failed_3Page);
+            else
+                (App.Current as App).GoTo(PageNames.delete_account_failed_2Page);
         }
         #endregion
 
@@ -1318,7 +1400,26 @@ namespace AppCSHtml5
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
-            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "username", "email_address", "question", "name", "login_url", "meeting_url", "validation_url", "result" })) != null && Result.ContainsKey("result"))
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "username", "email_address", "question", "name", "login_url", "meeting_url", "validation_url", "delete_canceled", "result" })) != null && Result.ContainsKey("result"))
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+            else
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
+        }
+
+        private void DeleteAccount(string Username, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
+        {
+            Database.Completed += OnDeleteAccountCompleted;
+            Database.Query(new DatabaseQueryOperation("delete account", "update_9.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(Username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+        }
+
+        private void OnDeleteAccountCompleted(object sender, CompletionEventArgs e)
+        {
+            Database.Completed -= OnDeleteAccountCompleted;
+
+            Action<int, object> Callback = e.Operation.Callback;
+
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null && Result.ContainsKey("result"))
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
@@ -1344,6 +1445,7 @@ namespace AppCSHtml5
             OperationHandler.Add(new OperationHandler("/request/query_7.php", OnQueryNewCredentialRequest));
             OperationHandler.Add(new OperationHandler("/request/query_8.php", OnQuerySaltRequest));
             OperationHandler.Add(new OperationHandler("/request/query_9.php", OnSignInRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_9.php", OnDeleteAccountRequest));
         }
 
         private List<Dictionary<string, string>> OnChangePasswordRequest(Dictionary<string, string> parameters)
@@ -2029,6 +2131,8 @@ namespace AppCSHtml5
             string ResultValidationUrl;
             if (CredentialRecord.query_9(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out ResultUsername, out ResultEmailAddress, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings, out ResultName, out ResultLoginUrl, out ResultMeetingUrl, out ResultValidationUrl))
             {
+                bool IsDeletionCanceled = CredentialRecord.cancel_credential_deletion(DatabaseCredentialTable, ResultUsername, EncryptedPassword, PasswordSettings);
+
                 Result.Add(new Dictionary<string, string>()
                 {
                     { "username", ResultUsername},
@@ -2040,6 +2144,7 @@ namespace AppCSHtml5
                     { "login_url", ResultLoginUrl },
                     { "meeting_url", ResultMeetingUrl },
                     { "validation_url", ResultValidationUrl },
+                    { "delete_canceled", IsDeletionCanceled ? "1" : "0" },
                     { "result", ((int)ErrorCodes.Success).ToString() },
                 });
             }
@@ -2052,6 +2157,64 @@ namespace AppCSHtml5
             }
 
             return Result;
+        }
+
+        private List<Dictionary<string, string>> OnDeleteAccountRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string QueryUsername;
+            if (parameters.ContainsKey("username"))
+                QueryUsername = parameters["username"];
+            else
+                QueryUsername = null;
+
+            string EncryptedPassword;
+            if (parameters.ContainsKey("password"))
+                EncryptedPassword = parameters["password"];
+            else
+                EncryptedPassword = null;
+
+            string PasswordSettings;
+            if (parameters.ContainsKey("password_settings"))
+                PasswordSettings = parameters["password_settings"];
+            else
+                PasswordSettings = null;
+
+            string QueryLanguage;
+            if (parameters.ContainsKey("language"))
+                QueryLanguage = parameters["language"];
+            else
+                QueryLanguage = "0";
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
+                return Result;
+
+            DateTime DeleteDate = DateTime.UtcNow + TimeSpan.FromMinutes(2);
+
+            ErrorCodes ErrorCode;
+            if (CredentialRecord.update_9(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
+                ErrorCode = ErrorCodes.Success;
+            else
+                ErrorCode = ErrorCodes.ErrorNotFound;
+
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "result", ((int)ErrorCode).ToString() },
+            });
+
+            return Result;
+        }
+
+        private void CleanupDatabases()
+        {
+            CredentialRecord.cleanup_inactive_credentials(DatabaseCredentialTable, DatabaseSaltTable);
+            CredentialRecord.get_deleted_credentials(DatabaseCredentialTable, out IList<Tuple<string, string, string>> UserList);
+            CredentialRecord.cleanup_deleted_credentials(DatabaseCredentialTable, DatabaseSaltTable);
+            CredentialRecord.cleanup_outdated_transactions(DatabaseCredentialTable);
+
+            foreach (Tuple<string, string, string> User in UserList)
+                MessageBox.Show($"{User.Item1} at {User.Item2}, language is {User.Item3}", "Credential deleted message", MessageBoxButton.OK);
         }
 
         public static string EncodedQuestion(string text)
