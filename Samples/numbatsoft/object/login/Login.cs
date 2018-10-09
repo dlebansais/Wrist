@@ -148,6 +148,19 @@ namespace AppCSHtml5
                         UserList.Add(new Tuple<string, string, string>(Row.username, Row.email_address, Row.language));
             }
 
+            public static bool get_email_address(IList<CredentialRecord> credentials, string param_username, string param_encryptedPassword, string param_passwordSettings, out string emailAddress)
+            {
+                foreach (CredentialRecord Row in credentials)
+                    if (Row.username == param_username && Row.password == param_encryptedPassword && Row.password_settings == param_passwordSettings && Row.active == true)
+                    {
+                        emailAddress = Row.email_address;
+                        return true;
+                    }
+
+                emailAddress = null;
+                return false;
+            }
+
             public static void cleanup_deleted_credentials(IList<CredentialRecord> credentials, IList<SaltRecord> salts)
             {
                 List<CredentialRecord> ToRemove = new List<CredentialRecord>();
@@ -733,6 +746,7 @@ namespace AppCSHtml5
                 }
 
                 LoginState = LoginStates.SignedIn;
+                Transaction = null;
 
                 NotifyPropertyChanged(nameof(EmailAddress));
                 NotifyPropertyChanged(nameof(Question));
@@ -856,6 +870,8 @@ namespace AppCSHtml5
             EmailAddress = null;
             Salt = null;
             Question = null;
+            PasswordSettings = null;
+            AnswerSettings = null;
             IsDeleteCanceled = false;
             ((Eqmlp)GetEqmlp).Logout();
 
@@ -1154,6 +1170,8 @@ namespace AppCSHtml5
                 Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
 
                 LoginState = LoginStates.SignedIn;
+                Transaction = null;
+
                 NotifyPropertyChanged(nameof(LoginState));
 
                 (App.Current as App).GoTo(PageNames.recovery_completePage);
@@ -1188,7 +1206,29 @@ namespace AppCSHtml5
         private void DeleteAccount_OnAccountTagged(int error, object result)
         {
             if (error == (int)ErrorCodes.Success)
+            {
+                LoginState = LoginStates.LoggedOff;
+                Username = null;
+                EmailAddress = null;
+                Salt = null;
+                Question = null;
+                PasswordSettings = null;
+                AnswerSettings = null;
+                IsDeleteCanceled = false;
+                ((Eqmlp)GetEqmlp).Logout();
+
+                NotifyPropertyChanged(nameof(LoginState));
+                NotifyPropertyChanged(nameof(Username));
+                NotifyPropertyChanged(nameof(EmailAddress));
+                NotifyPropertyChanged(nameof(Question));
+
+                Persistent.SetValue("username", null);
+                Persistent.SetValue("email_address", null);
+                Persistent.SetValue("salt", null);
+                Persistent.SetValue("question", null);
+
                 (App.Current as App).GoTo(PageNames.delete_account_successPage);
+            }
             else if (error == (int)ErrorCodes.ErrorNotFound)
                 (App.Current as App).GoTo(PageNames.delete_account_failed_3Page);
             else
@@ -1381,7 +1421,7 @@ namespace AppCSHtml5
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
-            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result", "salt" })) != null)
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result", "salt", "password_settings" })) != null)
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
@@ -1400,7 +1440,7 @@ namespace AppCSHtml5
             Action<int, object> Callback = e.Operation.Callback;
 
             Dictionary<string, string> Result;
-            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "username", "email_address", "question", "name", "login_url", "meeting_url", "validation_url", "delete_canceled", "result" })) != null && Result.ContainsKey("result"))
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "username", "email_address", "password_settings", "question", "answer_settings", "name", "login_url", "meeting_url", "validation_url", "delete_canceled", "result" })) != null && Result.ContainsKey("result"))
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
@@ -2190,11 +2230,20 @@ namespace AppCSHtml5
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
                 return Result;
 
-            DateTime DeleteDate = DateTime.UtcNow + TimeSpan.FromMinutes(2);
-
             ErrorCodes ErrorCode;
-            if (CredentialRecord.update_9(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
-                ErrorCode = ErrorCodes.Success;
+
+            if (CredentialRecord.get_email_address(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, out string ResultEmailAddress))
+            {
+                DateTime DeleteDate = DateTime.UtcNow + TimeSpan.FromMinutes(2);
+
+                if (CredentialRecord.update_9(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
+                {
+                    MessageBox.Show($"Message sent to {ResultEmailAddress}.", "Account deletion pending", MessageBoxButton.OK);
+                    ErrorCode = ErrorCodes.Success;
+                }
+                else
+                    ErrorCode = ErrorCodes.ErrorNotFound;
+            }
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
 
@@ -2265,11 +2314,11 @@ namespace AppCSHtml5
                 "test",
                 "test@test.com",
                 "c32e25dca5caa30aa30ac32e2e255dca",
-                Convert.ToBase64String(Encoding.UTF8.GetBytes("toto")),
-                "",
+                Convert.ToBase64String(Encoding.UTF8.GetBytes("foo")),
+                "Base64",
                 EncodedQuestion("foo"),
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("not foo")),
-                "",
+                "Base64",
                 true,
                 Eqmlp.KnownOrganizationTable[0]["name"],
                 Eqmlp.KnownOrganizationTable[0]["login_url"],

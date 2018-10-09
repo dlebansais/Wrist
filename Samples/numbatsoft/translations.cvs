@@ -126,7 +126,7 @@ account-title	Your account	Votre compte
 email-colon	Email:	Courriel :
 registration-email-colon	Email:	Adresse courriel :
 recovery-colon-1	Recovery question:	Question :
-recovery-colon-2		(Pour récupération)
+recovery-colon-2		(Pour récupération)\u00A0
 account-management-colon	Account management:	Gestion du compte :
 change-password	change password	changer le mot de passe
 change-email	change email address	changer l'adresse courriel
@@ -157,7 +157,7 @@ change-username-failed-text-2	Sorry, you did not enter a new username.	Désolé,
 change-username-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 change-username-failed-text-4	Sorry, you misspelled your current password, or this username is taken.	Désolé, vous avez entré un mot de passe erroné, ou bien ce nom d'utilisateur est déjà pris.
 change-username-success-title	Username changed	Nom d'utilisateur changé
-change-username-success-text	Congratulation, your email address has been changed.	Félicitation, votre adresse courriel a bien été changée.
+change-username-success-text	Congratulation, your username has been changed.	Félicitation, votre nom d'utilisateur a bien été changé.
 change-password-failed-title	Changing the password failed	Le changement de mot de passe a échoué
 change-password-failed-text-1	Sorry, you must enter your current password to be able to change it.	Désolé, vous devez entrer votre mot de passe actuel pour pouvoir le changer.
 change-password-failed-text-2	Sorry, you did not enter a new password or did not confirm it.	Désolé, vous n'avez pas entré de nouveau mot de passe, ou bien sa confirmation.
@@ -174,7 +174,7 @@ delete-account-failed-text-1	Sorry, you must enter your password to be able to d
 delete-account-failed-text-2	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 delete-account-failed-text-3	Sorry, the password and answer you entered don't match those entered when begining registration.	Désolé, le mot de passe et la réponse que vous venez d'entrer ne correspondent pas à ceux déclarés lors du début de l'enregistrement.
 delete-account-success-title	Account deleted	Compte supprimé
-delete-account-success-text	Your account has been deleted.	Votre compte a été supprimé.
+delete-account-success-text	Your account has been scheduled for deletion in 24h. If you change your mind, just relog and this operation will be canceled.	Votre compte a été programmé pour être supprimé dans 24h. Si vous changez d'avis, il vous suffira de vous reconnecter pour annuler l'opération.
 new-email-colon	New email address:	Nouvelle adresse courriel :
 new-username-colon	New username:	Nouveau nom d'utilisateur :
 change-recovery-title	Change recovery question	Changer la question de récupération
