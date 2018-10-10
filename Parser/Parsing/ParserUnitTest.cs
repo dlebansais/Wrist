@@ -18,6 +18,9 @@ namespace Parser
             {
                 using (SourceStream.Open())
                 {
+                    if (SourceStream.IsEmpty)
+                        return null;
+
                     return Parse(fileName, SourceStream);
                 }
             }

@@ -10,6 +10,7 @@ namespace Parser
         IDictionary<ConditionalDefine, bool> ConditionalDefineTable { get; }
         string Line { get; }
         int LineIndex { get; }
+        bool IsEmpty { get; }
         bool EndOfStream { get; }
 
         IParsingSourceStream Open();

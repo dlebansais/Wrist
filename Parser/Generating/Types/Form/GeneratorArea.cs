@@ -6,7 +6,14 @@ namespace Parser
 {
     public class GeneratorArea : IGeneratorArea
     {
+        public static GeneratorArea EmptyArea = new GeneratorArea(Area.EmptyArea.Name);
+
         public static Dictionary<IArea, IGeneratorArea> GeneratorAreaMap { get; } = new Dictionary<IArea, IGeneratorArea>();
+
+        private GeneratorArea(string name)
+        {
+            Name = name;
+        }
 
         public GeneratorArea(IArea area)
         {
@@ -51,11 +58,17 @@ namespace Parser
             if (other == this)
                 return true;
 
-            foreach (IGeneratorComponent component in other.Components)
-                if (component.IsReferencing(this))
-                    return true;
+            else if (other == EmptyArea)
+                return false;
 
-            return false;
+            else
+            {
+                foreach (IGeneratorComponent component in other.Components)
+                    if (component.IsReferencing(this))
+                        return true;
+
+                return false;
+            }
         }
 
         public void Generate(IGeneratorLayout layout, Dictionary<IGeneratorArea, IGeneratorLayout> areaLayouts, IList<IGeneratorPage> pageList, IGeneratorDesign design, int indentation, IGeneratorPage currentPage, IGeneratorColorTheme colorTheme, StreamWriter xamlWriter)
@@ -65,6 +78,9 @@ namespace Parser
 
         public void CollectGoTo(List<Tuple<IGeneratorPageNavigation, IGeneratorObject, IGeneratorObjectPropertyBoolean>> goToList, IGeneratorPage currentPage)
         {
+            if (this == EmptyArea)
+                return;
+
             foreach (IGeneratorComponent Component in Components)
                 if (Component is IGeneratorComponentButton AsButton)
                 {
@@ -96,6 +112,9 @@ namespace Parser
 
         public void CollectBoundComponents(List<IGeneratorBindableComponent> boundComponentList, IGeneratorPage currentPage)
         {
+            if (this == EmptyArea)
+                return;
+
             foreach (IGeneratorComponent Component in Components)
                 if (Component is IGeneratorBindableComponent AsBindable)
                 {

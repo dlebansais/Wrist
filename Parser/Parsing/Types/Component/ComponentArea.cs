@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Parser
+﻿namespace Parser
 {
     public class ComponentArea : Component, IComponentArea
     {
@@ -26,17 +24,22 @@ namespace Parser
         {
             if (Area == null)
             {
-                foreach (IArea Item in domain.Areas)
-                    if (Item.Name == AreaSource.Name)
-                    {
-                        Area = Item;
-                        break;
-                    }
+                if (AreaSource.Name == Parser.Area.EmptyArea.Name)
+                    Area = Parser.Area.EmptyArea;
+                else
+                {
+                    foreach (IArea Item in domain.Areas)
+                        if (Item.Name == AreaSource.Name)
+                        {
+                            Area = Item;
+                            break;
+                        }
 
-                if (Area == null)
-                    throw new ParsingException(117, Source.Source, $"Unknown area '{AreaSource.Name}'.");
+                    if (Area == null)
+                        throw new ParsingException(117, Source.Source, $"Unknown area '{AreaSource.Name}'.");
 
-                Area.SetIsUsed();
+                    Area.SetIsUsed();
+                }
 
                 IsConnected = true;
             }
@@ -46,6 +49,9 @@ namespace Parser
         {
             if (Area == other)
                 return true;
+
+            else if (Area == Parser.Area.EmptyArea)
+                return false;
 
             else if (other.IsReferencedBy(Area))
                 return true;

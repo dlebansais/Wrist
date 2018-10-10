@@ -78,7 +78,7 @@ namespace Parser
 
                     if (Line.StartsWith("#if "))
                     {
-                        string RawName = Line.Substring(4);
+                        string RawName = Line.Substring(4).TrimStart();
                         string ConditionName = RawName.ToUpper();
                         Condition Found = null;
                         foreach (KeyValuePair<ConditionalDefine, bool> Entry in conditionalDefineTable)
@@ -136,6 +136,9 @@ namespace Parser
 
                 if (LastLine != null)
                     sb.Append(LastLine);
+
+                if (ConditionList.Count > 0)
+                    throw new ParsingException(0, "", $"Missing #endif.");
             }
 
             string ParsedContent = sb.ToString();

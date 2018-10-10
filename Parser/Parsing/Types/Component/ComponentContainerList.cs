@@ -45,21 +45,41 @@ namespace Parser
         {
             if (ItemNestedArea == null)
             {
-                foreach (IArea Item in domain.Areas)
-                    if (Item.Name == AreaSource.Name)
-                    {
-                        ItemNestedArea = Item;
-                        break;
-                    }
+                if (AreaSource.Name == Area.EmptyArea.Name)
+                    ItemNestedArea = Area.EmptyArea;
+                else
+                {
+                    foreach (IArea Item in domain.Areas)
+                        if (Item.Name == AreaSource.Name)
+                        {
+                            ItemNestedArea = Item;
+                            break;
+                        }
 
-                if (ItemNestedArea == null)
-                    throw new ParsingException(117, Source.Source, $"Unknown area '{AreaSource.Name}'.");
+                    if (ItemNestedArea == null)
+                        throw new ParsingException(117, Source.Source, $"Unknown area '{AreaSource.Name}'.");
 
-                ItemNestedArea.SetIsUsed();
-                ItemNestedArea.SetCurrentObject(AreaSource, ItemNestedObject);
+                    ItemNestedArea.SetIsUsed();
+                    ItemNestedArea.SetCurrentObject(AreaSource, ItemNestedObject);
+                }
 
                 IsConnected = true;
             }
+        }
+
+        public override bool IsReferencing(IArea other)
+        {
+            if (ItemNestedArea == other)
+                return true;
+
+            else if (ItemNestedArea == Area.EmptyArea)
+                return false;
+
+            else if (other.IsReferencedBy(ItemNestedArea))
+                return true;
+
+            else
+                return false;
         }
     }
 }

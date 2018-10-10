@@ -5,7 +5,14 @@ namespace Parser
 {
     public class GeneratorLayout : IGeneratorLayout
     {
+        public static GeneratorLayout EmptyLayout = new GeneratorLayout(Layout.EmptyLayout.Name);
+
         public static Dictionary<ILayout, IGeneratorLayout> GeneratorLayoutMap { get; } = new Dictionary<ILayout, IGeneratorLayout>();
+
+        private GeneratorLayout(string name)
+        {
+            Name = name;
+        }
 
         public GeneratorLayout(ILayout layout)
         {

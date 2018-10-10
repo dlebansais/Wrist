@@ -4,6 +4,13 @@ namespace Parser
 {
     public class Area : IArea
     {
+        public static Area EmptyArea = new Area("<empty>");
+
+        private Area(string name)
+        {
+            Name = name;
+        }
+
         public Area(string name, string xamlName, IComponentCollection components)
         {
             Name = name;
@@ -58,15 +65,24 @@ namespace Parser
             if (other == this)
                 return true;
 
-            foreach (IComponent component in other.Components)
-                if (component.IsReferencing(this))
-                    return true;
+            else if (other == EmptyArea)
+                return false;
 
-            return false;
+            else
+            {
+                foreach (IComponent component in other.Components)
+                    if (component.IsReferencing(this))
+                        return true;
+
+                return false;
+            }
         }
 
         public void FindOtherRadioButtons(string groupName, ICollection<IComponentRadioButton> group)
         {
+            if (this == EmptyArea)
+                return;
+
             foreach (IComponent component in Components)
                 if (component is IComponentArea AsArea)
                     AsArea.Area.FindOtherRadioButtons(groupName, group);

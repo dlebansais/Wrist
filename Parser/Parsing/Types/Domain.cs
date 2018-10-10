@@ -397,19 +397,22 @@ namespace Parser
             if (usedAreas.Contains(rootArea))
                 usedAreas.Remove(rootArea);
 
-            if (!specifiedAreas.ContainsKey(rootArea))
-                specifiedAreas.Add(rootArea, declaration);
-
-            foreach (IComponent Component in rootArea.Components)
+            if (rootArea != Area.EmptyArea)
             {
-                if (Component is IComponentArea AsComponentArea)
-                    ListAreas(AsComponentArea.Area, AsComponentArea.AreaSource, usedAreas, specifiedAreas);
-                else if (Component is IComponentPopup AsComponentPopup)
-                    ListAreas(AsComponentPopup.Area, AsComponentPopup.AreaSource, usedAreas, specifiedAreas);
-                else if (Component is IComponentContainer AsComponentContainer)
-                    ListAreas(AsComponentContainer.ItemNestedArea, AsComponentContainer.AreaSource, usedAreas, specifiedAreas);
-                else if (Component is IComponentContainerList AsComponentContainerList)
-                    ListAreas(AsComponentContainerList.ItemNestedArea, AsComponentContainerList.AreaSource, usedAreas, specifiedAreas);
+                if (!specifiedAreas.ContainsKey(rootArea))
+                    specifiedAreas.Add(rootArea, declaration);
+
+                foreach (IComponent Component in rootArea.Components)
+                {
+                    if (Component is IComponentArea AsComponentArea)
+                        ListAreas(AsComponentArea.Area, AsComponentArea.AreaSource, usedAreas, specifiedAreas);
+                    else if (Component is IComponentPopup AsComponentPopup)
+                        ListAreas(AsComponentPopup.Area, AsComponentPopup.AreaSource, usedAreas, specifiedAreas);
+                    else if (Component is IComponentContainer AsComponentContainer)
+                        ListAreas(AsComponentContainer.ItemNestedArea, AsComponentContainer.AreaSource, usedAreas, specifiedAreas);
+                    else if (Component is IComponentContainerList AsComponentContainerList)
+                        ListAreas(AsComponentContainerList.ItemNestedArea, AsComponentContainerList.AreaSource, usedAreas, specifiedAreas);
+                }
             }
         }
 

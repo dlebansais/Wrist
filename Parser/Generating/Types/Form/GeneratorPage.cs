@@ -63,7 +63,10 @@ namespace Parser
             if (Area == null)
             {
                 IsConnected = true;
-                Area = GeneratorArea.GeneratorAreaMap[BasePage.Area];
+                if (BasePage.Area != Parser.Area.EmptyArea)
+                    Area = GeneratorArea.GeneratorAreaMap[BasePage.Area];
+                else
+                    Area = Parser.GeneratorArea.EmptyArea;
             }
 
             if (AreaLayouts.Count < BasePage.AreaLayouts.Count)

@@ -39,6 +39,9 @@ namespace Parser
             if (ItemNestedArea == other)
                 return true;
 
+            else if (ItemNestedArea == GeneratorArea.EmptyArea)
+                return false;
+
             else if (other.IsReferencedBy(ItemNestedArea))
                 return true;
 

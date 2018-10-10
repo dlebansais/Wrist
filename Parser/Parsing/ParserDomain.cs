@@ -218,7 +218,8 @@ namespace Parser
                 string FolderName = Path.GetFileName(FullFolderName);
 
                 IForm NewForm = parser.Parse(Path.Combine(formFolderName, FolderName, FolderName + "." + parser.Extension), conditionalDefineTable);
-                parser.ParsedResult.Add(NewForm);
+                if (NewForm != null)
+                    parser.ParsedResult.Add(NewForm);
             }
         }
 

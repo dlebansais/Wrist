@@ -37,6 +37,7 @@ namespace Parser
         public string Line { get; private set; }
         public bool EndOfStream { get { return sr.EndOfStream; } }
         public int LineIndex { get; private set; }
+        public bool IsEmpty { get; private set; }
 
         public IParsingSource FreezedPosition()
         {
@@ -47,6 +48,9 @@ namespace Parser
         {
             fs = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             sr = new ParsingStreamReader(fs, ConditionalDefineTable);
+            if (sr.EndOfStream)
+                IsEmpty = true;
+
             LineIndex = 0;
             Line = null;
             return this;
@@ -56,7 +60,11 @@ namespace Parser
         {
             fs = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             sr = new ParsingStreamReader(fs, ConditionalDefineTable);
-            xr = new XamlXmlReader(sr, context);
+            if (sr.EndOfStream)
+                IsEmpty = true;
+            else
+                xr = new XamlXmlReader(sr, context);
+
             LineIndex = 0;
             Line = null;
             return this;
@@ -65,7 +73,11 @@ namespace Parser
         public IParsingSourceStream OpenXamlFromString(string content, XamlSchemaContext context)
         {
             sr = new ParsingStreamReader(content, ConditionalDefineTable);
-            xr = new XamlXmlReader(sr, context);
+            if (sr.EndOfStream)
+                IsEmpty = true;
+            else
+                xr = new XamlXmlReader(sr, context);
+
             LineIndex = 0;
             Line = null;
             return this;

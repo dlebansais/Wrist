@@ -6,6 +6,17 @@ namespace Parser
     [ContentProperty("Content")]
     public class Layout : ILayout
     {
+        public static Layout EmptyLayout = new Layout("<empty>");
+
+        public Layout()
+        {
+        }
+
+        private Layout(string name)
+        {
+            Name = name;
+        }
+
         public void SetName(string name, string xamlName, string fileName)
         {
             Name = name;

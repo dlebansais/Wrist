@@ -90,18 +90,23 @@ namespace Parser
         {
             if (Area == null)
             {
-                foreach (IArea Item in domain.Areas)
-                    if (Item.Name == AreaSource.Name)
-                    {
-                        Area = Item;
-                        break;
-                    }
+                if (AreaSource.Name == Parser.Area.EmptyArea.Name)
+                    Area = Parser.Area.EmptyArea;
+                else
+                {
+                    foreach (IArea Item in domain.Areas)
+                        if (Item.Name == AreaSource.Name)
+                        {
+                            Area = Item;
+                            break;
+                        }
 
-                if (Area == null)
-                    throw new ParsingException(118, AreaSource.Source, $"Unknown area '{AreaSource.Name}'.");
+                    if (Area == null)
+                        throw new ParsingException(118, AreaSource.Source, $"Unknown area '{AreaSource.Name}'.");
 
-                Area.SetIsUsed();
-                Area.SetCurrentObject(AreaSource, null);
+                    Area.SetIsUsed();
+                    Area.SetCurrentObject(AreaSource, null);
+                }
 
                 IsConnected = true;
             }
@@ -138,27 +143,45 @@ namespace Parser
                     IArea EntryArea = null;
                     ILayout EntryLayout = null;
 
-                    foreach (IArea Item in domain.Areas)
-                        if (Item.Name == AreaSource.Name)
-                        {
-                            EntryArea = Item;
-                            break;
-                        }
+                    if (AreaSource.Name == Parser.Area.EmptyArea.Name)
+                        EntryArea = Parser.Area.EmptyArea;
+                    else
+                    {
+                        foreach (IArea Item in domain.Areas)
+                            if (Item.Name == AreaSource.Name)
+                            {
+                                EntryArea = Item;
+                                break;
+                            }
+                    }
 
-                    foreach (ILayout Item in domain.Layouts)
-                        if (Item.Name == LayoutName)
-                        {
-                            EntryLayout = Item;
-                            break;
-                        }
+                    if (LayoutName == Parser.Layout.EmptyLayout.Name)
+                        EntryLayout = Parser.Layout.EmptyLayout;
+                    else
+                    {
+                        foreach (ILayout Item in domain.Layouts)
+                            if (Item.Name == LayoutName)
+                            {
+                                EntryLayout = Item;
+                                break;
+                            }
+                    }
 
                     if (EntryArea == null)
                         throw new ParsingException(119, AreaSource.Source, $"Unknown area '{AreaSource.Name}'.");
                     else if (EntryLayout == null)
                         throw new ParsingException(120, AreaSource.Source, $"Unknown layout '{LayoutName}'.");
+                    else if ((EntryArea == Parser.Area.EmptyArea && EntryLayout != Parser.Layout.EmptyLayout) || (EntryArea != Parser.Area.EmptyArea && EntryLayout == Parser.Layout.EmptyLayout))
+                        if (EntryArea == Parser.Area.EmptyArea)
+                            throw new ParsingException(0, AreaSource.Source, $"The empty area can only be associated to the empty layout.");
+                        else
+                            throw new ParsingException(0, AreaSource.Source, $"The empty layout can only be associated to the empty area.");
 
-                    AreaLayouts.Add(EntryArea, EntryLayout.GetClone());
-                    AreaLayoutBacktracks.Add(EntryArea, AreaSource);
+                    if (EntryArea != Parser.Area.EmptyArea && EntryLayout != Parser.Layout.EmptyLayout)
+                    {
+                        AreaLayouts.Add(EntryArea, EntryLayout.GetClone());
+                        AreaLayoutBacktracks.Add(EntryArea, AreaSource);
+                    }
                 }
 
                 foreach (KeyValuePair<IArea, ILayout> Entry in AreaLayouts)

@@ -22,6 +22,9 @@ namespace Parser
                 XamlSchemaContext Context = GetContext();
                 using (SourceStream.OpenXamlFromFile(Context))
                 {
+                    if (SourceStream.IsEmpty)
+                        return null;
+
                     return Parse(fileName, SourceStream);
                 }
             }

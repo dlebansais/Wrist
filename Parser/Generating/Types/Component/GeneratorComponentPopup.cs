@@ -100,6 +100,9 @@ namespace Parser
             if (Area == other)
                 return true;
 
+            else if (Area == GeneratorArea.EmptyArea)
+                return false;
+
             else if (other.IsReferencedBy(Area))
                 return true;
 

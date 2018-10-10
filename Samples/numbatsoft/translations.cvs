@@ -7,7 +7,6 @@ page-account	Account summary	Sommaire du compte
 page-change-password	Account management	Gestion du compte
 page-change-email	Account management	Gestion du compte
 page-change-username	Account management	Gestion du compte
-page-change-recovery	Account management	Gestion du compte
 page-change-password-failed-1	Account management	Gestion du compte
 page-change-password-failed-2	Account management	Gestion du compte
 page-change-password-failed-3	Account management	Gestion du compte
@@ -26,12 +25,6 @@ page-change-username-failed-2	Account management	Gestion du compte
 page-change-username-failed-3	Account management	Gestion du compte
 page-change-username-failed-4	Account management	Gestion du compte
 page-change-username-success	Account management	Gestion du compte
-page-change-recovery-failed-1	Account management	Gestion du compte
-page-change-recovery-failed-2	Account management	Gestion du compte
-page-change-recovery-failed-3	Account management	Gestion du compte
-page-change-recovery-failed-4	Account management	Gestion du compte
-page-change-recovery-failed-5	Account management	Gestion du compte
-page-change-recovery-success	Account management	Gestion du compte
 page-delete-account	Account management	Gestion du compte
 page-delete-account-failed-1	Account management	Gestion du compte
 page-delete-account-failed-2	Account management	Gestion du compte
@@ -125,13 +118,10 @@ logged-as	Logged as:	Identifiant :
 account-title	Your account	Votre compte
 email-colon	Email:	Courriel :
 registration-email-colon	Email:	Adresse courriel :
-recovery-colon-1	Recovery question:	Question :
-recovery-colon-2		(Pour récupération)\u00A0
 account-management-colon	Account management:	Gestion du compte :
 change-password	change password	changer le mot de passe
 change-email	change email address	changer l'adresse courriel
 change-username	change username	changer le nom d'utilisateur
-change-recovery	change recovery question and answer	changer la question de récupération et sa réponse
 delete-account	delete account	suppression du compte
 change-password-title	Change password	Changer le mot de passe
 change-password-text	Please enter your current password, followed by the new password with confirmation.	Veuillez entrer votre mot de passe actuel, suivi par le nouveau mot de passe avec confirmation.
@@ -177,21 +167,6 @@ delete-account-success-title	Account deleted	Compte supprimé
 delete-account-success-text	Your account has been scheduled for deletion in 24h. If you change your mind, just relog and this operation will be canceled.	Votre compte a été programmé pour être supprimé dans 24h. Si vous changez d'avis, il vous suffira de vous reconnecter pour annuler l'opération.
 new-email-colon	New email address:	Nouvelle adresse courriel :
 new-username-colon	New username:	Nouveau nom d'utilisateur :
-change-recovery-title	Change recovery question	Changer la question de récupération
-change-recovery-text-1	Please enter your current password, followed by the new question and answer with confirmation.	Veuillez entrer votre mot de passe actuel, suivi de la nouvelle question de récupération, la réponse ainsi que sa confirmation.
-change-recovery-text-2	If you wish to remove the recovery question (not recommended) you can leave these fields empty.	Si vous souhaitez supprimer la question de récupération (non recommandé) vous pouvez laisser ces champs vides.
-change-recovery-failed-title	Changing the recovery question failed	Changing the recovery question failed
-change-recovery-failed-text-1	Sorry, you must enter your current password to be able to change the recovery question.	Sorry, you must enter your current password to be able to change the recovery question.
-change-recovery-failed-text-2	Sorry, you did not enter a new question or answer, or did not confirm it.	Sorry, you did not enter a new question or answer, or did not confirm it.
-change-recovery-failed-text-3	Sorry, you misspelled your answer in the confirmation box.	Sorry, you misspelled your answer in the confirmation box.
-change-recovery-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
-change-recovery-failed-text-5	Sorry, you misspelled your current password.	Désolé, vous avez entré un mot de passe erroné.
-change-recovery-success-title	Recovery question and answer changed	La question de récupération et sa réponse ont été changés
-change-recovery-success-text	Congratulation, your account recovery information has been changed.	Félicitation, les informations utilisées pour la récupération de votre compte on bien été changées.
-new-question-colon	New question:	Nouvelle question :
-question-colon	Question:	Question :
-answer-colon	Answer:	Réponse :
-confirm-answer-colon	Confirm answer:	Confirmation :
 page-products	Products	Produits
 page-download	Download	Téléchargement
 page-feedback	Feedback	Envoyer votre opinion
@@ -203,7 +178,6 @@ password-explanation	You will be prompted to enter your password again to finish
 email-explanation	Required to complete registration.	Requise pour terminer l'enregistrement.
 register-info-1	If you forget your name or password, answering a secret question will allow you to recover them.\u00A0 Recovery requires your email address, so using a temporary address is not recommended.	Si vous oubliez votre identifiant ou votre mot de passe, répondre à la question secrète vous permettra de les récupérer. La récupération nécessite votre adresse courriel, par conséquent il est recommandé de ne pas utiliser une adresse temporaire.
 register-info-2	If you don't want to use a secret question and answer, you can leave the fields below empty.\u00A0 However, if you forget your name or password, your account could become unrecoverable.\u00A0 Providing a secret question and the answer is therefore strongly recommended.	Si vous ne voulez pas avoir une question et une réponse secrète, vous pouvez laisser les champs ci-dessous vides. Cependant, si vous oubliez votre nom ou votre mot de passe, votre compte risque de devenir irrécupérable. Fournir une question et sa réponse secrète est donc fortement conseillé.
-question-explanation	Enter a question for which you're the only one to know the answer.	Entrez une question à laquelle vous êtes le seul à connaitre la réponse.
 before-register	Upon clicking the button below, an email will be sent to you, with a link to the registration completion page.\u00A0 The link will remain valid for 24h.\u00A0 If your registration is not finished within this time, it will be cancelled.	Après avoir cliqué sur le bouton ci-dessous, un courriel vous sera envoyé, avec un lien vers la page de confirmation de l'enregistrement. Ce lien restera valide 24 heures. Au delà de ce délai, si votre enregistrement n'est pas confirmé, il sera annulé.
 register	Begin registration	Commencer l'enregistrement
 register-failed-title	Registration failed	L'enregistrement a échoué
@@ -237,7 +211,6 @@ recovery-failed-text-1	Sorry, you must enter the email address of your account t
 recovery-failed-text-2	Sorry, no account with this email is illegible for recovery.\u00A0 Perhaps there is no such account, or it might have no secret question and answer to allow recovery.	Désolé, aucun compte correspondant à ce courriel ne peut être récupéré. Peut-être ce compte n'existe-t-il pas, ou il peut ne pas avoir de question et réponse secrète permettant la récupération.
 recovery-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 complete-registration	Complete Registration	Terminer l'enregistrement
-register-confirm-question-text	To complete registration, please confirm the password and answer to the secret question.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe et répondre à la question secrète.
 register-confirm-text	To complete registration, please confirm the password.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe.
 invalid-operation-title	Invalid Operation	Opération non valide
 invalid-operation-text	An operation is being performed on this site, but it seems invalid.	Une opération est effectuée sur ce site, mais elle semble non valide.
@@ -382,3 +355,32 @@ recovery-complete	Account recovery complete, click to continue	Récupération du
 registration-complete	Account activation complete, click to continue	Activation du compte terminée, cliquez pour continuer
 delete	Delete	Supprimer
 deletion-canceled	Your account was scheduled to be deleted, but this operation has been canceled	Votre compte était prêt à être supprimé, mais cette opération a été annulée.
+#if QACHALLENGE
+recovery-colon-1	Recovery question:	Question :
+recovery-colon-2		(Pour récupération)\u00A0
+change-recovery	change recovery question and answer	changer la question de récupération et sa réponse
+page-change-recovery	Account management	Gestion du compte
+page-change-recovery-failed-1	Account management	Gestion du compte
+page-change-recovery-failed-2	Account management	Gestion du compte
+page-change-recovery-failed-3	Account management	Gestion du compte
+page-change-recovery-failed-4	Account management	Gestion du compte
+page-change-recovery-failed-5	Account management	Gestion du compte
+page-change-recovery-success	Account management	Gestion du compte
+change-recovery-title	Change recovery question	Changer la question de récupération
+change-recovery-text-1	Please enter your current password, followed by the new question and answer with confirmation.	Veuillez entrer votre mot de passe actuel, suivi de la nouvelle question de récupération, la réponse ainsi que sa confirmation.
+change-recovery-text-2	If you wish to remove the recovery question (not recommended) you can leave these fields empty.	Si vous souhaitez supprimer la question de récupération (non recommandé) vous pouvez laisser ces champs vides.
+change-recovery-failed-title	Changing the recovery question failed	Changing the recovery question failed
+change-recovery-failed-text-1	Sorry, you must enter your current password to be able to change the recovery question.	Sorry, you must enter your current password to be able to change the recovery question.
+change-recovery-failed-text-2	Sorry, you did not enter a new question or answer, or did not confirm it.	Sorry, you did not enter a new question or answer, or did not confirm it.
+change-recovery-failed-text-3	Sorry, you misspelled your answer in the confirmation box.	Sorry, you misspelled your answer in the confirmation box.
+change-recovery-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
+change-recovery-failed-text-5	Sorry, you misspelled your current password.	Désolé, vous avez entré un mot de passe erroné.
+change-recovery-success-title	Recovery question and answer changed	La question de récupération et sa réponse ont été changés
+change-recovery-success-text	Congratulation, your account recovery information has been changed.	Félicitation, les informations utilisées pour la récupération de votre compte on bien été changées.
+new-question-colon	New question:	Nouvelle question :
+question-colon	Question:	Question :
+answer-colon	Answer:	Réponse :
+confirm-answer-colon	Confirm answer:	Confirmation :
+question-explanation	Enter a question for which you're the only one to know the answer.	Entrez une question à laquelle vous êtes le seul à connaitre la réponse.
+register-confirm-question-text	To complete registration, please confirm the password and answer to the secret question.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe et répondre à la question secrète.
+#endif
