@@ -12,10 +12,10 @@ namespace Parser
         {
         }
 
-        public override IBackground Parse(string fileName)
+        public override IBackground Parse(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
-            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName, conditionalDefineTable);
 
             List<string> Lines;
             LoadResourceFile(SourceStream, out Lines);

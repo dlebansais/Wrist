@@ -1,4 +1,6 @@
-﻿namespace Parser
+﻿using System.Collections.Generic;
+
+namespace Parser
 {
     public abstract class FormParser<T> : IFormParser<T>
         where T : class, IForm
@@ -18,7 +20,7 @@
         public string Extension { get; private set; }
         public IFormCollection<T> ParsedResult { get; private set; }
         IFormCollection IFormParser.ParsedResult { get { return ParsedResult; } }
-        public abstract T Parse(string fileName);
-        IForm IFormParser.Parse(string fileName) { return Parse(fileName); }
+        public abstract T Parse(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable);
+        IForm IFormParser.Parse(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable) { return Parse(fileName, conditionalDefineTable); }
     }
 }

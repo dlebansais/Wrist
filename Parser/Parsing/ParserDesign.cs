@@ -15,9 +15,9 @@ namespace Parser
         {
         }
 
-        public override IDesign Parse(string fileName)
+        public override IDesign Parse(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
-            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName, conditionalDefineTable);
 
             ResourceDictionary Content;
             List<string> FileNames;
@@ -58,11 +58,10 @@ namespace Parser
                 {
                     string ContentString = sourceStream.ReadToEnd();
                     ContentString = ContentString.Replace("Source=\"/", $"Source=\"{FolderName}/");
-                    byte[] ContentBytes = Encoding.UTF8.GetBytes(ContentString);
 
                     XamlSchemaContext Context = GetContext(sourceStream);
 
-                    using (sourceStream.OpenXamlFromBytes(ContentBytes, Context))
+                    using (sourceStream.OpenXamlFromString(ContentString, Context))
                     {
                         fileNames = new List<string>();
                         fileNames.Add(sourceStream.FileName);
@@ -138,7 +137,7 @@ namespace Parser
             foreach (Windows.UI.Xaml.ResourceDictionary Item in dictionary.MergedDictionaries)
                 if (Item.Source != null)
                 {
-                    IParsingSourceStream NestedSourceStream = ParsingSourceStream.CreateFromFileName(Item.Source.AbsolutePath);
+                    IParsingSourceStream NestedSourceStream = ParsingSourceStream.CreateFromFileName(Item.Source.AbsolutePath, sourceStream.ConditionalDefineTable);
 
                     ResourceDictionary NestedContent;
                     List<string> NestedFileNames;

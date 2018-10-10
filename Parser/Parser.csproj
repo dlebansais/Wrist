@@ -45,12 +45,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConditionalDefine.cs" />
     <Compile Include="Exceptions\DeclarationSource.cs" />
     <Compile Include="Exceptions\IDeclarationSource.cs" />
     <Compile Include="Exceptions\IParsingSource.cs" />
     <Compile Include="Exceptions\IParsingSourceStream.cs" />
     <Compile Include="Exceptions\ParsingSource.cs" />
     <Compile Include="Exceptions\ParsingSourceStream.cs" />
+    <Compile Include="Exceptions\ParsingStreamReader.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentRadioButton.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentCheckBox.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentCollection.cs" />

@@ -10,9 +10,9 @@ namespace Parser
         {
         }
 
-        public override IUnitTest Parse(string fileName)
+        public override IUnitTest Parse(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
-            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName, conditionalDefineTable);
 
             try
             {

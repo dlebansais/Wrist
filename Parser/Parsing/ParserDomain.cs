@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Windows.Controls;
 
 namespace Parser
 {
     public static class ParserDomain
     {
-        public static IDomain Parse(string inputFolderName, string homePageName, string colorThemeName, string unitTestName)
+        public static IDomain Parse(string inputFolderName, string homePageName, string colorThemeName, string unitTestName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             if (inputFolderName == null)
                 throw new ArgumentNullException(nameof(inputFolderName));
@@ -67,7 +65,7 @@ namespace Parser
                 foreach (IFormParser FormParser in FormParsers)
                     if (FolderName == FormParser.FolderName)
                     {
-                        ParseForm(FormParser, Path.Combine(inputFolderName, FolderName));
+                        ParseForm(FormParser, Path.Combine(inputFolderName, FolderName), conditionalDefineTable);
                         Parsed = true;
                         break;
                     }
@@ -97,7 +95,7 @@ namespace Parser
             if (File.Exists(TranslationFile))
             {
                 Translation = new Translation(TranslationFile, '\t');
-                Translation.Process();
+                Translation.Process(conditionalDefineTable);
             }
             else
                 Translation = null;
@@ -147,7 +145,10 @@ namespace Parser
                                            Fonts, 
                                            Dynamics,
                                            UnitTests,
-                                           Translation, HomePage, SelectedColorTheme, SelectedUnitTest);
+                                           Translation, 
+                                           HomePage, 
+                                           SelectedColorTheme, 
+                                           SelectedUnitTest);
 
             bool IsConnected = true;
             for (int i = 0; i < 100 && IsConnected; i++)
@@ -173,111 +174,7 @@ namespace Parser
                 foreach (KeyValuePair<IArea, ILayout> Entry in Page.AreaLayouts)
                     Layouts.Add(Entry.Value);
 
-            foreach (IPage Page in Pages)
-            {
-                IFormCollection<IArea> UsedAreas = new FormCollection<IArea>();
-                Dictionary<IArea, IDeclarationSource> SpecifiedAreas = new Dictionary<IArea, IDeclarationSource>();
-                foreach (KeyValuePair<IArea, ILayout> Entry in Page.AreaLayouts)
-                    UsedAreas.Add(Entry.Key);
-
-                ListAreas(Page.Area, Page.AreaSource, UsedAreas, SpecifiedAreas);
-
-                if (UsedAreas.Count > 0)
-                {
-                    IArea SpecifiedArea = UsedAreas[0];
-                    if (Page.AreaLayoutBacktracks.ContainsKey(SpecifiedArea))
-                        throw new ParsingException(9, Page.AreaLayoutBacktracks[SpecifiedArea].Source, $"Layout specified for area '{SpecifiedArea.Name}' but this area isn't used in page '{Page.Name}'.");
-                    else
-                        throw new ParsingException(9, inputFolderName, $"Layout specified for area '{SpecifiedArea.Name}' but this area isn't used in page '{Page.Name}'.");
-                }
-
-                foreach (KeyValuePair<IArea, IDeclarationSource> Entry in SpecifiedAreas)
-                {
-                    IArea SpecifiedArea = Entry.Key;
-
-                    if (!Page.AreaLayouts.ContainsKey(SpecifiedArea))
-                        throw new ParsingException(10, Page.AllAreaLayoutsSource, $"Area '{SpecifiedArea.Name}' has not layout specified.");
-
-                    if (ComponentProperty.AreaWithCurrentPage.ContainsKey(SpecifiedArea))
-                    {
-                        IDeclarationSource Declaration = ComponentProperty.AreaWithCurrentPage[SpecifiedArea];
-
-                        string PageKey = ToKeyName($"page {Page.Name}");
-                        if (Translation == null)
-                            throw new ParsingException(11, Declaration.Source, $"Translation key used in area '{SpecifiedArea.Name}' but no translation file provided.");
-                        if (!Translation.KeyList.Contains(PageKey))
-                            throw new ParsingException(12, Declaration.Source, $"Translation key for page '{Page.Name}' used in area '{SpecifiedArea.Name}' not found.");
-
-                        if (!Translation.UsedKeyList.Contains(PageKey))
-                            Translation.UsedKeyList.Add(PageKey);
-                    }
-
-                    ILayout SpecifiedLayout = Page.AreaLayouts[SpecifiedArea];
-                    foreach (IComponent Component in SpecifiedArea.Components)
-                        if (Component is IComponentWithEvent AsComponentWithEvent)
-                        {
-                            List<IControl> ControlList = new List<IControl>();
-                            SpecifiedLayout.Content.ReportControlsUsingComponent(ControlList, AsComponentWithEvent);
-                            if (ControlList.Count > 1)
-                                throw new ParsingException(220, Component.Source.Source, $"Component '{Component.Source.Name}' is used more than once in page '{Page.Name}'.");
-                        }
-                }
-
-                List<string> KeyList = new List<string>();
-                foreach (KeyValuePair<IArea, ILayout> Entry in Page.AreaLayouts)
-                    Entry.Value.ReportResourceKeys(Page.Design, KeyList);
-
-                List<string> DesignKeyList = new List<string>();
-                foreach (object Key in Page.Design.Root)
-                    if (Key is DictionaryEntry AsEntry)
-                        if (AsEntry.Key is string AsStringKey)
-                            DesignKeyList.Add(AsStringKey);
-                        else if (AsEntry.Key is Type AsTypeKey)
-                            DesignKeyList.Add($"{Page.Design.XamlName}{StyleTypeConverter(AsTypeKey.Name)}");
-                        else
-                            throw new ParsingException(240, "", $"Unexpected key in design '{Page.Design.Name}'.");
-                    else
-                        throw new ParsingException(240, "", $"Unexpected key in design '{Page.Design.Name}'.");
-
-                foreach (string Key in KeyList)
-                    if (!DesignKeyList.Contains(Key))
-                        throw new ParsingException(241, "", $"Resource key '{Key}' not found in design '{Page.Design.Name}'.");
-            }
-
-            List<IDockPanel> DockPanels = new List<IDockPanel>();
-            List<IGrid> Grids = new List<IGrid>();
-            foreach (ILayout Layout in Layouts)
-                Layout.ReportElementsWithAttachedProperties(DockPanels, Grids);
-
-            CheckIfAttachedPropertyIsValid(DockPanel.DockTargets.Keys, new List<IPanel>(DockPanels), "DockPanel.Dock", DockPanel.ValidateDock);
-            CheckIfAttachedPropertyIsValid(Grid.ColumnTargets.Keys, new List<IPanel>(Grids), "Grid.Column", Grid.ValidateColumn);
-            CheckIfAttachedPropertyIsValid(Grid.ColumnSpanTargets.Keys, new List<IPanel>(Grids), "Grid.ColumnSpan", Grid.ValidateColumnSpan);
-            CheckIfAttachedPropertyIsValid(Grid.RowTargets.Keys, new List<IPanel>(Grids), "Grid.Row", Grid.ValidateRow);
-            CheckIfAttachedPropertyIsValid(Grid.RowSpanTargets.Keys, new List<IPanel>(Grids), "Grid.RowSpan", Grid.ValidateRowSpan);
-
             return NewDomain;
-        }
-
-        private static void CheckIfAttachedPropertyIsValid(ICollection<ILayoutElement> targetItemTable, ICollection<IPanel> PanelList, string propertyName, Action<IPanel, ILayoutElement> handlerValidate)
-        {
-            string[] Splitted = propertyName.Split('.');
-            string PanelName = Splitted.Length > 0 ? Splitted[0] : "<unknown panel>";
-
-            foreach (ILayoutElement TargetItem in targetItemTable)
-            {
-                IPanel TargetPanel = null;
-                foreach (IPanel Item in PanelList)
-                    if (Item.Items.Contains(TargetItem))
-                    {
-                        TargetPanel = Item;
-                        break;
-                    }
-
-                if (TargetPanel == null)
-                    throw new ParsingException(14, TargetItem.Source, $"Property {propertyName} specified for {TargetItem} but not included in a {PanelName}.");
-
-                handlerValidate(TargetPanel, TargetItem);
-            }
         }
 
         private static void BubbleSort(IFormCollection<IArea> Areas)
@@ -302,7 +199,7 @@ namespace Parser
             while (IsSorted);
         }
 
-        private static void ParseForm(IFormParser parser, string formFolderName)
+        private static void ParseForm(IFormParser parser, string formFolderName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             string[] FolderNames;
             try
@@ -320,29 +217,8 @@ namespace Parser
             {
                 string FolderName = Path.GetFileName(FullFolderName);
 
-                IForm NewForm = parser.Parse(Path.Combine(formFolderName, FolderName, FolderName + "." + parser.Extension));
+                IForm NewForm = parser.Parse(Path.Combine(formFolderName, FolderName, FolderName + "." + parser.Extension), conditionalDefineTable);
                 parser.ParsedResult.Add(NewForm);
-            }
-        }
-
-        private static void ListAreas(IArea rootArea, IDeclarationSource declaration, IFormCollection<IArea> usedAreas, Dictionary<IArea, IDeclarationSource> specifiedAreas)
-        {
-            if (usedAreas.Contains(rootArea))
-                usedAreas.Remove(rootArea);
-
-            if (!specifiedAreas.ContainsKey(rootArea))
-                specifiedAreas.Add(rootArea, declaration);
-
-            foreach (IComponent Component in rootArea.Components)
-            {
-                if (Component is IComponentArea AsComponentArea)
-                    ListAreas(AsComponentArea.Area, AsComponentArea.AreaSource, usedAreas, specifiedAreas);
-                else if (Component is IComponentPopup AsComponentPopup)
-                    ListAreas(AsComponentPopup.Area, AsComponentPopup.AreaSource, usedAreas, specifiedAreas);
-                else if (Component is IComponentContainer AsComponentContainer)
-                    ListAreas(AsComponentContainer.ItemNestedArea, AsComponentContainer.AreaSource, usedAreas, specifiedAreas);
-                else if (Component is IComponentContainerList AsComponentContainerList)
-                    ListAreas(AsComponentContainerList.ItemNestedArea, AsComponentContainerList.AreaSource, usedAreas, specifiedAreas);
             }
         }
 
@@ -365,6 +241,20 @@ namespace Parser
                 return true;
 
             return false;
+        }
+
+        public static string StyleTypeConverter(string typeName)
+        {
+            if (typeName == "TextBlock")
+                return "Text";
+            else if (typeName == "TextBox")
+                return "Edit";
+            else if (typeName == "PasswordBox")
+                return "PasswordEdit";
+            else if (typeName == "ListBox")
+                return "Selector";
+            else
+                return typeName;
         }
 
         public static string ToKeyName(string name)
@@ -446,20 +336,6 @@ namespace Parser
                 throw new ParsingException(18, source, $"'{name}' only contains invalid characters.");
 
             return Result;
-        }
-
-        public static string StyleTypeConverter(string typeName)
-        {
-            if (typeName == "TextBlock")
-                return "Text";
-            else if (typeName == "TextBox")
-                return "Edit";
-            else if (typeName == "PasswordBox")
-                return "PasswordEdit";
-            else if (typeName == "ListBox")
-                return "Selector";
-            else
-                return typeName;
         }
 
         public static void ParseStringPair(IParsingSourceStream sourceStream, char separator, out IDeclarationSource nameSource, out string value)

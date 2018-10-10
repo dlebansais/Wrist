@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Parser
@@ -17,6 +18,7 @@ namespace Parser
         public string FilePath { get; private set; }
         public double Width { get; private set; }
         public double Height { get; private set; }
+        public bool IsUsed { get; private set; }
 
         public bool Connect(IDomain domain)
         {
@@ -25,6 +27,7 @@ namespace Parser
             if (Width == 0 || Height == 0)
             {
                 IsConnected = true;
+                IsUsed = true;
                 ConnectSize();
             }
 
@@ -73,6 +76,11 @@ namespace Parser
 
             if (Width <= 0 || Height <= 0)
                 throw new ParsingException(185, source, "Invalid PNG file.");
+        }
+
+        public void SetIsUsed()
+        {
+            IsUsed = true;
         }
 
         public override string ToString()

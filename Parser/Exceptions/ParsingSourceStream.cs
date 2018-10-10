@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xaml;
 
 namespace Parser
@@ -12,10 +12,11 @@ namespace Parser
             CurrentSource = null;
         }
 
-        public static IParsingSourceStream CreateFromFileName(string fileName)
+        public static IParsingSourceStream CreateFromFileName(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             ParsingSourceStream Result = new ParsingSourceStream();
             Result.FileName = fileName;
+            Result.ConditionalDefineTable = conditionalDefineTable;
 
             return Result;
         }
@@ -32,6 +33,7 @@ namespace Parser
         }
 
         public string FileName { get; private set; }
+        public IDictionary<ConditionalDefine, bool> ConditionalDefineTable { get; private set; }
         public string Line { get; private set; }
         public bool EndOfStream { get { return sr.EndOfStream; } }
         public int LineIndex { get; private set; }
@@ -44,7 +46,7 @@ namespace Parser
         public IParsingSourceStream Open()
         {
             fs = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-            sr = new StreamReader(fs, Encoding.UTF8);
+            sr = new ParsingStreamReader(fs, ConditionalDefineTable);
             LineIndex = 0;
             Line = null;
             return this;
@@ -53,16 +55,17 @@ namespace Parser
         public IParsingSourceStream OpenXamlFromFile(XamlSchemaContext context)
         {
             fs = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-            xr = new XamlXmlReader(fs, context);
+            sr = new ParsingStreamReader(fs, ConditionalDefineTable);
+            xr = new XamlXmlReader(sr, context);
             LineIndex = 0;
             Line = null;
             return this;
         }
 
-        public IParsingSourceStream OpenXamlFromBytes(byte[] contentBytes, XamlSchemaContext context)
+        public IParsingSourceStream OpenXamlFromString(string content, XamlSchemaContext context)
         {
-            ms = new MemoryStream(contentBytes);
-            xr = new XamlXmlReader(ms, context);
+            sr = new ParsingStreamReader(content, ConditionalDefineTable);
+            xr = new XamlXmlReader(sr, context);
             LineIndex = 0;
             Line = null;
             return this;
@@ -77,11 +80,6 @@ namespace Parser
             using (XamlXmlReader _xr = xr)
             {
                 xr = null;
-            }
-
-            using (MemoryStream _ms = ms)
-            {
-                ms = null;
             }
 
             using (FileStream _fs = fs)
@@ -128,9 +126,8 @@ namespace Parser
         }
 
         private FileStream fs;
-        private StreamReader sr;
+        private ParsingStreamReader sr;
         private XamlXmlReader xr;
-        private MemoryStream ms;
 
         #region Implementation of IDisposable
         /// <summary>

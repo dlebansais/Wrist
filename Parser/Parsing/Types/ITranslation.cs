@@ -10,7 +10,7 @@ namespace Parser
         IList<string> LanguageList { get; }
         IList<string> KeyList { get; }
         IList<string> UsedKeyList { get; }
+        void Process(IDictionary<ConditionalDefine, bool> conditionalDefineTable);
         bool Connect(IDomain domain);
-        void Process();
     }
 }

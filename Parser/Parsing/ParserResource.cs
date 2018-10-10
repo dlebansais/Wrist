@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Parser
@@ -10,10 +11,10 @@ namespace Parser
         {
         }
 
-        public override IResource Parse(string fileName)
+        public override IResource Parse(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
-            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName, conditionalDefineTable);
 
             try
             {

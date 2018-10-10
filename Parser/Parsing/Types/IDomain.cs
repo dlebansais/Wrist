@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Parser
 {
@@ -20,6 +21,7 @@ namespace Parser
         IPage HomePage { get; }
         IColorTheme SelectedColorTheme { get; }
         IUnitTest SelectedUnitTest { get; }
+        void Verify();
         void CheckUnused(Action<string> handler);
     }
 }

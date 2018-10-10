@@ -13,9 +13,9 @@ namespace Parser
         {
         }
 
-        public override ILayout Parse(string fileName)
+        public override ILayout Parse(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
-            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName, conditionalDefineTable);
 
             try
             {

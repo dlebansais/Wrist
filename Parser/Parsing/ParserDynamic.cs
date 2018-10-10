@@ -11,10 +11,10 @@ namespace Parser
         {
         }
 
-        public override IDynamic Parse(string fileName)
+        public override IDynamic Parse(string fileName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             string Name = Path.GetFileNameWithoutExtension(fileName);
-            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName);
+            IParsingSourceStream SourceStream = ParsingSourceStream.CreateFromFileName(fileName, conditionalDefineTable);
 
             try
             {

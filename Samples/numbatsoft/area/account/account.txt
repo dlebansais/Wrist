@@ -7,14 +7,18 @@ name text: text, text=translation.strings[name-colon]
 name: text, text=login.username
 email text: text, text=translation.strings[email-colon]
 email: text, text=login.email address
+#if QACHALLENGE
 recovery question text #1: text, text=translation.strings[recovery-colon-1]
 recovery question text #2: text, text=translation.strings[recovery-colon-2]
 recovery question: text, text=login.question
+#endif
 account management text: text, text=translation.strings[account-management-colon]
 change password: button, content=translation.strings[change-password], goto=change password
 change email: button, content=translation.strings[change-email], goto=change email
 change username: button, content=translation.strings[change-username], goto=change username
+#if QACHALLENGE
 change recovery: button, content=translation.strings[change-recovery], goto=change recovery
+#endif
 delete account: button, content=translation.strings[delete-account], goto=delete account
 eqmlp login state: index, index=eqmlp.login state
 language: index, index=language.language state

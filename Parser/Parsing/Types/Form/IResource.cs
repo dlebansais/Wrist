@@ -7,5 +7,7 @@
         string FilePath { get; }
         double Width { get; }
         double Height { get; }
+        bool IsUsed { get; }
+        void SetIsUsed();
     }
 }
