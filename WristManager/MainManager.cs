@@ -46,7 +46,7 @@ namespace WristManager
 
             string OutputName = Path.GetFileName(outputFolderName);
             IGeneratorDomain Generator = new GeneratorDomain(OutputName, domain);
-            Generator.Generate(outputFolderName);
+            Generator.Generate(outputFolderName, ConditionalDefineTable);
         }
     }
 }

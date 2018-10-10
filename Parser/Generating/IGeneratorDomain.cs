@@ -20,6 +20,6 @@ namespace Parser
         IGeneratorTranslation Translation { get; }
         IGeneratorPage HomePage { get; }
         IGeneratorColorTheme SelectedColorTheme { get; }
-        void Generate(string outputFolderName);
+        void Generate(string outputFolderName, IDictionary<ConditionalDefine, bool> conditionalDefineTable);
     }
 }

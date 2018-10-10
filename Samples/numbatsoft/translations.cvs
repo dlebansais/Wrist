@@ -31,18 +31,14 @@ page-delete-account-failed-2	Account management	Gestion du compte
 page-delete-account-failed-3	Account management	Gestion du compte
 page-delete-account-success	Account management	Gestion du compte
 page-register-failed-1	Registration	Enregistrement
-page-register-failed-2	Registration	Enregistrement
-page-register-failed-3	Registration	Enregistrement
 page-register-failed-4	Registration	Enregistrement
 page-register-failed-5	Registration	Enregistrement
 page-register-failed-6	Registration	Enregistrement
 page-registration-started	Registration	Enregistrement
 page-registration-end	Registration	Enregistrement
 page-registration-end-failed-1	Registration	Enregistrement
-page-registration-end-failed-2	Registration	Enregistrement
 page-registration-end-failed-3	Registration	Enregistrement
 page-registration-end-failed-4	Registration	Enregistrement
-page-registration-end-failed-5	Registration	Enregistrement
 page-invalid-operation	Error	Erreur
 page-recovery	Account Recovery	Récupération de compte
 page-recovery-failed-1	Account Recovery	Récupération de compte
@@ -50,10 +46,8 @@ page-recovery-failed-2	Account Recovery	Récupération de compte
 page-recovery-failed-3	Account Recovery	Récupération de compte
 page-recovery-started	Account Recovery	Récupération de compte
 page-recovery-end	Account Recovery	Récupération de compte
-page-recovery-end-failed-1	Account Recovery	Récupération de compte
 page-recovery-end-failed-2	Account Recovery	Récupération de compte
 page-recovery-end-failed-3	Account Recovery	Récupération de compte
-page-recovery-end-failed-4	Account Recovery	Récupération de compte
 page-product-eqmlp	Everquest Multilog Parser	Everquest Multilog Parser
 page-product-pg	Project: Gorgon JSON Parser	Project: Gorgon JSON Parser
 page-product-uacpt	UAC pass-through	UAC pass-through
@@ -162,7 +156,6 @@ delete-account-text	Please enter your password. After your click the 'Delete' bu
 delete-account-failed-title	Deleting the account failed	La suppression du compte a échouée
 delete-account-failed-text-1	Sorry, you must enter your password to be able to delete the account.	Désolé, vous devez entrer un mot de passe pour pouvoir supprimer le compte.
 delete-account-failed-text-2	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
-delete-account-failed-text-3	Sorry, the password and answer you entered don't match those entered when begining registration.	Désolé, le mot de passe et la réponse que vous venez d'entrer ne correspondent pas à ceux déclarés lors du début de l'enregistrement.
 delete-account-success-title	Account deleted	Compte supprimé
 delete-account-success-text	Your account has been scheduled for deletion in 24h. If you change your mind, just relog and this operation will be canceled.	Votre compte a été programmé pour être supprimé dans 24h. Si vous changez d'avis, il vous suffira de vous reconnecter pour annuler l'opération.
 new-email-colon	New email address:	Nouvelle adresse courriel :
@@ -176,14 +169,10 @@ register-text	Please fill the form below to register.\u00A0 All information is k
 name-explanation	You can choose any name you want, like a pseudonym or the name of your organization.	Vous pouvez choisir n'importe quel nom ou pseudonyme, ou le nom de votre organisation.
 password-explanation	You will be prompted to enter your password again to finish the registration process.	Il vous sera demandé à nouveau d'entrer votre mot de passe pour finir l'enregistrement.
 email-explanation	Required to complete registration.	Requise pour terminer l'enregistrement.
-register-info-1	If you forget your name or password, answering a secret question will allow you to recover them.\u00A0 Recovery requires your email address, so using a temporary address is not recommended.	Si vous oubliez votre identifiant ou votre mot de passe, répondre à la question secrète vous permettra de les récupérer. La récupération nécessite votre adresse courriel, par conséquent il est recommandé de ne pas utiliser une adresse temporaire.
-register-info-2	If you don't want to use a secret question and answer, you can leave the fields below empty.\u00A0 However, if you forget your name or password, your account could become unrecoverable.\u00A0 Providing a secret question and the answer is therefore strongly recommended.	Si vous ne voulez pas avoir une question et une réponse secrète, vous pouvez laisser les champs ci-dessous vides. Cependant, si vous oubliez votre nom ou votre mot de passe, votre compte risque de devenir irrécupérable. Fournir une question et sa réponse secrète est donc fortement conseillé.
 before-register	Upon clicking the button below, an email will be sent to you, with a link to the registration completion page.\u00A0 The link will remain valid for 24h.\u00A0 If your registration is not finished within this time, it will be cancelled.	Après avoir cliqué sur le bouton ci-dessous, un courriel vous sera envoyé, avec un lien vers la page de confirmation de l'enregistrement. Ce lien restera valide 24 heures. Au delà de ce délai, si votre enregistrement n'est pas confirmé, il sera annulé.
 register	Begin registration	Commencer l'enregistrement
 register-failed-title	Registration failed	L'enregistrement a échoué
 register-failed-text-1	Sorry, the name, password or email address you entered is not correct.	Désolé, le nom, le mot de passe ou l'adresse courriel que vous avez entré ne sont pas valides.
-register-failed-text-2	Sorry, if there is a secret question the answer cannot be empty.	Désolé, s'il y a une question secrète la réponse ne peut pas être vide.
-register-failed-text-3	Sorry, if there is no secret question the answer must be empty too.	Désolé, s'il n'y a pas de question la réponse doit être vide également.
 register-failed-text-4	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 register-failed-text-5-1	Sorry, the name	Désolé, le nom
 register-failed-text-5-2	is already used.\u00A0 Please pick another name.	est déjà utilisé. Veuillez choisir un autre nom.
@@ -195,20 +184,16 @@ registration-end-title	Completing registration	Terminer l'enregistrement
 registration-end-text	You have reached this page because you are registering the following account:	Vous êtes sur cette page car vous avez demandé à enregistrer le compte suivant :
 registration-end-failed-title	Registration failed	L'enregistrement a échoué
 registration-end-failed-text-1	Sorry, you must enter your password to confirm the registration.	Désolé, vous devez entrer votre mot de passe pour confirmer l'enregistrement.
-registration-end-failed-text-2	Sorry, you must enter the answer to the secret question to confirm the registration.	Désolé, vous devez entrer la réponse à la question secrète pour confirmer l'enregistrement.
 registration-end-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 registration-end-failed-text-4	Sorry, the password you entered does not match the password used when starting registration.	Désolé, le mot de passe que vous venez d'entrer ne correspond pas au mot de passe utilisé lors de l'enregistrement.
-registration-end-failed-text-5	Sorry, the password and answer you entered don't match those entered when begining registration.	Désolé, le mot de passe et la réponse que vous venez d'entrer ne correspondent pas à ceux déclarés lors du début de l'enregistrement.
 recovery-title	Recovering your login information	Récupération de vos informations d'identification
 recovery-text	Please enter your email address below.	Veuillez entrer votre adresse courriel ci-dessous.
 email-required	Required to begin recovery.	Requise pour commencer la récupération.
-recovery-procedure	If it matches a registered account, an email will be sent to you with a link to the recovery completion page.\u00A0 On this page, you'll be asked to answer your recovery question, and to provide a new password.\u00A0 If your answer is correct, your password will be changed and you will be logged in.	Si celle-ci correspond à un compte enregistré, un courriel vous sera envoyé avec un lien vers la page de confirmation de récupération. Sur cette page, il vous sera demandé de répondre à votre question de récupération, et de donner un nouveau mot de passe. Si votre réponse est correcte, votre mot de passe sera changé et vous serez identifié sur le site.
 begin-recovery	Begin recovery	Commencer
 recovery-started-title	Recovery is started	La récupération a démarré
 recovery-started-text	Please check your email inbox to continue recovery.	Veuillez consulter la boîte de réception de votre courriel pour continuer la récupération.
 recovery-failed-title	Recovery failed	La récupération a échoué
 recovery-failed-text-1	Sorry, you must enter the email address of your account to be able to recover it.	Désolé, vous devez entrer l'adresse courriel de votre compte pour pouvoir le récupérer.
-recovery-failed-text-2	Sorry, no account with this email is illegible for recovery.\u00A0 Perhaps there is no such account, or it might have no secret question and answer to allow recovery.	Désolé, aucun compte correspondant à ce courriel ne peut être récupéré. Peut-être ce compte n'existe-t-il pas, ou il peut ne pas avoir de question et réponse secrète permettant la récupération.
 recovery-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
 complete-registration	Complete Registration	Terminer l'enregistrement
 register-confirm-text	To complete registration, please confirm the password.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe.
@@ -216,13 +201,10 @@ invalid-operation-title	Invalid Operation	Opération non valide
 invalid-operation-text	An operation is being performed on this site, but it seems invalid.	Une opération est effectuée sur ce site, mais elle semble non valide.
 recovery-end-title	Completing recovery	Finalisation de la récupération
 recovery-end-text	You have reached this page because you have asked to recover the following account:	Vous êtes sur cette page car vous avez demandé à récupérer le compte suivant :
-recovery-confirm-text	To complete the recovery process, please answer the question below, and provide a new password.	Pour terminer la procédure, veuillez répondre à la question ci-dessous, et entrer un nouveau mot de passe.
 recover	Recover now	Récupérer
 recovery-end-failed-title	Recovery failed	La récupération a échoué
-recovery-end-failed-text-1	Sorry, you must provide the answer to the secret question before you can recover your account.	Désolé, vous devez donner la réponse secrète à la question avant de pouvoir récupérer votre compte.
 recovery-end-failed-text-2	Sorry, you must provide a password before you can recover your account.	Désolé, vous devez entrer un mot de passe avant de pouvoir récupérer votre compte.
 recovery-end-failed-text-3	Sorry, the site encountered an unrecoverable error.	Désolé, une erreur irrécupérable c'est produite sur le site.
-recovery-end-failed-text-4	Sorry, the answer doesn't match the expected answer for this account.	Désolé, la réponse que vous venez d'entrer ne correspond pas à la réponse attendue.
 product-pg-title	Project: Gorgon JSON Parser	Project: Gorgon JSON Parser
 product-pg-text-1	This parser can download and process public files from the Project: Gorgon MMORPG.\u00A0 It includes a build planner that helps players plan ahead for gear updates.	Ce parseur peut télécharger et traiter les fichiers public du MMORPG Project: Gorgon.  Il contient un planificateur de personnage qui aide les joueurs à prévoir comment améliorer leur matos.
 product-pg-text-2	The intented audience for this application are P:G players.	Cette application s'adresse principalement aux joueurs de P:G.
@@ -383,4 +365,28 @@ answer-colon	Answer:	Réponse :
 confirm-answer-colon	Confirm answer:	Confirmation :
 question-explanation	Enter a question for which you're the only one to know the answer.	Entrez une question à laquelle vous êtes le seul à connaitre la réponse.
 register-confirm-question-text	To complete registration, please confirm the password and answer to the secret question.	Pour terminer l'enregistrement, veuillez confirmer le mot de passe et répondre à la question secrète.
+register-info-2	If you don't want to use a secret question and answer, you can leave the fields below empty.\u00A0 However, if you forget your name or password, your account could become unrecoverable.\u00A0 Providing a secret question and the answer is therefore strongly recommended.	Si vous ne voulez pas avoir une question et une réponse secrète, vous pouvez laisser les champs ci-dessous vides. Cependant, si vous oubliez votre nom ou votre mot de passe, votre compte risque de devenir irrécupérable. Fournir une question et sa réponse secrète est donc fortement conseillé.
+register-failed-text-2	Sorry, if there is a secret question the answer cannot be empty.	Désolé, s'il y a une question secrète la réponse ne peut pas être vide.
+register-failed-text-3	Sorry, if there is no secret question the answer must be empty too.	Désolé, s'il n'y a pas de question la réponse doit être vide également.
+page-register-failed-2	Registration	Enregistrement
+page-register-failed-3	Registration	Enregistrement
+registration-end-failed-text-2	Sorry, you must enter the answer to the secret question to confirm the registration.	Désolé, vous devez entrer la réponse à la question secrète pour confirmer l'enregistrement.
+registration-end-failed-text-5	Sorry, the password and answer you entered don't match those entered when begining registration.	Désolé, le mot de passe et la réponse que vous venez d'entrer ne correspondent pas à ceux déclarés lors du début de l'enregistrement.
+page-registration-end-failed-2	Registration	Enregistrement
+page-registration-end-failed-5	Registration	Enregistrement
+recovery-end-failed-text-1	Sorry, you must provide the answer to the secret question before you can recover your account.	Désolé, vous devez donner la réponse secrète à la question avant de pouvoir récupérer votre compte.
+recovery-end-failed-text-4	Sorry, the answer doesn't match the expected answer for this account.	Désolé, la réponse que vous venez d'entrer ne correspond pas à la réponse attendue.
+page-recovery-end-failed-1	Account Recovery	Récupération de compte
+page-recovery-end-failed-4	Account Recovery	Récupération de compte
+register-info-1	If you forget your name or password, answering a secret question will allow you to recover them.\u00A0 Recovery requires your email address, so using a temporary address is not recommended.	Si vous oubliez votre identifiant ou votre mot de passe, répondre à la question secrète vous permettra de les récupérer. La récupération nécessite votre adresse courriel, par conséquent il est recommandé de ne pas utiliser une adresse temporaire.
+recovery-procedure	If it matches a registered account, an email will be sent to you with a link to the recovery completion page.\u00A0 On this page, you'll be asked to answer your recovery question, and to provide a new password.\u00A0 If your answer is correct, your password will be changed and you will be logged in.	Si celle-ci correspond à un compte enregistré, un courriel vous sera envoyé avec un lien vers la page de confirmation de récupération. Sur cette page, il vous sera demandé de répondre à votre question de récupération, et de donner un nouveau mot de passe. Si votre réponse est correcte, votre mot de passe sera changé et vous serez identifié sur le site.
+recovery-failed-text-2	Sorry, no account with this email is illegible for recovery.\u00A0 Perhaps there is no such account, or it might have no secret question and answer to allow recovery.	Désolé, aucun compte correspondant à ce courriel ne peut être récupéré. Peut-être ce compte n'existe-t-il pas, ou il peut ne pas avoir de question et réponse secrète permettant la récupération.
+recovery-confirm-text	To complete the recovery process, please answer the question below, and provide a new password.	Pour terminer la procédure, veuillez répondre à la question ci-dessous, et entrer un nouveau mot de passe.
+delete-account-failed-text-3	Sorry, the password and answer you entered don't match those entered when begining registration.	Désolé, le mot de passe et la réponse que vous venez d'entrer ne correspondent pas à ceux déclarés lors du début de l'enregistrement.
+#else
+register-info-1	Recovery requires your email address, so using a temporary address is not recommended.	La récupération nécessite votre adresse courriel, par conséquent il est recommandé de ne pas utiliser une adresse temporaire.
+recovery-procedure	If it matches a registered account, an email will be sent to you with a link to the recovery completion page.\u00A0 On this page, you'll be asked to provide a new password.\u00A0 Your password will be changed and you will be logged in.	Si celle-ci correspond à un compte enregistré, un courriel vous sera envoyé avec un lien vers la page de confirmation de récupération. Sur cette page, il vous sera demandé un nouveau mot de passe. Votre mot de passe sera changé et vous serez identifié sur le site.
+recovery-failed-text-2	Sorry, no account with this email is illegible for recovery.	Désolé, aucun compte correspondant à cette adresse courriel ne peut être récupéré.
+recovery-confirm-text	To complete the recovery process, please provide a new password.	Pour terminer la procédure, veuillez entrer un nouveau mot de passe.
+delete-account-failed-text-3	Sorry, the password you entered doesn't match with that entered when begining registration.	Désolé, le mot de passe que vous venez d'entrer ne correspond pas à celui déclaré lors du début de l'enregistrement.
 #endif

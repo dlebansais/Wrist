@@ -112,7 +112,7 @@ namespace Parser
         public IGeneratorColorTheme SelectedColorTheme { get; private set; }
         public IGeneratorUnitTest SelectedUnitTest { get; private set; }
 
-        public void Generate(string outputFolderName)
+        public void Generate(string outputFolderName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             if (!Directory.Exists(outputFolderName))
                 Directory.CreateDirectory(outputFolderName);
@@ -142,7 +142,7 @@ namespace Parser
 
             GenerateAppXaml(outputFolderName, AppNamespace, SelectedColorTheme);
             GenerateAppCSharp(outputFolderName, AppNamespace);
-            GenerateAppProject(outputFolderName, AppNamespace);
+            GenerateAppProject(outputFolderName, AppNamespace, conditionalDefineTable);
             CopyAssemblyInfo(outputFolderName);
             GenerateObjectBaseInterface(outputFolderName, AppNamespace);
             GenerateObjectBase(outputFolderName, AppNamespace);
@@ -402,7 +402,7 @@ namespace Parser
             cSharpWriter.WriteLine("}");
         }
 
-        private void GenerateAppProject(string outputFolderName, string appNamespace)
+        private void GenerateAppProject(string outputFolderName, string appNamespace, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             string ProjectFileName = Path.Combine(outputFolderName, $"{appNamespace}.csproj");
 
@@ -410,13 +410,18 @@ namespace Parser
             {
                 using (StreamWriter ProjectWriter = new StreamWriter(ProjectFile, Encoding.UTF8))
                 {
-                    GenerateAppProject(outputFolderName, appNamespace, ProjectWriter);
+                    GenerateAppProject(outputFolderName, appNamespace, conditionalDefineTable, ProjectWriter);
                 }
             }
         }
 
-        private void GenerateAppProject(string outputFolderName, string appNamespace, StreamWriter projectWriter)
+        private void GenerateAppProject(string outputFolderName, string appNamespace, IDictionary<ConditionalDefine, bool> conditionalDefineTable, StreamWriter projectWriter)
         {
+            string AdditionalDefines = "";
+            foreach (KeyValuePair<ConditionalDefine, bool> Entry in conditionalDefineTable)
+                if (Entry.Value)
+                    AdditionalDefines += $";{Entry.Key.Name}";
+
             projectWriter.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             projectWriter.WriteLine("<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">");
             projectWriter.WriteLine("  <Import Project=\"$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props\" Condition=\"Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')\"/>");
@@ -441,7 +446,7 @@ namespace Parser
             projectWriter.WriteLine("    <DebugType>full</DebugType>");
             projectWriter.WriteLine("    <Optimize>false</Optimize>");
             projectWriter.WriteLine("    <OutputPath>bin\\Debug\\</OutputPath>");
-            projectWriter.WriteLine("    <DefineConstants>DEBUG;TRACE;CSHARP_XAML_FOR_HTML5;CSHTML5</DefineConstants>");
+            projectWriter.WriteLine($"    <DefineConstants>DEBUG;TRACE;CSHARP_XAML_FOR_HTML5;CSHTML5{AdditionalDefines}</DefineConstants>");
             projectWriter.WriteLine("    <ErrorReport>prompt</ErrorReport>");
             projectWriter.WriteLine("    <WarningLevel>4</WarningLevel>");
             projectWriter.WriteLine("  </PropertyGroup>");
@@ -449,7 +454,7 @@ namespace Parser
             projectWriter.WriteLine("    <DebugType>pdbonly</DebugType>");
             projectWriter.WriteLine("    <Optimize>true</Optimize>");
             projectWriter.WriteLine("    <OutputPath>bin\\Release\\</OutputPath>");
-            projectWriter.WriteLine("    <DefineConstants>TRACE;CSHARP_XAML_FOR_HTML5;CSHTML5</DefineConstants>");
+            projectWriter.WriteLine($"    <DefineConstants>TRACE;CSHARP_XAML_FOR_HTML5;CSHTML5{AdditionalDefines}</DefineConstants>");
             projectWriter.WriteLine("    <ErrorReport>prompt</ErrorReport>");
             projectWriter.WriteLine("    <WarningLevel>4</WarningLevel>");
             projectWriter.WriteLine("  </PropertyGroup>");
