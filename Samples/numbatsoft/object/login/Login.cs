@@ -203,7 +203,7 @@ namespace AppCSHtml5
             }
 
 #if QACHALLENGE
-            public static bool insert_1_1(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_transaction, DateTime param_begin, DateTime param_endDate)
+            public static bool insert_1_qa_1(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_transaction, DateTime param_begin, DateTime param_endDate)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username || Row.email_address == param_emailAddress)
@@ -214,7 +214,7 @@ namespace AppCSHtml5
                 return true;
             }
 
-            public static bool insert_1_2(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transaction, DateTime param_begin, DateTime param_endDate)
+            public static bool insert_1_qa_2(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transaction, DateTime param_begin, DateTime param_endDate)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username || Row.email_address == param_emailAddress)
@@ -238,7 +238,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-            public static bool query_1(IEnumerable<CredentialRecord> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings, out string question, out string answerSettings)
+            public static bool query_credential_qa(IEnumerable<CredentialRecord> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings, out string question, out string answerSettings)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.active == param_active && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -261,7 +261,7 @@ namespace AppCSHtml5
                 return false;
             }
 #else
-            public static bool query_1(IEnumerable<CredentialRecord> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings)
+            public static bool query_credential(IEnumerable<CredentialRecord> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.active == param_active && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -282,7 +282,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-            public static bool query_3(IEnumerable<CredentialRecord> credentials, string param_emailAddress, out string question)
+            public static bool query_3_qa(IEnumerable<CredentialRecord> credentials, string param_emailAddress, out string question)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.email_address == param_emailAddress && Row.active == true)
@@ -327,7 +327,7 @@ namespace AppCSHtml5
             }
 
 #if QACHALLENGE
-            public static bool query_9(IEnumerable<CredentialRecord> credentials, string param_password, string param_passwordSettings, string param_identifier, out string username, out string emailAddress, out string passwordSettings, out string question, out string answerSettings, out string name, out string loginUrl, out string meetingUrl, out string validationUrl)
+            public static bool query_9_qa(IEnumerable<CredentialRecord> credentials, string param_password, string param_passwordSettings, string param_identifier, out string username, out string emailAddress, out string passwordSettings, out string question, out string answerSettings, out string name, out string loginUrl, out string meetingUrl, out string validationUrl)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.active == true && Row.password == param_password && Row.password_settings == param_passwordSettings && (Row.username == param_identifier || Row.email_address == param_identifier))
@@ -408,7 +408,7 @@ namespace AppCSHtml5
             }
 
 #if QACHALLENGE
-            public static bool update_3_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_newQuestion, string param_newAnswer, string param_newAnswerSettings)
+            public static bool update_3_qa_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_newQuestion, string param_newAnswer, string param_newAnswerSettings)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
@@ -422,7 +422,7 @@ namespace AppCSHtml5
                 return false;
             }
 
-            public static bool update_3_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings)
+            public static bool update_3_qa_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
@@ -438,7 +438,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-            public static bool update_4(IEnumerable<CredentialRecord> credentials, string param_emailAddress, string param_transaction, DateTime param_endDate)
+            public static bool update_4_qa(IEnumerable<CredentialRecord> credentials, string param_emailAddress, string param_transaction, DateTime param_endDate)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.email_address == param_emailAddress && Row.active == true && !string.IsNullOrEmpty(Row.question))
@@ -466,7 +466,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-            public static bool update_5_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_transaction)
+            public static bool update_5_qa_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -480,7 +480,7 @@ namespace AppCSHtml5
                 return false;
             }
 
-            public static bool update_5_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_transaction)
+            public static bool update_5_qa_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -510,7 +510,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-            public static bool update_6(IEnumerable<CredentialRecord> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_transaction)
+            public static bool update_6_qa(IEnumerable<CredentialRecord> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_transaction)
             {
                 foreach (CredentialRecord Row in credentials)
                     if (Row.username == param_username && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.active == true && !string.IsNullOrEmpty(Row.question) && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -1948,14 +1948,14 @@ namespace AppCSHtml5
             ErrorCodes ErrorCode;
             if (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
             {
-                if (CredentialRecord.update_3_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewQuestion, EncryptedNewAnswer, NewAnswerSettings))
+                if (CredentialRecord.update_3_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewQuestion, EncryptedNewAnswer, NewAnswerSettings))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.ErrorNotFound;
             }
             else
             {
-                if (CredentialRecord.update_3_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings))
+                if (CredentialRecord.update_3_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.ErrorNotFound;
@@ -2043,14 +2043,14 @@ namespace AppCSHtml5
 #if QACHALLENGE
             if (QueryQuestion.Length > 0 && EncryptedAnswer.Length > 0)
             {
-                if (CredentialRecord.insert_1_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, QueryQuestion, EncryptedAnswer, AnswerSettings, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
+                if (CredentialRecord.insert_1_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, QueryQuestion, EncryptedAnswer, AnswerSettings, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.OperationFailed;
             }
             else
             {
-                if (CredentialRecord.insert_1_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
+                if (CredentialRecord.insert_1_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.OperationFailed;
@@ -2090,7 +2090,7 @@ namespace AppCSHtml5
             string ResultPasswordSettings;
             string ResultQuestion;
             string ResultAnswerSettings;
-            if (CredentialRecord.query_1(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings))
+            if (CredentialRecord.query_credential_qa(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings))
             {
                 if (MessageBox.Show("Continue registration?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -2114,7 +2114,7 @@ namespace AppCSHtml5
             string ResultEmailAddress;
             string ResultSalt;
             string ResultPasswordSettings;
-            if (CredentialRecord.query_1(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings))
+            if (CredentialRecord.query_credential(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings))
             {
                 if (MessageBox.Show("Continue registration?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -2200,14 +2200,14 @@ namespace AppCSHtml5
             ErrorCodes ErrorCode;
             if (EncryptedAnswer.Length > 0)
             {
-                if (CredentialRecord.update_5_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedAnswer, AnswerSettings, QueryTransaction))
+                if (CredentialRecord.update_5_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedAnswer, AnswerSettings, QueryTransaction))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.InvalidUsernamePasswordOrAnswer;
             }
             else
             {
-                if (CredentialRecord.update_5_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
+                if (CredentialRecord.update_5_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.InvalidUsernameOrPassword;
@@ -2250,11 +2250,14 @@ namespace AppCSHtml5
             ErrorCodes ErrorCode;
             string RecoveryTransaction = CreateTransactionCode();
 
+#if QACHALLENGE
+            if (CredentialRecord.update_4_qa(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
+                ErrorCode = ErrorCodes.Success;
+            else if (CredentialRecord.query_3_qa(DatabaseCredentialTable, QueryEmailAddress, out string Question) && string.IsNullOrEmpty(Question))
+                ErrorCode = ErrorCodes.ErrorNoQuestion;
+#else
             if (CredentialRecord.update_4(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
                 ErrorCode = ErrorCodes.Success;
-#if QACHALLENGE
-            else if (CredentialRecord.query_3(DatabaseCredentialTable, QueryEmailAddress, out string Question) && string.IsNullOrEmpty(Question))
-                ErrorCode = ErrorCodes.ErrorNoQuestion;
 #endif
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
@@ -2287,7 +2290,7 @@ namespace AppCSHtml5
             string ResultPasswordSettings;
             string ResultQuestion;
             string ResultAnswerSettings;
-            if (CredentialRecord.query_1(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings))
+            if (CredentialRecord.query_credential_qa(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings))
             {
                 if (MessageBox.Show("Continue recovery?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -2310,7 +2313,7 @@ namespace AppCSHtml5
             string ResultEmailAddress;
             string ResultSalt;
             string ResultPasswordSettings;
-            if (CredentialRecord.query_1(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings))
+            if (CredentialRecord.query_credential(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings))
             {
                 if (MessageBox.Show("Continue recovery?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -2381,7 +2384,7 @@ namespace AppCSHtml5
 
             ErrorCodes ErrorCode;
 #if QACHALLENGE
-            if (CredentialRecord.update_6(DatabaseCredentialTable, QueryUsername, EncryptedAnswer, AnswerSettings, EncryptedNewPassword, NewPasswordSettings, QueryTransaction))
+            if (CredentialRecord.update_6_qa(DatabaseCredentialTable, QueryUsername, EncryptedAnswer, AnswerSettings, EncryptedNewPassword, NewPasswordSettings, QueryTransaction))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.InvalidUsernameOrAnswer;
@@ -2535,7 +2538,7 @@ namespace AppCSHtml5
             string ResultLoginUrl;
             string ResultMeetingUrl;
             string ResultValidationUrl;
-            if (CredentialRecord.query_9(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out ResultUsername, out ResultEmailAddress, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings, out ResultName, out ResultLoginUrl, out ResultMeetingUrl, out ResultValidationUrl))
+            if (CredentialRecord.query_9_qa(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out ResultUsername, out ResultEmailAddress, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings, out ResultName, out ResultLoginUrl, out ResultMeetingUrl, out ResultValidationUrl))
             {
                 bool IsDeletionCanceled = CredentialRecord.cancel_credential_deletion(DatabaseCredentialTable, ResultUsername, EncryptedPassword, PasswordSettings);
 
@@ -2743,9 +2746,9 @@ namespace AppCSHtml5
                 Eqmlp.KnownOrganizationTable[0]["validation_url"]),
         };
 #endif
-        #endregion
+#endregion
 
-        #region Implementation of INotifyPropertyChanged
+#region Implementation of INotifyPropertyChanged
         /// <summary>
         ///     Implements the PropertyChanged event.
         /// </summary>
@@ -2761,6 +2764,6 @@ namespace AppCSHtml5
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        #endregion
+#endregion
     }
 }
