@@ -380,6 +380,11 @@ namespace Parser
                         throw new ParsingException(241, "", $"Resource key '{Key}' not found in design '{Page.Design.Name}'.");
             }
 
+            VerifyAttachedProperties();
+        }
+
+        public void VerifyAttachedProperties()
+        {
             List<IDockPanel> DockPanels = new List<IDockPanel>();
             List<IGrid> Grids = new List<IGrid>();
             foreach (ILayout Layout in Layouts)

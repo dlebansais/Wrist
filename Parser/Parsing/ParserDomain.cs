@@ -20,6 +20,8 @@ namespace Parser
             if (homePageName.Length == 0)
                 throw new ParsingException(2, inputFolderName, "Empty home page name.");
 
+            InitAttachedProperties();
+
             IFormParser FormParserAreas = new ParserArea("area", "txt");
             IFormParser FormParserDesigns = new ParserDesign("design", "xaml");
             IFormParser FormParserLayouts = new ParserLayout("layout", "xaml");
@@ -197,6 +199,15 @@ namespace Parser
                         }
             }
             while (IsSorted);
+        }
+
+        private static void InitAttachedProperties()
+        {
+            DockPanel.DockTargets.Clear();
+            Grid.ColumnTargets.Clear();
+            Grid.ColumnSpanTargets.Clear();
+            Grid.RowTargets.Clear();
+            Grid.RowSpanTargets.Clear();
         }
 
         private static void ParseForm(IFormParser parser, string formFolderName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)

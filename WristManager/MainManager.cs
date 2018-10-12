@@ -37,9 +37,36 @@ namespace WristManager
                 }
             }
 
+            // Verify all combinations of defines, except the selected one.
             if (ConditionalDefineTable.Count >= 64)
                 throw new ParsingException(0, inputFolderName, "Too many directives.");
 
+            List<ConditionalDefine> ConditionalDefineList = new List<ConditionalDefine>();
+            foreach (KeyValuePair<ConditionalDefine, bool> Entry in ConditionalDefineTable)
+                ConditionalDefineList.Add(Entry.Key);
+
+            ulong CombinationMax = 1UL << ConditionalDefineList.Count;
+            for (ulong n = 0; n < CombinationMax; n++)
+            {
+                IDictionary<ConditionalDefine, bool> TestTable = new Dictionary<ConditionalDefine, bool>();
+                bool IsSelected = true;
+                for (int i = 0; i < ConditionalDefineList.Count; i++)
+                {
+                    bool IsSet = ((n >> i) & 1) != 0;
+                    TestTable.Add(ConditionalDefineList[i], IsSet);
+                    if (IsSelected && ConditionalDefineTable[ConditionalDefineList[i]] != IsSet)
+                        IsSelected = false;
+                }
+
+                if (!IsSelected)
+                {
+                    domain = ParserDomain.Parse(inputFolderName, homePageName, colorThemeName, unitTestName, TestTable);
+                    domain.Verify();
+                    domain.CheckUnused((string message) => Console.WriteLine(message));
+                }
+            }
+
+            // Process the selected combination of defines.
             domain = ParserDomain.Parse(inputFolderName, homePageName, colorThemeName, unitTestName, ConditionalDefineTable);
             domain.Verify();
             domain.CheckUnused((string message) => Console.WriteLine(message));
