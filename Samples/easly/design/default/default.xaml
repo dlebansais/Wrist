@@ -1,0 +1,17 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/Button.xaml"/>
+    <ResourceDictionary Source="/ButtonHeader.xaml"/>
+    <ResourceDictionary Source="/CheckBox.xaml"/>
+    <ResourceDictionary Source="/Edit.xaml"/>
+    <ResourceDictionary Source="/Image.xaml"/>
+    <ResourceDictionary Source="/PasswordEdit.xaml"/>
+    <ResourceDictionary Source="/RadioButton.xaml"/>
+    <ResourceDictionary Source="/Selector.xaml"/>
+    <ResourceDictionary Source="/Text.xaml"/>
+    <ResourceDictionary Source="/TextPageTitle.xaml"/>
+    <ResourceDictionary Source="/TextTitle.xaml"/>
+    <ResourceDictionary Source="/ToggleButton.xaml"/>
+  </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

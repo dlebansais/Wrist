@@ -1,0 +1,4 @@
+﻿has previous page: boolean
+  GREATER THAN
+    application.navigation index
+    0

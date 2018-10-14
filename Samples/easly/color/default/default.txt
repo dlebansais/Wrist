@@ -1,0 +1,6 @@
+White: White
+Black: Black
+Red: #B23201
+Blue: #00828F
+LigthGray: #E9E9E9
+Gray: #DADADA
