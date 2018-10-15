@@ -11,7 +11,567 @@ using Windows.UI.Xaml;
 
 namespace AppCSHtml5
 {
-    public class Login : ObjectBase, ILogin
+    #region Salt
+    public class SaltRecordBase
+    {
+        public SaltRecordBase(string salt)
+        {
+            this.salt = salt;
+        }
+
+        public string salt { get; set; }
+
+        public static bool insert_2(IList<SaltRecordBase> salts, string param_salt)
+        {
+            foreach (SaltRecordBase Row in salts)
+                if (Row.salt == param_salt)
+                    return false;
+
+            SaltRecordBase NewRow = new SaltRecordBase(param_salt);
+            salts.Add(NewRow);
+            return true;
+        }
+    }
+    #endregion
+
+    #region Credential Record
+    public class CredentialRecordBase
+    {
+        public CredentialRecordBase(string username, string email_address, string salt, string password, string password_settings, bool active)
+        {
+            this.username = username;
+            this.email_address = email_address;
+            this.salt = salt;
+            this.password = password;
+            this.password_settings = password_settings;
+            this.active = active;
+            transaction_code = null;
+            transaction_timeout = null;
+#if QACHALLENGE
+            question = null;
+            answer = null;
+            answer_settings = null;
+#endif
+            delete_timeout = null;
+            language = null;
+        }
+
+#if QACHALLENGE
+        public CredentialRecordBase(string username, string email_address, string salt, string password, string password_settings, string question, string answer, string answer_settings, bool active)
+        {
+            this.username = username;
+            this.email_address = email_address;
+            this.salt = salt;
+            this.password = password;
+            this.password_settings = password_settings;
+            this.active = active;
+            transaction_code = null;
+            transaction_timeout = null;
+            this.question = question;
+            this.answer = answer;
+            this.answer_settings = answer_settings;
+            delete_timeout = null;
+            language = null;
+        }
+#endif
+
+        public string username { get; set; }
+        public string email_address { get; set; }
+        public string salt { get; set; }
+        public string password { protected get; set; }
+        public string password_settings { get; set; }
+        public bool active { get; set; }
+        public string transaction_code { protected get; set; }
+        public DateTime? transaction_timeout { protected get; set; }
+
+#if QACHALLENGE
+        public string question { get; set; }
+        public string answer { protected get; set; }
+        public string answer_settings { get; set; }
+#endif
+
+        public DateTime? delete_timeout { protected get; set; }
+        public string language { protected get; set; }
+
+        public static void cleanup_inactive_credentials(IList<CredentialRecordBase> credentials, IList<SaltRecordBase> salts)
+        {
+            List<CredentialRecordBase> ToRemove = new List<CredentialRecordBase>();
+
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.active == false && (!Row.transaction_timeout.HasValue || DateTime.UtcNow >= Row.transaction_timeout.Value))
+                    ToRemove.Add(Row);
+
+            foreach (CredentialRecordBase Row in ToRemove)
+            {
+                foreach (SaltRecordBase Salt in salts)
+                    if (Salt.salt == Row.salt)
+                    {
+                        ((List<SaltRecordBase>)salts).Remove(Salt);
+                        break;
+                    }
+
+                ((List<CredentialRecordBase>)credentials).Remove(Row);
+            }
+        }
+
+        public static void get_deleted_credentials(IList<CredentialRecordBase> credentials, out IList<Tuple<string, string, string>> UserList)
+        {
+            UserList = new List<Tuple<string, string, string>>();
+
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.active == true && Row.delete_timeout.HasValue && DateTime.UtcNow >= Row.delete_timeout.Value)
+                    UserList.Add(new Tuple<string, string, string>(Row.username, Row.email_address, Row.language));
+        }
+
+        public static bool get_email_address(IList<CredentialRecordBase> credentials, string param_username, string param_encryptedPassword, string param_passwordSettings, out string emailAddress)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_encryptedPassword && Row.password_settings == param_passwordSettings && Row.active == true)
+                {
+                    emailAddress = Row.email_address;
+                    return true;
+                }
+
+            emailAddress = null;
+            return false;
+        }
+
+        public static void cleanup_deleted_credentials(IList<CredentialRecordBase> credentials, IList<SaltRecordBase> salts)
+        {
+            List<CredentialRecordBase> ToRemove = new List<CredentialRecordBase>();
+
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.active == true && Row.delete_timeout.HasValue && DateTime.UtcNow >= Row.delete_timeout.Value)
+                    ToRemove.Add(Row);
+
+            foreach (CredentialRecordBase Row in ToRemove)
+            {
+                foreach (SaltRecordBase Salt in salts)
+                    if (Salt.salt == Row.salt)
+                    {
+                        ((List<SaltRecordBase>)salts).Remove(Salt);
+                        break;
+                    }
+
+                ((List<CredentialRecordBase>)credentials).Remove(Row);
+            }
+        }
+
+        public static void cleanup_outdated_transactions(IList<CredentialRecordBase> credentials)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.active == true && Row.transaction_code != null && Row.transaction_timeout.HasValue && DateTime.UtcNow >= Row.transaction_timeout.Value)
+                {
+                    Row.transaction_code = null;
+                    Row.transaction_timeout = null;
+                }
+        }
+
+#if QACHALLENGE
+        public static bool insert_1_qa_1(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_transaction, DateTime param_begin, DateTime param_endDate)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username || Row.email_address == param_emailAddress)
+                    return false;
+
+            CredentialRecordBase NewRow = factory.CreateNew(param_username, param_emailAddress, param_salt, param_password, param_passwordSettings, param_question, param_answer, param_answerSettings, false);
+            credentials.Add(NewRow);
+            return true;
+        }
+
+        public static bool insert_1_qa_2(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transaction, DateTime param_begin, DateTime param_endDate)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username || Row.email_address == param_emailAddress)
+                    return false;
+
+            CredentialRecordBase NewRow = factory.CreateNew(param_username, param_emailAddress, param_salt, param_password, param_passwordSettings, false);
+            credentials.Add(NewRow);
+            return true;
+        }
+#else
+        public static bool insert_1(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transaction, DateTime param_begin, DateTime param_endDate)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username || Row.email_address == param_emailAddress)
+                    return false;
+
+            CredentialRecordBase NewRow = factory.CreateNew(param_username, param_emailAddress, param_salt, param_password, param_passwordSettings, false);
+            credentials.Add(NewRow);
+            return true;
+        }
+#endif
+
+#if QACHALLENGE
+        public static bool query_credential_qa(IEnumerable<CredentialRecordBase> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings, out string question, out string answerSettings)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.active == param_active && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
+                {
+                    username = Row.username;
+                    emailAddress = Row.email_address;
+                    salt = Row.salt;
+                    passwordSettings = Row.password_settings;
+                    question = Row.question;
+                    answerSettings = Row.answer_settings;
+                    return true;
+                }
+
+            username = null;
+            emailAddress = null;
+            salt = null;
+            passwordSettings = null;
+            question = null;
+            answerSettings = null;
+            return false;
+        }
+#else
+        public static bool query_credential(IEnumerable<CredentialRecordBase> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.active == param_active && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
+                {
+                    username = Row.username;
+                    emailAddress = Row.email_address;
+                    salt = Row.salt;
+                    passwordSettings = Row.password_settings;
+                    return true;
+                }
+
+            username = null;
+            emailAddress = null;
+            salt = null;
+            passwordSettings = null;
+            return false;
+        }
+#endif
+
+#if QACHALLENGE
+        public static bool query_3_qa(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, out string question)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.email_address == param_emailAddress && Row.active == true)
+                {
+                    question = Row.question;
+                    return true;
+                }
+
+            question = null;
+            return false;
+        }
+#endif
+
+        public static bool query_7(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_emailAddress, out string username, out string emailAddress)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username || Row.email_address == param_emailAddress)
+                {
+                    username = Row.username;
+                    emailAddress = Row.email_address;
+                    return true;
+                }
+
+            username = null;
+            emailAddress = null;
+            return false;
+        }
+
+        public static bool query_8(IEnumerable<CredentialRecordBase> credentials, string param_identifier, out string salt, out string passwordSettings)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.active == true && (Row.username == param_identifier || Row.email_address == param_identifier))
+                {
+                    salt = Row.salt;
+                    passwordSettings = Row.password_settings;
+                    return true;
+                }
+
+            salt = null;
+            passwordSettings = null;
+            return false;
+        }
+
+#if QACHALLENGE
+        public static bool query_row_qa(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out CredentialRecordBase row)
+        {
+            foreach (CredentialRecordBase Item in credentials)
+                if (Item.active == true && Item.password == param_password && Item.password_settings == param_passwordSettings && (Item.username == param_identifier || Item.email_address == param_identifier))
+                {
+                    row = Item;
+                    return true;
+                }
+
+            row = null;
+            return false;
+        }
+#else
+        public static bool query_row(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out CredentialRecordBase row)
+        {
+            foreach (CredentialRecordBase Item in credentials)
+                if (Item.active == true && Item.password == param_password && Item.password_settings == param_passwordSettings && (Item.username == param_identifier || Item.email_address == param_identifier))
+                {
+                    row = Item;
+                    return true;
+                }
+
+            row = null;
+            return false;
+        }
+#endif
+
+        public static bool update_1(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newPassword, string param_newPasswordSettings)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                {
+                    Row.password = param_newPassword;
+                    Row.password_settings = param_newPasswordSettings;
+                    return true;
+                }
+
+            return false;
+        }
+
+        public static bool update_2(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newEmailAddress)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                {
+                    Row.email_address = param_newEmailAddress;
+                    return true;
+                }
+
+            return false;
+        }
+
+#if QACHALLENGE
+        public static bool update_3_qa_1(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newQuestion, string param_newAnswer, string param_newAnswerSettings)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                {
+                    Row.question = param_newQuestion;
+                    Row.answer = param_newAnswer;
+                    Row.answer_settings = param_newAnswerSettings;
+                    return true;
+                }
+
+            return false;
+        }
+
+        public static bool update_3_qa_2(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                {
+                    Row.question = null;
+                    Row.answer = null;
+                    Row.answer_settings = null;
+                    return true;
+                }
+
+            return false;
+        }
+#endif
+
+#if QACHALLENGE
+        public static bool update_4_qa(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, string param_transaction, DateTime param_endDate)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.email_address == param_emailAddress && Row.active == true && !string.IsNullOrEmpty(Row.question))
+                {
+                    Row.transaction_code = param_transaction;
+                    Row.transaction_timeout = param_endDate;
+                    return true;
+                }
+
+            return false;
+        }
+#else
+        public static bool update_4(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, string param_transaction, DateTime param_endDate)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.email_address == param_emailAddress && Row.active == true)
+                {
+                    Row.transaction_code = param_transaction;
+                    Row.transaction_timeout = param_endDate;
+                    return true;
+                }
+
+            return false;
+        }
+#endif
+
+#if QACHALLENGE
+        public static bool update_5_qa_1(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_transaction)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
+                {
+                    Row.active = true;
+                    Row.transaction_code = null;
+                    Row.transaction_timeout = null;
+                    return true;
+                }
+
+            return false;
+        }
+
+        public static bool update_5_qa_2(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_transaction)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
+                {
+                    Row.active = true;
+                    Row.transaction_code = null;
+                    Row.transaction_timeout = null;
+                    return true;
+                }
+
+            return false;
+        }
+#else
+        public static bool update_5(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_transaction)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
+                {
+                    Row.active = true;
+                    Row.transaction_code = null;
+                    Row.transaction_timeout = null;
+                    return true;
+                }
+
+            return false;
+        }
+#endif
+
+#if QACHALLENGE
+        public static bool update_6_qa(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_transaction)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.active == true && !string.IsNullOrEmpty(Row.question) && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
+                {
+                    Row.password = param_newPassword;
+                    Row.password_settings = param_newPasswordSettings;
+                    Row.transaction_code = null;
+                    Row.transaction_timeout = null;
+                    Row.delete_timeout = null;
+                    Row.language = null;
+                    return true;
+                }
+
+            return false;
+        }
+#else
+        public static bool update_6(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_newPassword, string param_newPasswordSettings, string param_transaction)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.active == true && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
+                {
+                    Row.password = param_newPassword;
+                    Row.password_settings = param_newPasswordSettings;
+                    Row.transaction_code = null;
+                    Row.transaction_timeout = null;
+                    Row.delete_timeout = null;
+                    Row.language = null;
+                    return true;
+                }
+
+            return false;
+        }
+#endif
+
+        public static bool update_8(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newUsername)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                {
+                    Row.username = param_newUsername;
+                    return true;
+                }
+
+            return false;
+        }
+
+        public static bool update_9(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, DateTime param_deleteDate, string param_language)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
+                {
+                    Row.delete_timeout = param_deleteDate;
+                    Row.language = param_language;
+                    return true;
+                }
+
+            return false;
+        }
+
+        public static bool cancel_credential_deletion(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings)
+        {
+            foreach (CredentialRecordBase Row in credentials)
+                if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true && Row.delete_timeout.HasValue)
+                {
+                    Row.delete_timeout = null;
+                    Row.language = null;
+                    return true;
+                }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region Credential Factory
+    public class CredentialFactoryBase
+    {
+        public virtual CredentialRecordBase CreateNew(string username, string email_address, string salt, string password, string password_settings, bool active)
+        {
+            return new CredentialRecordBase(username, email_address, salt, password, password_settings, active);
+        }
+
+#if QACHALLENGE
+        public virtual CredentialRecordBase CreateNew(string username, string email_address, string salt, string password, string password_settings, string question, string answer, string answer_settings, bool active)
+        {
+            return new CredentialRecordBase(username, email_address, salt, password, password_settings, question, answer, answer_settings, active);
+        }
+#endif
+
+#if QACHALLENGE
+        public virtual bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out Dictionary<string, string> record)
+        {
+            record = new Dictionary<string, string>();
+            if (CredentialRecordBase.query_row_qa(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
+            {
+                record.Add("username", Row.username);
+                record.Add("email_address", Row.email_address);
+                record.Add("password_settings", Row.password_settings);
+                record.Add("question", Row.question);
+                record.Add("answer_settings", Row.answer_settings);
+                return true;
+            }
+
+            return false;
+        }
+#else
+        public virtual bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out Dictionary<string, string> record)
+        {
+            record = new Dictionary<string, string>();
+            if (CredentialRecordBase.query_row(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
+            {
+                record.Add("username", Row.username);
+                record.Add("email_address", Row.email_address);
+                record.Add("password_settings", Row.password_settings);
+                return true;
+            }
+
+            return false;
+        }
+#endif
+    }
+    #endregion
+
+    public abstract class LoginBase : ObjectBase, ILogin
     {
         #region Constants
         private enum ErrorCodes
@@ -36,557 +596,8 @@ namespace AppCSHtml5
 #endif
         #endregion
 
-        #region Salt
-        private class SaltRecord
-        {
-            public SaltRecord(string salt)
-            {
-                this.salt = salt;
-            }
-
-            public string salt { get; set; }
-
-            public static bool insert_2(IList<SaltRecord> salts, string param_salt)
-            {
-                foreach (SaltRecord Row in salts)
-                    if (Row.salt == param_salt)
-                        return false;
-
-                SaltRecord NewRow = new SaltRecord(param_salt);
-                salts.Add(NewRow);
-                return true;
-            }
-        }
-        #endregion
-
-        #region Credential
-        private class CredentialRecord
-        {
-            public CredentialRecord(string username, string email_address, string salt, string password, string password_settings, bool active, string name, string login_url, string meeting_url, string validation_url)
-            {
-                this.username = username;
-                this.email_address = email_address;
-                this.salt = salt;
-                this.password = password;
-                this.password_settings = password_settings;
-                this.active = active;
-                transaction_code = null;
-                transaction_timeout = null;
-#if QACHALLENGE
-                question = null;
-                answer = null;
-                answer_settings = null;
-#endif
-                delete_timeout = null;
-                language = null;
-                this.name = name;
-                this.login_url = login_url;
-                this.meeting_url = meeting_url;
-                this.validation_url = validation_url;
-            }
-
-#if QACHALLENGE
-            public CredentialRecord(string username, string email_address, string salt, string password, string password_settings, string question, string answer, string answer_settings, bool active, string name, string login_url, string meeting_url, string validation_url)
-            {
-                this.username = username;
-                this.email_address = email_address;
-                this.salt = salt;
-                this.password = password;
-                this.password_settings = password_settings;
-                this.active = active;
-                transaction_code = null;
-                transaction_timeout = null;
-                this.question = question;
-                this.answer = answer;
-                this.answer_settings = answer_settings;
-                delete_timeout = null;
-                language = null;
-                this.name = name;
-                this.login_url = login_url;
-                this.meeting_url = meeting_url;
-                this.validation_url = validation_url;
-            }
-#endif
-
-            public string username { get; set; }
-            public string email_address { get; set; }
-            public string salt { get; set; }
-            public string password { private get; set; }
-            public string password_settings { get; set; }
-            public bool active { get; set; }
-            public string transaction_code { private get; set; }
-            public DateTime? transaction_timeout { private get; set; }
-#if QACHALLENGE
-            public string question { get; set; }
-            public string answer { private get; set; }
-            public string answer_settings { get; set; }
-#endif
-            public DateTime? delete_timeout { private get; set; }
-            public string language { private get; set; }
-            public string name { get; set; }
-            public string login_url { get; set; }
-            public string meeting_url { get; set; }
-            public string validation_url { get; set; }
-
-            public static void cleanup_inactive_credentials(IList<CredentialRecord> credentials, IList<SaltRecord> salts)
-            {
-                List<CredentialRecord> ToRemove = new List<CredentialRecord>();
-
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == false && (!Row.transaction_timeout.HasValue || DateTime.UtcNow >= Row.transaction_timeout.Value))
-                        ToRemove.Add(Row);
-
-                foreach (CredentialRecord Row in ToRemove)
-                {
-                    foreach (SaltRecord Salt in salts)
-                        if (Salt.salt == Row.salt)
-                        {
-                            salts.Remove(Salt);
-                            break;
-                        }
-
-                    credentials.Remove(Row);
-                }
-            }
-
-            public static void get_deleted_credentials(IList<CredentialRecord> credentials, out IList<Tuple<string, string, string>> UserList)
-            {
-                UserList = new List<Tuple<string, string, string>>();
-
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == true && Row.delete_timeout.HasValue && DateTime.UtcNow >= Row.delete_timeout.Value)
-                        UserList.Add(new Tuple<string, string, string>(Row.username, Row.email_address, Row.language));
-            }
-
-            public static bool get_email_address(IList<CredentialRecord> credentials, string param_username, string param_encryptedPassword, string param_passwordSettings, out string emailAddress)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_encryptedPassword && Row.password_settings == param_passwordSettings && Row.active == true)
-                    {
-                        emailAddress = Row.email_address;
-                        return true;
-                    }
-
-                emailAddress = null;
-                return false;
-            }
-
-            public static void cleanup_deleted_credentials(IList<CredentialRecord> credentials, IList<SaltRecord> salts)
-            {
-                List<CredentialRecord> ToRemove = new List<CredentialRecord>();
-
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == true && Row.delete_timeout.HasValue && DateTime.UtcNow >= Row.delete_timeout.Value)
-                        ToRemove.Add(Row);
-
-                foreach (CredentialRecord Row in ToRemove)
-                {
-                    foreach (SaltRecord Salt in salts)
-                        if (Salt.salt == Row.salt)
-                        {
-                            salts.Remove(Salt);
-                            break;
-                        }
-
-                    credentials.Remove(Row);
-                }
-            }
-
-            public static void cleanup_outdated_transactions(IList<CredentialRecord> credentials)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == true && Row.transaction_code != null && Row.transaction_timeout.HasValue && DateTime.UtcNow >= Row.transaction_timeout.Value)
-                    {
-                        Row.transaction_code = null;
-                        Row.transaction_timeout = null;
-                    }
-            }
-
-#if QACHALLENGE
-            public static bool insert_1_qa_1(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_transaction, DateTime param_begin, DateTime param_endDate)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username || Row.email_address == param_emailAddress)
-                        return false;
-
-                CredentialRecord NewRow = new CredentialRecord(param_username, param_emailAddress, param_salt, param_password, param_passwordSettings, param_question, param_answer, param_answerSettings, false, "", "", "", "");
-                credentials.Add(NewRow);
-                return true;
-            }
-
-            public static bool insert_1_qa_2(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transaction, DateTime param_begin, DateTime param_endDate)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username || Row.email_address == param_emailAddress)
-                        return false;
-
-                CredentialRecord NewRow = new CredentialRecord(param_username, param_emailAddress, param_salt, param_password, param_passwordSettings, false, "", "", "", "");
-                credentials.Add(NewRow);
-                return true;
-            }
-#else
-            public static bool insert_1(IList<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transaction, DateTime param_begin, DateTime param_endDate)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username || Row.email_address == param_emailAddress)
-                        return false;
-
-                CredentialRecord NewRow = new CredentialRecord(param_username, param_emailAddress, param_salt, param_password, param_passwordSettings, false, "", "", "", "");
-                credentials.Add(NewRow);
-                return true;
-            }
-#endif
-
-#if QACHALLENGE
-            public static bool query_credential_qa(IEnumerable<CredentialRecord> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings, out string question, out string answerSettings)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == param_active && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
-                    {
-                        username = Row.username;
-                        emailAddress = Row.email_address;
-                        salt = Row.salt;
-                        passwordSettings = Row.password_settings;
-                        question = Row.question;
-                        answerSettings = Row.answer_settings;
-                        return true;
-                    }
-
-                username = null;
-                emailAddress = null;
-                salt = null;
-                passwordSettings = null;
-                question = null;
-                answerSettings = null;
-                return false;
-            }
-#else
-            public static bool query_credential(IEnumerable<CredentialRecord> credentials, bool param_active, string param_transaction, out string username, out string emailAddress, out string salt, out string passwordSettings)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == param_active && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
-                    {
-                        username = Row.username;
-                        emailAddress = Row.email_address;
-                        salt = Row.salt;
-                        passwordSettings = Row.password_settings;
-                        return true;
-                    }
-
-                username = null;
-                emailAddress = null;
-                salt = null;
-                passwordSettings = null;
-                return false;
-            }
-#endif
-
-#if QACHALLENGE
-            public static bool query_3_qa(IEnumerable<CredentialRecord> credentials, string param_emailAddress, out string question)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.email_address == param_emailAddress && Row.active == true)
-                    {
-                        question = Row.question;
-                        return true;
-                    }
-
-                question = null;
-                return false;
-            }
-#endif
-
-            public static bool query_7(IEnumerable<CredentialRecord> credentials, string param_username, string param_emailAddress, out string username, out string emailAddress)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username || Row.email_address == param_emailAddress)
-                    {
-                        username = Row.username;
-                        emailAddress = Row.email_address;
-                        return true;
-                    }
-
-                username = null;
-                emailAddress = null;
-                return false;
-            }
-
-            public static bool query_8(IEnumerable<CredentialRecord> credentials, string param_identifier, out string salt, out string passwordSettings)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == true && (Row.username == param_identifier || Row.email_address == param_identifier))
-                    {
-                        salt = Row.salt;
-                        passwordSettings = Row.password_settings;
-                        return true;
-                    }
-
-                salt = null;
-                passwordSettings = null;
-                return false;
-            }
-
-#if QACHALLENGE
-            public static bool query_9_qa(IEnumerable<CredentialRecord> credentials, string param_password, string param_passwordSettings, string param_identifier, out string username, out string emailAddress, out string passwordSettings, out string question, out string answerSettings, out string name, out string loginUrl, out string meetingUrl, out string validationUrl)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == true && Row.password == param_password && Row.password_settings == param_passwordSettings && (Row.username == param_identifier || Row.email_address == param_identifier))
-                    {
-                        username = Row.username;
-                        emailAddress = Row.email_address;
-                        passwordSettings = Row.password_settings;
-                        question = Row.question;
-                        answerSettings = Row.answer_settings;
-                        name = Row.name;
-                        loginUrl = Row.login_url;
-                        meetingUrl = Row.meeting_url;
-                        validationUrl = Row.validation_url;
-                        return true;
-                    }
-
-                username = null;
-                emailAddress = null;
-                passwordSettings = null;
-                question = null;
-                answerSettings = null;
-                name = null;
-                loginUrl = null;
-                meetingUrl = null;
-                validationUrl = null;
-                return false;
-            }
-#else
-            public static bool query_9(IEnumerable<CredentialRecord> credentials, string param_password, string param_passwordSettings, string param_identifier, out string username, out string emailAddress, out string passwordSettings, out string name, out string loginUrl, out string meetingUrl, out string validationUrl)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.active == true && Row.password == param_password && Row.password_settings == param_passwordSettings && (Row.username == param_identifier || Row.email_address == param_identifier))
-                    {
-                        username = Row.username;
-                        emailAddress = Row.email_address;
-                        passwordSettings = Row.password_settings;
-                        name = Row.name;
-                        loginUrl = Row.login_url;
-                        meetingUrl = Row.meeting_url;
-                        validationUrl = Row.validation_url;
-                        return true;
-                    }
-
-                username = null;
-                emailAddress = null;
-                passwordSettings = null;
-                name = null;
-                loginUrl = null;
-                meetingUrl = null;
-                validationUrl = null;
-                return false;
-            }
-#endif
-
-            public static bool update_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_newPassword, string param_newPasswordSettings)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
-                    {
-                        Row.password = param_newPassword;
-                        Row.password_settings = param_newPasswordSettings;
-                        return true;
-                    }
-
-                return false;
-            }
-
-            public static bool update_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_newEmailAddress)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
-                    {
-                        Row.email_address = param_newEmailAddress;
-                        return true;
-                    }
-
-                return false;
-            }
-
-#if QACHALLENGE
-            public static bool update_3_qa_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_newQuestion, string param_newAnswer, string param_newAnswerSettings)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
-                    {
-                        Row.question = param_newQuestion;
-                        Row.answer = param_newAnswer;
-                        Row.answer_settings = param_newAnswerSettings;
-                        return true;
-                    }
-
-                return false;
-            }
-
-            public static bool update_3_qa_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
-                    {
-                        Row.question = null;
-                        Row.answer = null;
-                        Row.answer_settings = null;
-                        return true;
-                    }
-
-                return false;
-            }
-#endif
-
-#if QACHALLENGE
-            public static bool update_4_qa(IEnumerable<CredentialRecord> credentials, string param_emailAddress, string param_transaction, DateTime param_endDate)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.email_address == param_emailAddress && Row.active == true && !string.IsNullOrEmpty(Row.question))
-                    {
-                        Row.transaction_code = param_transaction;
-                        Row.transaction_timeout = param_endDate;
-                        return true;
-                    }
-
-                return false;
-            }
-#else
-            public static bool update_4(IEnumerable<CredentialRecord> credentials, string param_emailAddress, string param_transaction, DateTime param_endDate)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.email_address == param_emailAddress && Row.active == true)
-                    {
-                        Row.transaction_code = param_transaction;
-                        Row.transaction_timeout = param_endDate;
-                        return true;
-                    }
-
-                return false;
-            }
-#endif
-
-#if QACHALLENGE
-            public static bool update_5_qa_1(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_transaction)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
-                    {
-                        Row.active = true;
-                        Row.transaction_code = null;
-                        Row.transaction_timeout = null;
-                        return true;
-                    }
-
-                return false;
-            }
-
-            public static bool update_5_qa_2(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_transaction)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
-                    {
-                        Row.active = true;
-                        Row.transaction_code = null;
-                        Row.transaction_timeout = null;
-                        return true;
-                    }
-
-                return false;
-            }
-#else
-            public static bool update_5(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_transaction)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
-                    {
-                        Row.active = true;
-                        Row.transaction_code = null;
-                        Row.transaction_timeout = null;
-                        return true;
-                    }
-
-                return false;
-            }
-#endif
-
-#if QACHALLENGE
-            public static bool update_6_qa(IEnumerable<CredentialRecord> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_transaction)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.active == true && !string.IsNullOrEmpty(Row.question) && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
-                    {
-                        Row.password = param_newPassword;
-                        Row.password_settings = param_newPasswordSettings;
-                        Row.transaction_code = null;
-                        Row.transaction_timeout = null;
-                        Row.delete_timeout = null;
-                        Row.language = null;
-                        return true;
-                    }
-
-                return false;
-            }
-#else
-            public static bool update_6(IEnumerable<CredentialRecord> credentials, string param_username, string param_newPassword, string param_newPasswordSettings, string param_transaction)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.active == true && Row.transaction_code == param_transaction && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
-                    {
-                        Row.password = param_newPassword;
-                        Row.password_settings = param_newPasswordSettings;
-                        Row.transaction_code = null;
-                        Row.transaction_timeout = null;
-                        Row.delete_timeout = null;
-                        Row.language = null;
-                        return true;
-                    }
-
-                return false;
-            }
-#endif
-
-            public static bool update_8(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, string param_newUsername)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
-                    {
-                        Row.username = param_newUsername;
-                        return true;
-                    }
-
-                return false;
-            }
-
-            public static bool update_9(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings, DateTime param_deleteDate, string param_language)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
-                    {
-                        Row.delete_timeout = param_deleteDate;
-                        Row.language = param_language;
-                        return true;
-                    }
-
-                return false;
-            }
-
-            public static bool cancel_credential_deletion(IEnumerable<CredentialRecord> credentials, string param_username, string param_password, string param_passwordSettings)
-            {
-                foreach (CredentialRecord Row in credentials)
-                    if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true && Row.delete_timeout.HasValue)
-                    {
-                        Row.delete_timeout = null;
-                        Row.language = null;
-                        return true;
-                    }
-
-                return false;
-            }
-        }
-        #endregion
-
         #region Init
-        public Login()
+        public LoginBase()
         {
             Username = Persistent.GetValue("username", null);
             EmailAddress = Persistent.GetValue("email_address", null);
@@ -708,10 +719,10 @@ namespace AppCSHtml5
 #endif
 
             string PasswordValue;
-            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
 #if QACHALLENGE
             string AnswerValue;
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Answer)}", out AnswerValue);
 #endif
 
             if (string.IsNullOrEmpty(NameValue) || !IsPasswordValid || string.IsNullOrEmpty(EmailAddressValue) || !EmailAddressValue.Contains("@"))
@@ -876,10 +887,10 @@ namespace AppCSHtml5
             }
 
             string PasswordValue;
-            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
 #if QACHALLENGE
             string AnswerValue;
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Answer)}", out AnswerValue);
 #endif
 
             if (!IsPasswordValid)
@@ -936,8 +947,8 @@ namespace AppCSHtml5
                     Persistent.SetValue("remember", "1");
                 }
 
-                LoginState = LoginStates.SignedIn;
                 Transaction = null;
+                LoginState = LoginStates.SignedIn;
 
                 NotifyPropertyChanged(nameof(EmailAddress));
 #if QACHALLENGE
@@ -945,6 +956,7 @@ namespace AppCSHtml5
 #endif
                 NotifyPropertyChanged(nameof(LoginState));
 
+                OnRegistered();
                 (App.Current as App).GoTo(PageNames.registration_completePage);
             }
             else if (error == (int)ErrorCodes.InvalidUsernameOrPassword)
@@ -955,6 +967,10 @@ namespace AppCSHtml5
 #endif
             else
                 (App.Current as App).GoTo(PageNames.registration_end_failed_3Page);
+        }
+
+        protected virtual void OnRegistered()
+        {
         }
         #endregion
 
@@ -977,7 +993,7 @@ namespace AppCSHtml5
             string NameValue = Username.Trim();
 
             string PasswordValue;
-            if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
+            if (!GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue))
                 destinationPageName = PageNames.login_failedPage;
 
             else if (string.IsNullOrEmpty(NameValue))
@@ -1033,6 +1049,13 @@ namespace AppCSHtml5
                 AnswerSettings = SignInResult["answer_settings"];
 #endif
                 IsDeleteCanceled = (SignInResult["delete_canceled"] == "1");
+                LoginState = LoginStates.SignedIn;
+
+                NotifyPropertyChanged(nameof(EmailAddress));
+#if QACHALLENGE
+                NotifyPropertyChanged(nameof(Question));
+#endif
+                NotifyPropertyChanged(nameof(LoginState));
 
                 if (remember)
                 {
@@ -1047,28 +1070,21 @@ namespace AppCSHtml5
                     Persistent.SetValue("remember", "1");
                 }
 
-                LoginState = LoginStates.SignedIn;
-
-                NotifyPropertyChanged(nameof(EmailAddress));
-#if QACHALLENGE
-                NotifyPropertyChanged(nameof(Question));
-#endif
-                NotifyPropertyChanged(nameof(LoginState));
-
-                string OrganizationName = SignInResult["name"];
-                ((Eqmlp)GetEqmlp).Login(OrganizationName);
-
+                OnSignIn(SignInResult);
                 (App.Current as App).GoTo(PageNames.accountPage);
             }
             else
                 (App.Current as App).GoTo(PageNames.login_failedPage);
+        }
+
+        protected virtual void OnSignIn(Dictionary<string, string> signInResult)
+        {
         }
         #endregion
 
         #region Logout
         public void On_Logout(PageNames pageName, string sourceName, string sourceContent)
         {
-            LoginState = LoginStates.LoggedOff;
             Username = null;
             EmailAddress = null;
             Salt = null;
@@ -1078,7 +1094,6 @@ namespace AppCSHtml5
 #endif
             PasswordSettings = null;
             IsDeleteCanceled = false;
-            ((Eqmlp)GetEqmlp).Logout();
 
             Persistent.SetValue("username", null);
             Persistent.SetValue("email_address", null);
@@ -1086,6 +1101,13 @@ namespace AppCSHtml5
 #if QACHALLENGE
             Persistent.SetValue("question", null);
 #endif
+            LoginState = LoginStates.LoggedOff;
+
+            OnLogout();
+        }
+
+        protected virtual void OnLogout()
+        {
         }
         #endregion
 
@@ -1096,9 +1118,9 @@ namespace AppCSHtml5
             string NewPasswordValue;
             string ConfirmPasswordValue;
 
-            bool IsCurrentPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
-            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.NewPassword)}", out NewPasswordValue);
-            bool IsConfirmPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.ConfirmPassword)}", out ConfirmPasswordValue);
+            bool IsCurrentPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
+            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.NewPassword)}", out NewPasswordValue);
+            bool IsConfirmPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.ConfirmPassword)}", out ConfirmPasswordValue);
 
             if (!IsCurrentPasswordValid)
                 destinationPageName = PageNames.change_password_failed_1Page;
@@ -1144,7 +1166,7 @@ namespace AppCSHtml5
             string NewUsernameValue = NewUsername.Trim();
 
             string PasswordValue;
-            if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
+            if (!GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue))
                 destinationPageName = PageNames.change_username_failed_1Page;
 
             else if (string.IsNullOrEmpty(NewUsernameValue))
@@ -1182,7 +1204,7 @@ namespace AppCSHtml5
             string NewEmailAddressValue = NewEmailAddress.Trim();
 
             string PasswordValue;
-            if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue))
+            if (!GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue))
                 destinationPageName = PageNames.change_email_failed_1Page;
 
             else if (string.IsNullOrEmpty(NewEmailAddressValue))
@@ -1227,9 +1249,9 @@ namespace AppCSHtml5
             string AnswerValue;
             string ConfirmAnswerValue;
 
-            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
-            bool IsConfirmAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.ConfirmAnswer)}", out ConfirmAnswerValue);
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Answer)}", out AnswerValue);
+            bool IsConfirmAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.ConfirmAnswer)}", out ConfirmAnswerValue);
 
             if (!IsPasswordValid)
                 destinationPageName = PageNames.change_recovery_failed_1Page;
@@ -1357,11 +1379,11 @@ namespace AppCSHtml5
         public void On_CompleteRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string NewPasswordValue;
-            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.NewPassword)}", out NewPasswordValue);
+            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.NewPassword)}", out NewPasswordValue);
 
 #if QACHALLENGE
             string AnswerValue;
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Answer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Answer)}", out AnswerValue);
 #endif
 
             if (!IsNewPasswordValid)
@@ -1419,7 +1441,7 @@ namespace AppCSHtml5
         public void On_DeleteAccount(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string PasswordValue;
-            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(Login.Password)}", out PasswordValue);
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
 
             if (!IsPasswordValid)
                 destinationPageName = PageNames.delete_account_failed_1Page;
@@ -1439,7 +1461,6 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success)
             {
-                LoginState = LoginStates.LoggedOff;
                 Username = null;
                 EmailAddress = null;
                 Salt = null;
@@ -1449,7 +1470,7 @@ namespace AppCSHtml5
 #endif
                 PasswordSettings = null;
                 IsDeleteCanceled = false;
-                ((Eqmlp)GetEqmlp).Logout();
+                LoginState = LoginStates.LoggedOff;
 
                 NotifyPropertyChanged(nameof(LoginState));
                 NotifyPropertyChanged(nameof(Username));
@@ -1465,12 +1486,17 @@ namespace AppCSHtml5
                 Persistent.SetValue("question", null);
 #endif
 
+                OnAccountDeleted();
                 (App.Current as App).GoTo(PageNames.delete_account_successPage);
             }
             else if (error == (int)ErrorCodes.ErrorNotFound)
                 (App.Current as App).GoTo(PageNames.delete_account_failed_3Page);
             else
                 (App.Current as App).GoTo(PageNames.delete_account_failed_2Page);
+        }
+
+        protected virtual void OnAccountDeleted()
+        {
         }
         #endregion
 
@@ -1757,6 +1783,8 @@ namespace AppCSHtml5
             OperationHandler.Add(new OperationHandler("/request/query_8.php", OnQuerySaltRequest));
             OperationHandler.Add(new OperationHandler("/request/query_9.php", OnSignInRequest));
             OperationHandler.Add(new OperationHandler("/request/update_9.php", OnDeleteAccountRequest));
+
+            InitializeBuiltInItems();
         }
 
         private List<Dictionary<string, string>> OnChangePasswordRequest(Dictionary<string, string> parameters)
@@ -1797,7 +1825,7 @@ namespace AppCSHtml5
                 return Result;
 
             ErrorCodes ErrorCode;
-            if (CredentialRecord.update_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedNewPassword, NewPasswordSettings))
+            if (CredentialRecordBase.update_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedNewPassword, NewPasswordSettings))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
@@ -1842,7 +1870,7 @@ namespace AppCSHtml5
                 return Result;
 
             ErrorCodes ErrorCode;
-            if (CredentialRecord.update_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewEmailAddress))
+            if (CredentialRecordBase.update_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewEmailAddress))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
@@ -1886,7 +1914,7 @@ namespace AppCSHtml5
                 return Result;
 
             ErrorCodes ErrorCode;
-            if (CredentialRecord.update_8(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewUsername))
+            if (CredentialRecordBase.update_8(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewUsername))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
@@ -1948,14 +1976,14 @@ namespace AppCSHtml5
             ErrorCodes ErrorCode;
             if (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
             {
-                if (CredentialRecord.update_3_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewQuestion, EncryptedNewAnswer, NewAnswerSettings))
+                if (CredentialRecordBase.update_3_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewQuestion, EncryptedNewAnswer, NewAnswerSettings))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.ErrorNotFound;
             }
             else
             {
-                if (CredentialRecord.update_3_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings))
+                if (CredentialRecordBase.update_3_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.ErrorNotFound;
@@ -2043,20 +2071,20 @@ namespace AppCSHtml5
 #if QACHALLENGE
             if (QueryQuestion.Length > 0 && EncryptedAnswer.Length > 0)
             {
-                if (CredentialRecord.insert_1_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, QueryQuestion, EncryptedAnswer, AnswerSettings, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
+                if (CredentialRecordBase.insert_1_qa_1(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, QueryQuestion, EncryptedAnswer, AnswerSettings, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.OperationFailed;
             }
             else
             {
-                if (CredentialRecord.insert_1_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
+                if (CredentialRecordBase.insert_1_qa_2(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.OperationFailed;
             }
 #else
-            if (CredentialRecord.insert_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
+            if (CredentialRecordBase.insert_1(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow, DateTime.UtcNow + TimeSpan.FromDays(1)))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.OperationFailed;
@@ -2090,7 +2118,7 @@ namespace AppCSHtml5
             string ResultPasswordSettings;
             string ResultQuestion;
             string ResultAnswerSettings;
-            if (CredentialRecord.query_credential_qa(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings))
+            if (CredentialRecordBase.query_credential_qa(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings))
             {
                 if (MessageBox.Show("Continue registration?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -2114,7 +2142,7 @@ namespace AppCSHtml5
             string ResultEmailAddress;
             string ResultSalt;
             string ResultPasswordSettings;
-            if (CredentialRecord.query_credential(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings))
+            if (CredentialRecordBase.query_credential(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings))
             {
                 if (MessageBox.Show("Continue registration?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -2200,21 +2228,21 @@ namespace AppCSHtml5
             ErrorCodes ErrorCode;
             if (EncryptedAnswer.Length > 0)
             {
-                if (CredentialRecord.update_5_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedAnswer, AnswerSettings, QueryTransaction))
+                if (CredentialRecordBase.update_5_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedAnswer, AnswerSettings, QueryTransaction))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.InvalidUsernamePasswordOrAnswer;
             }
             else
             {
-                if (CredentialRecord.update_5_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
+                if (CredentialRecordBase.update_5_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.InvalidUsernameOrPassword;
             }
 #else
             ErrorCodes ErrorCode;
-            if (CredentialRecord.update_5(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
+            if (CredentialRecordBase.update_5(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.InvalidUsernameOrPassword;
@@ -2251,12 +2279,12 @@ namespace AppCSHtml5
             string RecoveryTransaction = CreateTransactionCode();
 
 #if QACHALLENGE
-            if (CredentialRecord.update_4_qa(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
+            if (CredentialRecordBase.update_4_qa(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
                 ErrorCode = ErrorCodes.Success;
-            else if (CredentialRecord.query_3_qa(DatabaseCredentialTable, QueryEmailAddress, out string Question) && string.IsNullOrEmpty(Question))
+            else if (CredentialRecordBase.query_3_qa(DatabaseCredentialTable, QueryEmailAddress, out string Question) && string.IsNullOrEmpty(Question))
                 ErrorCode = ErrorCodes.ErrorNoQuestion;
 #else
-            if (CredentialRecord.update_4(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
+            if (CredentialRecordBase.update_4(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
                 ErrorCode = ErrorCodes.Success;
 #endif
             else
@@ -2290,7 +2318,7 @@ namespace AppCSHtml5
             string ResultPasswordSettings;
             string ResultQuestion;
             string ResultAnswerSettings;
-            if (CredentialRecord.query_credential_qa(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings))
+            if (CredentialRecordBase.query_credential_qa(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings))
             {
                 if (MessageBox.Show("Continue recovery?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -2313,7 +2341,7 @@ namespace AppCSHtml5
             string ResultEmailAddress;
             string ResultSalt;
             string ResultPasswordSettings;
-            if (CredentialRecord.query_credential(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings))
+            if (CredentialRecordBase.query_credential(DatabaseCredentialTable, false, transactionCode, out ResultUsername, out ResultEmailAddress, out ResultSalt, out ResultPasswordSettings))
             {
                 if (MessageBox.Show("Continue recovery?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -2384,12 +2412,12 @@ namespace AppCSHtml5
 
             ErrorCodes ErrorCode;
 #if QACHALLENGE
-            if (CredentialRecord.update_6_qa(DatabaseCredentialTable, QueryUsername, EncryptedAnswer, AnswerSettings, EncryptedNewPassword, NewPasswordSettings, QueryTransaction))
+            if (CredentialRecordBase.update_6_qa(DatabaseCredentialTable, QueryUsername, EncryptedAnswer, AnswerSettings, EncryptedNewPassword, NewPasswordSettings, QueryTransaction))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.InvalidUsernameOrAnswer;
 #else
-            if (CredentialRecord.update_6(DatabaseCredentialTable, QueryUsername, EncryptedNewPassword, NewPasswordSettings, QueryTransaction))
+            if (CredentialRecordBase.update_6(DatabaseCredentialTable, QueryUsername, EncryptedNewPassword, NewPasswordSettings, QueryTransaction))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.OperationFailed;
@@ -2424,7 +2452,7 @@ namespace AppCSHtml5
 
             string ResultUsername;
             string ResultEmailAddress;
-            if (CredentialRecord.query_7(DatabaseCredentialTable, QueryUsername, QueryEmailAddress, out ResultUsername, out ResultEmailAddress))
+            if (CredentialRecordBase.query_7(DatabaseCredentialTable, QueryUsername, QueryEmailAddress, out ResultUsername, out ResultEmailAddress))
             {
                 ErrorCodes ErrorCode;
 
@@ -2456,7 +2484,7 @@ namespace AppCSHtml5
                     SaltString = TickString + TickString;
                     AttemptCount++;
                 }
-                while (!SaltRecord.insert_2(DatabaseSaltTable, SaltString) && (AttemptCount < 10));
+                while (!SaltRecordBase.insert_2(DatabaseSaltTable, SaltString) && (AttemptCount < 10));
 
                 Result.Add(new Dictionary<string, string>()
                 {
@@ -2483,7 +2511,7 @@ namespace AppCSHtml5
 
             string ResultSalt;
             string ResultPasswordSettings;
-            if (CredentialRecord.query_8(DatabaseCredentialTable, QueryIdentifier, out ResultSalt, out ResultPasswordSettings))
+            if (CredentialRecordBase.query_8(DatabaseCredentialTable, QueryIdentifier, out ResultSalt, out ResultPasswordSettings))
             {
                 Result.Add(new Dictionary<string, string>()
                 {
@@ -2528,34 +2556,15 @@ namespace AppCSHtml5
             if (string.IsNullOrEmpty(QueryIdentifier) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
                 return Result;
 
-#if QACHALLENGE
-            string ResultUsername;
-            string ResultEmailAddress;
-            string ResultPasswordSettings;
-            string ResultQuestion;
-            string ResultAnswerSettings;
-            string ResultName;
-            string ResultLoginUrl;
-            string ResultMeetingUrl;
-            string ResultValidationUrl;
-            if (CredentialRecord.query_9_qa(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out ResultUsername, out ResultEmailAddress, out ResultPasswordSettings, out ResultQuestion, out ResultAnswerSettings, out ResultName, out ResultLoginUrl, out ResultMeetingUrl, out ResultValidationUrl))
+            if (Factory.Get(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out Dictionary<string, string> Record))
             {
-                bool IsDeletionCanceled = CredentialRecord.cancel_credential_deletion(DatabaseCredentialTable, ResultUsername, EncryptedPassword, PasswordSettings);
+                string ResultUsername = Record["username"];
+                bool IsDeletionCanceled = CredentialRecordBase.cancel_credential_deletion(DatabaseCredentialTable, ResultUsername, EncryptedPassword, PasswordSettings);
 
-                Result.Add(new Dictionary<string, string>()
-                {
-                    { "username", ResultUsername},
-                    { "email_address", ResultEmailAddress },
-                    { "password_settings", ResultPasswordSettings },
-                    { "question", DecodedQuestion(ResultQuestion) },
-                    { "answer_settings", ResultAnswerSettings },
-                    { "name", ResultName },
-                    { "login_url", ResultLoginUrl },
-                    { "meeting_url", ResultMeetingUrl },
-                    { "validation_url", ResultValidationUrl },
-                    { "delete_canceled", IsDeletionCanceled ? "1" : "0" },
-                    { "result", ((int)ErrorCodes.Success).ToString() },
-                });
+                Record.Add("delete_canceled", IsDeletionCanceled ? "1" : "0");
+                Record.Add("result", ((int)ErrorCodes.Success).ToString());
+
+                Result.Add(Record);
             }
             else
             {
@@ -2564,39 +2573,6 @@ namespace AppCSHtml5
                     { "result", ((int)ErrorCodes.ErrorNotFound).ToString() },
                 });
             }
-#else
-            string ResultUsername;
-            string ResultEmailAddress;
-            string ResultPasswordSettings;
-            string ResultName;
-            string ResultLoginUrl;
-            string ResultMeetingUrl;
-            string ResultValidationUrl;
-            if (CredentialRecord.query_9(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out ResultUsername, out ResultEmailAddress, out ResultPasswordSettings, out ResultName, out ResultLoginUrl, out ResultMeetingUrl, out ResultValidationUrl))
-            {
-                bool IsDeletionCanceled = CredentialRecord.cancel_credential_deletion(DatabaseCredentialTable, ResultUsername, EncryptedPassword, PasswordSettings);
-
-                Result.Add(new Dictionary<string, string>()
-                {
-                    { "username", ResultUsername},
-                    { "email_address", ResultEmailAddress },
-                    { "password_settings", ResultPasswordSettings },
-                    { "name", ResultName },
-                    { "login_url", ResultLoginUrl },
-                    { "meeting_url", ResultMeetingUrl },
-                    { "validation_url", ResultValidationUrl },
-                    { "delete_canceled", IsDeletionCanceled ? "1" : "0" },
-                    { "result", ((int)ErrorCodes.Success).ToString() },
-                });
-            }
-            else
-            {
-                Result.Add(new Dictionary<string, string>()
-                {
-                    { "result", ((int)ErrorCodes.ErrorNotFound).ToString() },
-                });
-            }
-#endif
 
             return Result;
         }
@@ -2634,11 +2610,11 @@ namespace AppCSHtml5
 
             ErrorCodes ErrorCode;
 
-            if (CredentialRecord.get_email_address(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, out string ResultEmailAddress))
+            if (CredentialRecordBase.get_email_address(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, out string ResultEmailAddress))
             {
                 DateTime DeleteDate = DateTime.UtcNow + TimeSpan.FromMinutes(2);
 
-                if (CredentialRecord.update_9(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
+                if (CredentialRecordBase.update_9(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
                 {
                     MessageBox.Show($"Message sent to {ResultEmailAddress}.", "Account deletion pending", MessageBoxButton.OK);
                     ErrorCode = ErrorCodes.Success;
@@ -2659,10 +2635,10 @@ namespace AppCSHtml5
 
         private void CleanupDatabases()
         {
-            CredentialRecord.cleanup_inactive_credentials(DatabaseCredentialTable, DatabaseSaltTable);
-            CredentialRecord.get_deleted_credentials(DatabaseCredentialTable, out IList<Tuple<string, string, string>> UserList);
-            CredentialRecord.cleanup_deleted_credentials(DatabaseCredentialTable, DatabaseSaltTable);
-            CredentialRecord.cleanup_outdated_transactions(DatabaseCredentialTable);
+            CredentialRecordBase.cleanup_inactive_credentials(DatabaseCredentialTable, DatabaseSaltTable);
+            CredentialRecordBase.get_deleted_credentials(DatabaseCredentialTable, out IList<Tuple<string, string, string>> UserList);
+            CredentialRecordBase.cleanup_deleted_credentials(DatabaseCredentialTable, DatabaseSaltTable);
+            CredentialRecordBase.cleanup_outdated_transactions(DatabaseCredentialTable);
 
             foreach (Tuple<string, string, string> User in UserList)
                 MessageBox.Show($"{User.Item1} at {User.Item2}, language is {User.Item3}", "Credential deleted message", MessageBoxButton.OK);
@@ -2708,47 +2684,38 @@ namespace AppCSHtml5
                 return -1;
         }
 
-        private List<SaltRecord> DatabaseSaltTable = new List<SaltRecord>
+        protected virtual void InitializeBuiltInItems()
         {
-        };
-
 #if QACHALLENGE
-        private List<CredentialRecord> DatabaseCredentialTable = new List<CredentialRecord>
-        {
-            new CredentialRecord(
+            DatabaseSaltTable.Add(new SaltRecordBase("c32e25dca5caa30aa30ac32e2e255dca"));
+            DatabaseCredentialTable.Add(Factory.CreateNew(
                 "test",
                 "test@test.com",
-                "c32e25dca5caa30aa30ac32e2e255dca",
+                DatabaseSaltTable[0].salt,
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("foo")),
                 "Base64",
                 EncodedQuestion("foo"),
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("not foo")),
                 "Base64",
-                true,
-                Eqmlp.KnownOrganizationTable[0]["name"],
-                Eqmlp.KnownOrganizationTable[0]["login_url"],
-                Eqmlp.KnownOrganizationTable[0]["meeting_url"],
-                Eqmlp.KnownOrganizationTable[0]["validation_url"]),
-        };
+                true));
 #else
-        private List<CredentialRecord> DatabaseCredentialTable = new List<CredentialRecord>
-        {
-            new CredentialRecord(
+            DatabaseSaltTable.Add(new SaltRecordBase("c32e25dca5caa30aa30ac32e2e255dca"));
+            DatabaseCredentialTable.Add(Factory.CreateNew(
                 "test",
                 "test@test.com",
-                "c32e25dca5caa30aa30ac32e2e255dca",
+                DatabaseSaltTable[0].salt,
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("foo")),
                 "Base64",
-                true,
-                Eqmlp.KnownOrganizationTable[0]["name"],
-                Eqmlp.KnownOrganizationTable[0]["login_url"],
-                Eqmlp.KnownOrganizationTable[0]["meeting_url"],
-                Eqmlp.KnownOrganizationTable[0]["validation_url"]),
-        };
+                true));
 #endif
-#endregion
+        }
 
-#region Implementation of INotifyPropertyChanged
+        protected virtual CredentialFactoryBase Factory { get; } = new CredentialFactoryBase();
+        protected List<SaltRecordBase> DatabaseSaltTable = new List<SaltRecordBase>();
+        protected List<CredentialRecordBase> DatabaseCredentialTable = new List<CredentialRecordBase>();
+        #endregion
+
+        #region Implementation of INotifyPropertyChanged
         /// <summary>
         ///     Implements the PropertyChanged event.
         /// </summary>
@@ -2764,6 +2731,10 @@ namespace AppCSHtml5
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-#endregion
+        #endregion
+    }
+
+    public class Login : LoginBase
+    {
     }
 }
