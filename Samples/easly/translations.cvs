@@ -35,6 +35,7 @@ page-examples	Examples	Exemples
 page-contact	Contact	Contact
 page-home	Welcome!	Bienvenue !
 page-login	Login	Connexion
+page-login-failed	Login	Connexion
 page-news	News	Nouveautés
 home-text	.	.
 login	Login	Connexion
@@ -44,3 +45,9 @@ thank-you	Thank you for your patience.	Merci pour votre patience.
 abstract-methods	Abstract Methods	Abstract Methods
 agents	Agents	Agents
 discrete-constants	Discrete Constants	Discrete Constants
+login-title	Login information	Informations d'identification
+name-colon	Name:	Nom :
+password-colon	Password:	Mot de passe :
+remember-me	Remember me on this computer	Se rappeller de moi sur cet ordinateur
+login-failed-title	Login failed	L'identification a échoué
+login-failed-text-1	Sorry, the name or password you entered is not correct.	Désolé, le nom ou le mot de passe que vous avez entré sont incorrects.

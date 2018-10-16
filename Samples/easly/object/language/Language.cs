@@ -66,15 +66,6 @@ namespace AppCSHtml5
             {
                 LanguageStates.French, new List<string>()
                 {
-                    nameof(eqmlp_doc_installationPage),
-                    nameof(eqmlp_doc_privacyPage),
-                    nameof(eqmlp_doc_registration_urlPage),
-                    nameof(eqmlp_doc_server_administrationPage),
-                    nameof(eqmlp_doc_skinsPage),
-                    nameof(eqmlp_doc_tables_structurePage),
-                    nameof(eqmlp_doc_uninstallationPage),
-                    nameof(eqmlp_doc_updatePage),
-                    nameof(eqmlp_doc_viewsPage),
                 }
             },
         };

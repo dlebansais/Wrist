@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/Button.xaml"/>
+    <ResourceDictionary Source="/ButtonBasic.xaml"/>
     <ResourceDictionary Source="/ButtonFooter.xaml"/>
     <ResourceDictionary Source="/ButtonHeader.xaml"/>
     <ResourceDictionary Source="/CheckBox.xaml"/>
@@ -12,7 +13,7 @@
     <ResourceDictionary Source="/Selector.xaml"/>
     <ResourceDictionary Source="/Text.xaml"/>
     <ResourceDictionary Source="/TextFeature.xaml"/>
-    <ResourceDictionary Source="/TextPageTitle.xaml"/>
+    <ResourceDictionary Source="/TextSiteTitle.xaml"/>
     <ResourceDictionary Source="/TextTitle.xaml"/>
     <ResourceDictionary Source="/ToggleButton.xaml"/>
   </ResourceDictionary.MergedDictionaries>
