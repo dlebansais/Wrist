@@ -1,0 +1,6 @@
+﻿area: registration complete
+default area layout: registration complete=registration complete
+design: default
+width: stretch
+height: 500
+background color: White
