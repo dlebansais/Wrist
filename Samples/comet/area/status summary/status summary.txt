@@ -1,1 +1,1 @@
-﻿
+﻿fake 0: text, text=translation.strings[home-title]

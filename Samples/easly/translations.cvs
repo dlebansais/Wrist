@@ -1,23 +1,46 @@
 ﻿Key	en-US	fr-FR
-easly	.	.
-home-caps	.	.
-news-caps	.	.
-documentation-caps	.	.
-download-caps	.	.
-examples-caps	.	.
-login-caps	.	.
-logout-caps	.	.
-logged-as	.	.
-choose	.	.
-page-account	.	.
-page-documentation	.	.
-page-download	.	.
-page-examples	.	.
-page-home	.	.
-page-login	.	.
-page-news	.	.
+easly	EASLY	EASLY
+home-caps	HOME	ACCUEIL
+home-selected-caps	•HOME•	•ACCUEIL•
+news-caps	NEWS	NOUVEAUTÉS
+news-selected-caps	•NEWS•	•NOUVEAUTÉS•
+documentation-caps	DOCUMENTATION	DOCUMENTATION
+documentation-selected-caps	•DOCUMENTATION•	•DOCUMENTATION•
+download-caps	DOWNLOAD	TÉLÉCHARGER
+download-selected-caps	•DOWNLOAD•	•TÉLÉCHARGER•
+examples-caps	EXAMPLES	EXEMPLES
+examples-selected-caps	•EXAMPLES•	•EXEMPLES•
+contact-caps	CONTACT	CONTACT
+contact-selected-caps	•CONTACT•	•CONTACT•
+home	Home	Accueil
+home-selected	•Home•	•Accueil•
+news	News	Nouveautés
+news-selected	•News•	•Nouveautés•
+documentation	Documentation	Documentation
+documentation-selected	•Documentation•	•Documentation•
+download	Download	Télécharger
+download-selected	•Download•	•Télécharger•
+examples	Examples	Exemples
+examples-selected	•Examples•	•Exemples•
+contact	Contact	Contact
+contact-selected	•Contact•	•Contact•
+login-caps	LOGIN	CONNEXION
+logout-caps	LOGOUT	DECONNEXION.
+logged-as	Logged as:	Identifiant :
+choose	Read in:	Lire en :
+page-account	Account summary	Sommaire du compte
+page-documentation	Documentation	Documentation
+page-download	Download	Téléchargement
+page-examples	Examples	Exemples
+page-contact	Contact	Contact
+page-home	Welcome!	Bienvenue !
+page-login	Login	Connexion
+page-news	News	Nouveautés
 home-text	.	.
-login	.	.
-other-language	.	.
-not-translated	.	.
-thank-you	.	.
+login	Login	Connexion
+other-language	French	Anglais
+not-translated	Site translation in progress.	Site en cours de traduction.
+thank-you	Thank you for your patience.	Merci pour votre patience.
+abstract-methods	Abstract Methods	Abstract Methods
+agents	Agents	Agents
+discrete-constants	Discrete Constants	Discrete Constants
