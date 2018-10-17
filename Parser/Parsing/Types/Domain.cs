@@ -61,7 +61,7 @@ namespace Parser
         public IColorTheme SelectedColorTheme { get; private set; }
         public IUnitTest SelectedUnitTest { get; private set; }
 
-        public void CheckUnused(Action<string> handler)
+        public void CheckUnused(Action<string> handler, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             InitUnusedLists(out IList<IArea> unusedAreaList,
                             out IList<IComponent> unusedComponentList,
@@ -84,6 +84,7 @@ namespace Parser
                         unusedKeyList);
 
             WarnUnused(handler,
+                       conditionalDefineTable,
                        unusedAreaList,
                        unusedComponentList,
                        unusedObjectList,
@@ -223,6 +224,7 @@ namespace Parser
         }
 
         private void WarnUnused(Action<string> handler,
+                                IDictionary<ConditionalDefine, bool> conditionalDefineTable,
                                 IList<IArea> unusedAreaList,
                                 IList<IComponent> unusedComponentList,
                                 IList<IObject> unusedObjectList,
@@ -233,78 +235,70 @@ namespace Parser
                                 IList<IDynamicProperty> unusedDynamicPropertyList,
                                 IList<string> unusedKeyList)
         {
+            bool IsFirstWarning = true;
 
             foreach (IArea Area in unusedAreaList)
-            {
-                string Text = $"unused area: '{Area.Name}'";
-                handler(Text);
-                Debug.WriteLine(Text);
-            }
+                Warn(handler, $"unused area: '{Area.Name}'", conditionalDefineTable, ref IsFirstWarning);
 
             foreach (IArea Area in Areas)
                 foreach (IComponent Component in Area.Components)
                     if (unusedComponentList.Contains(Component))
-                    {
-                        string Text = $"unused component: '{Component.Source.Name}' in area '{Area.Name}'";
-                        handler(Text);
-                        Debug.WriteLine(Text);
-                    }
+                        Warn(handler, $"unused component: '{Component.Source.Name}' in area '{Area.Name}'", conditionalDefineTable, ref IsFirstWarning);
 
             foreach (IObject Object in unusedObjectList)
-            {
-                string Text = $"unused object: '{Object.Name}'";
-                handler(Text);
-                Debug.WriteLine(Text);
-            }
+                Warn(handler, $"unused object: '{Object.Name}'", conditionalDefineTable, ref IsFirstWarning);
 
             foreach (IObject Object in Objects)
             {
                 foreach (IObjectProperty Property in Object.Properties)
                     if (unusedObjectPropertyList.Contains(Property))
-                    {
-                        string Text = $"unused property: '{Object.Name}.{Property.NameSource.Name}'";
-                        handler(Text);
-                        Debug.WriteLine(Text);
-                    }
+                        Warn(handler, $"unused property: '{Object.Name}.{Property.NameSource.Name}'", conditionalDefineTable, ref IsFirstWarning);
 
                 foreach (IObjectEvent Event in Object.Events)
                     if (unusedObjectEventList.Contains(Event))
-                    {
-                        string Text = $"unused event: '{Object.Name}.{Event.NameSource.Name}'";
-                        handler(Text);
-                        Debug.WriteLine(Text);
-                    }
+                        Warn(handler, $"unused event: '{Object.Name}.{Event.NameSource.Name}'", conditionalDefineTable, ref IsFirstWarning);
             }
 
             foreach (IPage Page in unusedPageList)
-            {
-                string Text = $"Unreachable page: '{Page.Name}'";
-                handler(Text);
-                Debug.WriteLine(Text);
-            }
+                Warn(handler, $"Unreachable page: '{Page.Name}'", conditionalDefineTable, ref IsFirstWarning);
 
             foreach (IResource Resource in unusedResourceList)
-            {
-                string Text = $"unused resource: '{Resource.Name}'";
-                handler(Text);
-                Debug.WriteLine(Text);
-            }
+                Warn(handler, $"unused resource: '{Resource.Name}'", conditionalDefineTable, ref IsFirstWarning);
 
             foreach (IDynamic Dynamic in Dynamics)
                 foreach (IDynamicProperty Property in Dynamic.Properties)
                     if (unusedDynamicPropertyList.Contains(Property))
-                    {
-                        string Text = $"unused dynamic property: '{Property.Source.Name}' in '{Dynamic.Name}'";
-                        handler(Text);
-                        Debug.WriteLine(Text);
-                    }
+                        Warn(handler, $"unused dynamic property: '{Property.Source.Name}' in '{Dynamic.Name}'", conditionalDefineTable, ref IsFirstWarning);
 
             foreach (string Key in unusedKeyList)
+                Warn(handler, $"unused translation key: '{Key}'", conditionalDefineTable, ref IsFirstWarning);
+        }
+
+        private void Warn(Action<string> handler, string text, IDictionary<ConditionalDefine, bool> conditionalDefineTable, ref bool isFirstWarning)
+        {
+            if (isFirstWarning)
             {
-                string Text = $"unused translation key: '{Key}'";
-                handler(Text);
-                Debug.WriteLine(Text);
+                string Defines = "";
+                foreach (KeyValuePair<ConditionalDefine, bool> Entry in conditionalDefineTable)
+                {
+                    if (Defines.Length > 0)
+                        Defines += ", ";
+
+                    Defines += $"{Entry.Key.Name}={Entry.Value}";
+                }
+
+                if (Defines.Length > 0)
+                {
+                    Defines = "Defines: " + Defines;
+                    handler(Defines);
+                    Debug.WriteLine(Defines);
+                }
+
+                isFirstWarning = false;
             }
+
+            handler(text);
+            Debug.WriteLine(text);
         }
 
         public void Verify()

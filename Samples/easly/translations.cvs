@@ -187,6 +187,11 @@ delete-account-success-title	Account deleted	Compte supprimé
 delete-account-success-text	Your account has been scheduled for deletion in 24h. If you change your mind, just relog and this operation will be canceled.	Votre compte a été programmé pour être supprimé dans 24h. Si vous changez d'avis, il vous suffira de vous reconnecter pour annuler l'opération.
 delete	Delete	Supprimer
 deletion-canceled	Your account was scheduled to be deleted, but this operation has been canceled	Votre compte était prêt à être supprimé, mais cette opération a été annulée.
+account-title	Your account	Votre compte
+account-management-colon	Account management:	Gestion du compte :
+change-password	change password	changer le mot de passe
+change-email	change email address	changer l'adresse courriel
+change-username	change username	changer le nom d'utilisateur
 #if QACHALLENGE
 recovery-colon-1	Recovery question:	Question :
 recovery-colon-2		(Pour récupération)\u00A0

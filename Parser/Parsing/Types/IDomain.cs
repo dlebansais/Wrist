@@ -22,6 +22,6 @@ namespace Parser
         IColorTheme SelectedColorTheme { get; }
         IUnitTest SelectedUnitTest { get; }
         void Verify();
-        void CheckUnused(Action<string> handler);
+        void CheckUnused(Action<string> handler, IDictionary<ConditionalDefine, bool> conditionalDefineTable);
     }
 }

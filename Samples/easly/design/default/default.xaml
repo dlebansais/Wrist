@@ -5,7 +5,10 @@
     <ResourceDictionary Source="/ButtonBasic.xaml"/>
     <ResourceDictionary Source="/ButtonFooter.xaml"/>
     <ResourceDictionary Source="/ButtonHeader.xaml"/>
+    <ResourceDictionary Source="/ButtonImage.xaml"/>
+    <ResourceDictionary Source="/ButtonLogin.xaml"/>
     <ResourceDictionary Source="/ButtonSimpleLink.xaml"/>
+    <ResourceDictionary Source="/ButtonTextLink.xaml"/>
     <ResourceDictionary Source="/CheckBox.xaml"/>
     <ResourceDictionary Source="/Edit.xaml"/>
     <ResourceDictionary Source="/Image.xaml"/>
@@ -15,8 +18,10 @@
     <ResourceDictionary Source="/Text.xaml"/>
     <ResourceDictionary Source="/TextBold.xaml"/>
     <ResourceDictionary Source="/TextFeature.xaml"/>
+    <ResourceDictionary Source="/TextLogin.xaml"/>
     <ResourceDictionary Source="/TextSiteTitle.xaml"/>
     <ResourceDictionary Source="/TextTitle.xaml"/>
+    <ResourceDictionary Source="/TextWarning.xaml"/>
     <ResourceDictionary Source="/ToggleButton.xaml"/>
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

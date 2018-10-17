@@ -62,14 +62,14 @@ namespace WristManager
                 {
                     domain = ParserDomain.Parse(inputFolderName, homePageName, colorThemeName, unitTestName, TestTable);
                     domain.Verify();
-                    domain.CheckUnused((string message) => Console.WriteLine(message));
+                    domain.CheckUnused((string message) => Console.WriteLine(message), TestTable);
                 }
             }
 
             // Process the selected combination of defines.
             domain = ParserDomain.Parse(inputFolderName, homePageName, colorThemeName, unitTestName, ConditionalDefineTable);
             domain.Verify();
-            domain.CheckUnused((string message) => Console.WriteLine(message));
+            domain.CheckUnused((string message) => Console.WriteLine(message), ConditionalDefineTable);
 
             string OutputName = Path.GetFileName(outputFolderName);
             IGeneratorDomain Generator = new GeneratorDomain(OutputName, domain);

@@ -719,10 +719,10 @@ namespace AppCSHtml5
 #endif
 
             string PasswordValue;
-            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue);
 #if QACHALLENGE
             string AnswerValue;
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Answer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Answer)}", out AnswerValue);
 #endif
 
             if (string.IsNullOrEmpty(NameValue) || !IsPasswordValid || string.IsNullOrEmpty(EmailAddressValue) || !EmailAddressValue.Contains("@"))
@@ -887,10 +887,10 @@ namespace AppCSHtml5
             }
 
             string PasswordValue;
-            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue);
 #if QACHALLENGE
             string AnswerValue;
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Answer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Answer)}", out AnswerValue);
 #endif
 
             if (!IsPasswordValid)
@@ -993,7 +993,7 @@ namespace AppCSHtml5
             string NameValue = Username.Trim();
 
             string PasswordValue;
-            if (!GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue))
+            if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue))
                 destinationPageName = PageNames.login_failedPage;
 
             else if (string.IsNullOrEmpty(NameValue))
@@ -1118,9 +1118,9 @@ namespace AppCSHtml5
             string NewPasswordValue;
             string ConfirmPasswordValue;
 
-            bool IsCurrentPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
-            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.NewPassword)}", out NewPasswordValue);
-            bool IsConfirmPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.ConfirmPassword)}", out ConfirmPasswordValue);
+            bool IsCurrentPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue);
+            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.NewPassword)}", out NewPasswordValue);
+            bool IsConfirmPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.ConfirmPassword)}", out ConfirmPasswordValue);
 
             if (!IsCurrentPasswordValid)
                 destinationPageName = PageNames.change_password_failed_1Page;
@@ -1166,7 +1166,7 @@ namespace AppCSHtml5
             string NewUsernameValue = NewUsername.Trim();
 
             string PasswordValue;
-            if (!GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue))
+            if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue))
                 destinationPageName = PageNames.change_username_failed_1Page;
 
             else if (string.IsNullOrEmpty(NewUsernameValue))
@@ -1204,7 +1204,7 @@ namespace AppCSHtml5
             string NewEmailAddressValue = NewEmailAddress.Trim();
 
             string PasswordValue;
-            if (!GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue))
+            if (!GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue))
                 destinationPageName = PageNames.change_email_failed_1Page;
 
             else if (string.IsNullOrEmpty(NewEmailAddressValue))
@@ -1249,9 +1249,9 @@ namespace AppCSHtml5
             string AnswerValue;
             string ConfirmAnswerValue;
 
-            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Answer)}", out AnswerValue);
-            bool IsConfirmAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.ConfirmAnswer)}", out ConfirmAnswerValue);
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Answer)}", out AnswerValue);
+            bool IsConfirmAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.ConfirmAnswer)}", out ConfirmAnswerValue);
 
             if (!IsPasswordValid)
                 destinationPageName = PageNames.change_recovery_failed_1Page;
@@ -1379,11 +1379,11 @@ namespace AppCSHtml5
         public void On_CompleteRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string NewPasswordValue;
-            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.NewPassword)}", out NewPasswordValue);
+            bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.NewPassword)}", out NewPasswordValue);
 
 #if QACHALLENGE
             string AnswerValue;
-            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Answer)}", out AnswerValue);
+            bool IsAnswerValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Answer)}", out AnswerValue);
 #endif
 
             if (!IsNewPasswordValid)
@@ -1441,7 +1441,7 @@ namespace AppCSHtml5
         public void On_DeleteAccount(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string PasswordValue;
-            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(LoginBase)}.{nameof(LoginBase.Password)}", out PasswordValue);
+            bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue);
 
             if (!IsPasswordValid)
                 destinationPageName = PageNames.delete_account_failed_1Page;
