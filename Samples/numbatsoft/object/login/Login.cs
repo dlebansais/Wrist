@@ -552,7 +552,7 @@ namespace AppCSHtml5
                 record.Add("username", Row.username);
                 record.Add("email_address", Row.email_address);
                 record.Add("password_settings", Row.password_settings);
-                record.Add("question", Row.question);
+                record.Add("question", LoginBase.DecodedQuestion(Row.question));
                 record.Add("answer_settings", Row.answer_settings);
                 return true;
             }
@@ -1797,35 +1797,11 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string EncryptedPassword;
-            if (parameters.ContainsKey("password"))
-                EncryptedPassword = parameters["password"];
-            else
-                EncryptedPassword = null;
-
-            string PasswordSettings;
-            if (parameters.ContainsKey("password_settings"))
-                PasswordSettings = parameters["password_settings"];
-            else
-                PasswordSettings = null;
-
-            string EncryptedNewPassword;
-            if (parameters.ContainsKey("new_password"))
-                EncryptedNewPassword = parameters["new_password"];
-            else
-                EncryptedNewPassword = null;
-
-            string NewPasswordSettings;
-            if (parameters.ContainsKey("new_password_settings"))
-                NewPasswordSettings = parameters["new_password_settings"];
-            else
-                NewPasswordSettings = null;
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string EncryptedNewPassword = ParseQueryParameter(parameters, "new_password", false);
+            string NewPasswordSettings = ParseQueryParameter(parameters, "new_password_settings", true);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(EncryptedNewPassword) || NewPasswordSettings == null)
                 return Result;
@@ -1848,29 +1824,10 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string EncryptedPassword;
-            if (parameters.ContainsKey("password"))
-                EncryptedPassword = parameters["password"];
-            else
-                EncryptedPassword = null;
-
-            string PasswordSettings;
-            if (parameters.ContainsKey("password_settings"))
-                PasswordSettings = parameters["password_settings"];
-            else
-                PasswordSettings = null;
-
-            string QueryNewEmailAddress;
-            if (parameters.ContainsKey("new_email_address"))
-                QueryNewEmailAddress = parameters["new_email_address"];
-            else
-                QueryNewEmailAddress = null;
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryNewEmailAddress = ParseQueryParameter(parameters, "new_email_address", true);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(QueryNewEmailAddress))
                 return Result;
@@ -1892,29 +1849,10 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string EncryptedPassword;
-            if (parameters.ContainsKey("password"))
-                EncryptedPassword = parameters["password"];
-            else
-                EncryptedPassword = null;
-
-            string PasswordSettings;
-            if (parameters.ContainsKey("password_settings"))
-                PasswordSettings = parameters["password_settings"];
-            else
-                PasswordSettings = null;
-
-            string QueryNewUsername;
-            if (parameters.ContainsKey("new_username"))
-                QueryNewUsername = parameters["new_username"];
-            else
-                QueryNewUsername = null;
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryNewUsername = ParseQueryParameter(parameters, "new_username", true);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(QueryNewUsername))
                 return Result;
@@ -1937,41 +1875,12 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string EncryptedPassword;
-            if (parameters.ContainsKey("password"))
-                EncryptedPassword = parameters["password"];
-            else
-                EncryptedPassword = null;
-
-            string PasswordSettings;
-            if (parameters.ContainsKey("password_settings"))
-                PasswordSettings = parameters["password_settings"];
-            else
-                PasswordSettings = null;
-
-            string QueryNewQuestion;
-            if (parameters.ContainsKey("new_question"))
-                QueryNewQuestion = parameters["new_question"];
-            else
-                QueryNewQuestion = null;
-
-            string EncryptedNewAnswer;
-            if (parameters.ContainsKey("new_answer"))
-                EncryptedNewAnswer = parameters["new_answer"];
-            else
-                EncryptedNewAnswer = null;
-
-            string NewAnswerSettings;
-            if (parameters.ContainsKey("new_answer_settings"))
-                NewAnswerSettings = parameters["new_answer_settings"];
-            else
-                NewAnswerSettings = null;
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryNewQuestion = ParseQueryParameter(parameters, "new_question", true);
+            string EncryptedNewAnswer = ParseQueryParameter(parameters, "new_answer", false);
+            string NewAnswerSettings = ParseQueryParameter(parameters, "new_answer_settings", true);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || QueryNewQuestion == null || EncryptedNewAnswer == null || NewAnswerSettings == null)
                 return Result;
@@ -1982,7 +1891,7 @@ namespace AppCSHtml5
             ErrorCodes ErrorCode;
             if (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
             {
-                if (CredentialRecordBase.update_3_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewQuestion, EncryptedNewAnswer, NewAnswerSettings))
+                if (CredentialRecordBase.update_3_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncodedQuestion(QueryNewQuestion), EncryptedNewAnswer, NewAnswerSettings))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.ErrorNotFound;
@@ -2007,64 +1916,25 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string EncryptedPassword;
-            if (parameters.ContainsKey("password"))
-                EncryptedPassword = parameters["password"];
-            else
-                EncryptedPassword = null;
-
-            string PasswordSettings;
-            if (parameters.ContainsKey("password_settings"))
-                PasswordSettings = parameters["password_settings"];
-            else
-                PasswordSettings = null;
-
-            string QueryEmailAddress;
-            if (parameters.ContainsKey("email_address"))
-                QueryEmailAddress = parameters["email_address"];
-            else
-                QueryEmailAddress = null;
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryEmailAddress = ParseQueryParameter(parameters, "email_address", true);
 
 #if QACHALLENGE
-            string QueryQuestion;
-            if (parameters.ContainsKey("question"))
-                QueryQuestion = parameters["question"];
-            else
-                QueryQuestion = null;
-
-            string EncryptedAnswer;
-            if (parameters.ContainsKey("answer"))
-                EncryptedAnswer = parameters["answer"];
-            else
-                EncryptedAnswer = null;
-
-            string AnswerSettings;
-            if (parameters.ContainsKey("answer_settings"))
-                AnswerSettings = parameters["answer_settings"];
-            else
-                AnswerSettings = null;
+            string QueryQuestion = ParseQueryParameter(parameters, "question", true);
+            string EncryptedAnswer = ParseQueryParameter(parameters, "answer", false);
+            string AnswerSettings = ParseQueryParameter(parameters, "answer_settings", true);
 #endif
 
-            string QuerySalt;
-            if (parameters.ContainsKey("salt"))
-                QuerySalt = parameters["salt"];
-            else
-                QuerySalt = null;
-
-            string QueryLanguage;
-            if (parameters.ContainsKey("language"))
-                QueryLanguage = parameters["language"];
-            else
-                QueryLanguage = "0";
+            string QuerySalt = ParseQueryParameter(parameters, "salt", false);
+            string QueryLanguage = ParseQueryParameter(parameters, "language", false);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || string.IsNullOrEmpty(QueryEmailAddress) || string.IsNullOrEmpty(QuerySalt))
                 return Result;
+
+            if (string.IsNullOrEmpty(QueryLanguage))
+                QueryLanguage = "0";
 
 #if QACHALLENGE
             if (QueryQuestion == null || EncryptedAnswer == null)
@@ -2133,6 +2003,7 @@ namespace AppCSHtml5
                     QueryString.Add("type", "register");
                     QueryString.Add("username", ResultUsername);
                     QueryString.Add("email_address", ResultEmailAddress);
+                    QueryString.Add("salt", ResultSalt);
                     QueryString.Add("password_settings", ResultPasswordSettings);
                     QueryString.Add("question", ResultQuestion);
                     QueryString.Add("answer_settings", ResultAnswerSettings);
@@ -2172,58 +2043,24 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string QueryEmailAddress;
-            if (parameters.ContainsKey("email_address"))
-                QueryEmailAddress = parameters["email_address"];
-            else
-                QueryEmailAddress = null;
-
-            string EncryptedPassword;
-            if (parameters.ContainsKey("password"))
-                EncryptedPassword = parameters["password"];
-            else
-                EncryptedPassword = null;
-
-            string PasswordSettings;
-            if (parameters.ContainsKey("password_settings"))
-                PasswordSettings = parameters["password_settings"];
-            else
-                PasswordSettings = null;
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string QueryEmailAddress = ParseQueryParameter(parameters, "email_address", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
 
 #if QACHALLENGE
-            string EncryptedAnswer;
-            if (parameters.ContainsKey("answer"))
-                EncryptedAnswer = parameters["answer"];
-            else
-                EncryptedAnswer = null;
-
-            string AnswerSettings;
-            if (parameters.ContainsKey("answer_settings"))
-                AnswerSettings = parameters["answer_settings"];
-            else
-                AnswerSettings = null;
+            string EncryptedAnswer = ParseQueryParameter(parameters, "answer", false);
+            string AnswerSettings = ParseQueryParameter(parameters, "answer_settings", true);
 #endif
 
-            string QueryTransaction;
-            if (parameters.ContainsKey("transaction_code"))
-                QueryTransaction = parameters["transaction_code"];
-            else
-                QueryTransaction = null;
-
-            string QueryLanguage;
-            if (parameters.ContainsKey("language"))
-                QueryLanguage = parameters["language"];
-            else
-                QueryLanguage = "0";
+            string QueryTransaction = ParseQueryParameter(parameters, "transaction_code", false);
+            string QueryLanguage = ParseQueryParameter(parameters, "language", false);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(QueryEmailAddress) || string.IsNullOrEmpty(EncryptedPassword) || string.IsNullOrEmpty(QueryTransaction))
                 return Result;
+
+            if (string.IsNullOrEmpty(QueryLanguage))
+                QueryLanguage = "0";
 
 #if QACHALLENGE
             if (EncryptedAnswer == null)
@@ -2266,20 +2103,14 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryEmailAddress;
-            if (parameters.ContainsKey("email_address"))
-                QueryEmailAddress = parameters["email_address"];
-            else
-                QueryEmailAddress = null;
-
-            string QueryLanguage;
-            if (parameters.ContainsKey("language"))
-                QueryLanguage = parameters["language"];
-            else
-                QueryLanguage = "0";
+            string QueryEmailAddress = ParseQueryParameter(parameters, "email_address", true);
+            string QueryLanguage = ParseQueryParameter(parameters, "language", false);
 
             if (string.IsNullOrEmpty(QueryEmailAddress))
                 return Result;
+
+            if (string.IsNullOrEmpty(QueryLanguage))
+                QueryLanguage = "0";
 
             ErrorCodes ErrorCode;
             string RecoveryTransaction = CreateTransactionCode();
@@ -2370,43 +2201,16 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string EncryptedNewPassword;
-            if (parameters.ContainsKey("new_password"))
-                EncryptedNewPassword = parameters["new_password"];
-            else
-                EncryptedNewPassword = null;
-
-            string NewPasswordSettings;
-            if (parameters.ContainsKey("new_password_settings"))
-                NewPasswordSettings = parameters["new_password_settings"];
-            else
-                NewPasswordSettings = null;
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedNewPassword = ParseQueryParameter(parameters, "new_password", false);
+            string NewPasswordSettings = ParseQueryParameter(parameters, "new_password_settings", true);
 
 #if QACHALLENGE
-            string EncryptedAnswer;
-            if (parameters.ContainsKey("answer"))
-                EncryptedAnswer = parameters["answer"];
-            else
-                EncryptedAnswer = null;
-
-            string AnswerSettings;
-            if (parameters.ContainsKey("answer_settings"))
-                AnswerSettings = parameters["answer_settings"];
-            else
-                AnswerSettings = null;
+            string EncryptedAnswer = ParseQueryParameter(parameters, "answer", false);
+            string AnswerSettings = ParseQueryParameter(parameters, "answer_settings", true);
 #endif
 
-            string QueryTransactionCode;
-            if (parameters.ContainsKey("transaction_code"))
-                QueryTransactionCode = parameters["transaction_code"];
-            else
-                QueryTransactionCode = null;
+            string QueryTransactionCode = ParseQueryParameter(parameters, "transaction_code", false);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedNewPassword) || string.IsNullOrEmpty(QueryTransactionCode))
                 return Result;
@@ -2441,17 +2245,8 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string QueryEmailAddress;
-            if (parameters.ContainsKey("email_address"))
-                QueryEmailAddress = parameters["email_address"];
-            else
-                QueryEmailAddress = null;
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string QueryEmailAddress = ParseQueryParameter(parameters, "email_address", true);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(QueryEmailAddress))
                 return Result;
@@ -2506,11 +2301,7 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryIdentifier;
-            if (parameters.ContainsKey("identifier"))
-                QueryIdentifier = parameters["identifier"];
-            else
-                QueryIdentifier = null;
+            string QueryIdentifier = ParseQueryParameter(parameters, "identifier", true);
 
             if (string.IsNullOrEmpty(QueryIdentifier))
                 return Result;
@@ -2541,23 +2332,9 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryIdentifier;
-            if (parameters.ContainsKey("identifier"))
-                QueryIdentifier = parameters["identifier"];
-            else
-                QueryIdentifier = null;
-
-            string EncryptedPassword;
-            if (parameters.ContainsKey("password"))
-                EncryptedPassword = parameters["password"];
-            else
-                EncryptedPassword = null;
-
-            string PasswordSettings;
-            if (parameters.ContainsKey("password_settings"))
-                PasswordSettings = parameters["password_settings"];
-            else
-                PasswordSettings = null;
+            string QueryIdentifier = ParseQueryParameter(parameters, "identifier", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
 
             if (string.IsNullOrEmpty(QueryIdentifier) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
                 return Result;
@@ -2587,32 +2364,16 @@ namespace AppCSHtml5
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername;
-            if (parameters.ContainsKey("username"))
-                QueryUsername = parameters["username"];
-            else
-                QueryUsername = null;
-
-            string EncryptedPassword;
-            if (parameters.ContainsKey("password"))
-                EncryptedPassword = parameters["password"];
-            else
-                EncryptedPassword = null;
-
-            string PasswordSettings;
-            if (parameters.ContainsKey("password_settings"))
-                PasswordSettings = parameters["password_settings"];
-            else
-                PasswordSettings = null;
-
-            string QueryLanguage;
-            if (parameters.ContainsKey("language"))
-                QueryLanguage = parameters["language"];
-            else
-                QueryLanguage = "0";
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryLanguage = ParseQueryParameter(parameters, "language", false);
 
             if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
                 return Result;
+
+            if (string.IsNullOrEmpty(QueryLanguage))
+                QueryLanguage = "0";
 
             ErrorCodes ErrorCode;
 
@@ -2679,6 +2440,17 @@ namespace AppCSHtml5
             string TransactionString = TickString + TickString;
 
             return TransactionString;
+        }
+
+        public static string ParseQueryParameter(Dictionary<string, string> parameters, string parameterName, bool isEncoded)
+        {
+            if (parameters.ContainsKey(parameterName))
+                if (isEncoded)
+                    return HtmlString.PercentDecode(parameters[parameterName]);
+                else
+                    return parameters[parameterName];
+            else
+                return null;
         }
 
         public static int ParseResult(string result)
@@ -2803,7 +2575,7 @@ namespace AppCSHtml5
                 record.Add("username", Row.username);
                 record.Add("email_address", Row.email_address);
                 record.Add("password_settings", Row.password_settings);
-                record.Add("question", Row.question);
+                record.Add("question", LoginBase.DecodedQuestion(Row.question));
                 record.Add("answer_settings", Row.answer_settings);
                 record.Add("name", ((CredentialRecord)Row).name);
                 record.Add("login_url", ((CredentialRecord)Row).login_url);

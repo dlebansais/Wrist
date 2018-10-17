@@ -4,8 +4,9 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
   <Style x:Key="defaultDesignTextTitle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-    <Setter Property="FontSize" Value="36"/>
-    <Setter Property="Foreground" Value="Red"/>
+    <Setter Property="FontSize" Value="24"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="Foreground" Value="Black"/>
   </Style>
 
 </ResourceDictionary>

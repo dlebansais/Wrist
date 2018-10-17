@@ -3,6 +3,7 @@
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/Button.xaml"/>
     <ResourceDictionary Source="/ButtonBasic.xaml"/>
+    <ResourceDictionary Source="/ButtonFeature.xaml"/>
     <ResourceDictionary Source="/ButtonFooter.xaml"/>
     <ResourceDictionary Source="/ButtonHeader.xaml"/>
     <ResourceDictionary Source="/ButtonImage.xaml"/>
@@ -17,8 +18,8 @@
     <ResourceDictionary Source="/Selector.xaml"/>
     <ResourceDictionary Source="/Text.xaml"/>
     <ResourceDictionary Source="/TextBold.xaml"/>
-    <ResourceDictionary Source="/TextFeature.xaml"/>
     <ResourceDictionary Source="/TextLogin.xaml"/>
+    <ResourceDictionary Source="/TextPageTitle.xaml"/>
     <ResourceDictionary Source="/TextSiteTitle.xaml"/>
     <ResourceDictionary Source="/TextTitle.xaml"/>
     <ResourceDictionary Source="/TextWarning.xaml"/>
