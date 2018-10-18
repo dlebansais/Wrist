@@ -168,7 +168,7 @@ namespace AppCSHtml5
         }
 
 #if QACHALLENGE
-        public static bool insert_1_qa_1(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_transactionCode, DateTime param_transactionTimeout)
+        public static bool insert_credential_qa(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_question, string param_answer, string param_answerSettings, string param_transactionCode, DateTime param_transactionTimeout)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username || Row.email_address == param_emailAddress)
@@ -181,7 +181,7 @@ namespace AppCSHtml5
             return true;
         }
 
-        public static bool insert_1_qa_2(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transactionCode, DateTime param_transactionTimeout)
+        public static bool insert_credential_noqa(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transactionCode, DateTime param_transactionTimeout)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username || Row.email_address == param_emailAddress)
@@ -194,7 +194,7 @@ namespace AppCSHtml5
             return true;
         }
 #else
-        public static bool insert_1(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transactionCode, DateTime param_transactionTimeout)
+        public static bool insert_credential(IList<CredentialRecordBase> credentials, CredentialFactoryBase factory, string param_username, string param_password, string param_passwordSettings, string param_emailAddress, string param_salt, string param_transactionCode, DateTime param_transactionTimeout)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username || Row.email_address == param_emailAddress)
@@ -282,7 +282,7 @@ namespace AppCSHtml5
             return false;
         }
 
-        public static bool query_8(IEnumerable<CredentialRecordBase> credentials, string param_identifier, out string salt, out string passwordSettings)
+        public static bool query_salt(IEnumerable<CredentialRecordBase> credentials, string param_identifier, out string salt, out string passwordSettings)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.active == true && (Row.username == param_identifier || Row.email_address == param_identifier))
@@ -1608,13 +1608,13 @@ namespace AppCSHtml5
         private void RegisterAndSendEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string email, string question, string encryptedAnswer, string encryptedAnswerSettings, string salt, Action<int, object> callback)
         {
             Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 #else
         private void RegisterAndSendEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string email, string salt, Action<int, object> callback)
         {
             Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_1.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 #endif
 
@@ -1707,7 +1707,7 @@ namespace AppCSHtml5
         private void GetUserSalt(string identifier, Action<int, object> callback)
         {
             Database.Completed += OnGetUserSaltCompleted;
-            Database.Query(new DatabaseQueryOperation("get user salt", "query_8.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) } }, callback));
+            Database.Query(new DatabaseQueryOperation("get user salt", "query_salt.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) } }, callback));
         }
 
         private void OnGetUserSaltCompleted(object sender, CompletionEventArgs e)
@@ -1775,8 +1775,8 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("/request/query_8.php", OnQuerySaltRequest));
-            OperationHandler.Add(new OperationHandler("/request/insert_1.php", OnSignUpRequest));
+            OperationHandler.Add(new OperationHandler("/request/query_salt.php", OnQuerySaltRequest));
+            OperationHandler.Add(new OperationHandler("/request/insert_credential.php", OnInsertCredentialRequest));
             OperationHandler.Add(new OperationHandler("/request/update_5.php", OnCompleteSignUpRequest));
             OperationHandler.Add(new OperationHandler("/request/query_9.php", OnSignInRequest));
             OperationHandler.Add(new OperationHandler("/request/update_1.php", OnChangePasswordRequest));
@@ -1804,7 +1804,7 @@ namespace AppCSHtml5
 
             string ResultSalt;
             string ResultPasswordSettings;
-            if (CredentialRecordBase.query_8(DatabaseCredentialTable, QueryIdentifier, out ResultSalt, out ResultPasswordSettings))
+            if (CredentialRecordBase.query_salt(DatabaseCredentialTable, QueryIdentifier, out ResultSalt, out ResultPasswordSettings))
             {
                 Result.Add(new Dictionary<string, string>()
                 {
@@ -1824,7 +1824,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnSignUpRequest(Dictionary<string, string> parameters)
+        private List<Dictionary<string, string>> OnInsertCredentialRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
@@ -1859,20 +1859,20 @@ namespace AppCSHtml5
 #if QACHALLENGE
             if (QueryQuestion.Length > 0 && EncryptedAnswer.Length > 0)
             {
-                if (CredentialRecordBase.insert_1_qa_1(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, QueryQuestion, EncryptedAnswer, AnswerSettings, RegisterTransaction, DateTime.UtcNow + TimeSpan.FromDays(1)))
+                if (CredentialRecordBase.insert_credential_qa(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, QueryQuestion, EncryptedAnswer, AnswerSettings, RegisterTransaction, DateTime.UtcNow + TimeSpan.FromDays(1)))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.OperationFailed;
             }
             else
             {
-                if (CredentialRecordBase.insert_1_qa_2(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow + TimeSpan.FromDays(1)))
+                if (CredentialRecordBase.insert_credential_noqa(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow + TimeSpan.FromDays(1)))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.OperationFailed;
             }
 #else
-            if (CredentialRecordBase.insert_1(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow + TimeSpan.FromDays(1)))
+            if (CredentialRecordBase.insert_credential(DatabaseCredentialTable, Factory, QueryUsername, EncryptedPassword, PasswordSettings, QueryEmailAddress, QuerySalt, RegisterTransaction, DateTime.UtcNow + TimeSpan.FromDays(1)))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.OperationFailed;
