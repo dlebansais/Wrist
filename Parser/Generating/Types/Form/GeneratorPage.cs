@@ -27,6 +27,7 @@ namespace Parser
             Height = page.Height;
             IsScrollable = page.IsScrollable;
             BackgroundColor = page.BackgroundColor;
+            Tag = page.Tag;
             BasePage = page;
 
             GeneratorPageMap.Add(page, this);
@@ -47,6 +48,7 @@ namespace Parser
         public bool IsScrollable { get; private set; }
         public IGeneratorBackground Background { get; private set; }
         public string BackgroundColor { get; private set; }
+        public string Tag { get; private set; }
         public IGeneratorDynamic Dynamic { get; private set; }
 
         public bool Connect(IGeneratorDomain domain)
@@ -138,7 +140,12 @@ namespace Parser
             xamlWriter.WriteLine("      xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"");
             xamlWriter.WriteLine("      xmlns:p=\"clr-namespace:Presentation\"");
             xamlWriter.WriteLine("      xmlns:conv=\"clr-namespace:Converters\"");
-            xamlWriter.WriteLine($"      xmlns:local=\"using:{appNamespace}\">");
+            xamlWriter.WriteLine($"      xmlns:local=\"using:{appNamespace}\"");
+
+            if (!string.IsNullOrEmpty(Tag))
+                xamlWriter.WriteLine($"      Tag=\"{Tag}\"");
+
+            xamlWriter.WriteLine("    >");
             xamlWriter.WriteLine("    <Page.Resources>");
             xamlWriter.WriteLine("        <conv:KeyToValueConverter x:Key=\"convKeyToValue\"/>");
             xamlWriter.WriteLine("        <conv:IndexToVisibilityConverter x:Key=\"convIndexToVisibility\"/>");

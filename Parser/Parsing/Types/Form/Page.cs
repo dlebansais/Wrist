@@ -13,7 +13,7 @@ namespace Parser
             Name = name;
         }
 
-        public Page(string name, string fileName, string xamlName, IComponentEvent queryEvent, IDeclarationSource areaSource, IParsingSource allAreaLayoutsSource, Dictionary<IDeclarationSource, string> areaLayoutPairs, IDeclarationSource designSource, IDeclarationSource widthSource, IDeclarationSource heightSource, bool isScrollable, IDeclarationSource backgroundSource, IDeclarationSource backgroundColorSource)
+        public Page(string name, string fileName, string xamlName, IComponentEvent queryEvent, IDeclarationSource areaSource, IParsingSource allAreaLayoutsSource, Dictionary<IDeclarationSource, string> areaLayoutPairs, IDeclarationSource designSource, IDeclarationSource widthSource, IDeclarationSource heightSource, bool isScrollable, IDeclarationSource backgroundSource, IDeclarationSource backgroundColorSource, string tag)
         {
             Name = name;
             FileName = fileName;
@@ -28,6 +28,7 @@ namespace Parser
             IsScrollable = isScrollable;
             BackgroundSource = backgroundSource;
             BackgroundColorSource = backgroundColorSource;
+            Tag = tag;
         }
 
         public string Name { get; private set; }
@@ -53,6 +54,7 @@ namespace Parser
         public IBackground Background { get; private set; }
         public IDeclarationSource BackgroundColorSource { get; private set; }
         public string BackgroundColor { get; private set; }
+        public string Tag { get; private set; }
         public IDynamic Dynamic { get; private set; }
         public bool IsReachable { get; private set; }
 

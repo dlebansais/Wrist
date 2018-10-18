@@ -1088,35 +1088,6 @@ namespace AppCSHtml5
         }
         #endregion
 
-        #region Logout
-        public void On_Logout(PageNames pageName, string sourceName, string sourceContent)
-        {
-            Username = null;
-            EmailAddress = null;
-            Salt = null;
-#if QACHALLENGE
-            Question = null;
-            AnswerSettings = null;
-#endif
-            PasswordSettings = null;
-            IsDeleteCanceled = false;
-
-            Persistent.SetValue("username", null);
-            Persistent.SetValue("email_address", null);
-            Persistent.SetValue("salt", null);
-#if QACHALLENGE
-            Persistent.SetValue("question", null);
-#endif
-            LoginState = LoginStates.LoggedOff;
-
-            OnLogout();
-        }
-
-        protected virtual void OnLogout()
-        {
-        }
-        #endregion
-
         #region Change Password
         public void On_ChangePassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
@@ -1307,6 +1278,35 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.change_recovery_failed_4Page);
         }
 #endif
+        #endregion
+
+        #region Logout
+        public void On_Logout(PageNames pageName, string sourceName, string sourceContent)
+        {
+            Username = null;
+            EmailAddress = null;
+            Salt = null;
+#if QACHALLENGE
+            Question = null;
+            AnswerSettings = null;
+#endif
+            PasswordSettings = null;
+            IsDeleteCanceled = false;
+
+            Persistent.SetValue("username", null);
+            Persistent.SetValue("email_address", null);
+            Persistent.SetValue("salt", null);
+#if QACHALLENGE
+            Persistent.SetValue("question", null);
+#endif
+            LoginState = LoginStates.LoggedOff;
+
+            OnLogout();
+        }
+
+        protected virtual void OnLogout()
+        {
+        }
         #endregion
 
         #region Recovery
@@ -1775,142 +1775,54 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
+            OperationHandler.Add(new OperationHandler("/request/query_8.php", OnQuerySaltRequest));
+            OperationHandler.Add(new OperationHandler("/request/insert_1.php", OnSignUpRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_5.php", OnCompleteSignUpRequest));
+            OperationHandler.Add(new OperationHandler("/request/query_9.php", OnSignInRequest));
             OperationHandler.Add(new OperationHandler("/request/update_1.php", OnChangePasswordRequest));
             OperationHandler.Add(new OperationHandler("/request/update_2.php", OnChangeEmailAddressRequest));
             OperationHandler.Add(new OperationHandler("/request/update_8.php", OnChangeUsernameRequest));
 #if QACHALLENGE
             OperationHandler.Add(new OperationHandler("/request/update_3.php", OnChangeRecoveryRequest));
 #endif
-            OperationHandler.Add(new OperationHandler("/request/insert_1.php", OnSignUpRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_5.php", OnCompleteSignUpRequest));
             OperationHandler.Add(new OperationHandler("/request/update_4.php", OnRecoveryRequest));
             OperationHandler.Add(new OperationHandler("/request/update_6.php", OnCompleteRecoveryRequest));
-            OperationHandler.Add(new OperationHandler("/request/query_7.php", OnQueryNewCredentialRequest));
-            OperationHandler.Add(new OperationHandler("/request/query_8.php", OnQuerySaltRequest));
-            OperationHandler.Add(new OperationHandler("/request/query_9.php", OnSignInRequest));
             OperationHandler.Add(new OperationHandler("/request/update_9.php", OnDeleteAccountRequest));
+            OperationHandler.Add(new OperationHandler("/request/query_7.php", OnQueryNewCredentialRequest));
 
             InitializeBuiltInItems();
         }
 
-        private List<Dictionary<string, string>> OnChangePasswordRequest(Dictionary<string, string> parameters)
+        private List<Dictionary<string, string>> OnQuerySaltRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
-            string QueryUsername = ParseQueryParameter(parameters, "username", true);
-            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
-            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
-            string EncryptedNewPassword = ParseQueryParameter(parameters, "new_password", false);
-            string NewPasswordSettings = ParseQueryParameter(parameters, "new_password_settings", true);
+            string QueryIdentifier = ParseQueryParameter(parameters, "identifier", true);
 
-            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(EncryptedNewPassword) || NewPasswordSettings == null)
+            if (string.IsNullOrEmpty(QueryIdentifier))
                 return Result;
 
-            ErrorCodes ErrorCode;
-            if (CredentialRecordBase.update_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedNewPassword, NewPasswordSettings))
-                ErrorCode = ErrorCodes.Success;
-            else
-                ErrorCode = ErrorCodes.ErrorNotFound;
-
-            Result.Add(new Dictionary<string, string>()
+            string ResultSalt;
+            string ResultPasswordSettings;
+            if (CredentialRecordBase.query_8(DatabaseCredentialTable, QueryIdentifier, out ResultSalt, out ResultPasswordSettings))
             {
-                { "result", ((int)ErrorCode).ToString()},
-            });
-
-            return Result;
-        }
-
-        private List<Dictionary<string, string>> OnChangeEmailAddressRequest(Dictionary<string, string> parameters)
-        {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
-
-            string QueryUsername = ParseQueryParameter(parameters, "username", true);
-            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
-            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
-            string QueryNewEmailAddress = ParseQueryParameter(parameters, "new_email_address", true);
-
-            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(QueryNewEmailAddress))
-                return Result;
-
-            ErrorCodes ErrorCode;
-            if (CredentialRecordBase.update_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewEmailAddress))
-                ErrorCode = ErrorCodes.Success;
-            else
-                ErrorCode = ErrorCodes.ErrorNotFound;
-
-            Result.Add(new Dictionary<string, string>()
-            {
-                { "result", ((int)ErrorCode).ToString()},
-            });
-            return Result;
-        }
-
-        private List<Dictionary<string, string>> OnChangeUsernameRequest(Dictionary<string, string> parameters)
-        {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
-
-            string QueryUsername = ParseQueryParameter(parameters, "username", true);
-            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
-            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
-            string QueryNewUsername = ParseQueryParameter(parameters, "new_username", true);
-
-            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(QueryNewUsername))
-                return Result;
-
-            ErrorCodes ErrorCode;
-            if (CredentialRecordBase.update_8(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewUsername))
-                ErrorCode = ErrorCodes.Success;
-            else
-                ErrorCode = ErrorCodes.ErrorNotFound;
-
-            Result.Add(new Dictionary<string, string>()
-            {
-                { "result", ((int)ErrorCode).ToString()},
-            });
-            return Result;
-        }
-
-#if QACHALLENGE
-        private List<Dictionary<string, string>> OnChangeRecoveryRequest(Dictionary<string, string> parameters)
-        {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
-
-            string QueryUsername = ParseQueryParameter(parameters, "username", true);
-            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
-            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
-            string QueryNewQuestion = ParseQueryParameter(parameters, "new_question", true);
-            string EncryptedNewAnswer = ParseQueryParameter(parameters, "new_answer", false);
-            string NewAnswerSettings = ParseQueryParameter(parameters, "new_answer_settings", true);
-
-            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || QueryNewQuestion == null || EncryptedNewAnswer == null || NewAnswerSettings == null)
-                return Result;
-
-            if ((QueryNewQuestion.Length == 0 && EncryptedNewAnswer.Length > 0) || (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length == 0))
-                return Result;
-
-            ErrorCodes ErrorCode;
-            if (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
-            {
-                if (CredentialRecordBase.update_3_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncodedQuestion(QueryNewQuestion), EncryptedNewAnswer, NewAnswerSettings))
-                    ErrorCode = ErrorCodes.Success;
-                else
-                    ErrorCode = ErrorCodes.ErrorNotFound;
+                Result.Add(new Dictionary<string, string>()
+                {
+                    { "salt", ResultSalt },
+                    { "password_settings", ResultPasswordSettings },
+                    { "result", ((int)ErrorCodes.Success).ToString() },
+                });
             }
             else
             {
-                if (CredentialRecordBase.update_3_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings))
-                    ErrorCode = ErrorCodes.Success;
-                else
-                    ErrorCode = ErrorCodes.ErrorNotFound;
+                Result.Add(new Dictionary<string, string>()
+                {
+                    { "result", ((int)ErrorCodes.ErrorNotFound).ToString() },
+                });
             }
 
-            Result.Add(new Dictionary<string, string>()
-            {
-                { "result", ((int)ErrorCode).ToString()},
-            });
             return Result;
         }
-#endif
 
         private List<Dictionary<string, string>> OnSignUpRequest(Dictionary<string, string> parameters)
         {
@@ -2099,6 +2011,157 @@ namespace AppCSHtml5
             return Result;
         }
 
+        private List<Dictionary<string, string>> OnSignInRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string QueryIdentifier = ParseQueryParameter(parameters, "identifier", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+
+            if (string.IsNullOrEmpty(QueryIdentifier) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
+                return Result;
+
+            if (Factory.Get(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out Dictionary<string, string> Record))
+            {
+                string ResultUsername = Record["username"];
+                bool IsDeletionCanceled = CredentialRecordBase.cancel_credential_deletion(DatabaseCredentialTable, ResultUsername, EncryptedPassword, PasswordSettings);
+
+                Record.Add("delete_canceled", IsDeletionCanceled ? "1" : "0");
+                Record.Add("result", ((int)ErrorCodes.Success).ToString());
+
+                Result.Add(Record);
+            }
+            else
+            {
+                Result.Add(new Dictionary<string, string>()
+                {
+                    { "result", ((int)ErrorCodes.ErrorNotFound).ToString() },
+                });
+            }
+
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> OnChangePasswordRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string EncryptedNewPassword = ParseQueryParameter(parameters, "new_password", false);
+            string NewPasswordSettings = ParseQueryParameter(parameters, "new_password_settings", true);
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(EncryptedNewPassword) || NewPasswordSettings == null)
+                return Result;
+
+            ErrorCodes ErrorCode;
+            if (CredentialRecordBase.update_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedNewPassword, NewPasswordSettings))
+                ErrorCode = ErrorCodes.Success;
+            else
+                ErrorCode = ErrorCodes.ErrorNotFound;
+
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "result", ((int)ErrorCode).ToString()},
+            });
+
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> OnChangeEmailAddressRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryNewEmailAddress = ParseQueryParameter(parameters, "new_email_address", true);
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(QueryNewEmailAddress))
+                return Result;
+
+            ErrorCodes ErrorCode;
+            if (CredentialRecordBase.update_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewEmailAddress))
+                ErrorCode = ErrorCodes.Success;
+            else
+                ErrorCode = ErrorCodes.ErrorNotFound;
+
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "result", ((int)ErrorCode).ToString()},
+            });
+            return Result;
+        }
+
+        private List<Dictionary<string, string>> OnChangeUsernameRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryNewUsername = ParseQueryParameter(parameters, "new_username", true);
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || string.IsNullOrEmpty(QueryNewUsername))
+                return Result;
+
+            ErrorCodes ErrorCode;
+            if (CredentialRecordBase.update_8(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewUsername))
+                ErrorCode = ErrorCodes.Success;
+            else
+                ErrorCode = ErrorCodes.ErrorNotFound;
+
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "result", ((int)ErrorCode).ToString()},
+            });
+            return Result;
+        }
+
+#if QACHALLENGE
+        private List<Dictionary<string, string>> OnChangeRecoveryRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryNewQuestion = ParseQueryParameter(parameters, "new_question", true);
+            string EncryptedNewAnswer = ParseQueryParameter(parameters, "new_answer", false);
+            string NewAnswerSettings = ParseQueryParameter(parameters, "new_answer_settings", true);
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null || QueryNewQuestion == null || EncryptedNewAnswer == null || NewAnswerSettings == null)
+                return Result;
+
+            if ((QueryNewQuestion.Length == 0 && EncryptedNewAnswer.Length > 0) || (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length == 0))
+                return Result;
+
+            ErrorCodes ErrorCode;
+            if (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
+            {
+                if (CredentialRecordBase.update_3_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncodedQuestion(QueryNewQuestion), EncryptedNewAnswer, NewAnswerSettings))
+                    ErrorCode = ErrorCodes.Success;
+                else
+                    ErrorCode = ErrorCodes.ErrorNotFound;
+            }
+            else
+            {
+                if (CredentialRecordBase.update_3_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings))
+                    ErrorCode = ErrorCodes.Success;
+                else
+                    ErrorCode = ErrorCodes.ErrorNotFound;
+            }
+
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "result", ((int)ErrorCode).ToString()},
+            });
+            return Result;
+        }
+#endif
+
         private List<Dictionary<string, string>> OnRecoveryRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
@@ -2241,6 +2304,46 @@ namespace AppCSHtml5
             return Result;
         }
 
+        private List<Dictionary<string, string>> OnDeleteAccountRequest(Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+
+            string QueryUsername = ParseQueryParameter(parameters, "username", true);
+            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
+            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
+            string QueryLanguage = ParseQueryParameter(parameters, "language", false);
+
+            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
+                return Result;
+
+            if (string.IsNullOrEmpty(QueryLanguage))
+                QueryLanguage = "0";
+
+            ErrorCodes ErrorCode;
+
+            if (CredentialRecordBase.get_email_address(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, out string ResultEmailAddress))
+            {
+                DateTime DeleteDate = DateTime.UtcNow + TimeSpan.FromMinutes(2);
+
+                if (CredentialRecordBase.update_9(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
+                {
+                    MessageBox.Show($"Message sent to {ResultEmailAddress}.", "Account deletion pending", MessageBoxButton.OK);
+                    ErrorCode = ErrorCodes.Success;
+                }
+                else
+                    ErrorCode = ErrorCodes.ErrorNotFound;
+            }
+            else
+                ErrorCode = ErrorCodes.ErrorNotFound;
+
+            Result.Add(new Dictionary<string, string>()
+            {
+                { "result", ((int)ErrorCode).ToString() },
+            });
+
+            return Result;
+        }
+
         private List<Dictionary<string, string>> OnQueryNewCredentialRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
@@ -2297,118 +2400,24 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnQuerySaltRequest(Dictionary<string, string> parameters)
+        public static string ParseQueryParameter(Dictionary<string, string> parameters, string parameterName, bool isEncoded)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
-
-            string QueryIdentifier = ParseQueryParameter(parameters, "identifier", true);
-
-            if (string.IsNullOrEmpty(QueryIdentifier))
-                return Result;
-
-            string ResultSalt;
-            string ResultPasswordSettings;
-            if (CredentialRecordBase.query_8(DatabaseCredentialTable, QueryIdentifier, out ResultSalt, out ResultPasswordSettings))
-            {
-                Result.Add(new Dictionary<string, string>()
-                {
-                    { "salt", ResultSalt },
-                    { "password_settings", ResultPasswordSettings },
-                    { "result", ((int)ErrorCodes.Success).ToString() },
-                });
-            }
-            else
-            {
-                Result.Add(new Dictionary<string, string>()
-                {
-                    { "result", ((int)ErrorCodes.ErrorNotFound).ToString() },
-                });
-            }
-
-            return Result;
-        }
-
-        private List<Dictionary<string, string>> OnSignInRequest(Dictionary<string, string> parameters)
-        {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
-
-            string QueryIdentifier = ParseQueryParameter(parameters, "identifier", true);
-            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
-            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
-
-            if (string.IsNullOrEmpty(QueryIdentifier) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
-                return Result;
-
-            if (Factory.Get(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out Dictionary<string, string> Record))
-            {
-                string ResultUsername = Record["username"];
-                bool IsDeletionCanceled = CredentialRecordBase.cancel_credential_deletion(DatabaseCredentialTable, ResultUsername, EncryptedPassword, PasswordSettings);
-
-                Record.Add("delete_canceled", IsDeletionCanceled ? "1" : "0");
-                Record.Add("result", ((int)ErrorCodes.Success).ToString());
-
-                Result.Add(Record);
-            }
-            else
-            {
-                Result.Add(new Dictionary<string, string>()
-                {
-                    { "result", ((int)ErrorCodes.ErrorNotFound).ToString() },
-                });
-            }
-
-            return Result;
-        }
-
-        private List<Dictionary<string, string>> OnDeleteAccountRequest(Dictionary<string, string> parameters)
-        {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
-
-            string QueryUsername = ParseQueryParameter(parameters, "username", true);
-            string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
-            string PasswordSettings = ParseQueryParameter(parameters, "password_settings", true);
-            string QueryLanguage = ParseQueryParameter(parameters, "language", false);
-
-            if (string.IsNullOrEmpty(QueryUsername) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
-                return Result;
-
-            if (string.IsNullOrEmpty(QueryLanguage))
-                QueryLanguage = "0";
-
-            ErrorCodes ErrorCode;
-
-            if (CredentialRecordBase.get_email_address(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, out string ResultEmailAddress))
-            {
-                DateTime DeleteDate = DateTime.UtcNow + TimeSpan.FromMinutes(2);
-
-                if (CredentialRecordBase.update_9(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
-                {
-                    MessageBox.Show($"Message sent to {ResultEmailAddress}.", "Account deletion pending", MessageBoxButton.OK);
-                    ErrorCode = ErrorCodes.Success;
-                }
+            if (parameters.ContainsKey(parameterName))
+                if (isEncoded)
+                    return HtmlString.PercentDecode(parameters[parameterName]);
                 else
-                    ErrorCode = ErrorCodes.ErrorNotFound;
-            }
+                    return parameters[parameterName];
             else
-                ErrorCode = ErrorCodes.ErrorNotFound;
-
-            Result.Add(new Dictionary<string, string>()
-            {
-                { "result", ((int)ErrorCode).ToString() },
-            });
-
-            return Result;
+                return null;
         }
 
-        private void CleanupDatabases()
+        public static int ParseResult(string result)
         {
-            CredentialRecordBase.cleanup_inactive_credentials(DatabaseCredentialTable, DatabaseSaltTable);
-            CredentialRecordBase.get_deleted_credentials(DatabaseCredentialTable, out IList<Tuple<string, string, string>> UserList);
-            CredentialRecordBase.cleanup_deleted_credentials(DatabaseCredentialTable, DatabaseSaltTable);
-            CredentialRecordBase.cleanup_outdated_transactions(DatabaseCredentialTable);
-
-            foreach (Tuple<string, string, string> User in UserList)
-                MessageBox.Show($"{User.Item1} at {User.Item2}, language is {User.Item3}", "Credential deleted message", MessageBoxButton.OK);
+            int IntError;
+            if (int.TryParse(result, out IntError))
+                return IntError;
+            else
+                return -1;
         }
 
 #if QACHALLENGE
@@ -2442,24 +2451,15 @@ namespace AppCSHtml5
             return TransactionString;
         }
 
-        public static string ParseQueryParameter(Dictionary<string, string> parameters, string parameterName, bool isEncoded)
+        private void CleanupDatabases()
         {
-            if (parameters.ContainsKey(parameterName))
-                if (isEncoded)
-                    return HtmlString.PercentDecode(parameters[parameterName]);
-                else
-                    return parameters[parameterName];
-            else
-                return null;
-        }
+            CredentialRecordBase.cleanup_inactive_credentials(DatabaseCredentialTable, DatabaseSaltTable);
+            CredentialRecordBase.get_deleted_credentials(DatabaseCredentialTable, out IList<Tuple<string, string, string>> UserList);
+            CredentialRecordBase.cleanup_deleted_credentials(DatabaseCredentialTable, DatabaseSaltTable);
+            CredentialRecordBase.cleanup_outdated_transactions(DatabaseCredentialTable);
 
-        public static int ParseResult(string result)
-        {
-            int IntError;
-            if (int.TryParse(result, out IntError))
-                return IntError;
-            else
-                return -1;
+            foreach (Tuple<string, string, string> User in UserList)
+                MessageBox.Show($"{User.Item1} at {User.Item2}, language is {User.Item3}", "Credential deleted message", MessageBoxButton.OK);
         }
 
         protected virtual void InitializeBuiltInItems()

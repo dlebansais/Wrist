@@ -49,13 +49,14 @@ namespace Parser
             bool IsScrollable = false;
             IDeclarationSource BackgroundSource = null;
             IDeclarationSource BackgroundColorSource = null;
+            string Tag = null;
 
             while (!sourceStream.EndOfStream)
             {
                 sourceStream.ReadLine();
                 string Line = sourceStream.Line;
                 if (!string.IsNullOrWhiteSpace(Line))
-                    ParseComponent(sourceStream, ref QueryEvent, ref AreaSource, ref AllAreaLayoutsSource, ref AreaLayoutsPairs, ref DesignSource, ref WidthSource, ref HeightSource, ref IsScrollable, ref BackgroundSource, ref BackgroundColorSource);
+                    ParseComponent(sourceStream, ref QueryEvent, ref AreaSource, ref AllAreaLayoutsSource, ref AreaLayoutsPairs, ref DesignSource, ref WidthSource, ref HeightSource, ref IsScrollable, ref BackgroundSource, ref BackgroundColorSource, ref Tag);
             }
 
             if (AreaSource == null || string.IsNullOrEmpty(AreaSource.Name))
@@ -76,10 +77,10 @@ namespace Parser
             if (BackgroundColorSource == null || string.IsNullOrEmpty(BackgroundColorSource.Name))
                 throw new ParsingException(114, sourceStream, "Missing background color.");
 
-            return new Page(name, ParserDomain.ToCSharpName(sourceStream, name + "Page"), ParserDomain.ToXamlName(sourceStream, name, "Page"), QueryEvent, AreaSource, AllAreaLayoutsSource, AreaLayoutsPairs, DesignSource, WidthSource, HeightSource, IsScrollable, BackgroundSource, BackgroundColorSource);
+            return new Page(name, ParserDomain.ToCSharpName(sourceStream, name + "Page"), ParserDomain.ToXamlName(sourceStream, name, "Page"), QueryEvent, AreaSource, AllAreaLayoutsSource, AreaLayoutsPairs, DesignSource, WidthSource, HeightSource, IsScrollable, BackgroundSource, BackgroundColorSource, Tag);
         }
 
-        private void ParseComponent(IParsingSourceStream sourceStream, ref IComponentEvent queryEvent, ref IDeclarationSource areaSource, ref IParsingSource allAreaLayoutsSource, ref Dictionary<IDeclarationSource, string> areaLayoutsPairs, ref IDeclarationSource designSource, ref IDeclarationSource widthSource, ref IDeclarationSource heightSource, ref bool isScrollable, ref IDeclarationSource backgroundSource, ref IDeclarationSource backgroundColorSource)
+        private void ParseComponent(IParsingSourceStream sourceStream, ref IComponentEvent queryEvent, ref IDeclarationSource areaSource, ref IParsingSource allAreaLayoutsSource, ref Dictionary<IDeclarationSource, string> areaLayoutsPairs, ref IDeclarationSource designSource, ref IDeclarationSource widthSource, ref IDeclarationSource heightSource, ref bool isScrollable, ref IDeclarationSource backgroundSource, ref IDeclarationSource backgroundColorSource, ref string tag)
         {
             string Line = sourceStream.Line;
             if (Line.Trim() == "scrollable")
@@ -134,6 +135,11 @@ namespace Parser
             else if (ComponentSource.Name == "background color")
                 if (backgroundColorSource == null)
                     backgroundColorSource = new DeclarationSource(ComponentValue, sourceStream);
+                else
+                    throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
+            else if (ComponentSource.Name == "tag")
+                if (tag == null)
+                    tag = ComponentValue;
                 else
                     throw new ParsingException(125, sourceStream, $"Specifier '{ComponentSource.Name}' found more than once.");
             else

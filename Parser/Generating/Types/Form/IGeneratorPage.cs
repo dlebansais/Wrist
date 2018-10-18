@@ -15,6 +15,7 @@ namespace Parser
         bool IsScrollable { get; }
         IGeneratorBackground Background { get; }
         string BackgroundColor { get; }
+        string Tag { get; }
         Dictionary<IGeneratorArea, IGeneratorLayout> AreaLayouts { get; }
         IGeneratorDynamic Dynamic { get; }
         bool Connect(IGeneratorDomain domain);

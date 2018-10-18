@@ -47,37 +47,24 @@ namespace AppCSHtml5
             {
                 if (Window.Current.Content is Page CurrentPage)
                 {
-                    string Name = CurrentPage.GetType().Name;
-                    if (UntranslatedPageNames[LanguageState].Contains(Name))
-                        return false;
+                    string Tag = CurrentPage.Tag as string;
+                    if (!string.IsNullOrEmpty(Tag))
+                    {
+                        for (int i = (int)LanguageStates.English; i <= (int)LanguageStates.French; i++)
+                        {
+                            string TranslationSpecification = $"{(LanguageStates)i} only";
+                            if (string.Compare(Tag, TranslationSpecification, true) == 0)
+                                if (LanguageState != (LanguageStates)i)
+                                    return false;
+                                else
+                                    break;
+                        }
+                    }
                 }
 
                 return true;
             }
         }
-
-        private Dictionary<LanguageStates, List<string>> UntranslatedPageNames = new Dictionary<LanguageStates, List<string>>()
-        {
-            {
-                LanguageStates.English, new List<string>()
-                {
-                }
-            },
-            {
-                LanguageStates.French, new List<string>()
-                {
-                    nameof(eqmlp_doc_installationPage),
-                    nameof(eqmlp_doc_privacyPage),
-                    nameof(eqmlp_doc_registration_urlPage),
-                    nameof(eqmlp_doc_server_administrationPage),
-                    nameof(eqmlp_doc_skinsPage),
-                    nameof(eqmlp_doc_tables_structurePage),
-                    nameof(eqmlp_doc_uninstallationPage),
-                    nameof(eqmlp_doc_updatePage),
-                    nameof(eqmlp_doc_viewsPage),
-                }
-            },
-        };
 
         public void On_Switch(PageNames pageName, string sourceName, string sourceContent)
         {
