@@ -267,7 +267,7 @@ namespace AppCSHtml5
         }
 #endif
 
-        public static bool query_7(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_emailAddress, out string username, out string emailAddress)
+        public static bool query_credential_taken(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_emailAddress, out string username, out string emailAddress)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username || Row.email_address == param_emailAddress)
@@ -298,7 +298,7 @@ namespace AppCSHtml5
         }
 
 #if QACHALLENGE
-        public static bool query_row_qa(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out CredentialRecordBase row)
+        public static bool query_sign_in_qa(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out CredentialRecordBase row)
         {
             foreach (CredentialRecordBase Item in credentials)
                 if (Item.active == true && Item.password == param_password && Item.password_settings == param_passwordSettings && (Item.username == param_identifier || Item.email_address == param_identifier))
@@ -311,7 +311,7 @@ namespace AppCSHtml5
             return false;
         }
 #else
-        public static bool query_row(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out CredentialRecordBase row)
+        public static bool query_sign_in(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out CredentialRecordBase row)
         {
             foreach (CredentialRecordBase Item in credentials)
                 if (Item.active == true && Item.password == param_password && Item.password_settings == param_passwordSettings && (Item.username == param_identifier || Item.email_address == param_identifier))
@@ -325,7 +325,7 @@ namespace AppCSHtml5
         }
 #endif
 
-        public static bool update_1(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newPassword, string param_newPasswordSettings)
+        public static bool update_change_password(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newPassword, string param_newPasswordSettings)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
@@ -338,7 +338,7 @@ namespace AppCSHtml5
             return false;
         }
 
-        public static bool update_2(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newEmailAddress)
+        public static bool update_change_email_address(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newEmailAddress)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
@@ -351,7 +351,7 @@ namespace AppCSHtml5
         }
 
 #if QACHALLENGE
-        public static bool update_3_qa_1(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newQuestion, string param_newAnswer, string param_newAnswerSettings)
+        public static bool update_change_challenge_qa(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newQuestion, string param_newAnswer, string param_newAnswerSettings)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
@@ -365,7 +365,7 @@ namespace AppCSHtml5
             return false;
         }
 
-        public static bool update_3_qa_2(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings)
+        public static bool update_change_challenge_noqa(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
@@ -381,7 +381,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-        public static bool update_4_qa(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, string param_transactionCode, DateTime param_transactionTimeout)
+        public static bool update_begin_recovery_qa(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, string param_transactionCode, DateTime param_transactionTimeout)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.email_address == param_emailAddress && Row.active == true && !string.IsNullOrEmpty(Row.question))
@@ -394,7 +394,7 @@ namespace AppCSHtml5
             return false;
         }
 #else
-        public static bool update_4(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, string param_transactionCode, DateTime param_transactionTimeout)
+        public static bool update_begin_recovery(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, string param_transactionCode, DateTime param_transactionTimeout)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.email_address == param_emailAddress && Row.active == true)
@@ -409,7 +409,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-        public static bool update_5_qa_1(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_transactionCode)
+        public static bool update_activate_qa(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_answer, string param_answerSettings, string param_transactionCode)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.transaction_code == param_transactionCode && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -423,7 +423,7 @@ namespace AppCSHtml5
             return false;
         }
 
-        public static bool update_5_qa_2(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_transactionCode)
+        public static bool update_activate_noqa(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_transactionCode)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction_code == param_transactionCode && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -437,7 +437,7 @@ namespace AppCSHtml5
             return false;
         }
 #else
-        public static bool update_5(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_transactionCode)
+        public static bool update_activate(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_transactionCode)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.transaction_code == param_transactionCode && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -453,7 +453,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-        public static bool update_6_qa(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_transactionCode)
+        public static bool update_complete_recovery_qa(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_answer, string param_answerSettings, string param_newPassword, string param_newPasswordSettings, string param_transactionCode)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.answer == param_answer && Row.answer_settings == param_answerSettings && Row.active == true && !string.IsNullOrEmpty(Row.question) && Row.transaction_code == param_transactionCode && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -470,7 +470,7 @@ namespace AppCSHtml5
             return false;
         }
 #else
-        public static bool update_6(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_newPassword, string param_newPasswordSettings, string param_transactionCode)
+        public static bool update_complete_recovery(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_newPassword, string param_newPasswordSettings, string param_transactionCode)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.active == true && Row.transaction_code == param_transactionCode && Row.transaction_timeout.HasValue && DateTime.UtcNow < Row.transaction_timeout.Value)
@@ -488,7 +488,7 @@ namespace AppCSHtml5
         }
 #endif
 
-        public static bool update_8(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newUsername)
+        public static bool update_change_username(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, string param_newUsername)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
@@ -500,7 +500,7 @@ namespace AppCSHtml5
             return false;
         }
 
-        public static bool update_9(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, DateTime param_deleteDate, string param_language)
+        public static bool update_delete_credential(IEnumerable<CredentialRecordBase> credentials, string param_username, string param_password, string param_passwordSettings, DateTime param_deleteDate, string param_language)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.username == param_username && Row.password == param_password && Row.password_settings == param_passwordSettings && Row.active == true)
@@ -547,7 +547,7 @@ namespace AppCSHtml5
         public virtual bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out Dictionary<string, string> record)
         {
             record = new Dictionary<string, string>();
-            if (CredentialRecordBase.query_row_qa(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
+            if (CredentialRecordBase.query_sign_in_qa(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
             {
                 record.Add("username", Row.username);
                 record.Add("email_address", Row.email_address);
@@ -563,7 +563,7 @@ namespace AppCSHtml5
         public virtual bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out Dictionary<string, string> record)
         {
             record = new Dictionary<string, string>();
-            if (CredentialRecordBase.query_row(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
+            if (CredentialRecordBase.query_sign_in(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
             {
                 record.Add("username", Row.username);
                 record.Add("email_address", Row.email_address);
@@ -760,7 +760,7 @@ namespace AppCSHtml5
 #if QACHALLENGE
         private void StartRegister(string username, string password, string email, string question, string answer)
         {
-            QueryNewCredential(username, email, (int getError, object getResult) => Register_OnNewCredentialReceived(getError, getResult, username, password, email, question, answer));
+            QueryCredentialTaken(username, email, (int getError, object getResult) => Register_OnNewCredentialReceived(getError, getResult, username, password, email, question, answer));
         }
 
         private void Register_OnNewCredentialReceived(int error, object result, string username, string password, string email, string question, string answer)
@@ -802,7 +802,7 @@ namespace AppCSHtml5
 #else
         private void StartRegister(string username, string password, string email)
         {
-            QueryNewCredential(username, email, (int getError, object getResult) => Register_OnNewCredentialReceived(getError, getResult, username, password, email));
+            QueryCredentialTaken(username, email, (int getError, object getResult) => Register_OnNewCredentialReceived(getError, getResult, username, password, email));
         }
 
         private void Register_OnNewCredentialReceived(int error, object result, string username, string password, string email)
@@ -1216,9 +1216,9 @@ namespace AppCSHtml5
         }
         #endregion
 
-        #region Change Recovery
+        #region Change Challenge
 #if QACHALLENGE
-        public void On_ChangeRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangeChallenge(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string QuestionValue = NewQuestion?.Trim();
 
@@ -1239,7 +1239,7 @@ namespace AppCSHtml5
                 string EncryptedPassword;
                 Encrypt(PasswordValue, Salt, EncryptionUsePassword, ref EncryptedPasswordSettings, out EncryptedPassword);
 
-                ChangeRecovery(Username, EncryptedPassword, EncryptedPasswordSettings, "", "", "", (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
+                ChangeChallenge(Username, EncryptedPassword, EncryptedPasswordSettings, "", "", "", (int changeError, object changeResult) => ChangeChallenge_OnChallengeChanged(changeError, changeResult, QuestionValue));
                 destinationPageName = PageNames.CurrentPage;
             }
 
@@ -1259,12 +1259,12 @@ namespace AppCSHtml5
                 string EncryptedNewAnswer;
                 Encrypt(AnswerValue, Salt, EncryptionUseAnswer, ref EncryptedNewAnswerSettings, out EncryptedNewAnswer);
 
-                ChangeRecovery(Username, EncryptedPassword, EncryptedPasswordSettings, QuestionValue, EncryptedNewAnswer, EncryptedNewAnswerSettings, (int changeError, object changeResult) => ChangeRecovery_OnRecoveryChanged(changeError, changeResult, QuestionValue));
+                ChangeChallenge(Username, EncryptedPassword, EncryptedPasswordSettings, QuestionValue, EncryptedNewAnswer, EncryptedNewAnswerSettings, (int changeError, object changeResult) => ChangeChallenge_OnChallengeChanged(changeError, changeResult, QuestionValue));
                 destinationPageName = PageNames.CurrentPage;
             }
         }
 
-        private void ChangeRecovery_OnRecoveryChanged(int error, object result, string newQuestion)
+        private void ChangeChallenge_OnChallengeChanged(int error, object result, string newQuestion)
         {
             if (error == (int)ErrorCodes.Success)
             {
@@ -1507,15 +1507,15 @@ namespace AppCSHtml5
         #endregion
 
         #region Transactions
-        private void QueryNewCredential(string username, string email, Action<int, object> callback)
+        private void QueryCredentialTaken(string username, string email, Action<int, object> callback)
         {
-            Database.Completed += OnQueryNewCredentialCompleted;
-            Database.Query(new DatabaseQueryOperation("new credential", "query_7.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) } }, callback));
+            Database.Completed += OnQueryCredentialTakenCompleted;
+            Database.Query(new DatabaseQueryOperation("new credential", "query_credential_taken.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) } }, callback));
         }
 
-        private void OnQueryNewCredentialCompleted(object sender, CompletionEventArgs e)
+        private void OnQueryCredentialTakenCompleted(object sender, CompletionEventArgs e)
         {
-            Database.Completed -= OnQueryNewCredentialCompleted;
+            Database.Completed -= OnQueryCredentialTakenCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
@@ -1529,7 +1529,7 @@ namespace AppCSHtml5
         private void ChangePassword(string username, string encryptedCurrentPassword, string encryptedCurrentPasswordSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnChangePasswordCompleted;
-            Database.Update(new DatabaseUpdateOperation("change password", "update_1.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change password", "update_change_password.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
         }
 
         private void OnChangePasswordCompleted(object sender, CompletionEventArgs e)
@@ -1548,7 +1548,7 @@ namespace AppCSHtml5
         private void ChangeEmailAddress(string username, string encryptedPassword, string encryptedPasswordSettings, string newEmailAddress, Action<int, object> callback)
         {
             Database.Completed += OnChangeEmailAddressCompleted;
-            Database.Update(new DatabaseUpdateOperation("change email", "update_2.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_email_address", HtmlString.PercentEncoded(newEmailAddress) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change email", "update_change_email_address.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_email_address", HtmlString.PercentEncoded(newEmailAddress) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnChangeEmailAddressCompleted(object sender, CompletionEventArgs e)
@@ -1567,7 +1567,7 @@ namespace AppCSHtml5
         private void ChangeUsername(string username, string encryptedPassword, string encryptedPasswordSettings, string newUsername, Action<int, object> callback)
         {
             Database.Completed += OnChangeUsernameCompleted;
-            Database.Update(new DatabaseUpdateOperation("change email", "update_8.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_username", HtmlString.PercentEncoded(newUsername) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change email", "update_change_username.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_username", HtmlString.PercentEncoded(newUsername) } }, callback));
         }
 
         private void OnChangeUsernameCompleted(object sender, CompletionEventArgs e)
@@ -1584,15 +1584,15 @@ namespace AppCSHtml5
         }
 
 #if QACHALLENGE
-        private void ChangeRecovery(string username, string encryptedPassword, string encryptedPasswordSettings, string newQuestion, string encryptedNewAnswer, string encryptedNewAnswerSettings, Action<int, object> callback)
+        private void ChangeChallenge(string username, string encryptedPassword, string encryptedPasswordSettings, string newQuestion, string encryptedNewAnswer, string encryptedNewAnswerSettings, Action<int, object> callback)
         {
-            Database.Completed += OnChangeRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("change recovery", "update_3.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_question", HtmlString.PercentEncoded(newQuestion) }, { "new_answer", encryptedNewAnswer }, { "new_answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, callback));
+            Database.Completed += OnChangeChallengeCompleted;
+            Database.Update(new DatabaseUpdateOperation("change challenge", "update_change_challenge.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_question", HtmlString.PercentEncoded(newQuestion) }, { "new_answer", encryptedNewAnswer }, { "new_answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, callback));
         }
 
-        private void OnChangeRecoveryCompleted(object sender, CompletionEventArgs e)
+        private void OnChangeChallengeCompleted(object sender, CompletionEventArgs e)
         {
-            Database.Completed -= OnChangeRecoveryCompleted;
+            Database.Completed -= OnChangeChallengeCompleted;
 
             Action<int, object> Callback = e.Operation.Callback;
 
@@ -1634,7 +1634,7 @@ namespace AppCSHtml5
         private void BeginRecoveryAndSendEmail(string email, Action<int, object> callback)
         {
             Database.Completed += OnRecoverySendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start recovery", "update_4.php", new Dictionary<string, string>() { { "email_address", HtmlString.PercentEncoded(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start recovery", "update_begin_recovery.php", new Dictionary<string, string>() { { "email_address", HtmlString.PercentEncoded(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnRecoverySendEmailCompleted(object sender, CompletionEventArgs e)
@@ -1654,13 +1654,13 @@ namespace AppCSHtml5
         private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, string transactionCode, Action<int, object> callback)
         {
             Database.Completed += OnActivateAccountCompleted;
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 #else
         private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string transactionCode, Action<int, object> callback)
         {
             Database.Completed += OnActivateAccountCompleted;
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_5.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 #endif
 
@@ -1681,13 +1681,13 @@ namespace AppCSHtml5
         private void RecoverAccount(string username, string encryptedNewPassword, string encryptedNewPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, string transactionCode, Action<int, object> callback)
         {
             Database.Completed += OnAccountRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode } }, callback));
+            Database.Update(new DatabaseUpdateOperation("recover account", "update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode } }, callback));
         }
 #else
         private void RecoverAccount(string username, string encryptedNewPassword, string encryptedNewPasswordSettings, string transactionCode, Action<int, object> callback)
         {
             Database.Completed += OnAccountRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_6.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "transaction_code", transactionCode } }, callback));
+            Database.Update(new DatabaseUpdateOperation("recover account", "update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "transaction_code", transactionCode } }, callback));
         }
 #endif
 
@@ -1726,7 +1726,7 @@ namespace AppCSHtml5
         private void SignIn(string identifier, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnSignInCompleted;
-            Database.Query(new DatabaseQueryOperation("sign in", "query_9.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, callback));
+            Database.Query(new DatabaseQueryOperation("sign in", "query_sign_in.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, callback));
         }
 
         private void OnSignInCompleted(object sender, CompletionEventArgs e)
@@ -1750,7 +1750,7 @@ namespace AppCSHtml5
         private void DeleteAccount(string Username, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
         {
             Database.Completed += OnDeleteAccountCompleted;
-            Database.Query(new DatabaseQueryOperation("delete account", "update_9.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(Username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Query(new DatabaseQueryOperation("delete account", "update_delete_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(Username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
         }
 
         private void OnDeleteAccountCompleted(object sender, CompletionEventArgs e)
@@ -1777,18 +1777,18 @@ namespace AppCSHtml5
 
             OperationHandler.Add(new OperationHandler("/request/query_salt.php", OnQuerySaltRequest));
             OperationHandler.Add(new OperationHandler("/request/insert_credential.php", OnInsertCredentialRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_5.php", OnCompleteSignUpRequest));
-            OperationHandler.Add(new OperationHandler("/request/query_9.php", OnSignInRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_1.php", OnChangePasswordRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_2.php", OnChangeEmailAddressRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_8.php", OnChangeUsernameRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_activate.php", OnCompleteSignUpRequest));
+            OperationHandler.Add(new OperationHandler("/request/query_sign_in.php", OnSignInRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_change_password.php", OnChangePasswordRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_change_email_address.php", OnChangeEmailAddressRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_change_username.php", OnChangeUsernameRequest));
 #if QACHALLENGE
-            OperationHandler.Add(new OperationHandler("/request/update_3.php", OnChangeRecoveryRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_change_challenge.php", OnChangeChallengeRequest));
 #endif
-            OperationHandler.Add(new OperationHandler("/request/update_4.php", OnRecoveryRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_6.php", OnCompleteRecoveryRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_9.php", OnDeleteAccountRequest));
-            OperationHandler.Add(new OperationHandler("/request/query_7.php", OnQueryNewCredentialRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_begin_recovery.php", OnRecoveryRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_complete_recovery.php", OnCompleteRecoveryRequest));
+            OperationHandler.Add(new OperationHandler("/request/update_delete_credential.php", OnDeleteAccountRequest));
+            OperationHandler.Add(new OperationHandler("/request/query_credential_taken.php", OnQueryCredentialTakenRequest));
 
             InitializeBuiltInItems();
         }
@@ -1983,21 +1983,21 @@ namespace AppCSHtml5
             ErrorCodes ErrorCode;
             if (EncryptedAnswer.Length > 0)
             {
-                if (CredentialRecordBase.update_5_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedAnswer, AnswerSettings, QueryTransaction))
+                if (CredentialRecordBase.update_activate_qa(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedAnswer, AnswerSettings, QueryTransaction))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.InvalidUsernamePasswordOrAnswer;
             }
             else
             {
-                if (CredentialRecordBase.update_5_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
+                if (CredentialRecordBase.update_activate_noqa(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.InvalidUsernameOrPassword;
             }
 #else
             ErrorCodes ErrorCode;
-            if (CredentialRecordBase.update_5(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
+            if (CredentialRecordBase.update_activate(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryTransaction))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.InvalidUsernameOrPassword;
@@ -2057,7 +2057,7 @@ namespace AppCSHtml5
                 return Result;
 
             ErrorCodes ErrorCode;
-            if (CredentialRecordBase.update_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedNewPassword, NewPasswordSettings))
+            if (CredentialRecordBase.update_change_password(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncryptedNewPassword, NewPasswordSettings))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
@@ -2083,7 +2083,7 @@ namespace AppCSHtml5
                 return Result;
 
             ErrorCodes ErrorCode;
-            if (CredentialRecordBase.update_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewEmailAddress))
+            if (CredentialRecordBase.update_change_email_address(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewEmailAddress))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
@@ -2108,7 +2108,7 @@ namespace AppCSHtml5
                 return Result;
 
             ErrorCodes ErrorCode;
-            if (CredentialRecordBase.update_8(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewUsername))
+            if (CredentialRecordBase.update_change_username(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, QueryNewUsername))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.ErrorNotFound;
@@ -2121,7 +2121,7 @@ namespace AppCSHtml5
         }
 
 #if QACHALLENGE
-        private List<Dictionary<string, string>> OnChangeRecoveryRequest(Dictionary<string, string> parameters)
+        private List<Dictionary<string, string>> OnChangeChallengeRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
@@ -2141,14 +2141,14 @@ namespace AppCSHtml5
             ErrorCodes ErrorCode;
             if (QueryNewQuestion.Length > 0 && EncryptedNewAnswer.Length > 0)
             {
-                if (CredentialRecordBase.update_3_qa_1(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncodedQuestion(QueryNewQuestion), EncryptedNewAnswer, NewAnswerSettings))
+                if (CredentialRecordBase.update_change_challenge_qa(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, EncodedQuestion(QueryNewQuestion), EncryptedNewAnswer, NewAnswerSettings))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.ErrorNotFound;
             }
             else
             {
-                if (CredentialRecordBase.update_3_qa_2(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings))
+                if (CredentialRecordBase.update_change_challenge_noqa(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings))
                     ErrorCode = ErrorCodes.Success;
                 else
                     ErrorCode = ErrorCodes.ErrorNotFound;
@@ -2179,12 +2179,12 @@ namespace AppCSHtml5
             string RecoveryTransaction = CreateTransactionCode();
 
 #if QACHALLENGE
-            if (CredentialRecordBase.update_4_qa(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
+            if (CredentialRecordBase.update_begin_recovery_qa(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
                 ErrorCode = ErrorCodes.Success;
             else if (CredentialRecordBase.query_3_qa(DatabaseCredentialTable, QueryEmailAddress, out string Question) && string.IsNullOrEmpty(Question))
                 ErrorCode = ErrorCodes.ErrorNoQuestion;
 #else
-            if (CredentialRecordBase.update_4(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
+            if (CredentialRecordBase.update_begin_recovery(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
                 ErrorCode = ErrorCodes.Success;
 #endif
             else
@@ -2285,12 +2285,12 @@ namespace AppCSHtml5
 
             ErrorCodes ErrorCode;
 #if QACHALLENGE
-            if (CredentialRecordBase.update_6_qa(DatabaseCredentialTable, QueryUsername, EncryptedAnswer, AnswerSettings, EncryptedNewPassword, NewPasswordSettings, QueryTransactionCode))
+            if (CredentialRecordBase.update_complete_recovery_qa(DatabaseCredentialTable, QueryUsername, EncryptedAnswer, AnswerSettings, EncryptedNewPassword, NewPasswordSettings, QueryTransactionCode))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.InvalidUsernameOrAnswer;
 #else
-            if (CredentialRecordBase.update_6(DatabaseCredentialTable, QueryUsername, EncryptedNewPassword, NewPasswordSettings, QueryTransactionCode))
+            if (CredentialRecordBase.update_complete_recovery(DatabaseCredentialTable, QueryUsername, EncryptedNewPassword, NewPasswordSettings, QueryTransactionCode))
                 ErrorCode = ErrorCodes.Success;
             else
                 ErrorCode = ErrorCodes.OperationFailed;
@@ -2325,7 +2325,7 @@ namespace AppCSHtml5
             {
                 DateTime DeleteDate = DateTime.UtcNow + TimeSpan.FromMinutes(2);
 
-                if (CredentialRecordBase.update_9(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
+                if (CredentialRecordBase.update_delete_credential(DatabaseCredentialTable, QueryUsername, EncryptedPassword, PasswordSettings, DeleteDate, QueryLanguage))
                 {
                     MessageBox.Show($"Message sent to {ResultEmailAddress}.", "Account deletion pending", MessageBoxButton.OK);
                     ErrorCode = ErrorCodes.Success;
@@ -2344,7 +2344,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnQueryNewCredentialRequest(Dictionary<string, string> parameters)
+        private List<Dictionary<string, string>> OnQueryCredentialTakenRequest(Dictionary<string, string> parameters)
         {
             List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
 
@@ -2356,7 +2356,7 @@ namespace AppCSHtml5
 
             string ResultUsername;
             string ResultEmailAddress;
-            if (CredentialRecordBase.query_7(DatabaseCredentialTable, QueryUsername, QueryEmailAddress, out ResultUsername, out ResultEmailAddress))
+            if (CredentialRecordBase.query_credential_taken(DatabaseCredentialTable, QueryUsername, QueryEmailAddress, out ResultUsername, out ResultEmailAddress))
             {
                 ErrorCodes ErrorCode;
 
@@ -2570,7 +2570,7 @@ namespace AppCSHtml5
         public override bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out Dictionary<string, string> record)
         {
             record = new Dictionary<string, string>();
-            if (CredentialRecordBase.query_row_qa(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
+            if (CredentialRecordBase.query_sign_in_qa(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
             {
                 record.Add("username", Row.username);
                 record.Add("email_address", Row.email_address);
@@ -2590,7 +2590,7 @@ namespace AppCSHtml5
         public override bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out Dictionary<string, string> record)
         {
             record = new Dictionary<string, string>();
-            if (CredentialRecordBase.query_row(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
+            if (CredentialRecordBase.query_sign_in(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
             {
                 record.Add("username", Row.username);
                 record.Add("email_address", Row.email_address);
