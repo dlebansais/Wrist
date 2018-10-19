@@ -176,7 +176,7 @@ namespace AppCSHtml5
         private void GetReleases(Action<int, object> callback)
         {
             Database.Completed += OnGetReleasesCompleted;
-            Database.Query(new DatabaseQueryOperation("get release notes", "query_4.php", new Dictionary<string, string>(), callback));
+            Database.Query(new DatabaseQueryOperation("get release notes", "query_all_release_notes.php", new Dictionary<string, string>(), callback));
         }
 
         private void OnGetReleasesCompleted(object sender, CompletionEventArgs e)
@@ -195,7 +195,7 @@ namespace AppCSHtml5
         private void GetBugs(Action<int, object> callback)
         {
             Database.Completed += OnGetBugsCompleted;
-            Database.Query(new DatabaseQueryOperation("get bugs", "query_5.php", new Dictionary<string, string>(), callback));
+            Database.Query(new DatabaseQueryOperation("get bugs", "query_all_bugs.php", new Dictionary<string, string>(), callback));
         }
 
         private void OnGetBugsCompleted(object sender, CompletionEventArgs e)
@@ -214,7 +214,7 @@ namespace AppCSHtml5
         private void GetOrganizations(Action<int, object> callback)
         {
             Database.Completed += OnGetOrganizationsCompleted;
-            Database.Query(new DatabaseQueryOperation("get organizations", "query_6.php", new Dictionary<string, string>(), callback));
+            Database.Query(new DatabaseQueryOperation("get organizations", "query_all_organizations.php", new Dictionary<string, string>(), callback));
         }
 
         private void OnGetOrganizationsCompleted(object sender, CompletionEventArgs e)
@@ -237,9 +237,9 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("/request/query_4.php", OnQueryReleases));
-            OperationHandler.Add(new OperationHandler("/request/query_5.php", OnQueryBugs));
-            OperationHandler.Add(new OperationHandler("/request/query_6.php", OnQueryOrganizations));
+            OperationHandler.Add(new OperationHandler("/request/query_all_release_notes.php", OnQueryReleases));
+            OperationHandler.Add(new OperationHandler("/request/query_all_bugs.php", OnQueryBugs));
+            OperationHandler.Add(new OperationHandler("/request/query_all_organizations.php", OnQueryOrganizations));
         }
 
         private List<Dictionary<string, string>> OnQueryReleases(Dictionary<string, string> parameters)

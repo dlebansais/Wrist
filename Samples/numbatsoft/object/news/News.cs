@@ -90,7 +90,7 @@ namespace AppCSHtml5
         private void GetAllNews(Action<int, object> callback)
         {
             Database.Completed += OnGetAllNewsCompleted;
-            Database.Query(new DatabaseQueryOperation("get all news entries", "query_2.php", new Dictionary<string, string>(), callback));
+            Database.Query(new DatabaseQueryOperation("get all news entries", "query_all_news.php", new Dictionary<string, string>(), callback));
         }
 
         private void OnGetAllNewsCompleted(object sender, CompletionEventArgs e)
@@ -113,7 +113,7 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("/request/query_2.php", OnQueryNews));
+            OperationHandler.Add(new OperationHandler("/request/query_all_news.php", OnQueryNews));
         }
 
         private List<Dictionary<string, string>> OnQueryNews(Dictionary<string, string> parameters)

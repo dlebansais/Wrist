@@ -35,7 +35,7 @@ namespace AppCSHtml5
         private void SendFeedback(string content, Action<int, object> callback)
         {
             Database.Completed += OnSendFeedbackCompleted;
-            Database.Update(new DatabaseUpdateOperation("send feedback", "update_7.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("send feedback", "update_feedback.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, callback));
         }
 
         private void OnSendFeedbackCompleted(object sender, CompletionEventArgs e)
@@ -55,7 +55,7 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("/request/update_7.php", OnCompleteSendFeedback));
+            OperationHandler.Add(new OperationHandler("/request/update_feedback.php", OnCompleteSendFeedback));
         }
 
         private List<Dictionary<string, string>> OnCompleteSendFeedback(Dictionary<string, string> parameters)

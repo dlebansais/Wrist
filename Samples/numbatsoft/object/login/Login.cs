@@ -253,7 +253,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-        public static bool query_3_qa(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, out string question)
+        public static bool query_has_question_qa(IEnumerable<CredentialRecordBase> credentials, string param_emailAddress, out string question)
         {
             foreach (CredentialRecordBase Row in credentials)
                 if (Row.email_address == param_emailAddress && Row.active == true)
@@ -613,8 +613,8 @@ namespace AppCSHtml5
             Remember = (Persistent.GetValue("remember", null) != null);
             LoginState = (Username != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
 
-            Database.DebugLog = true;
-            Database.DebugLogFullResponse = true;
+            //Database.DebugLog = true;
+            //Database.DebugLogFullResponse = true;
 
             InitSimulation();
         }
@@ -2181,7 +2181,7 @@ namespace AppCSHtml5
 #if QACHALLENGE
             if (CredentialRecordBase.update_begin_recovery_qa(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
                 ErrorCode = ErrorCodes.Success;
-            else if (CredentialRecordBase.query_3_qa(DatabaseCredentialTable, QueryEmailAddress, out string Question) && string.IsNullOrEmpty(Question))
+            else if (CredentialRecordBase.query_has_question_qa(DatabaseCredentialTable, QueryEmailAddress, out string Question) && string.IsNullOrEmpty(Question))
                 ErrorCode = ErrorCodes.ErrorNoQuestion;
 #else
             if (CredentialRecordBase.update_begin_recovery(DatabaseCredentialTable, QueryEmailAddress, RecoveryTransaction, DateTime.UtcNow))
