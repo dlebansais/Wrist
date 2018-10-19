@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CSHARP_XAML_FOR_HTML5;CSHTML5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CSHARP_XAML_FOR_HTML5;CSHTML5;USE_RESTRICTED_FEATURES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -61,6 +61,7 @@
     <Compile Include="Database.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="HashTools.cs" />
+    <Compile Include="HtmlPresenter.cs" />
     <!-- You must create your own version of this file. See Hash.cs -->
     <Compile Include="SecretUuid.cs" />
     <!-- -->
