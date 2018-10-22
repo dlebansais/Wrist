@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -8,11 +6,30 @@ namespace AppCSHtml5
 {
     public class SampleCode : ObjectBase, ISampleCode
     {
-        public SampleCode(string content)
+        public SampleCode()
         {
         }
 
-        public string Content { get { return "!"; } }
+        public bool IsFrontPage { get; private set; }
+        public string Content { get; private set; }
+        public string Feature { get; private set; }
+        public string TitleEnu { get; private set; }
+        public string TitleFra { get; private set; }
+
+        public void UpdateContent(bool isFrontPage, string content, string feature, string titleEnu, string titleFra)
+        {
+            IsFrontPage = isFrontPage;
+            Content = content;
+            Feature = feature;
+            TitleEnu = titleEnu;
+            TitleFra = titleFra;
+
+            NotifyPropertyChanged(nameof(IsFrontPage));
+            NotifyPropertyChanged(nameof(Content));
+            NotifyPropertyChanged(nameof(Feature));
+            NotifyPropertyChanged(nameof(TitleEnu));
+            NotifyPropertyChanged(nameof(TitleFra));
+        }
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>

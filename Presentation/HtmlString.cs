@@ -37,7 +37,7 @@ namespace Presentation
                 EncodingTable.Add(Entry.Value, Entry.Key);
         }
 
-        public static string PercentDecode(string s)
+        public static string PercentDecoded(string s)
         {
             string Result = s;
 

@@ -2404,7 +2404,7 @@ namespace AppCSHtml5
         {
             if (parameters.ContainsKey(parameterName))
                 if (isEncoded)
-                    return HtmlString.PercentDecode(parameters[parameterName]);
+                    return HtmlString.PercentDecoded(parameters[parameterName]);
                 else
                     return parameters[parameterName];
             else
