@@ -39,6 +39,8 @@ namespace Parser
                 Result = new GeneratorComponentSelector(AsComponentSelector);
             else if (component is IComponentText AsComponentText)
                 Result = new GeneratorComponentText(AsComponentText);
+            else if (component is IComponentHtml AsComponentHtml)
+                Result = new GeneratorComponentHtml(AsComponentHtml);
             else
                 throw new InvalidOperationException();
 

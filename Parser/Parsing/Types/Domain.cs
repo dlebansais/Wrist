@@ -370,7 +370,7 @@ namespace Parser
                         throw new ParsingException(240, "", $"Unexpected key in design '{Page.Design.Name}'.");
 
                 foreach (string Key in KeyList)
-                    if (!DesignKeyList.Contains(Key))
+                    if (!DesignKeyList.Contains(Key) && !Key.EndsWith("DesignHtml"))
                         throw new ParsingException(241, "", $"Resource key '{Key}' not found in design '{Page.Design.Name}'.");
             }
 

@@ -67,6 +67,7 @@
     <Compile Include="Generating\Types\Component\GeneratorComponentIndex.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentSelector.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentContainer.cs" />
+    <Compile Include="Generating\Types\Component\GeneratorComponentHtml.cs" />
     <Compile Include="Generating\Types\Component\GeneratorComponentText.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorBindableComponent.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentRadioButton.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Generating\Types\Component\IGeneratorComponentIndex.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentSelector.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentContainer.cs" />
+    <Compile Include="Generating\Types\Component\IGeneratorComponentHtml.cs" />
     <Compile Include="Generating\Types\Component\IGeneratorComponentText.cs" />
     <Compile Include="Generating\Types\DynamicProperty\GeneratorIntegerConstantOperation.cs" />
     <Compile Include="Generating\Types\DynamicProperty\GeneratorUnaryOperation.cs" />
@@ -197,6 +199,7 @@
     <Compile Include="Parsing\Types\Component\ComponentContainer.cs" />
     <Compile Include="Parsing\Types\Component\ComponentPasswordEdit.cs" />
     <Compile Include="Parsing\Types\Component\ComponentIndex.cs" />
+    <Compile Include="Parsing\Types\Component\ComponentHtml.cs" />
     <Compile Include="Parsing\Types\Component\IComponentRadioButton.cs" />
     <Compile Include="Parsing\Types\Component\IComponentCheckBox.cs" />
     <Compile Include="Parsing\Types\Component\IComponentCollection.cs" />
@@ -204,6 +207,7 @@
     <Compile Include="Parsing\Types\Component\IComponentContainer.cs" />
     <Compile Include="Parsing\Types\Component\IComponentPasswordEdit.cs" />
     <Compile Include="Parsing\Types\Component\IComponentIndex.cs" />
+    <Compile Include="Parsing\Types\Component\IComponentHtml.cs" />
     <Compile Include="Parsing\Types\Component\IComponentWithEvent.cs" />
     <Compile Include="Parsing\Types\DynamicProperty\DynamicOperationResults.cs" />
     <Compile Include="Parsing\Types\DynamicProperty\IIntegerConstantOperation.cs" />

@@ -138,6 +138,7 @@ namespace Parser
             xamlWriter.WriteLine($"<Page x:Class=\"{appNamespace}.{XamlName}\"");
             xamlWriter.WriteLine("      xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"");
             xamlWriter.WriteLine("      xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"");
+            xamlWriter.WriteLine("      xmlns:n=\"clr-namespace:NetTools\"");
             xamlWriter.WriteLine("      xmlns:p=\"clr-namespace:Presentation\"");
             xamlWriter.WriteLine("      xmlns:conv=\"clr-namespace:Converters\"");
             xamlWriter.WriteLine($"      xmlns:local=\"using:{appNamespace}\"");

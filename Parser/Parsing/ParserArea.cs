@@ -102,6 +102,8 @@ namespace Parser
                 return ParseComponentCheckBox(NameSource, sourceStream, InfoList);
             else if (ComponentTypeName == "text")
                 return ParseComponentText(NameSource, sourceStream, InfoList);
+            else if (ComponentTypeName == "html")
+                return ParseComponentHtml(NameSource, sourceStream, InfoList);
             else if (ComponentTypeName == "image")
                 return ParseComponentImage(NameSource, sourceStream, InfoList);
             else if (ComponentTypeName == "edit")
@@ -261,6 +263,24 @@ namespace Parser
                 throw new ParsingException(40, sourceStream, $"Invalid decoration for '{nameSource.Name}'.");
 
             return new ComponentText(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Text"), TextProperty, TextDecoration);
+        }
+
+        private IComponentHtml ParseComponentHtml(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)
+        {
+            IComponentProperty HtmlProperty = null;
+
+            foreach (ComponentInfo Info in infoList)
+                if (Info.NameSource.Name == "html" && HtmlProperty == null)
+                    HtmlProperty = new ComponentProperty(Info);
+                else if (Info.NameSource.Name != "html")
+                    throw new ParsingException(27, sourceStream, $"Unknown token '{Info.NameSource.Name}'.");
+                else
+                    throw new ParsingException(28, sourceStream, $"'{Info.NameSource.Name}' is repeated.");
+
+            if (HtmlProperty == null)
+                throw new ParsingException(0, sourceStream, "Html not specified.");
+
+            return new ComponentHtml(nameSource, ParserDomain.ToXamlName(nameSource.Source, nameSource.Name, "Html"), HtmlProperty);
         }
 
         private IComponentEdit ParseComponentEdit(IDeclarationSource nameSource, IParsingSourceStream sourceStream, List<ComponentInfo> infoList)
