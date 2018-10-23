@@ -20,6 +20,9 @@ namespace AppCSHtml5
         public Samples()
         {
             InitSimulation();
+
+            Database.DebugLog = true;
+            Database.DebugLogFullResponse = true;
         }
 
         private Dictionary<string, SampleCode> _AllSampleCodes = new Dictionary<string, SampleCode>();
@@ -39,23 +42,18 @@ namespace AppCSHtml5
 
         private void OnSampleCodeReceived(int error, object result, string title)
         {
+            System.Diagnostics.Debug.WriteLine($"OnSampleCodeReceived: {error}, {result}, {title}");
+
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                List<Dictionary<string, string>> ResultItems = (List<Dictionary<string, string>>)result;
-                foreach (Dictionary<string, string> Item in ResultItems)
-                    if (Item.ContainsKey("is_front_page") &&
-                        Item.ContainsKey("feature") &&
-                        Item.ContainsKey("content") &&
-                        Item.ContainsKey("title_enu") &&
-                        Item.ContainsKey("title_fra"))
-                    {
-                        SampleCode SampleCode = _AllSampleCodes[title];
-                        SampleCode.UpdateContent(Item["is_front_page"] != "0", Item["feature"], Item["content"], Item["title_enu"], Item["title_fra"]);
-                    }
+                Dictionary<string, string> Item = (Dictionary<string, string>)result;
+
+                SampleCode SampleCode = _AllSampleCodes[title];
+                SampleCode.UpdateContent(Item["front_page"] != "0", Item["feature"], Item["text"], Item["title_enu"], Item["title_fra"]);
             }
         }
 
-        #region Operations
+        #region Transactions
         private void GetSampleCode(string title, Action<int, object> callback)
         {
             Database.Completed += OnGetAllSampleCodesCompleted;
@@ -68,11 +66,20 @@ namespace AppCSHtml5
 
             Action<int, object> Callback = e.Operation.Callback;
 
-            List<Dictionary<string, string>> Result;
-            if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "is_front_page", "feature", "content", "title_enu", "title_fra" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
+            Dictionary<string, string> Result;
+            if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "front_page", "feature", "text", "title_enu", "title_fra", "result" })) != null)
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+        }
+
+        public static int ParseResult(string result)
+        {
+            int IntError;
+            if (int.TryParse(result, out IntError))
+                return IntError;
+            else
+                return -1;
         }
         #endregion
 
@@ -91,11 +98,12 @@ namespace AppCSHtml5
 
             Result.Add(new Dictionary<string, string>()
             {
-                { "is_front_page", "0" },
+                { "front_page", "0" },
                 { "feature", "abstract_methods" },
-                { "content", "<p><span id=\"sc_neutral\">Insert</span>&nbsp;<span id=\"sc_keyword\">procedure</span></p>" },
+                { "text", "<p><span id=\"sc_neutral\">Insert</span>&nbsp;<span id=\"sc_keyword\">procedure</span></p>" },
                 { "title_enu", "Declaration of an abstract method" },
                 { "title_fra", "Déclaration d'une méthode abstraite" },
+                { "result", ((int)ErrorCodes.Success).ToString() },
             });
 
             return Result;
