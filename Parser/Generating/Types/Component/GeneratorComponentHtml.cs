@@ -48,7 +48,7 @@ namespace Parser
             string Properties = "";
             string Value = GetComponentValue(currentPage, currentObject, HtmlResource, HtmlObject, HtmlObjectProperty, HtmlKey, false);
 
-            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<n:HtmlPresenter{attachedProperties}{visibilityBinding} Html=\"{Value}\"{Properties}{elementProperties}/>");
+            colorTheme.WriteXamlLine(xamlWriter, $"{Indentation}<n:HtmlPresenter{attachedProperties}{visibilityBinding} Content=\"{Value}\"{Properties}{elementProperties}/>");
         }
 
         public string GetStyleResourceKey(IGeneratorDesign design, string styleName)

@@ -23,6 +23,13 @@ namespace AppCSHtml5
 
             Database.DebugLog = true;
             Database.DebugLogFullResponse = true;
+
+            string url = UrlTools.GetDocumentUrl() as string;
+            System.Diagnostics.Debug.WriteLine($"DocumentUrl = {url}");
+
+            Database.QueryScriptPath = url + "request/";
+            Database.UpdateScriptPath = url + "request/";
+            Database.EncryptScriptPath = url + "request/";
         }
 
         private Dictionary<string, SampleCode> _AllSampleCodes = new Dictionary<string, SampleCode>();
