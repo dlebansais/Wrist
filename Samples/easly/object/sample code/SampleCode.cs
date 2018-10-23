@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -8,28 +9,33 @@ namespace AppCSHtml5
     {
         public SampleCode()
         {
+            TitleTable.Add(LanguageStates.English, null);
+            TitleTable.Add(LanguageStates.French, null);
         }
 
         public bool IsFrontPage { get; private set; }
-        public string Content { get; private set; }
+        public string Content { get { return _Content; } }
+        private string _Content = "<p>Content</p>";
         public string Feature { get; private set; }
-        public string TitleEnu { get; private set; }
-        public string TitleFra { get; private set; }
+        protected LanguageStates LanguageState { get { return GetLanguage.LanguageState; } }
+        public string Title { get { return TitleTable[LanguageState]; } }
 
-        public void UpdateContent(bool isFrontPage, string content, string feature, string titleEnu, string titleFra)
+        public void UpdateContent(bool isFrontPage, string feature, string content, string titleEnu, string titleFra)
         {
             IsFrontPage = isFrontPage;
-            Content = content;
+            _Content = content;
             Feature = feature;
-            TitleEnu = titleEnu;
-            TitleFra = titleFra;
+
+            TitleTable[LanguageStates.English] = titleEnu;
+            TitleTable[LanguageStates.French] = titleFra;
 
             NotifyPropertyChanged(nameof(IsFrontPage));
             NotifyPropertyChanged(nameof(Content));
             NotifyPropertyChanged(nameof(Feature));
-            NotifyPropertyChanged(nameof(TitleEnu));
-            NotifyPropertyChanged(nameof(TitleFra));
+            NotifyPropertyChanged(nameof(Title));
         }
+
+        public Dictionary<LanguageStates, string> TitleTable { get; } = new Dictionary<LanguageStates, string>();
 
         #region Implementation of INotifyPropertyChanged
         /// <summary>
