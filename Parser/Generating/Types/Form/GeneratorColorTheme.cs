@@ -51,7 +51,7 @@ namespace Parser
                 content = content.Replace($"\"{Item.Name}.ttf\"", $"\"#{Item.Name}#\"");
 
             foreach (IGeneratorFont Item in fonts)
-                content = content.Replace($"\"#{Item.Name}#\"", $"\"/AppCSHtml5;component/Fonts/{Item.Name}.ttf\"");
+                content = content.Replace($"\"#{Item.Name}#\"", $"\"/AppCSHtml5;component/fonts/{Item.Name.ToLower()}.ttf\"");
 
             return content;
         }
