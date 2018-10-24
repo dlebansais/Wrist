@@ -11,7 +11,7 @@ namespace Converters
             if (value == null)
                 return null;
 
-            Dictionary<string, string> DictionaryValue = value as Dictionary<string, string>;
+            IDictionary<string, string> DictionaryValue = value as Dictionary<string, string>;
             if (DictionaryValue == null)
                 return null;
 

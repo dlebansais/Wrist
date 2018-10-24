@@ -255,7 +255,7 @@ namespace Parser
 
             cSharpWriter.WriteLine("        }");
             cSharpWriter.WriteLine();
-            cSharpWriter.WriteLine("        public static Dictionary<string, string> QueryString { get; private set; }");
+            cSharpWriter.WriteLine("        public static IDictionary<string, string> QueryString { get; private set; }");
 
             foreach (IGeneratorObject Object in Objects)
                 if (Object.IsGlobal)

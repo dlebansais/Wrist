@@ -5,14 +5,14 @@ namespace NetTools
 {
     public class OperationHandler
     {
-        public OperationHandler(string handlerName, Func<Dictionary<string, string>, List<Dictionary<string, string>>> handler)
+        public OperationHandler(string handlerName, Func<IDictionary<string, string>, List<IDictionary<string, string>>> handler)
         {
             HandlerName = handlerName;
             Handler = handler;
         }
 
         public string HandlerName { get; private set; }
-        public Func<Dictionary<string, string>, List<Dictionary<string, string>>> Handler { get; private set; }
+        public Func<IDictionary<string, string>, List<IDictionary<string, string>>> Handler { get; private set; }
 
         private static Dictionary<string, OperationHandler> HandlerTable = new Dictionary<string, OperationHandler>();
 
@@ -24,20 +24,20 @@ namespace NetTools
         public static string Execute(string uriString)
         {
             string HandlerName;
-            Dictionary<string, string> Parameters;
+            IDictionary<string, string> Parameters;
             DecomposeUri(uriString, out HandlerName, out Parameters);
 
-            List<Dictionary<string, string>> Result;
+            List<IDictionary<string, string>> Result;
 
             if (HandlerTable.ContainsKey(HandlerName))
                 Result = HandlerTable[HandlerName].Handler(Parameters);
             else
-                Result = new List<Dictionary<string, string>>();
+                Result = new List<IDictionary<string, string>>();
 
             return ComposeResult(Result);
         }
 
-        private static void DecomposeUri(string uriString, out string handlerName, out Dictionary<string, string> parameters)
+        private static void DecomposeUri(string uriString, out string handlerName, out IDictionary<string, string> parameters)
         {
             parameters = new Dictionary<string, string>();
 
@@ -79,11 +79,11 @@ namespace NetTools
             }
         }
 
-        private static string ComposeResult(List<Dictionary<string, string>> data)
+        private static string ComposeResult(List<IDictionary<string, string>> data)
         {
             string Result = "";
 
-            foreach (Dictionary<string, string> Line in data)
+            foreach (IDictionary<string, string> Line in data)
             {
                 Result += Database.RecordPattern + "\n";
                 foreach (KeyValuePair<string, string> Entry in Line)

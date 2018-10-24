@@ -80,9 +80,9 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                List<Dictionary<string, string>> ReleasesList = (List<Dictionary<string, string>>)result;
+                List<IDictionary<string, string>> ReleasesList = (List<IDictionary<string, string>>)result;
 
-                foreach (Dictionary<string, string> Item in ReleasesList)
+                foreach (IDictionary<string, string> Item in ReleasesList)
                 {
                     EqmlpReleaseNote NewEntry = new EqmlpReleaseNote(Item["created"], Item["revision"], Item["binary_path"], Item["readme_path"]);
                     _AllReleases.Add(NewEntry);
@@ -119,10 +119,10 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                List<Dictionary<string, string>> BugsList = (List<Dictionary<string, string>>)result;
+                List<IDictionary<string, string>> BugsList = (List<IDictionary<string, string>>)result;
 
                 int issue = 1;
-                foreach (Dictionary<string, string> Item in BugsList)
+                foreach (IDictionary<string, string> Item in BugsList)
                 {
                     EqmlpBug NewEntry = new EqmlpBug(issue++, Item["appeared"], Item["severity"], Item["fixed"], Item["description"], Item["analysis"], Item["fix"], Item["binary_path"], Item["readme_path"]);
                     _AllBugs.Add(NewEntry);
@@ -159,9 +159,9 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                List<Dictionary<string, string>> OrganizationsList = (List<Dictionary<string, string>>)result;
+                List<IDictionary<string, string>> OrganizationsList = (List<IDictionary<string, string>>)result;
 
-                foreach (Dictionary<string, string> Item in OrganizationsList)
+                foreach (IDictionary<string, string> Item in OrganizationsList)
                 {
                     EqmlpOrganization NewEntry = new EqmlpOrganization(Item["name"], Item["login_url"], Item["meeting_url"], Item["validation_url"]);
                     _AllOrganizations.Add(NewEntry);
@@ -175,59 +175,44 @@ namespace AppCSHtml5
         #region Operations
         private void GetReleases(Action<int, object> callback)
         {
-            Database.Completed += OnGetReleasesCompleted;
-            Database.Query(new DatabaseQueryOperation("get release notes", "query_all_release_notes.php", new Dictionary<string, string>(), callback));
+            Database.Query(new DatabaseQueryOperation("get release notes", "query_all_release_notes.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetReleasesCompleted(sender, e, callback)));
         }
 
-        private void OnGetReleasesCompleted(object sender, CompletionEventArgs e)
+        private void OnGetReleasesCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnGetReleasesCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            List<Dictionary<string, string>> Result;
+            List<IDictionary<string, string>> Result;
             if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "created", "revision", "binary_path", "readme_path" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.Success, Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
         private void GetBugs(Action<int, object> callback)
         {
-            Database.Completed += OnGetBugsCompleted;
-            Database.Query(new DatabaseQueryOperation("get bugs", "query_all_bugs.php", new Dictionary<string, string>(), callback));
+            Database.Query(new DatabaseQueryOperation("get bugs", "query_all_bugs.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetBugsCompleted(sender, e, callback)));
         }
 
-        private void OnGetBugsCompleted(object sender, CompletionEventArgs e)
+        private void OnGetBugsCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnGetBugsCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            List<Dictionary<string, string>> Result;
+            List<IDictionary<string, string>> Result;
             if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "appeared", "severity", "fixed", "description", "analysis", "fix", "binary_path", "readme_path" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.Success, Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
         private void GetOrganizations(Action<int, object> callback)
         {
-            Database.Completed += OnGetOrganizationsCompleted;
-            Database.Query(new DatabaseQueryOperation("get organizations", "query_all_organizations.php", new Dictionary<string, string>(), callback));
+            Database.Query(new DatabaseQueryOperation("get organizations", "query_all_organizations.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetOrganizationsCompleted(sender, e, callback)));
         }
 
-        private void OnGetOrganizationsCompleted(object sender, CompletionEventArgs e)
+        private void OnGetOrganizationsCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnGetOrganizationsCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            List<Dictionary<string, string>> Result;
+            List<IDictionary<string, string>> Result;
             if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "name", "login_url", "meeting_url", "validation_url" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.Success, Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
         #endregion
 
@@ -237,14 +222,14 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("/request/query_all_release_notes.php", OnQueryReleases));
-            OperationHandler.Add(new OperationHandler("/request/query_all_bugs.php", OnQueryBugs));
-            OperationHandler.Add(new OperationHandler("/request/query_all_organizations.php", OnQueryOrganizations));
+            OperationHandler.Add(new OperationHandler("request/query_all_release_notes.php", OnQueryReleases));
+            OperationHandler.Add(new OperationHandler("request/query_all_bugs.php", OnQueryBugs));
+            OperationHandler.Add(new OperationHandler("request/query_all_organizations.php", OnQueryOrganizations));
         }
 
-        private List<Dictionary<string, string>> OnQueryReleases(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnQueryReleases(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             Result.Add(new Dictionary<string, string>()
             {
@@ -257,9 +242,9 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnQueryBugs(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnQueryBugs(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             Result.Add(new Dictionary<string, string>()
             {
@@ -300,12 +285,12 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnQueryOrganizations(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnQueryOrganizations(IDictionary<string, string> parameters)
         {
             return KnownOrganizationTable;
         }
 
-        public static List<Dictionary<string, string>> KnownOrganizationTable = new List<Dictionary<string, string>>
+        public static List<IDictionary<string, string>> KnownOrganizationTable = new List<IDictionary<string, string>>
         {
             new Dictionary<string, string>()
             {

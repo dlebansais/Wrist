@@ -544,7 +544,7 @@ namespace AppCSHtml5
 #endif
 
 #if QACHALLENGE
-        public virtual bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out Dictionary<string, string> record)
+        public virtual bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out IDictionary<string, string> record)
         {
             record = new Dictionary<string, string>();
             if (CredentialRecordBase.query_sign_in_qa(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
@@ -560,7 +560,7 @@ namespace AppCSHtml5
             return false;
         }
 #else
-        public virtual bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out Dictionary<string, string> record)
+        public virtual bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out IDictionary<string, string> record)
         {
             record = new Dictionary<string, string>();
             if (CredentialRecordBase.query_sign_in(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
@@ -767,7 +767,7 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                Dictionary<string, string> NewCredentialResult = (Dictionary<string, string>)result;
+                IDictionary<string, string> NewCredentialResult = (IDictionary<string, string>)result;
                 string SaltString = NewCredentialResult["salt"];
 
                 byte[] NewSalt;
@@ -809,7 +809,7 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                Dictionary<string, string> NewCredentialResult = (Dictionary<string, string>)result;
+                IDictionary<string, string> NewCredentialResult = (IDictionary<string, string>)result;
                 string SaltString = NewCredentialResult["salt"];
 
                 byte[] NewSalt;
@@ -843,7 +843,7 @@ namespace AppCSHtml5
 
         public void On_RegisterEnd(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            Dictionary<string, string> QueryString = App.QueryString;
+            IDictionary<string, string> QueryString = App.QueryString;
             if (QueryString != null && QueryString.ContainsKey("type") && QueryString["type"] == "register")
             {
                 string QueryName = QueryString.ContainsKey("username") ? QueryString["username"] : null;
@@ -939,7 +939,7 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
+                IDictionary<string, string> CheckPasswordResult = (IDictionary<string, string>)result;
                 if (remember)
                 {
                     Persistent.SetValue("username", Username);
@@ -1021,7 +1021,7 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                Dictionary<string, string> GetCredentialResult = (Dictionary<string, string>)result;
+                IDictionary<string, string> GetCredentialResult = (IDictionary<string, string>)result;
                 string ResultSalt = GetCredentialResult["salt"];
                 string ResultPasswordSettings = GetCredentialResult["password_settings"];
 
@@ -1045,7 +1045,7 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                Dictionary<string, string> SignInResult = (Dictionary<string, string>)result;
+                IDictionary<string, string> SignInResult = (IDictionary<string, string>)result;
                 Username = SignInResult["username"];
                 EmailAddress = SignInResult["email_address"];
                 Salt = TestSalt;
@@ -1083,7 +1083,7 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.login_failedPage);
         }
 
-        protected virtual void OnSignIn(Dictionary<string, string> signInResult)
+        protected virtual void OnSignIn(IDictionary<string, string> signInResult)
         {
         }
         #endregion
@@ -1345,7 +1345,7 @@ namespace AppCSHtml5
 
         public void On_RecoveryEnd(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
-            Dictionary<string, string> QueryString = App.QueryString;
+            IDictionary<string, string> QueryString = App.QueryString;
             if (QueryString != null && QueryString.ContainsKey("type") && QueryString["type"] == "recovery")
             {
                 string QueryName = QueryString.ContainsKey("username") ? QueryString["username"] : null;
@@ -1425,7 +1425,7 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                Dictionary<string, string> CheckPasswordResult = (Dictionary<string, string>)result;
+                IDictionary<string, string> CheckPasswordResult = (IDictionary<string, string>)result;
 
                 LoginState = LoginStates.SignedIn;
                 Transaction = null;
@@ -1712,27 +1712,27 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("/request/query_salt.php", OnQuerySaltRequest));
-            OperationHandler.Add(new OperationHandler("/request/insert_credential.php", OnInsertCredentialRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_activate.php", OnCompleteSignUpRequest));
-            OperationHandler.Add(new OperationHandler("/request/query_sign_in.php", OnSignInRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_change_password.php", OnChangePasswordRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_change_email_address.php", OnChangeEmailAddressRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_change_username.php", OnChangeUsernameRequest));
+            OperationHandler.Add(new OperationHandler("request/query_salt.php", OnQuerySaltRequest));
+            OperationHandler.Add(new OperationHandler("request/insert_credential.php", OnInsertCredentialRequest));
+            OperationHandler.Add(new OperationHandler("request/update_activate.php", OnCompleteSignUpRequest));
+            OperationHandler.Add(new OperationHandler("request/query_sign_in.php", OnSignInRequest));
+            OperationHandler.Add(new OperationHandler("request/update_change_password.php", OnChangePasswordRequest));
+            OperationHandler.Add(new OperationHandler("request/update_change_email_address.php", OnChangeEmailAddressRequest));
+            OperationHandler.Add(new OperationHandler("request/update_change_username.php", OnChangeUsernameRequest));
 #if QACHALLENGE
-            OperationHandler.Add(new OperationHandler("/request/update_change_challenge.php", OnChangeChallengeRequest));
+            OperationHandler.Add(new OperationHandler("request/update_change_challenge.php", OnChangeChallengeRequest));
 #endif
-            OperationHandler.Add(new OperationHandler("/request/update_begin_recovery.php", OnRecoveryRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_complete_recovery.php", OnCompleteRecoveryRequest));
-            OperationHandler.Add(new OperationHandler("/request/update_delete_credential.php", OnDeleteAccountRequest));
-            OperationHandler.Add(new OperationHandler("/request/query_credential_taken.php", OnQueryCredentialTakenRequest));
+            OperationHandler.Add(new OperationHandler("request/update_begin_recovery.php", OnRecoveryRequest));
+            OperationHandler.Add(new OperationHandler("request/update_complete_recovery.php", OnCompleteRecoveryRequest));
+            OperationHandler.Add(new OperationHandler("request/update_delete_credential.php", OnDeleteAccountRequest));
+            OperationHandler.Add(new OperationHandler("request/query_credential_taken.php", OnQueryCredentialTakenRequest));
 
             InitializeBuiltInItems();
         }
 
-        private List<Dictionary<string, string>> OnQuerySaltRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnQuerySaltRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryIdentifier = ParseQueryParameter(parameters, "identifier", true);
 
@@ -1761,9 +1761,9 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnInsertCredentialRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnInsertCredentialRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
@@ -1847,7 +1847,7 @@ namespace AppCSHtml5
             {
                 if (MessageBox.Show("Continue registration?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    Dictionary<string, string> QueryString = App.QueryString;
+                    IDictionary<string, string> QueryString = App.QueryString;
                     QueryString.Clear();
                     QueryString.Add("type", "register");
                     QueryString.Add("username", ResultUsername);
@@ -1872,7 +1872,7 @@ namespace AppCSHtml5
             {
                 if (MessageBox.Show("Continue registration?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    Dictionary<string, string> QueryString = App.QueryString;
+                    IDictionary<string, string> QueryString = App.QueryString;
                     QueryString.Clear();
                     QueryString.Add("type", "register");
                     QueryString.Add("username", ResultUsername);
@@ -1888,9 +1888,9 @@ namespace AppCSHtml5
 #endif
         }
 
-        private List<Dictionary<string, string>> OnCompleteSignUpRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnCompleteSignUpRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string QueryEmailAddress = ParseQueryParameter(parameters, "email_address", true);
@@ -1948,9 +1948,9 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnSignInRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnSignInRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryIdentifier = ParseQueryParameter(parameters, "identifier", true);
             string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
@@ -1959,7 +1959,7 @@ namespace AppCSHtml5
             if (string.IsNullOrEmpty(QueryIdentifier) || string.IsNullOrEmpty(EncryptedPassword) || PasswordSettings == null)
                 return Result;
 
-            if (Factory.Get(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out Dictionary<string, string> Record))
+            if (Factory.Get(DatabaseCredentialTable, EncryptedPassword, PasswordSettings, QueryIdentifier, out IDictionary<string, string> Record))
             {
                 string ResultUsername = Record["username"];
                 bool IsDeletionCanceled = CredentialRecordBase.cancel_credential_deletion(DatabaseCredentialTable, ResultUsername, EncryptedPassword, PasswordSettings);
@@ -1980,9 +1980,9 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnChangePasswordRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnChangePasswordRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
@@ -2007,9 +2007,9 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnChangeEmailAddressRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnChangeEmailAddressRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
@@ -2032,9 +2032,9 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnChangeUsernameRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnChangeUsernameRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
@@ -2058,9 +2058,9 @@ namespace AppCSHtml5
         }
 
 #if QACHALLENGE
-        private List<Dictionary<string, string>> OnChangeChallengeRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnChangeChallengeRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
@@ -2099,9 +2099,9 @@ namespace AppCSHtml5
         }
 #endif
 
-        private List<Dictionary<string, string>> OnRecoveryRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnRecoveryRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryEmailAddress = ParseQueryParameter(parameters, "email_address", true);
             string QueryLanguage = ParseQueryParameter(parameters, "language", false);
@@ -2159,7 +2159,7 @@ namespace AppCSHtml5
             {
                 if (MessageBox.Show("Continue recovery?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    Dictionary<string, string> QueryString = App.QueryString;
+                    IDictionary<string, string> QueryString = App.QueryString;
                     QueryString.Clear();
                     QueryString.Add("type", "recovery");
                     QueryString.Add("username", ResultUsername);
@@ -2182,7 +2182,7 @@ namespace AppCSHtml5
             {
                 if (MessageBox.Show("Continue recovery?", "Email sent", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    Dictionary<string, string> QueryString = App.QueryString;
+                    IDictionary<string, string> QueryString = App.QueryString;
                     QueryString.Clear();
                     QueryString.Add("type", "recovery");
                     QueryString.Add("username", ResultUsername);
@@ -2197,9 +2197,9 @@ namespace AppCSHtml5
 #endif
         }
 
-        private List<Dictionary<string, string>> OnCompleteRecoveryRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnCompleteRecoveryRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string EncryptedNewPassword = ParseQueryParameter(parameters, "new_password", false);
@@ -2241,9 +2241,9 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnDeleteAccountRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnDeleteAccountRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string EncryptedPassword = ParseQueryParameter(parameters, "password", false);
@@ -2281,9 +2281,9 @@ namespace AppCSHtml5
             return Result;
         }
 
-        private List<Dictionary<string, string>> OnQueryCredentialTakenRequest(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnQueryCredentialTakenRequest(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string QueryUsername = ParseQueryParameter(parameters, "username", true);
             string QueryEmailAddress = ParseQueryParameter(parameters, "email_address", true);
@@ -2337,7 +2337,7 @@ namespace AppCSHtml5
             return Result;
         }
 
-        public static string ParseQueryParameter(Dictionary<string, string> parameters, string parameterName, bool isEncoded)
+        public static string ParseQueryParameter(IDictionary<string, string> parameters, string parameterName, bool isEncoded)
         {
             if (parameters.ContainsKey(parameterName))
                 if (isEncoded)

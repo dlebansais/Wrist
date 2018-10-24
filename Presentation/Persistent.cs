@@ -104,7 +104,7 @@ namespace Presentation
             return Content;
         }
 
-        private static Dictionary<string, string> StateTable = null;
+        private static IDictionary<string, string> StateTable = null;
         #endregion
     }
 }

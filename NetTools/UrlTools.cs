@@ -42,9 +42,9 @@ namespace NetTools
             return UrlAsString;
         }
 
-        public static Dictionary<string, string> GetQueryString()
+        public static IDictionary<string, string> GetQueryString()
         {
-            Dictionary<string, string> Result = new Dictionary<string, string>();
+            IDictionary<string, string> Result = new Dictionary<string, string>();
 
             object Url = GetDocumentUrl();
             if (Url != null)

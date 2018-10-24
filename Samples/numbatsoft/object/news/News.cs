@@ -73,9 +73,9 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                List<Dictionary<string, string>> NewsList = (List<Dictionary<string, string>>)result;
+                List<IDictionary<string, string>> NewsList = (List<IDictionary<string, string>>)result;
 
-                foreach (Dictionary<string, string> Item in NewsList)
+                foreach (IDictionary<string, string> Item in NewsList)
                 {
                     NewsEntry NewEntry = new NewsEntry(Item["created"], Item["enu_summary"], Item["enu_content"], Item["fra_summary"], Item["fra_content"]);
                     _AllNews.Add(NewEntry);
@@ -89,21 +89,16 @@ namespace AppCSHtml5
         #region Operations
         private void GetAllNews(Action<int, object> callback)
         {
-            Database.Completed += OnGetAllNewsCompleted;
-            Database.Query(new DatabaseQueryOperation("get all news entries", "query_all_news.php", new Dictionary<string, string>(), callback));
+            Database.Query(new DatabaseQueryOperation("get all news entries", "query_all_news.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetAllNewsCompleted(sender, e, callback)));
         }
 
-        private void OnGetAllNewsCompleted(object sender, CompletionEventArgs e)
+        private void OnGetAllNewsCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnGetAllNewsCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            List<Dictionary<string, string>> Result;
+            List<IDictionary<string, string>> Result;
             if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "created", "enu_summary", "enu_content", "fra_summary", "fra_content" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.Success, Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
         #endregion
 
@@ -113,12 +108,12 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("/request/query_all_news.php", OnQueryNews));
+            OperationHandler.Add(new OperationHandler("request/query_all_news.php", OnQueryNews));
         }
 
-        private List<Dictionary<string, string>> OnQueryNews(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnQueryNews(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             Result.Add(new Dictionary<string, string>()
             {

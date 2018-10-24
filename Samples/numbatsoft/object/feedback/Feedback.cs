@@ -34,16 +34,12 @@ namespace AppCSHtml5
         #region Operations
         private void SendFeedback(string content, Action<int, object> callback)
         {
-            Database.Completed += OnSendFeedbackCompleted;
-            Database.Update(new DatabaseUpdateOperation("send feedback", "update_feedback.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("send feedback", "update_feedback.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, (object sender, CompletionEventArgs e) => OnSendFeedbackCompleted(sender, e, callback)));
         }
 
-        private void OnSendFeedbackCompleted(object sender, CompletionEventArgs e)
+        private void OnSendFeedbackCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnSendFeedbackCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-            Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.Success, new Dictionary<string, string>()));
+            Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.Success, new Dictionary<string, string>()));
         }
 
         private Database Database = Database.Current;
@@ -55,12 +51,12 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("/request/update_feedback.php", OnCompleteSendFeedback));
+            OperationHandler.Add(new OperationHandler("request/update_feedback.php", OnCompleteSendFeedback));
         }
 
-        private List<Dictionary<string, string>> OnCompleteSendFeedback(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnCompleteSendFeedback(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             string Content;
             if (parameters.ContainsKey("content"))

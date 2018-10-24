@@ -5,7 +5,7 @@ namespace NetTools
 {
     public abstract class DatabaseOperation
     {
-        public DatabaseOperation(string name, string scriptName, Dictionary<string, string> parameters, CompletionEventHandler callback)
+        public DatabaseOperation(string name, string scriptName, IDictionary<string, string> parameters, CompletionEventHandler callback)
         {
             Name = name;
             ScriptName = scriptName;
@@ -15,7 +15,7 @@ namespace NetTools
 
         public string Name { get; private set; }
         public string ScriptName { get; private set; }
-        public Dictionary<string, string> Parameters { get; private set; }
+        public IDictionary<string, string> Parameters { get; private set; }
         public CompletionEventHandler Callback { get; private set; }
 
         public virtual string RequestString(string requestScriptPath)

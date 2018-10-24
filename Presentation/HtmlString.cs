@@ -4,8 +4,8 @@ namespace Presentation
 {
     public static class HtmlString
     {
-        private static Dictionary<string, string> EncodingTable;
-        private static Dictionary<string, string> DecodingTable;
+        private static IDictionary<string, string> EncodingTable;
+        private static IDictionary<string, string> DecodingTable;
 
         static HtmlString()
         {

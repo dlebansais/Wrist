@@ -46,7 +46,7 @@ namespace AppCSHtml5
         {
             if (error == (int)ErrorCodes.Success && result != null)
             {
-                Dictionary<string, string> Item = (Dictionary<string, string>)result;
+                IDictionary<string, string> Item = (IDictionary<string, string>)result;
 
                 SampleCode SampleCode = _AllSampleCodes[title];
                 SampleCode.UpdateContent(Item["front_page"] != "0", Item["feature"], Encoding.UTF8.GetString(Convert.FromBase64String(Item["text"])), Item["title_enu"], Item["title_fra"]);
@@ -87,9 +87,9 @@ namespace AppCSHtml5
             OperationHandler.Add(new OperationHandler($"{Database.QueryScriptPath}query_sample_code.php", OnQuerySampleCode));
         }
 
-        private List<Dictionary<string, string>> OnQuerySampleCode(Dictionary<string, string> parameters)
+        private List<IDictionary<string, string>> OnQuerySampleCode(IDictionary<string, string> parameters)
         {
-            List<Dictionary<string, string>> Result = new List<Dictionary<string, string>>();
+            List<IDictionary<string, string>> Result = new List<IDictionary<string, string>>();
 
             Result.Add(new Dictionary<string, string>()
             {
