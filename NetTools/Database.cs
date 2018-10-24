@@ -134,7 +134,8 @@ namespace NetTools
                 Operation.Callback?.Invoke(this, new CompletionEventArgs(Operation));
             }
 
-            Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(PopRequest);
+            if (DownloadClientTable.Count > 0)
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(PopRequest);
         }
 
         private IDictionary<string, KeyValuePair<DatabaseOperation, WebClient>> DownloadClientTable = new Dictionary<string, KeyValuePair<DatabaseOperation, WebClient>>();

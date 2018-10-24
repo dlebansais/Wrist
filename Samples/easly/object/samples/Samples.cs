@@ -95,7 +95,7 @@ namespace AppCSHtml5
             {
                 { "front_page", "0" },
                 { "feature", "abstract_methods" },
-                { "text", "<p><span id=\"sc_neutral\">Insert</span>&nbsp;<span id=\"sc_keyword\">procedure</span></p>" },
+                { "text", Convert.ToBase64String(Encoding.UTF8.GetBytes("<p><span id=\"sc_neutral\">Insert</span>&nbsp;<span id=\"sc_keyword\">procedure</span></p>")) },
                 { "title_enu", "Declaration of an abstract method" },
                 { "title_fra", "Déclaration d'une méthode abstraite" },
                 { "result", ((int)ErrorCodes.Success).ToString() },
