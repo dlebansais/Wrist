@@ -9,24 +9,27 @@ namespace AppCSHtml5
     {
         private static readonly string ContentStyle =
             "<style type='text/css'>\n" +
-            "#sc_root		{border-style:solid; border-width:3px; border-color:#00828F; border-radius:5px; font-family:Consolas; padding:10px 10px 0 10px; margin-bottom:10px; margin-left:10px; margin-right:10px; text-align:left; }\n" +
-            "#sc_root_floating	{border-style:solid; border-width:3px; border-color:#00828F; border-radius:5px; font-family:Consolas; padding:10px 10px 0 10px; margin-bottom:10px; margin-left:10px; margin-right:10px; float:left; width:390px; min-height:310px; text-align:left; }\n" +
-            "#sc_root p		{margin:0; padding:0 0 2px 0; }\n" +
-            "#sc_root_floating p	{margin:0; padding:0 0 2px 0; }\n" +
-            "#sc_legend		{font-family:\"Trebuchet MS\", verdana, arial, \"Times New Roman\", serif; padding-bottom:20px; float:right; }\n" +
-            "#sc_legend_floating	{font-family:\"Trebuchet MS\", verdana, arial, \"Times New Roman\", serif; padding-bottom:20px; text-align:center; }\n" +
-            "#sc_neutral		{color:#000000; }\n" +
-            "#sc_keyword		{color:#0000FF; }\n" +
-            "#sc_type		{color:#2B91AF; }\n" +
-            "#sc_char		{color:#FFA500; }\n" +
-            "#sc_string		{color:#FFA500; }\n" +
-            "#sc_number_black	{color:#000000; }\n" +
-            "#sc_number_blue		{color:#0000FF; }\n" +
-            "#sc_number_green	{color:#008000; }\n" +
-            "#sc_enum		{color:#8B0000; }\n" +
-            "#sc_tab			{padding-right:16px; }\n" +
+            "p                   {margin:0; padding:0 0 15px 0; }\n" +
+            "#sc_root		     {border-style:solid; border-width:3px; border-color:#00828F; border-radius:5px; font-family:Consolas; padding:10px 10px 0 10px; margin-bottom:10px; margin-left:10px; margin-right:10px; text-align:left; }\n" +
+            "#sc_root_floating   {border-style:solid; border-width:3px; border-color:#00828F; border-radius:5px; font-family:Consolas; padding:10px 10px 0 10px; margin-bottom:10px; margin-left:10px; margin-right:10px; float:left; width:390px; min-height:310px; text-align:left; }\n" +
+            "#sc_root p          {margin:0; padding:0 0 2px 0; }\n" +
+            "#sc_root_floating p {margin:0; padding:0 0 2px 0; }\n" +
+            "#sc_legend          {font-family:\"Trebuchet MS\", verdana, arial, \"Times New Roman\", serif; padding-bottom:20px; float:right; }\n" +
+            "#sc_legend_floating {font-family:\"Trebuchet MS\", verdana, arial, \"Times New Roman\", serif; padding-bottom:20px; text-align:center; }\n" +
+            "#sc_neutral         {color:#000000; }\n" +
+            "#sc_keyword         {color:#0000FF; }\n" +
+            "#sc_type            {color:#2B91AF; }\n" +
+            "#sc_char            {color:#FFA500; }\n" +
+            "#sc_string          {color:#FFA500; }\n" +
+            "#sc_number_black    {color:#000000; }\n" +
+            "#sc_number_blue     {color:#0000FF; }\n" +
+            "#sc_number_green    {color:#008000; }\n" +
+            "#sc_enum            {color:#8B0000; }\n" +
+            "#sc_tab             {padding-right:16px; }\n" +
             "</style>\n";
 
+        private static readonly string ContentHeader = "<div id=\"sc_root\">\n";
+        private static readonly string ContentFooter = "</div>\n";
 
         public SampleCode()
         {
@@ -43,7 +46,7 @@ namespace AppCSHtml5
         public void UpdateContent(bool isFrontPage, string feature, string content, string titleEnu, string titleFra)
         {
             IsFrontPage = isFrontPage;
-            Content = $"{ContentStyle}\n{content}";
+            Content = $"{ContentStyle}\n{ContentHeader}{content}{ContentFooter}";
             Feature = feature;
 
             TitleTable[LanguageStates.English] = titleEnu;
