@@ -18,6 +18,7 @@
     <ResourceDictionary Source="/Selector.xaml"/>
     <ResourceDictionary Source="/Text.xaml"/>
     <ResourceDictionary Source="/TextBold.xaml"/>
+    <ResourceDictionary Source="/TextItalic.xaml"/>
     <ResourceDictionary Source="/TextLogin.xaml"/>
     <ResourceDictionary Source="/TextPageTitle.xaml"/>
     <ResourceDictionary Source="/TextSiteTitle.xaml"/>

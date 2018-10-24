@@ -82,8 +82,8 @@ page-home	Welcome!	Bienvenue !
 page-login	Login	Connexion
 page-login-failed	Login	Connexion
 page-news	News	Nouveautés
-page-feature-abstract-methods	Abstract Methods	Abstract Methods
-page-feature-agents	Agents	Agents
+page-feature-abstract-methods	Features	Fonctionnalités
+page-feature-agents	Features	Fonctionnalités
 home-text	.	.
 login	Login	Connexion
 other-language	French	Anglais
