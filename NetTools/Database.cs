@@ -18,12 +18,11 @@ namespace NetTools
 
         public bool DebugLog { get; set; } = false;
         public bool DebugLogFullResponse { get; set; } = false;
-        public string QueryScriptPath { get; set; } = "/request/";
-        public string UpdateScriptPath { get; set; } = "/request/";
-        public string EncryptScriptPath { get; set; } = "/request/";
+        public string QueryScriptPath { get; set; } = "request/";
+        public string UpdateScriptPath { get; set; } = "request/";
+        public string EncryptScriptPath { get; set; } = "request/";
 
-        public event CompletionEventHandler Completed;
-        public Dictionary<DatabaseOperation, List<Dictionary<string, object>>> RequestResultTable { get; } = new Dictionary<DatabaseOperation, List<Dictionary<string, object>>>();
+        public IDictionary<DatabaseOperation, List<IDictionary<string, object>>> RequestResultTable { get; } = new Dictionary<DatabaseOperation, List<IDictionary<string, object>>>();
 
         public void AddLogEntry(string text)
         {
@@ -57,7 +56,8 @@ namespace NetTools
                 DownloadClientTable.Add(AddressString, new KeyValuePair<DatabaseOperation, WebClient>(operation, new WebClient()));
                 AddLogEntry($"{operation.TypeName} added");
 
-                PopRequest();
+                if (DownloadClientTable.Count == 1)
+                    PopRequest();
             }
             else
                 AddLogEntry($"An identical {operation.TypeName} request is already queued");
@@ -69,11 +69,13 @@ namespace NetTools
             {
                 foreach (KeyValuePair<string, KeyValuePair<DatabaseOperation, WebClient>> Entry in DownloadClientTable)
                 {
-                    string AddressString = Entry.Key;
+                    string RootUrl = UrlTools.GetBaseUrl();
+                    string AddressString = $"{RootUrl}{Entry.Key}";
                     DatabaseOperation Operation = Entry.Value.Key;
                     WebClient DownloadClient = Entry.Value.Value;
 
                     AddLogEntry("Request started");
+                    AddLogEntry($"Address: {AddressString}");
 
                     CurrentDownload = DownloadClient;
                     CurrentOperation = Operation;
@@ -115,7 +117,7 @@ namespace NetTools
 
                 AddLogEntry($"Request {Operation.Name} completed");
 
-                List<Dictionary<string, object>> RequestResult = new List<Dictionary<string, object>>();
+                List<IDictionary<string, object>> RequestResult = new List<IDictionary<string, object>>();
 
                 try
                 {
@@ -129,13 +131,13 @@ namespace NetTools
 
                 RequestResultTable.Add(Operation, RequestResult);
                 AddLogEntry($"Request {Operation.Name} result available");
-                Completed?.Invoke(this, new CompletionEventArgs(Operation));
+                Operation.Callback?.Invoke(this, new CompletionEventArgs(Operation));
             }
 
-            PopRequest();
+            Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(PopRequest);
         }
 
-        private Dictionary<string, KeyValuePair<DatabaseOperation, WebClient>> DownloadClientTable = new Dictionary<string, KeyValuePair<DatabaseOperation, WebClient>>();
+        private IDictionary<string, KeyValuePair<DatabaseOperation, WebClient>> DownloadClientTable = new Dictionary<string, KeyValuePair<DatabaseOperation, WebClient>>();
         private WebClient CurrentDownload = null;
         private DatabaseOperation CurrentOperation = null;
 
@@ -143,9 +145,9 @@ namespace NetTools
         public static readonly string StartLinePattern = "<p>";
         public static readonly string EndLinePattern = "</p>";
 
-        private List<Dictionary<string, object>> ParseResponse(string content)
+        private List<IDictionary<string, object>> ParseResponse(string content)
         {
-            List<Dictionary<string, object>> Result = new List<Dictionary<string, object>>();
+            List<IDictionary<string, object>> Result = new List<IDictionary<string, object>>();
 
             if (DebugLogFullResponse)
                 AddLogEntry(content);
@@ -153,7 +155,7 @@ namespace NetTools
             int RecordStart = 0;
             while ((RecordStart = content.IndexOf(RecordPattern, RecordStart)) >= 0)
             {
-                Dictionary<string, object> NewEntry = new Dictionary<string, object>();
+                IDictionary<string, object> NewEntry = new Dictionary<string, object>();
 
                 RecordStart += RecordPattern.Length;
 
@@ -188,15 +190,15 @@ namespace NetTools
 
         public void DebugWriteState()
         {
-            foreach (KeyValuePair<DatabaseOperation, List<Dictionary<string, object>>> ResultEntry in RequestResultTable)
+            foreach (KeyValuePair<DatabaseOperation, List<IDictionary<string, object>>> ResultEntry in RequestResultTable)
             {
                 DatabaseOperation Operation = ResultEntry.Key;
-                List<Dictionary<string, object>> ResultList = ResultEntry.Value;
+                List<IDictionary<string, object>> ResultList = ResultEntry.Value;
                 AddLogEntry($"Operation: {Operation.Name}, {ResultList.Count} entries");
 
                 for (int i = 0; i < ResultList.Count; i++)
                 {
-                    Dictionary<string, object> Item = ResultList[i];
+                    IDictionary<string, object> Item = ResultList[i];
                     AddLogEntry($"#{i}, {Item.Count} keys");
 
                     foreach (KeyValuePair<string, object> Entry in Item)
@@ -205,16 +207,16 @@ namespace NetTools
             }
         }
 
-        public Dictionary<string, string> ProcessSingleResponse(DatabaseOperation operation, List<string> keyList)
+        public IDictionary<string, string> ProcessSingleResponse(DatabaseOperation operation, List<string> keyList)
         {
-            Dictionary<string, string> Result = null;
+            IDictionary<string, string> Result = null;
 
             if (RequestResultTable.ContainsKey(operation))
             {
-                List<Dictionary<string, object>> ResultList = RequestResultTable[operation];
+                List<IDictionary<string, object>> ResultList = RequestResultTable[operation];
                 RequestResultTable.Remove(operation);
 
-                foreach (Dictionary<string, object> Item in ResultList)
+                foreach (IDictionary<string, object> Item in ResultList)
                 {
                     foreach (string Key in keyList)
                     {
@@ -234,18 +236,18 @@ namespace NetTools
             return Result;
         }
 
-        public List<Dictionary<string, string>> ProcessMultipleResponse(DatabaseOperation operation, List<string> keyList)
+        public List<IDictionary<string, string>> ProcessMultipleResponse(DatabaseOperation operation, List<string> keyList)
         {
-            List<Dictionary<string, string>> Result = null;
+            List<IDictionary<string, string>> Result = null;
 
             if (RequestResultTable.ContainsKey(operation))
             {
-                List<Dictionary<string, object>> ResultList = RequestResultTable[operation];
+                List<IDictionary<string, object>> ResultList = RequestResultTable[operation];
                 RequestResultTable.Remove(operation);
 
-                foreach (Dictionary<string, object> Item in ResultList)
+                foreach (IDictionary<string, object> Item in ResultList)
                 {
-                    Dictionary<string, string> ResultLine = null;
+                    IDictionary<string, string> ResultLine = null;
                     foreach (string Key in keyList)
                     {
                         if (Item.ContainsKey(Key) && (ResultLine == null || !ResultLine.ContainsKey(Key)) && Item[Key] is string)
@@ -254,7 +256,7 @@ namespace NetTools
                             {
                                 ResultLine = new Dictionary<string, string>();
                                 if (Result == null)
-                                    Result = new List<Dictionary<string, string>>();
+                                    Result = new List<IDictionary<string, string>>();
 
                                 Result.Add(ResultLine);
                             }

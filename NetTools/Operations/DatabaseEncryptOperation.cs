@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace NetTools
 {
     public class DatabaseEncryptOperation : DatabaseOperation
     {
-        public DatabaseEncryptOperation(string name, string scriptName, string constantName, string constantValue, string parameterName, string parameterValue, Action<int, object> callback)
+        public DatabaseEncryptOperation(string name, string scriptName, string constantName, string constantValue, string parameterName, string parameterValue, CompletionEventHandler callback)
             : base(name, scriptName, new Dictionary<string, string>() { { constantName, constantValue }, { parameterName, parameterValue } }, callback)
         {
         }

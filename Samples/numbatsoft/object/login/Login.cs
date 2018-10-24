@@ -1509,261 +1509,198 @@ namespace AppCSHtml5
         #region Transactions
         private void QueryCredentialTaken(string username, string email, Action<int, object> callback)
         {
-            Database.Completed += OnQueryCredentialTakenCompleted;
-            Database.Query(new DatabaseQueryOperation("new credential", "query_credential_taken.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) } }, callback));
+            Database.Query(new DatabaseQueryOperation("new credential", "query_credential_taken.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) } }, (object sender, CompletionEventArgs e) => OnQueryCredentialTakenCompleted(sender, e, callback)));
         }
 
-        private void OnQueryCredentialTakenCompleted(object sender, CompletionEventArgs e)
+        private void OnQueryCredentialTakenCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnQueryCredentialTakenCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result", "salt" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.OperationFailed, null));
         }
 
         private void ChangePassword(string username, string encryptedCurrentPassword, string encryptedCurrentPasswordSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
         {
-            Database.Completed += OnChangePasswordCompleted;
-            Database.Update(new DatabaseUpdateOperation("change password", "update_change_password.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change password", "update_change_password.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, (object sender, CompletionEventArgs e) => OnChangePasswordCompleted(sender, e, callback)));
         }
 
-        private void OnChangePasswordCompleted(object sender, CompletionEventArgs e)
+        private void OnChangePasswordCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnChangePasswordCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(-1, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(-1, null));
         }
 
         private void ChangeEmailAddress(string username, string encryptedPassword, string encryptedPasswordSettings, string newEmailAddress, Action<int, object> callback)
         {
-            Database.Completed += OnChangeEmailAddressCompleted;
-            Database.Update(new DatabaseUpdateOperation("change email", "update_change_email_address.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_email_address", HtmlString.PercentEncoded(newEmailAddress) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change email", "update_change_email_address.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_email_address", HtmlString.PercentEncoded(newEmailAddress) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnChangeEmailAddressCompleted(sender, e, callback)));
         }
 
-        private void OnChangeEmailAddressCompleted(object sender, CompletionEventArgs e)
+        private void OnChangeEmailAddressCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnChangeEmailAddressCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
         private void ChangeUsername(string username, string encryptedPassword, string encryptedPasswordSettings, string newUsername, Action<int, object> callback)
         {
-            Database.Completed += OnChangeUsernameCompleted;
-            Database.Update(new DatabaseUpdateOperation("change email", "update_change_username.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_username", HtmlString.PercentEncoded(newUsername) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change email", "update_change_username.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_username", HtmlString.PercentEncoded(newUsername) } }, (object sender, CompletionEventArgs e) => OnChangeUsernameCompleted(sender, e, callback)));
         }
 
-        private void OnChangeUsernameCompleted(object sender, CompletionEventArgs e)
+        private void OnChangeUsernameCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnChangeUsernameCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
 #if QACHALLENGE
         private void ChangeChallenge(string username, string encryptedPassword, string encryptedPasswordSettings, string newQuestion, string encryptedNewAnswer, string encryptedNewAnswerSettings, Action<int, object> callback)
         {
-            Database.Completed += OnChangeChallengeCompleted;
-            Database.Update(new DatabaseUpdateOperation("change challenge", "update_change_challenge.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_question", HtmlString.PercentEncoded(newQuestion) }, { "new_answer", encryptedNewAnswer }, { "new_answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, callback));
+            Database.Update(new DatabaseUpdateOperation("change challenge", "update_change_challenge.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_question", HtmlString.PercentEncoded(newQuestion) }, { "new_answer", encryptedNewAnswer }, { "new_answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, (object sender, CompletionEventArgs e) => OnChangeChallengeCompleted(sender, e, callback)));
         }
 
-        private void OnChangeChallengeCompleted(object sender, CompletionEventArgs e)
+        private void OnChangeChallengeCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnChangeChallengeCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 #endif
 
 #if QACHALLENGE
         private void RegisterAndSendEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string email, string question, string encryptedAnswer, string encryptedAnswerSettings, string salt, Action<int, object> callback)
         {
-            Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRegisterSendEmailCompleted(sender, e, callback)));
         }
 #else
         private void RegisterAndSendEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string email, string salt, Action<int, object> callback)
         {
-            Database.Completed += OnRegisterSendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start register", "insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRegisterSendEmailCompleted(sender, e, callback)));
         }
 #endif
 
-        private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e)
+        private void OnRegisterSendEmailCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnRegisterSendEmailCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
         private void BeginRecoveryAndSendEmail(string email, Action<int, object> callback)
         {
-            Database.Completed += OnRecoverySendEmailCompleted;
-            Database.Update(new DatabaseUpdateOperation("start recovery", "update_begin_recovery.php", new Dictionary<string, string>() { { "email_address", HtmlString.PercentEncoded(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("start recovery", "update_begin_recovery.php", new Dictionary<string, string>() { { "email_address", HtmlString.PercentEncoded(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRecoverySendEmailCompleted(sender, e, callback)));
         }
 
-        private void OnRecoverySendEmailCompleted(object sender, CompletionEventArgs e)
+        private void OnRecoverySendEmailCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnRecoverySendEmailCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
 #if QACHALLENGE
         private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, string transactionCode, Action<int, object> callback)
         {
-            Database.Completed += OnActivateAccountCompleted;
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnActivateAccountCompleted(sender, e, callback)));
         }
 #else
         private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string transactionCode, Action<int, object> callback)
         {
-            Database.Completed += OnActivateAccountCompleted;
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Update(new DatabaseUpdateOperation("activate account", "update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnActivateAccountCompleted(sender, e, callback)));
         }
 #endif
 
-        private void OnActivateAccountCompleted(object sender, CompletionEventArgs e)
+        private void OnActivateAccountCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnActivateAccountCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
 #if QACHALLENGE
         private void RecoverAccount(string username, string encryptedNewPassword, string encryptedNewPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, string transactionCode, Action<int, object> callback)
         {
-            Database.Completed += OnAccountRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode } }, callback));
+            Database.Update(new DatabaseUpdateOperation("recover account", "update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode } }, (object sender, CompletionEventArgs e) => OnAccountRecoveryCompleted(sender, e, callback)));
         }
 #else
         private void RecoverAccount(string username, string encryptedNewPassword, string encryptedNewPasswordSettings, string transactionCode, Action<int, object> callback)
         {
-            Database.Completed += OnAccountRecoveryCompleted;
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "transaction_code", transactionCode } }, callback));
+            Database.Update(new DatabaseUpdateOperation("recover account", "update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "transaction_code", transactionCode } }, (object sender, CompletionEventArgs e) => OnAccountRecoveryCompleted(sender, e, callback)));
         }
 #endif
 
-        private void OnAccountRecoveryCompleted(object sender, CompletionEventArgs e)
+        private void OnAccountRecoveryCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnAccountRecoveryCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
         private void GetUserSalt(string identifier, Action<int, object> callback)
         {
-            Database.Completed += OnGetUserSaltCompleted;
-            Database.Query(new DatabaseQueryOperation("get user salt", "query_salt.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) } }, callback));
+            Database.Query(new DatabaseQueryOperation("get user salt", "query_salt.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) } }, (object sender, CompletionEventArgs e) => OnGetUserSaltCompleted(sender, e, callback)));
         }
 
-        private void OnGetUserSaltCompleted(object sender, CompletionEventArgs e)
+        private void OnGetUserSaltCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnGetUserSaltCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result", "salt", "password_settings" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.OperationFailed, null));
         }
 
         private void SignIn(string identifier, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
         {
-            Database.Completed += OnSignInCompleted;
-            Database.Query(new DatabaseQueryOperation("sign in", "query_sign_in.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, callback));
+            Database.Query(new DatabaseQueryOperation("sign in", "query_sign_in.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, (object sender, CompletionEventArgs e) => OnSignInCompleted(sender, e, callback)));
         }
 
-        private void OnSignInCompleted(object sender, CompletionEventArgs e)
+        private void OnSignInCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnSignInCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
 #if QACHALLENGE
             List<string> ExpectedFields = new List<string>() { "username", "email_address", "password_settings", "question", "answer_settings", "name", "login_url", "meeting_url", "validation_url", "delete_canceled", "result" };
 #else
             List<string> ExpectedFields = new List<string>() { "username", "email_address", "password_settings", "name", "login_url", "meeting_url", "validation_url", "delete_canceled", "result" };
 #endif
             if ((Result = Database.ProcessSingleResponse(e.Operation, ExpectedFields)) != null && Result.ContainsKey("result"))
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.OperationFailed, null));
         }
 
         private void DeleteAccount(string Username, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
         {
-            Database.Completed += OnDeleteAccountCompleted;
-            Database.Query(new DatabaseQueryOperation("delete account", "update_delete_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(Username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, callback));
+            Database.Query(new DatabaseQueryOperation("delete account", "update_delete_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(Username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnDeleteAccountCompleted(sender, e, callback)));
         }
 
-        private void OnDeleteAccountCompleted(object sender, CompletionEventArgs e)
+        private void OnDeleteAccountCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnDeleteAccountCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "result" })) != null && Result.ContainsKey("result"))
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.OperationFailed, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.OperationFailed, null));
         }
 
         private Database Database = Database.Current;
@@ -2404,7 +2341,7 @@ namespace AppCSHtml5
         {
             if (parameters.ContainsKey(parameterName))
                 if (isEncoded)
-                    return HtmlString.PercentDecode(parameters[parameterName]);
+                    return HtmlString.PercentDecoded(parameters[parameterName]);
                 else
                     return parameters[parameterName];
             else

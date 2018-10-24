@@ -24,13 +24,6 @@ namespace AppCSHtml5
 
             Database.DebugLog = true;
             Database.DebugLogFullResponse = true;
-
-            string url = UrlTools.GetDocumentUrl() as string;
-            System.Diagnostics.Debug.WriteLine($"DocumentUrl = {url}");
-
-            Database.QueryScriptPath = url + "request/";
-            Database.UpdateScriptPath = url + "request/";
-            Database.EncryptScriptPath = url + "request/";
         }
 
         private Dictionary<string, SampleCode> _AllSampleCodes = new Dictionary<string, SampleCode>();
@@ -45,6 +38,7 @@ namespace AppCSHtml5
                 _AllSampleCodes.Add(title, new SampleCode());
                 GetSampleCode(title, (int error, object result) => OnSampleCodeReceived(error, result, title));
             }
+
             return _AllSampleCodes[title];
         }
 
@@ -62,21 +56,16 @@ namespace AppCSHtml5
         #region Transactions
         private void GetSampleCode(string title, Action<int, object> callback)
         {
-            Database.Completed += OnGetAllSampleCodesCompleted;
-            Database.Query(new DatabaseQueryOperation("get sample code", "query_sample_code.php", new Dictionary<string, string>() { { "title", HtmlString.PercentEncoded(title) } }, callback));
+            Database.Query(new DatabaseQueryOperation("get sample code", "query_sample_code.php", new Dictionary<string, string>() { { "title", HtmlString.PercentEncoded(title) } }, (object sender, CompletionEventArgs e) => OnGetAllSampleCodesCompleted(sender, e, callback)));
         }
 
-        private void OnGetAllSampleCodesCompleted(object sender, CompletionEventArgs e)
+        private void OnGetAllSampleCodesCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
-            Database.Completed -= OnGetAllSampleCodesCompleted;
-
-            Action<int, object> Callback = e.Operation.Callback;
-
-            Dictionary<string, string> Result;
+            IDictionary<string, string> Result;
             if ((Result = Database.ProcessSingleResponse(e.Operation, new List<string>() { "front_page", "feature", "text", "title_enu", "title_fra", "result" })) != null)
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback(ParseResult(Result["result"]), Result));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback(ParseResult(Result["result"]), Result));
             else
-                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => Callback((int)ErrorCodes.AnyError, null));
+                Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
         }
 
         public static int ParseResult(string result)
