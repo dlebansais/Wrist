@@ -20,7 +20,9 @@
     <ResourceDictionary Source="/TextBold.xaml"/>
     <ResourceDictionary Source="/TextItalic.xaml"/>
     <ResourceDictionary Source="/TextLogin.xaml"/>
+    <ResourceDictionary Source="/TextNewsTitle.xaml"/>
     <ResourceDictionary Source="/TextPageTitle.xaml"/>
+    <ResourceDictionary Source="/TextSection.xaml"/>
     <ResourceDictionary Source="/TextSiteTitle.xaml"/>
     <ResourceDictionary Source="/TextTitle.xaml"/>
     <ResourceDictionary Source="/TextWarning.xaml"/>

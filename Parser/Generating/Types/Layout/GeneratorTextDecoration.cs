@@ -87,6 +87,9 @@ namespace Parser
 
             text = TextDecoration.ReplaceUri(text, "NavigateUri", PageTable, LinkedPageList, null, (object value) => $" Click=\"{ToEventHandlerName((IGeneratorPage)value)}\"");
 
+            text = text.Replace("\"", "&quot;");
+            text = text.Replace("£", "\"");
+
             return text;
         }
 
@@ -145,6 +148,7 @@ namespace Parser
                             Options = " " + Options;
 
                         InsideTag = TextToSpan(InsideTag, pageList);
+                        Options = Options.Replace("\"", "£");
 
                         if (InsideTag.Length > 0)
                             Result += $"<{spanTag}{Options}>" + InsideTag + $"</{spanTag}>";

@@ -84,14 +84,84 @@ page-login-failed	Login	Connexion
 page-news	News	Nouveautés
 page-feature-abstract-methods	Features	Fonctionnalités
 page-feature-agents	Features	Fonctionnalités
-home-text	.	.
+page-feature-anchors	Features	Fonctionnalités
+page-feature-attachment	Features	Fonctionnalités
+page-feature-classes	Features	Fonctionnalités
+page-feature-cloning	Features	Fonctionnalités
+page-feature-concurrency	Features	Fonctionnalités
+page-feature-contracts	Features	Fonctionnalités
+page-feature-discrete-constants	Features	Fonctionnalités
+page-feature-editor	Features	Fonctionnalités
+page-feature-entities	Features	Fonctionnalités
+page-feature-equality	Features	Fonctionnalités
+page-feature-exceptions	Features	Fonctionnalités
+page-feature-generics	Features	Fonctionnalités
+page-feature-indexers	Features	Fonctionnalités
+page-feature-inheritance	Features	Fonctionnalités
+page-feature-libraries	Features	Fonctionnalités
+page-feature-memory-management	Features	Fonctionnalités
+page-feature-once-functions	Features	Fonctionnalités
+page-feature-overlays	Features	Fonctionnalités
+page-feature-polymorphism	Features	Fonctionnalités
+page-feature-preprocessor	Features	Fonctionnalités
+page-feature-properties	Features	Fonctionnalités
+page-feature-real-numbers	Features	Fonctionnalités
+page-feature-termination	Features	Fonctionnalités
+page-feature-type-aliases	Features	Fonctionnalités
+page-feature-value-types	Features	Fonctionnalités
+page-feature-variants	Features	Fonctionnalités
+page-feature-verification	Features	Fonctionnalités
+page-feature-versioning	Features	Fonctionnalités
+page-feedback	Feedback	Envoyer votre opinion
+home-text-0	Easly is a programming language supporting a rich and complex set of features. Its primary purpose is to protect developers from making mistakes, and it enforces many practices that usually are simple guidelines. Its secondary purpose is to be compatible with a large set of other languages, for a smooth integration in existing development processes. Therefore, Easly is targeted mainly at professional programmers.	Easly est un langage de programmation disposant d'un ensemble de fonctionnalités riches et complexes. Son premier objectif est d'éviter aux développeurs de commettre des erreurs, et pour cela il impose des pratiques de programmation qui en général ne sont que de simples recommandations. Son second objectif est d'être compatible avec un large ensemble de langages, afin de s'intégrer facilement dans les processus de développement déjà en place. Par conséquent, Easly se destine plutôt aux programmeurs professionnels.
+home-text-1	Every tool found at easly.org can be downloaded and tested for free.  All tools are full-featured and do not require registration to be used.  They will not show popup windows or any other annoying reminder about this site.  However, registering gives you additional benefits like obtaining the latest patches and bug fixes.	Chaque outil disponible sur easly.org peut être téléchargé et testé gratuitement. Ils incluent tous toutes les fonctionnalités et ne requièrent pas d'être enregistrés pour pouvoir être utilisés. Ils n'affichent pas de fenêtre intempestive et autres rappels gênants à propos de ce site. Cependant, s'enregistrer vous apporte des avantages supplémentaires tels qu'obtenir les derniers correctifs.
+home-text-2	Please check the release notes of each patch to see if your problem can be corrected, or if the feature you're looking for has been added.	Veuillez consulter les notes d'utilisation à chaque nouvelle version pour vérifier si votre problème est corrigé, ou si la fonctionnalité que vous désirez a été ajoutée.
+last-news-title	Latest News	Dernières nouvelles
+news-archives-title	News Archives	Précédement
 login	Login	Connexion
 other-language	French	Anglais
 not-translated	Site translation in progress.	Site en cours de traduction.
 thank-you	Thank you for your patience.	Merci pour votre patience.
 abstract-methods	Abstract Methods	Abstract Methods
 agents	Agents	Agents
+anchors	Anchors	Anchors
+attachment	Attachment	Attachment
+classes	Classes	Classes
+cloning	Cloning	Cloning
+concurrency	Concurrency	Concurrency
+contracts	Contracts	Contracts
 discrete-constants	Discrete Constants	Discrete Constants
+editor	Editor	Editor
+entities	Entities	Entities
+equality	Equality	Equality
+exceptions	Exceptions	Exceptions
+generics	Generics	Generics
+indexers	Indexers	Indexers
+inheritance	Inheritance	Inheritance
+libraries	Libraries	Libraries
+memory-management	Memory Management	Memory Management
+once-functions	Once Functions	Once Functions
+overlays	Overlays	Overlays
+polymorphism	Polymorphism	Polymorphism
+preprocessor	Preprocessor	Preprocessor
+properties	Properties	Properties
+real-numbers	Real Numbers	Real Numbers
+termination	Termination	Termination
+type-aliases	Type Aliases	Type Aliases
+value-types	Value Types	Value Types
+variants	Variants	Variants
+verification	Verification	Verification
+versioning	Versioning	Versioning
+processors-section	Processors	Processors
+feature-calls-section	Feature Calls	Feature Calls
+conditional-operators-section	Conditional Operators	Conditional Operators
+events-section	Events	Events
+assertions-section	Assertions	Assertions
+invariants-section	Invariants	Invariants
+verification-section	Verification	Verification
+constrained-generics-section	Constrained Generics	Constrained Generics
+macros-section	Macros	Macros
+replication-section	Replication	Replication
 login-title	Login information	Informations d'identification
 name-colon	Name:	Nom :
 password-colon	Password:	Mot de passe :

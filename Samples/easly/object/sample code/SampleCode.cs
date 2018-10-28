@@ -10,8 +10,8 @@ namespace AppCSHtml5
         private static readonly string ContentStyle =
             "<style type='text/css'>\n" +
             "p                   {margin:0; padding:0 0 15px 0; }\n" +
-            "#sc_root		     {border-style:solid; border-width:3px; border-color:#00828F; border-radius:5px; font-family:Consolas; padding:10px 10px 0 10px; margin-bottom:10px; margin-left:10px; margin-right:10px; text-align:left; }\n" +
-            "#sc_root_floating   {border-style:solid; border-width:3px; border-color:#00828F; border-radius:5px; font-family:Consolas; padding:10px 10px 0 10px; margin-bottom:10px; margin-left:10px; margin-right:10px; float:left; width:390px; min-height:310px; text-align:left; }\n" +
+            "#sc_root		     {border-style:solid; border-width:3px; border-color:#00828F; border-radius:5px; font-family:Consolas; padding:10px 10px 10px 10px; margin-bottom:10px; margin-left:10px; margin-right:10px; text-align:left; }\n" +
+            "#sc_root_floating   {border-style:solid; border-width:3px; border-color:#00828F; border-radius:5px; font-family:Consolas; padding:40px 10px 10px 10px; margin-bottom:10px; margin-left:10px; margin-right:10px; float:left; width:390px; min-height:310px; text-align:left; }\n" +
             "#sc_root p          {margin:0; padding:0 0 2px 0; }\n" +
             "#sc_root_floating p {margin:0; padding:0 0 2px 0; }\n" +
             "#sc_legend          {font-family:\"Trebuchet MS\", verdana, arial, \"Times New Roman\", serif; padding-bottom:20px; float:right; }\n" +
@@ -28,32 +28,39 @@ namespace AppCSHtml5
             "#sc_tab             {padding-right:16px; }\n" +
             "</style>\n";
 
-        private static readonly string ContentHeader = "<div id=\"sc_root\">\n";
+        private static readonly string ContentHeaderNormal = "<div id=\"sc_root\">\n";
+        private static readonly string ContentHeaderFloating = "<div id=\"sc_root_floating\">\n";
         private static readonly string ContentFooter = "</div>\n";
 
-        public SampleCode()
+        public SampleCode(bool isFrontPage)
         {
+            IsLoaded = false;
+            IsFrontPage = isFrontPage;
             TitleTable.Add(LanguageStates.English, null);
             TitleTable.Add(LanguageStates.French, null);
         }
 
+        public bool IsLoaded { get; private set; }
         public bool IsFrontPage { get; private set; }
-        public string Content { get; private set; }
+        public string ContentNormal { get { return $"{ContentStyle}\n{ContentHeaderNormal}{Text}{ContentFooter}"; } }
+        public string ContentFloating { get { return $"{ContentStyle}\n{ContentHeaderFloating}{Text}{ContentFooter}"; } }
+        private string Text;
         public string Feature { get; private set; }
         protected LanguageStates LanguageState { get { return GetLanguage.LanguageState; } }
         public string Title { get { return TitleTable[LanguageState]; } }
 
-        public void UpdateContent(bool isFrontPage, string feature, string content, string titleEnu, string titleFra)
+        public void UpdateContent(string feature, string text, string titleEnu, string titleFra)
         {
-            IsFrontPage = isFrontPage;
-            Content = $"{ContentStyle}\n{ContentHeader}{content}{ContentFooter}";
+            IsLoaded = true;
+            Text = text;
             Feature = feature;
 
             TitleTable[LanguageStates.English] = titleEnu;
             TitleTable[LanguageStates.French] = titleFra;
 
             NotifyPropertyChanged(nameof(IsFrontPage));
-            NotifyPropertyChanged(nameof(Content));
+            NotifyPropertyChanged(nameof(ContentNormal));
+            NotifyPropertyChanged(nameof(ContentFloating));
             NotifyPropertyChanged(nameof(Feature));
             NotifyPropertyChanged(nameof(Title));
         }
