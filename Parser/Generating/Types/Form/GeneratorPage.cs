@@ -282,19 +282,28 @@ namespace Parser
 
                     if (GoTo.GoToPage == GeneratorPage.AnyPage)
                     {
-                        cSharpWriter.WriteLine($"            PageNames DestinationPageName;");
+                        cSharpWriter.WriteLine("            PageNames DestinationPageName;");
+                        cSharpWriter.WriteLine("            IObjectBase SenderContext = (IObjectBase)(sender as Button).DataContext;");
+
                         if (GoTo.BeforeObject.IsGlobal)
-                            cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
+                            cSharpWriter.WriteLine($"            SenderContext.Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, SenderContext, \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
                         else
-                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
+                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})SenderContext).On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, SenderContext, \"{GoTo.Source.Source.Name}\", Content, out DestinationPageName);");
+
                         cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(DestinationPageName);");
                     }
                     else
                     {
                         if (GoTo.BeforeObject.IsGlobal)
-                            cSharpWriter.WriteLine($"            ((IObjectBase)(sender as Button).DataContext).Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
+                        {
+                            cSharpWriter.WriteLine("            IObjectBase SenderContext = (IObjectBase)(sender as Button).DataContext;");
+                            cSharpWriter.WriteLine($"            SenderContext.Get{GoTo.BeforeObject.CSharpName}.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
+                        }
                         else
-                            cSharpWriter.WriteLine($"            (({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext).On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
+                        {
+                            cSharpWriter.WriteLine($"            {GoTo.BeforeObject.CSharpName} SenderContext = ({GoTo.BeforeObject.CSharpName})(sender as Button).DataContext;");
+                            cSharpWriter.WriteLine($"            SenderContext.On_{GoTo.BeforeObjectEvent.CSharpName}(PageNames.{XamlName}, \"{GoTo.Source.Source.Name}\", Content);");
+                        }
 
                         if (GoTo.GoToPage == GeneratorPage.PreviousPage)
                             cSharpWriter.WriteLine($"            (App.Current as App).{GoToCall}(PageNames.PreviousPage);");

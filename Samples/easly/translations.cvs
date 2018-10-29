@@ -82,6 +82,10 @@ page-home	Welcome!	Bienvenue !
 page-login	Login	Connexion
 page-login-failed	Login	Connexion
 page-news	News	Nouveautés
+page-news-archive-0	News	Nouveautés
+page-news-archive-1	News	Nouveautés
+page-news-archive-2	News	Nouveautés
+page-news-archive-3	News	Nouveautés
 page-feature-abstract-methods	Features	Fonctionnalités
 page-feature-agents	Features	Fonctionnalités
 page-feature-anchors	Features	Fonctionnalités
@@ -118,6 +122,7 @@ home-text-1	Every tool found at easly.org can be downloaded and tested for free.
 home-text-2	Please check the release notes of each patch to see if your problem can be corrected, or if the feature you're looking for has been added.	Veuillez consulter les notes d'utilisation à chaque nouvelle version pour vérifier si votre problème est corrigé, ou si la fonctionnalité que vous désirez a été ajoutée.
 last-news-title	Latest News	Dernières nouvelles
 news-archives-title	News Archives	Précédement
+read-more	Read more...	En savoir plus...
 login	Login	Connexion
 other-language	French	Anglais
 not-translated	Site translation in progress.	Site en cours de traduction.

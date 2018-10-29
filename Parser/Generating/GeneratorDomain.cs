@@ -246,7 +246,7 @@ namespace Parser
 
             foreach (IGeneratorPage Page in Pages)
                 if (Page.QueryObject != null && Page.QueryObjectEvent != null)
-                    cSharpWriter.WriteLine($"            Get{Page.QueryObject.CSharpName}.On_{Page.QueryObjectEvent.CSharpName}(StartPage, null, null, out StartPage);");
+                    cSharpWriter.WriteLine($"            Get{Page.QueryObject.CSharpName}.On_{Page.QueryObjectEvent.CSharpName}(StartPage, null, null, null, out StartPage);");
 
             cSharpWriter.WriteLine($"            GoToPage(StartPage, false);");
 

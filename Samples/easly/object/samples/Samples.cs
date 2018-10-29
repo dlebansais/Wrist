@@ -97,72 +97,72 @@ namespace AppCSHtml5
         private void InitSampleCodeTable()
         {
             _AllSampleCodes = new Dictionary<string, ISampleCode>();
-            _AllSampleCodes.Add(TitleAbstractMethod0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleAbstractMethod1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleAbstractMethod2, new SampleCode(true));
-            _AllSampleCodes.Add(TitleAgents0, new SampleCode(false));
-            _AllSampleCodes.Add(TitleAnchors0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleAnchors1, new SampleCode(false));
-            _AllSampleCodes.Add(TitleAnchors2, new SampleCode(false));
-            _AllSampleCodes.Add(TitleAnchors3, new SampleCode(true));
-            _AllSampleCodes.Add(TitleAttachment0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleAttachment1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleAttachment2, new SampleCode(true));
-            _AllSampleCodes.Add(TitleAttachment3, new SampleCode(true));
-            _AllSampleCodes.Add(TitleConcurrency0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleConcurrency1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleConcurrency2, new SampleCode(true));
-            _AllSampleCodes.Add(TitleContracts0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleContracts1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleContracts2, new SampleCode(true));
-            _AllSampleCodes.Add(TitleContracts3, new SampleCode(true));
-            _AllSampleCodes.Add(TitleContracts4, new SampleCode(false));
-            _AllSampleCodes.Add(TitleDiscreteConstants0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleDiscreteConstants1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleEditor0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleEntities0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleEquality0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleExceptions0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleExceptions1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleGenerics0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleGenerics1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleGenerics2, new SampleCode(true));
-            _AllSampleCodes.Add(TitleGenerics3, new SampleCode(true));
-            _AllSampleCodes.Add(TitleGenerics4, new SampleCode(true));
-            _AllSampleCodes.Add(TitleIndexers0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleIndexers1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleIndexers2, new SampleCode(true));
-            _AllSampleCodes.Add(TitleIndexers3, new SampleCode(true));
-            _AllSampleCodes.Add(TitleIndexers4, new SampleCode(true));
-            _AllSampleCodes.Add(TitleIndexers5, new SampleCode(true));
-            _AllSampleCodes.Add(TitleIndexers6, new SampleCode(true));
-            _AllSampleCodes.Add(TitleInheritance0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleInheritance1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleInheritance2, new SampleCode(false));
-            _AllSampleCodes.Add(TitleInheritance3, new SampleCode(false));
-            _AllSampleCodes.Add(TitleInheritance4, new SampleCode(true));
-            _AllSampleCodes.Add(TitleInheritance5, new SampleCode(true));
-            _AllSampleCodes.Add(TitleLibraries0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleLibraries1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleLibraries2, new SampleCode(true));
-            _AllSampleCodes.Add(TitleLibraries3, new SampleCode(true));
-            _AllSampleCodes.Add(TitleLibraries4, new SampleCode(true));
-            _AllSampleCodes.Add(TitleOnceFunctions0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleOverlays0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleOverlays1, new SampleCode(true));
-            _AllSampleCodes.Add(TitlePolymorphism0, new SampleCode(true));
-            _AllSampleCodes.Add(TitlePreprocessor0, new SampleCode(false));
-            _AllSampleCodes.Add(TitlePreprocessor1, new SampleCode(false));
-            _AllSampleCodes.Add(TitleProperties0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleTypeAliases0, new SampleCode(false));
-            _AllSampleCodes.Add(TitleTypeAliases1, new SampleCode(false));
-            _AllSampleCodes.Add(TitleValueTypes0, new SampleCode(false));
-            _AllSampleCodes.Add(TitleValueTypes1, new SampleCode(true));
-            _AllSampleCodes.Add(TitleValueTypes2, new SampleCode(false));
-            _AllSampleCodes.Add(TitleValueTypes3, new SampleCode(false));
-            _AllSampleCodes.Add(TitleVariants0, new SampleCode(false));
-            _AllSampleCodes.Add(TitleVersioning0, new SampleCode(true));
-            _AllSampleCodes.Add(TitleVersioning1, new SampleCode(true));
+            _AllSampleCodes.Add(TitleAbstractMethod0, new SampleCode(PageNames.feature_abstract_methodsPage, true));
+            _AllSampleCodes.Add(TitleAbstractMethod1, new SampleCode(PageNames.feature_abstract_methodsPage, true));
+            _AllSampleCodes.Add(TitleAbstractMethod2, new SampleCode(PageNames.feature_abstract_methodsPage, true));
+            _AllSampleCodes.Add(TitleAgents0, new SampleCode(PageNames.feature_agentsPage, false));
+            _AllSampleCodes.Add(TitleAnchors0, new SampleCode(PageNames.feature_anchorsPage, true));
+            _AllSampleCodes.Add(TitleAnchors1, new SampleCode(PageNames.feature_anchorsPage, false));
+            _AllSampleCodes.Add(TitleAnchors2, new SampleCode(PageNames.feature_anchorsPage, false));
+            _AllSampleCodes.Add(TitleAnchors3, new SampleCode(PageNames.feature_anchorsPage, true));
+            _AllSampleCodes.Add(TitleAttachment0, new SampleCode(PageNames.feature_attachmentPage, true));
+            _AllSampleCodes.Add(TitleAttachment1, new SampleCode(PageNames.feature_attachmentPage, true));
+            _AllSampleCodes.Add(TitleAttachment2, new SampleCode(PageNames.feature_attachmentPage, true));
+            _AllSampleCodes.Add(TitleAttachment3, new SampleCode(PageNames.feature_attachmentPage, true));
+            _AllSampleCodes.Add(TitleConcurrency0, new SampleCode(PageNames.feature_concurrencyPage, true));
+            _AllSampleCodes.Add(TitleConcurrency1, new SampleCode(PageNames.feature_concurrencyPage, true));
+            _AllSampleCodes.Add(TitleConcurrency2, new SampleCode(PageNames.feature_concurrencyPage, true));
+            _AllSampleCodes.Add(TitleContracts0, new SampleCode(PageNames.feature_contractsPage, true));
+            _AllSampleCodes.Add(TitleContracts1, new SampleCode(PageNames.feature_contractsPage, true));
+            _AllSampleCodes.Add(TitleContracts2, new SampleCode(PageNames.feature_contractsPage, true));
+            _AllSampleCodes.Add(TitleContracts3, new SampleCode(PageNames.feature_contractsPage, true));
+            _AllSampleCodes.Add(TitleContracts4, new SampleCode(PageNames.feature_contractsPage, false));
+            _AllSampleCodes.Add(TitleDiscreteConstants0, new SampleCode(PageNames.feature_discrete_constantsPage, true));
+            _AllSampleCodes.Add(TitleDiscreteConstants1, new SampleCode(PageNames.feature_discrete_constantsPage, true));
+            _AllSampleCodes.Add(TitleEditor0, new SampleCode(PageNames.feature_editorPage, true));
+            _AllSampleCodes.Add(TitleEntities0, new SampleCode(PageNames.feature_entitiesPage, true));
+            _AllSampleCodes.Add(TitleEquality0, new SampleCode(PageNames.feature_equalityPage, true));
+            _AllSampleCodes.Add(TitleExceptions0, new SampleCode(PageNames.feature_exceptionsPage, true));
+            _AllSampleCodes.Add(TitleExceptions1, new SampleCode(PageNames.feature_exceptionsPage, true));
+            _AllSampleCodes.Add(TitleGenerics0, new SampleCode(PageNames.feature_genericsPage, true));
+            _AllSampleCodes.Add(TitleGenerics1, new SampleCode(PageNames.feature_genericsPage, true));
+            _AllSampleCodes.Add(TitleGenerics2, new SampleCode(PageNames.feature_genericsPage, true));
+            _AllSampleCodes.Add(TitleGenerics3, new SampleCode(PageNames.feature_genericsPage, true));
+            _AllSampleCodes.Add(TitleGenerics4, new SampleCode(PageNames.feature_genericsPage, true));
+            _AllSampleCodes.Add(TitleIndexers0, new SampleCode(PageNames.feature_indexersPage, true));
+            _AllSampleCodes.Add(TitleIndexers1, new SampleCode(PageNames.feature_indexersPage, true));
+            _AllSampleCodes.Add(TitleIndexers2, new SampleCode(PageNames.feature_indexersPage, true));
+            _AllSampleCodes.Add(TitleIndexers3, new SampleCode(PageNames.feature_indexersPage, true));
+            _AllSampleCodes.Add(TitleIndexers4, new SampleCode(PageNames.feature_indexersPage, true));
+            _AllSampleCodes.Add(TitleIndexers5, new SampleCode(PageNames.feature_indexersPage, true));
+            _AllSampleCodes.Add(TitleIndexers6, new SampleCode(PageNames.feature_indexersPage, true));
+            _AllSampleCodes.Add(TitleInheritance0, new SampleCode(PageNames.feature_inheritancePage, true));
+            _AllSampleCodes.Add(TitleInheritance1, new SampleCode(PageNames.feature_inheritancePage, true));
+            _AllSampleCodes.Add(TitleInheritance2, new SampleCode(PageNames.feature_inheritancePage, false));
+            _AllSampleCodes.Add(TitleInheritance3, new SampleCode(PageNames.feature_inheritancePage, false));
+            _AllSampleCodes.Add(TitleInheritance4, new SampleCode(PageNames.feature_inheritancePage, true));
+            _AllSampleCodes.Add(TitleInheritance5, new SampleCode(PageNames.feature_inheritancePage, true));
+            _AllSampleCodes.Add(TitleLibraries0, new SampleCode(PageNames.feature_librariesPage, true));
+            _AllSampleCodes.Add(TitleLibraries1, new SampleCode(PageNames.feature_librariesPage, true));
+            _AllSampleCodes.Add(TitleLibraries2, new SampleCode(PageNames.feature_librariesPage, true));
+            _AllSampleCodes.Add(TitleLibraries3, new SampleCode(PageNames.feature_librariesPage, true));
+            _AllSampleCodes.Add(TitleLibraries4, new SampleCode(PageNames.feature_librariesPage, true));
+            _AllSampleCodes.Add(TitleOnceFunctions0, new SampleCode(PageNames.feature_once_functionsPage, true));
+            _AllSampleCodes.Add(TitleOverlays0, new SampleCode(PageNames.feature_overlaysPage, true));
+            _AllSampleCodes.Add(TitleOverlays1, new SampleCode(PageNames.feature_overlaysPage, true));
+            _AllSampleCodes.Add(TitlePolymorphism0, new SampleCode(PageNames.feature_polymorphismPage, true));
+            _AllSampleCodes.Add(TitlePreprocessor0, new SampleCode(PageNames.feature_preprocessorPage, false));
+            _AllSampleCodes.Add(TitlePreprocessor1, new SampleCode(PageNames.feature_preprocessorPage, false));
+            _AllSampleCodes.Add(TitleProperties0, new SampleCode(PageNames.feature_propertiesPage, true));
+            _AllSampleCodes.Add(TitleTypeAliases0, new SampleCode(PageNames.feature_type_aliasesPage, false));
+            _AllSampleCodes.Add(TitleTypeAliases1, new SampleCode(PageNames.feature_type_aliasesPage, false));
+            _AllSampleCodes.Add(TitleValueTypes0, new SampleCode(PageNames.feature_value_typesPage, false));
+            _AllSampleCodes.Add(TitleValueTypes1, new SampleCode(PageNames.feature_value_typesPage, true));
+            _AllSampleCodes.Add(TitleValueTypes2, new SampleCode(PageNames.feature_value_typesPage, false));
+            _AllSampleCodes.Add(TitleValueTypes3, new SampleCode(PageNames.feature_value_typesPage, false));
+            _AllSampleCodes.Add(TitleVariants0, new SampleCode(PageNames.feature_variantsPage, false));
+            _AllSampleCodes.Add(TitleVersioning0, new SampleCode(PageNames.feature_versioningPage, true));
+            _AllSampleCodes.Add(TitleVersioning1, new SampleCode(PageNames.feature_versioningPage, true));
         }
 
         private Dictionary<string, ISampleCode> _AllSampleCodes;
@@ -245,7 +245,7 @@ namespace AppCSHtml5
                     foreach (KeyValuePair<string, ISampleCode> Entry in _AllSampleCodes)
                         if (Index > 0)
                             Index--;
-                        else if (Entry.Value.IsFrontPage)
+                        else if (((SampleCode)Entry.Value).IsFrontPage)
                             return GetSampleCode(Entry.Key);
                 }
             }
@@ -268,6 +268,12 @@ namespace AppCSHtml5
                 SampleCode SampleCode = (SampleCode)_AllSampleCodes[title];
                 SampleCode.UpdateContent(Item["feature"], Encoding.UTF8.GetString(Convert.FromBase64String(Item["text"])), Item["title_enu"], Item["title_fra"]);
             }
+        }
+
+        public void On_SelectSample(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
+        {
+            SampleCode Sample = (SampleCode)senderContext;
+            destinationPageName = Sample.PageName;
         }
 
         #region Transactions

@@ -36,7 +36,7 @@ namespace Parser
         public void Generate(IGeneratorDomain domain, StreamWriter cSharpWriter)
         {
             if (IsProvidingCustomPageName)
-                cSharpWriter.WriteLine($"        void On_{CSharpName}(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName);");
+                cSharpWriter.WriteLine($"        void On_{CSharpName}(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName);");
             else
                 cSharpWriter.WriteLine($"        void On_{CSharpName}(PageNames pageName, string sourceName, string sourceContent);");
         }

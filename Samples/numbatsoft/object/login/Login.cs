@@ -619,7 +619,7 @@ namespace AppCSHtml5
             InitSimulation();
         }
 
-        public void On_CheckLoggedIn(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_CheckLoggedIn(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             switch (pageName)
             {
@@ -716,7 +716,7 @@ namespace AppCSHtml5
         #endregion
 
         #region Register
-        public void On_Register(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_Register(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string NameValue = Username?.Trim();
             string EmailAddressValue = EmailAddress?.Trim();
@@ -841,7 +841,7 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.register_failed_4Page);
         }
 
-        public void On_RegisterEnd(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_RegisterEnd(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             IDictionary<string, string> QueryString = App.QueryString;
             if (QueryString != null && QueryString.ContainsKey("type") && QueryString["type"] == "register")
@@ -877,7 +877,7 @@ namespace AppCSHtml5
                 destinationPageName = pageName;
         }
 
-        public void On_CompleteRegistration(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_CompleteRegistration(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (!Remember)
             {
@@ -981,7 +981,7 @@ namespace AppCSHtml5
         #endregion
 
         #region Login
-        public void On_Login(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_Login(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (!Remember)
             {
@@ -1089,7 +1089,7 @@ namespace AppCSHtml5
         #endregion
 
         #region Change Password
-        public void On_ChangePassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangePassword(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string PasswordValue;
             string NewPasswordValue;
@@ -1138,7 +1138,7 @@ namespace AppCSHtml5
         #endregion
 
         #region Change Username
-        public void On_ChangeUsername(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangeUsername(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string NewUsernameValue = NewUsername?.Trim();
 
@@ -1176,7 +1176,7 @@ namespace AppCSHtml5
         #endregion
 
         #region Change Email Address
-        public void On_ChangeEmailAddress(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangeEmailAddress(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string NewEmailAddressValue = NewEmailAddress?.Trim();
 
@@ -1218,7 +1218,7 @@ namespace AppCSHtml5
 
         #region Change Challenge
 #if QACHALLENGE
-        public void On_ChangeChallenge(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangeChallenge(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string QuestionValue = NewQuestion?.Trim();
 
@@ -1310,7 +1310,7 @@ namespace AppCSHtml5
         #endregion
 
         #region Recovery
-        public void On_BeginRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_BeginRecovery(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string EmailAddressValue = EmailAddress?.Trim();
 
@@ -1343,7 +1343,7 @@ namespace AppCSHtml5
                 (App.Current as App).GoTo(PageNames.recovery_failed_3Page);
         }
 
-        public void On_RecoveryEnd(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_RecoveryEnd(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             IDictionary<string, string> QueryString = App.QueryString;
             if (QueryString != null && QueryString.ContainsKey("type") && QueryString["type"] == "recovery")
@@ -1382,7 +1382,7 @@ namespace AppCSHtml5
                 destinationPageName = pageName;
         }
 
-        public void On_CompleteRecovery(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_CompleteRecovery(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string NewPasswordValue;
             bool IsNewPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.NewPassword)}", out NewPasswordValue);
@@ -1444,7 +1444,7 @@ namespace AppCSHtml5
         #endregion
 
         #region Delete Account
-        public void On_DeleteAccount(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_DeleteAccount(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string PasswordValue;
             bool IsPasswordValid = GetApp.GetPasswordValue($"{nameof(Login)}.{nameof(LoginBase.Password)}", out PasswordValue);
@@ -1859,7 +1859,7 @@ namespace AppCSHtml5
                     QueryString.Add("transaction_code", transactionCode);
 
                     PageNames NextPageName;
-                    On_RegisterEnd(PageNames.homePage, null, null, out NextPageName);
+                    On_RegisterEnd(PageNames.homePage, null, null, null, out NextPageName);
                     (App.Current as App).GoTo(NextPageName);
                 }
             }
@@ -1881,7 +1881,7 @@ namespace AppCSHtml5
                     QueryString.Add("transaction_code", transactionCode);
 
                     PageNames NextPageName;
-                    On_RegisterEnd(PageNames.homePage, null, null, out NextPageName);
+                    On_RegisterEnd(PageNames.homePage, null, null, null, out NextPageName);
                     (App.Current as App).GoTo(NextPageName);
                 }
             }
@@ -2169,7 +2169,7 @@ namespace AppCSHtml5
                     QueryString.Add("transaction_code", transactionCode);
 
                     PageNames NextPageName;
-                    On_RecoveryEnd(PageNames.homePage, null, null, out NextPageName);
+                    On_RecoveryEnd(PageNames.homePage, null, null, null, out NextPageName);
                     (App.Current as App).GoTo(NextPageName);
                 }
             }
@@ -2190,7 +2190,7 @@ namespace AppCSHtml5
                     QueryString.Add("transaction_code", transactionCode);
 
                     PageNames NextPageName;
-                    On_RecoveryEnd(PageNames.homePage, null, null, out NextPageName);
+                    On_RecoveryEnd(PageNames.homePage, null, null, null, out NextPageName);
                     (App.Current as App).GoTo(NextPageName);
                 }
             }

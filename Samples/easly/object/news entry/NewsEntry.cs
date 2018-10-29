@@ -1,13 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace AppCSHtml5
 {
     public class NewsEntry : ObjectBase, INewsEntry
     {
+        private static readonly string ContentStyle =
+            "<style type='text/css'>\n" +
+            "body                {background:#FFFFFF; color:#000000; font-family: Arial, \"Trebuchet MS\", Verdana, \"Times New Roman\", Serif; font-size:90%; }\n" +
+            "p                   {margin:0; padding:0 0 15px 0; }\n" +
+            "li                  {margin:0; padding:0 0 5px 0; }\n" +
+            "a                   {color:#000000; text-decoration:underline; }\n" +
+            "a:hover             {color:#B23201; text-decoration:none;}\n" +
+            "\n" +
+            "#news               {background:#FFFFFF; float:right; width:220px; padding:10px 0 0 10px; line-height:140%; border-style:solid; border-width:3px; border-color:#B23201; border-radius:5px; }\n" +
+            "#single_news        {background:#FFFFFF; padding:10px 0 0 10px; line-height:140%; border-style:solid; border-width:3px; border-color:#B23201; border-radius:5px; margin: 20px 0 0 0; }\n" +
+            "#news_headtitle     {font-size:120%; font-weight:bold; color:#B23201; }\n" +
+            "#news_text          {font-size:100%; padding:0 10px 0 0; }\n" +
+            "</style>\n";
+
+        private static readonly string ContentHeader = "<div id=\"news_text\">\n";
+        private static readonly string ContentFooter = "</div>\n";
+
         public NewsEntry(string created, string enu_title, string enu_text, string fra_title, string fra_text)
         {
             string EnuDate, FraDate;
@@ -21,10 +40,12 @@ namespace AppCSHtml5
             string FrenchTitle = Language.ReplaceHtml(fra_title);
             TitleTable.Add(LanguageStates.French, FrenchTitle);
 
-            string EnglishText = Language.ReplaceHtml(enu_text);
+            string EnglishText = Encoding.UTF8.GetString(Convert.FromBase64String(enu_text));
+            EnglishText = $"{ContentStyle}{ContentHeader}{EnglishText}{ContentFooter}";
             TextTable.Add(LanguageStates.English, EnglishText);
 
-            string FrenchText = Language.ReplaceHtml(fra_text);
+            string FrenchText = Encoding.UTF8.GetString(Convert.FromBase64String(fra_text));
+            FrenchText = $"{ContentStyle}{ContentHeader}{FrenchText}{ContentFooter}";
             TextTable.Add(LanguageStates.French, FrenchText);
         }
 
