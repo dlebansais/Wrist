@@ -80,6 +80,8 @@ namespace Parser
                 {
                     string Key = LanguageEntry.Key;
                     string TranslatedString = LanguageEntry.Value;
+                    TranslatedString = TranslatedString.Replace("\"", "\\\"");
+
                     cSharpWriter.WriteLine($"                    {{ \"{Key}\", \"{TranslatedString}\" }},");
                 }
 

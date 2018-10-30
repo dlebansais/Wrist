@@ -48,7 +48,7 @@ namespace Parser
 
             List<object> MatchedList = new List<object>();
             List<string> UnmatchedList = new List<string>();
-            ReplaceUri(Text, "href", MatchTable, MatchedList, UnmatchedList, null);
+            ReplaceUri(Text, "href", '"', MatchTable, MatchedList, UnmatchedList, null);
             if (UnmatchedList.Count > 0)
                 throw new ParsingException(243, Source, $"Invalid link to page '{UnmatchedList[0]}' in text decoration, page not found.");
 
@@ -59,14 +59,14 @@ namespace Parser
             }
         }
 
-        public static string ReplaceUri(string text, string uriDeclaration, Dictionary<string, object> matchTable, List<object> matchedList, List<string> unmatchedList, Func<object, string> handler)
+        public static string ReplaceUri(string text, string uriDeclaration, char quoteChar, Dictionary<string, object> matchTable, List<object> matchedList, List<string> unmatchedList, Func<object, string> handler)
         {
-            string Pattern = $"{uriDeclaration}=\"";
+            string Pattern = $"{uriDeclaration}={quoteChar}";
             int StartIndex = 0;
 
             while ((StartIndex = text.IndexOf(Pattern, StartIndex)) >= 0)
             {
-                int EndIndex = text.IndexOf("\"", StartIndex + Pattern.Length);
+                int EndIndex = text.IndexOf(quoteChar.ToString(), StartIndex + Pattern.Length);
                 if (EndIndex > StartIndex + Pattern.Length)
                 {
                     string PageName = text.Substring(StartIndex + Pattern.Length, EndIndex - StartIndex - Pattern.Length);

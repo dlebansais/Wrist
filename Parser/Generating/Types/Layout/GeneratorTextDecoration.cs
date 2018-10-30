@@ -6,6 +6,8 @@ namespace Parser
 {
     public class GeneratorTextDecoration : GeneratorLayoutElement, IGeneratorTextDecoration
     {
+        public const char GeneratorQuoteTag = '£';
+
         public GeneratorTextDecoration(TextDecoration control)
             : base(control)
         {
@@ -85,10 +87,10 @@ namespace Parser
             foreach (IGeneratorPage Page in pageList)
                 PageTable.Add(Page.Name, Page);
 
-            text = TextDecoration.ReplaceUri(text, "NavigateUri", PageTable, LinkedPageList, null, (object value) => $" Click=\"{ToEventHandlerName((IGeneratorPage)value)}\"");
+            text = TextDecoration.ReplaceUri(text, "NavigateUri", GeneratorQuoteTag, PageTable, LinkedPageList, null, (object value) => $" Click={GeneratorQuoteTag}{ToEventHandlerName((IGeneratorPage)value)}{GeneratorQuoteTag}");
 
             text = text.Replace("\"", "&quot;");
-            text = text.Replace("£", "\"");
+            text = text.Replace(GeneratorQuoteTag, '"');
 
             return text;
         }
@@ -148,7 +150,7 @@ namespace Parser
                             Options = " " + Options;
 
                         InsideTag = TextToSpan(InsideTag, pageList);
-                        Options = Options.Replace("\"", "£");
+                        Options = Options.Replace('"', GeneratorQuoteTag);
 
                         if (InsideTag.Length > 0)
                             Result += $"<{spanTag}{Options}>" + InsideTag + $"</{spanTag}>";
