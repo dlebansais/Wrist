@@ -3,7 +3,7 @@
     public class ObjectPropertyReadonlyString : ObjectProperty, IObjectPropertyReadonlyString
     {
         public ObjectPropertyReadonlyString(IDeclarationSource nameSource, string cSharpName)
-            : base(nameSource, cSharpName, true, false)
+            : base(nameSource, cSharpName, false, false)
         {
         }
 
