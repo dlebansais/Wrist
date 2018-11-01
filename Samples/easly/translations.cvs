@@ -118,6 +118,9 @@ page-feature-variants	Features	Fonctionnalités
 page-feature-verification	Features	Fonctionnalités
 page-feature-versioning	Features	Fonctionnalités
 page-feedback	Feedback	Envoyer votre opinion
+page-download-eeac	Download Easly Editor and Compiler	Télécharger éditeur et compilateur
+page-certification-ie	CAcert root certificates	Certificats racines CAcert
+page-certification-firefox	CAcert root certificates	Certificats racines CAcert
 home-text-0	Easly is a programming language supporting a rich and complex set of features. Its primary purpose is to protect developers from making mistakes, and it enforces many practices that usually are simple guidelines. Its secondary purpose is to be compatible with a large set of other languages, for a smooth integration in existing development processes. Therefore, Easly is targeted mainly at professional programmers.	Easly est un langage de programmation disposant d'un ensemble de fonctionnalités riches et complexes. Son premier objectif est d'éviter aux développeurs de commettre des erreurs, et pour cela il impose des pratiques de programmation qui en général ne sont que de simples recommandations. Son second objectif est d'être compatible avec un large ensemble de langages, afin de s'intégrer facilement dans les processus de développement déjà en place. Par conséquent, Easly se destine plutôt aux programmeurs professionnels.
 home-text-1	Every tool found at easly.org can be downloaded and tested for free.  All tools are full-featured and do not require registration to be used.  They will not show popup windows or any other annoying reminder about this site.  However, registering gives you additional benefits like obtaining the latest patches and bug fixes.	Chaque outil disponible sur easly.org peut être téléchargé et testé gratuitement. Ils incluent tous toutes les fonctionnalités et ne requièrent pas d'être enregistrés pour pouvoir être utilisés. Ils n'affichent pas de fenêtre intempestive et autres rappels gênants à propos de ce site. Cependant, s'enregistrer vous apporte des avantages supplémentaires tels qu'obtenir les derniers correctifs.
 home-text-2	Please check the release notes of each patch to see if your problem can be corrected, or if the feature you're looking for has been added.	Veuillez consulter les notes d'utilisation à chaque nouvelle version pour vérifier si votre problème est corrigé, ou si la fonctionnalité que vous désirez a été ajoutée.
@@ -175,6 +178,19 @@ skills-text-2	Tools: EiffelStudio, Visual Studio, Windows SDK & WDK.	Outils : Ei
 skills-text-3	Operating systems: all Windows versions, from 98 to Seven.	Systèmes d'exploitation : toutes les versions de Windows, de 98 à Seven.
 skills-text-4	Frameworks: .NET, Win32	Environnements: .NET, Win32
 skills-text-5	Designer of a small real-time operating system to execute critical code and run Windows as a background task.	Auteur d'un système d'exploitation en temps réel léger, destiné à exécuter du code critique et qui laisse Windows en tâche de fond.
+download-generic-title	Your download will start shortly	Votre téléchargement va commencer dans quelques secondes
+certification-title	Certification	Certification
+instruction-firefox-title	Instructions for Mozilla Firefox	Instructions pour Mozilla Firefox
+instruction-ie-title	Instructions for Internet Explorer	Instructions pour Internet Explorer
+instruction-text-1	The procedure described below will install CAcert root certificates on your computer.  All applications downloaded from this site are signed.  This signature is a proof of two things:	La procédure décrite ci-dessous permet d'installer les certificats racines CAcert sur votre ordinateur. Toutes les applications téléchargées depuis ce site sont signées. Cette signature garantit deux choses :
+instruction-text-2	The downloaded program hasn't been modified by viruses and other malicious software.	Le programme téléchargé n'a pas été modifié par des virus et autres logiciels malfaisants.
+instruction-text-3	My identity has been verified by CAcert assurers, they know who I am.	Mon identité a été vérifiée par les assureurs de CAcert, ils savent qui je suis.
+instruction-text-4	To proceed to the installation of root certificates on your computer, do the following:	Pour procéder à l'installation des certificats racines sur votre ordinateur, suivez ces instructions :
+instruction-firefox-text-1	Check the 'identify software developers' box.  You can also check the other boxes.	Cochez la case 'identifier les développeurs de logiciel'. Vous pouvez également cocher les autres cases.
+instruction-firefox-text-2	Click OK to complete the process.	Cliquez sur OK pour terminer la procédure.
+instruction-ie-text-1	In Internet Explorer, click View -> Tools -> Internet Options -> Content -> Personal -> Certificates.	Dans Internet Explorer, cliquez Vue -> Outils -> Options Internet -> Contenu -> Informations personnelles -> Certificats.
+instruction-ie-text-2	Choose the Trusted Root Certification Authorities tab.	Choisissez la page 'Autorités principales de confiance'.
+instruction-ie-text-3	Import the certificates you downloaded.	Importez les certificats que vous avez téléchargés.
 login	Login	Connexion
 other-language	French	Anglais
 not-translated	Site translation in progress.	Site en cours de traduction.

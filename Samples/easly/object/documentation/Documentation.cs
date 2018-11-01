@@ -16,7 +16,6 @@ namespace AppCSHtml5
         public string SolutionManagerSpecificationsLink { get { return $"https://www.easly.org/documentation/specifications_of_the_easly_solution_manager.pdf"; } }
         public string ReferenceLink { get { return $"https://www.easly.org/documentation/easly_the_programming_language_reference.pdf"; } }
         public string DesignLink { get { return $"https://www.easly.org/documentation/easly_design_decisions.pdf"; } }
-        public string DownloadLink { get { return $"https://www.easly.org/download/editor_and_compiler/install.exe"; } }
         public string ExamplesLink { get { return $"https://www.easly.org/examples/Easly%20Examples.zip"; } }
 
         #region Implementation of INotifyPropertyChanged
