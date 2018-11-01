@@ -1877,6 +1877,7 @@ namespace AppCSHtml5
                     QueryString.Add("type", "register");
                     QueryString.Add("username", ResultUsername);
                     QueryString.Add("email_address", ResultEmailAddress);
+                    QueryString.Add("salt", ResultSalt);
                     QueryString.Add("password_settings", ResultPasswordSettings);
                     QueryString.Add("transaction_code", transactionCode);
 

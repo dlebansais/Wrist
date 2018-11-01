@@ -52,7 +52,7 @@ namespace AppCSHtml5
 
                 foreach (IDictionary<string, string> Item in FeatureList)
                 {
-                    FeatureEntry NewEntry = new FeatureEntry(Item["id"], Item["status_id"], Item["name_enu"], Item["status_enu"], Item["comments_enu"], Item["name_fra"], Item["status_fra"], Item["comments_fra"]);
+                    FeatureEntry NewEntry = new FeatureEntry(Item["id"], Item["status_id"], Item["name_enu"], Item["label_enu"], Item["comments_enu"], Item["name_fra"], Item["label_fra"], Item["comments_fra"]);
                     _AllFeatures.Add(NewEntry);
                 }
             }
@@ -67,7 +67,7 @@ namespace AppCSHtml5
         private void OnGetAllFeaturesCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
         {
             List<IDictionary<string, string>> Result;
-            if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "id", "status_id", "name_enu", "status_enu", "comments_enu", "name_fra", "status_fra", "comments_fra" })) != null)
+            if ((Result = Database.ProcessMultipleResponse(e.Operation, new List<string>() { "id", "status_id", "name_enu", "label_enu", "comments_enu", "name_fra", "label_fra", "comments_fra" })) != null)
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.Success, Result));
             else
                 Windows.UI.Xaml.Window.Current.Dispatcher.BeginInvoke(() => callback((int)ErrorCodes.AnyError, null));
@@ -92,10 +92,10 @@ namespace AppCSHtml5
                 { "id", "1" },
                 { "status_id", "1" },
                 { "name_enu", "Abstract methods" },
-                { "status_enu", "Unimplemented" },
+                { "label_enu", "Unimplemented" },
                 { "comments_enu", "" },
                 { "name_fra", "Méthodes abstraites" },
-                { "status_fra", "Non implémenté" },
+                { "label_fra", "Non implémenté" },
                 { "comments_fra", "" },
             });
 
@@ -104,10 +104,10 @@ namespace AppCSHtml5
                 { "id", "2" },
                 { "status_id", "3" },
                 { "name_enu", "Output to C# code" },
-                { "status_enu", "Alpha" },
+                { "label_enu", "Alpha" },
                 { "comments_enu", "Making the output of the compiler a list of C# files that can be used in a Visual Studio project" },
                 { "name_fra", "Production de code en C#" },
-                { "status_fra", "Alpha" },
+                { "label_fra", "Alpha" },
                 { "comments_fra", "Obtenir du compilateur une liste de fichiers C# qui peuvent être utilisés dans un projet Visual Studio" },
             });
 

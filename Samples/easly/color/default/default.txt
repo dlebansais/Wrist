@@ -5,3 +5,5 @@ Blue: #00828F
 LigthGray: #E9E9E9
 Gray: #DADADA
 Cyan: #0000FF
+Green: #7EBB41
+DarkGreen: #569F0D
