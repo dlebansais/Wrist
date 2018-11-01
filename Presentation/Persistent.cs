@@ -15,7 +15,9 @@ namespace Presentation
 
         static Persistent()
         {
-            PersistentStatePath = HashTools.GetString(SecretUuid.GuidBytes) + ".txt";
+            string UuidString = HashTools.GetString(SecretUuid.GuidBytes);
+            string Suffix = UrlTools.GetBaseUrl();
+            PersistentStatePath = $"{UuidString}-{Suffix}.txt";
         }
 
         public static bool DebugTrace { get; set; } = false;
@@ -111,6 +113,6 @@ namespace Presentation
         }
 
         private static IDictionary<string, string> StateTable = null;
-        #endregion
+#endregion
     }
 }
