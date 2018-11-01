@@ -15,9 +15,9 @@ namespace Presentation
 
         static Persistent()
         {
-            string UuidString = HashTools.GetString(SecretUuid.GuidBytes);
-            string Suffix = UrlTools.GetBaseUrl();
-            PersistentStatePath = $"{UuidString}-{Suffix}.txt";
+            string Url = UrlTools.GetBaseUrl();
+            string UrlHash = Hash.SHA1($"File{Url}");
+            PersistentStatePath = $"{UrlHash}.txt";
         }
 
         public static bool DebugTrace { get; set; } = false;

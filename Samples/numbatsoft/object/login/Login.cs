@@ -605,18 +605,24 @@ namespace AppCSHtml5
         #region Init
         public LoginBase()
         {
+            //Database.DebugLog = true;
+            //Database.DebugLogFullResponse = true;
+
+            InitSimulation();
+        }
+
+        private void Initialization()
+        {
+            if (_LoginState != (LoginStates)(-1))
+                return;
+
             Username = Persistent.GetValue("username", null);
             EmailAddress = Persistent.GetValue("email_address", null);
 #if QACHALLENGE
             Question = Persistent.GetValue("question", null);
 #endif
             Remember = (Persistent.GetValue("remember", null) != null);
-            LoginState = (Username != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
-
-            //Database.DebugLog = true;
-            //Database.DebugLogFullResponse = true;
-
-            InitSimulation();
+            _LoginState = (Username != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
         }
 
         public void On_CheckLoggedIn(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
@@ -661,7 +667,16 @@ namespace AppCSHtml5
         #endregion
 
         #region Properties
-        public LoginStates LoginState { get; set; }
+        public LoginStates LoginState
+        {
+            get
+            {
+                Initialization();
+                return _LoginState;
+            }
+        }
+        private LoginStates _LoginState = (LoginStates)(-1);
+
         public string Username { get; set; }
         public string NewUsername { get; set; }
         public string Password { get; set; }
@@ -954,7 +969,7 @@ namespace AppCSHtml5
                 }
 
                 Transaction = null;
-                LoginState = LoginStates.SignedIn;
+                _LoginState = LoginStates.SignedIn;
 
                 NotifyPropertyChanged(nameof(EmailAddress));
 #if QACHALLENGE
@@ -1055,7 +1070,7 @@ namespace AppCSHtml5
                 AnswerSettings = SignInResult["answer_settings"];
 #endif
                 IsDeleteCanceled = (SignInResult["delete_canceled"] == "1");
-                LoginState = LoginStates.SignedIn;
+                _LoginState = LoginStates.SignedIn;
 
                 NotifyPropertyChanged(nameof(EmailAddress));
 #if QACHALLENGE
@@ -1299,7 +1314,7 @@ namespace AppCSHtml5
 #if QACHALLENGE
             Persistent.SetValue("question", null);
 #endif
-            LoginState = LoginStates.LoggedOff;
+            _LoginState = LoginStates.LoggedOff;
 
             OnLogout();
         }
@@ -1427,7 +1442,7 @@ namespace AppCSHtml5
             {
                 IDictionary<string, string> CheckPasswordResult = (IDictionary<string, string>)result;
 
-                LoginState = LoginStates.SignedIn;
+                _LoginState = LoginStates.SignedIn;
                 Transaction = null;
 
                 NotifyPropertyChanged(nameof(LoginState));
@@ -1476,7 +1491,7 @@ namespace AppCSHtml5
 #endif
                 PasswordSettings = null;
                 IsDeleteCanceled = false;
-                LoginState = LoginStates.LoggedOff;
+                _LoginState = LoginStates.LoggedOff;
 
                 NotifyPropertyChanged(nameof(LoginState));
                 NotifyPropertyChanged(nameof(Username));

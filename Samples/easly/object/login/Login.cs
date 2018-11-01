@@ -605,18 +605,24 @@ namespace AppCSHtml5
         #region Init
         public LoginBase()
         {
+            //Database.DebugLog = true;
+            //Database.DebugLogFullResponse = true;
+
+            InitSimulation();
+        }
+
+        private void Initialization()
+        {
+            if (_LoginState != (LoginStates)(-1))
+                return;
+
             Username = Persistent.GetValue("username", null);
             EmailAddress = Persistent.GetValue("email_address", null);
 #if QACHALLENGE
             Question = Persistent.GetValue("question", null);
 #endif
             Remember = (Persistent.GetValue("remember", null) != null);
-            LoginState = (Username != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
-
-            //Database.DebugLog = true;
-            //Database.DebugLogFullResponse = true;
-
-            InitSimulation();
+            _LoginState = (Username != null ? LoginStates.SignedIn : LoginStates.LoggedOff);
         }
 
         public void On_CheckLoggedIn(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
@@ -661,7 +667,16 @@ namespace AppCSHtml5
         #endregion
 
         #region Properties
-        public LoginStates LoginState { get; set; }
+        public LoginStates LoginState
+        {
+            get
+            {
+                Initialization();
+                return _LoginState;
+            }
+        }
+        private LoginStates _LoginState = (LoginStates)(-1);
+
         public string Username { get; set; }
         public string NewUsername { get; set; }
         public string Password { get; set; }
@@ -954,7 +969,7 @@ namespace AppCSHtml5
                 }
 
                 Transaction = null;
-                LoginState = LoginStates.SignedIn;
+                _LoginState = LoginStates.SignedIn;
 
                 NotifyPropertyChanged(nameof(EmailAddress));
 #if QACHALLENGE
@@ -1055,7 +1070,7 @@ namespace AppCSHtml5
                 AnswerSettings = SignInResult["answer_settings"];
 #endif
                 IsDeleteCanceled = (SignInResult["delete_canceled"] == "1");
-                LoginState = LoginStates.SignedIn;
+                _LoginState = LoginStates.SignedIn;
 
                 NotifyPropertyChanged(nameof(EmailAddress));
 #if QACHALLENGE
@@ -1299,7 +1314,7 @@ namespace AppCSHtml5
 #if QACHALLENGE
             Persistent.SetValue("question", null);
 #endif
-            LoginState = LoginStates.LoggedOff;
+            _LoginState = LoginStates.LoggedOff;
 
             OnLogout();
         }
@@ -1427,7 +1442,7 @@ namespace AppCSHtml5
             {
                 IDictionary<string, string> CheckPasswordResult = (IDictionary<string, string>)result;
 
-                LoginState = LoginStates.SignedIn;
+                _LoginState = LoginStates.SignedIn;
                 Transaction = null;
 
                 NotifyPropertyChanged(nameof(LoginState));
@@ -1476,7 +1491,7 @@ namespace AppCSHtml5
 #endif
                 PasswordSettings = null;
                 IsDeleteCanceled = false;
-                LoginState = LoginStates.LoggedOff;
+                _LoginState = LoginStates.LoggedOff;
 
                 NotifyPropertyChanged(nameof(LoginState));
                 NotifyPropertyChanged(nameof(Username));
@@ -2450,7 +2465,159 @@ namespace AppCSHtml5
         #endregion
     }
 
+    public class CredentialRecord : CredentialRecordBase
+    {
+        public CredentialRecord(string username, string email_address, string salt, string password, string password_settings, bool active, string name, string login_url, string meeting_url, string validation_url)
+            : base(username, email_address, salt, password, password_settings, active)
+        {
+            this.name = name;
+            this.login_url = login_url;
+            this.meeting_url = meeting_url;
+            this.validation_url = validation_url;
+        }
+
+#if QACHALLENGE
+        public CredentialRecord(string username, string email_address, string salt, string password, string password_settings, string question, string answer, string answer_settings, bool active, string name, string login_url, string meeting_url, string validation_url)
+            : base(username, email_address, salt, password, password_settings, question, answer, answer_settings, active)
+        {
+            this.name = name;
+            this.login_url = login_url;
+            this.meeting_url = meeting_url;
+            this.validation_url = validation_url;
+        }
+#endif
+
+        public string name { get; set; }
+        public string login_url { get; set; }
+        public string meeting_url { get; set; }
+        public string validation_url { get; set; }
+    }
+
+    public class CredentialFactory : CredentialFactoryBase
+    {
+        public override CredentialRecordBase CreateNew(string username, string email_address, string salt, string password, string password_settings, bool active)
+        {
+            return new CredentialRecord(username, email_address, salt, password, password_settings, active, "", "", "", "");
+        }
+
+#if QACHALLENGE
+        public override CredentialRecordBase CreateNew(string username, string email_address, string salt, string password, string password_settings, string question, string answer, string answer_settings, bool active)
+        {
+            return new CredentialRecord(username, email_address, salt, password, password_settings, question, answer, answer_settings, active, "", "", "", "");
+        }
+#endif
+
+        public virtual CredentialRecordBase CreateNew(string username, string email_address, string salt, string password, string password_settings, bool active, string name, string login_url, string meeting_url, string validation_url)
+        {
+            return new CredentialRecord(username, email_address, salt, password, password_settings, active, name, login_url, meeting_url, validation_url);
+        }
+
+#if QACHALLENGE
+        public virtual CredentialRecordBase CreateNew(string username, string email_address, string salt, string password, string password_settings, string question, string answer, string answer_settings, bool active, string name, string login_url, string meeting_url, string validation_url)
+        {
+            return new CredentialRecord(username, email_address, salt, password, password_settings, question, answer, answer_settings, active, name, login_url, meeting_url, validation_url);
+        }
+#endif
+
+#if QACHALLENGE
+        public override bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out IDictionary<string, string> record)
+        {
+            record = new Dictionary<string, string>();
+            if (CredentialRecordBase.query_sign_in_qa(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
+            {
+                record.Add("username", Row.username);
+                record.Add("email_address", Row.email_address);
+                record.Add("password_settings", Row.password_settings);
+                record.Add("question", LoginBase.DecodedQuestion(Row.question));
+                record.Add("answer_settings", Row.answer_settings);
+                record.Add("name", ((CredentialRecord)Row).name);
+                record.Add("login_url", ((CredentialRecord)Row).login_url);
+                record.Add("meeting_url", ((CredentialRecord)Row).meeting_url);
+                record.Add("validation_url", ((CredentialRecord)Row).validation_url);
+                return true;
+            }
+
+            return false;
+        }
+#else
+        public override bool Get(IEnumerable<CredentialRecordBase> credentials, string param_password, string param_passwordSettings, string param_identifier, out IDictionary<string, string> record)
+        {
+            record = new Dictionary<string, string>();
+            if (CredentialRecordBase.query_sign_in(credentials, param_password, param_passwordSettings, param_identifier, out CredentialRecordBase Row))
+            {
+                record.Add("username", Row.username);
+                record.Add("email_address", Row.email_address);
+                record.Add("password_settings", Row.password_settings);
+                record.Add("name", ((CredentialRecord)Row).name);
+                record.Add("login_url", ((CredentialRecord)Row).login_url);
+                record.Add("meeting_url", ((CredentialRecord)Row).meeting_url);
+                record.Add("validation_url", ((CredentialRecord)Row).validation_url);
+                return true;
+            }
+
+            return false;
+        }
+#endif
+    }
+
     public class Login : LoginBase
     {
+        protected override CredentialFactoryBase Factory { get; } = new CredentialFactory();
+
+        protected override void OnSignIn(IDictionary<string, string> signInResult)
+        {
+            string OrganizationName = signInResult["name"];
+            ((Eqmlp)GetEqmlp).Login(OrganizationName);
+
+            base.OnSignIn(signInResult);
+        }
+
+        protected override void OnLogout()
+        {
+            ((Eqmlp)GetEqmlp).Logout();
+
+            base.OnLogout();
+        }
+
+        protected override void OnAccountDeleted()
+        {
+            ((Eqmlp)GetEqmlp).Logout();
+
+            base.OnAccountDeleted();
+        }
+
+        protected override void InitializeBuiltInItems()
+        {
+#if QACHALLENGE
+            DatabaseSaltTable.Add(new SaltRecordBase("c32e25dca5caa30aa30ac32e2e255dca"));
+            DatabaseCredentialTable.Add(((CredentialFactory)Factory).CreateNew(
+                "test",
+                "test@test.com",
+                DatabaseSaltTable[0].salt,
+                Convert.ToBase64String(Encoding.UTF8.GetBytes("foo")),
+                "Base64",
+                EncodedQuestion("foo"),
+                Convert.ToBase64String(Encoding.UTF8.GetBytes("not foo")),
+                "Base64",
+                true,
+                Eqmlp.KnownOrganizationTable[0]["name"],
+                Eqmlp.KnownOrganizationTable[0]["login_url"],
+                Eqmlp.KnownOrganizationTable[0]["meeting_url"],
+                Eqmlp.KnownOrganizationTable[0]["validation_url"]));
+#else
+            DatabaseSaltTable.Add(new SaltRecordBase("c32e25dca5caa30aa30ac32e2e255dca"));
+            DatabaseCredentialTable.Add(((CredentialFactory)Factory).CreateNew(
+                "test",
+                "test@test.com",
+                DatabaseSaltTable[0].salt,
+                Convert.ToBase64String(Encoding.UTF8.GetBytes("foo")),
+                "Base64",
+                true,
+                Eqmlp.KnownOrganizationTable[0]["name"],
+                Eqmlp.KnownOrganizationTable[0]["login_url"],
+                Eqmlp.KnownOrganizationTable[0]["meeting_url"],
+                Eqmlp.KnownOrganizationTable[0]["validation_url"]));
+#endif
+        }
     }
 }

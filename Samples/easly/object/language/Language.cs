@@ -19,6 +19,24 @@ namespace AppCSHtml5
 
         public Language()
         {
+        }
+
+        public LanguageStates LanguageState
+        {
+            get
+            {
+                Initialization();
+                return _LanguageState;
+            }
+        }
+
+        private LanguageStates _LanguageState  = (LanguageStates)(-1);
+
+        private void Initialization()
+        {
+            if (_LanguageState != (LanguageStates)(-1))
+                return;
+
             string SystemLanguage = Translation.Selected;
 
             string UserLanguage = Persistent.GetValue("language", null);
@@ -36,15 +54,15 @@ namespace AppCSHtml5
                 }
             }
 
-            LanguageState = ((UserLanguage == "fr-FR") ? LanguageStates.French : LanguageStates.English);
+            _LanguageState = ((UserLanguage == "fr-FR") ? LanguageStates.French : LanguageStates.English);
         }
-
-        public LanguageStates LanguageState { get; set; }
 
         public bool IsTranslated
         {
             get
             {
+                Initialization();
+
                 if (Window.Current.Content is Page CurrentPage)
                 {
                     string Tag = CurrentPage.Tag as string;
@@ -68,13 +86,15 @@ namespace AppCSHtml5
 
         public void On_Switch(PageNames pageName, string sourceName, string sourceContent)
         {
+            Initialization();
+
             LanguageStates NewState = (LanguageState == LanguageStates.English) ? LanguageStates.French : LanguageStates.English;
             string LanguageName = StateToLanguage[NewState];
             App.GetTranslation.SetLanguage(LanguageName);
             string UserLanguage = Translation.Selected;
 
             Persistent.SetValue("language", UserLanguage);
-            LanguageState = ((UserLanguage == "fr-FR") ? LanguageStates.French : LanguageStates.English);
+            _LanguageState = ((UserLanguage == "fr-FR") ? LanguageStates.French : LanguageStates.English);
 
             NotifyPropertyChanged(nameof(LanguageState));
         }
