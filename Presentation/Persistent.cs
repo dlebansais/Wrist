@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetTools;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,7 +11,12 @@ namespace Presentation
         public static bool Refresh = false;
 
         #region Persistent State
-        private static readonly string PersistentStatePath = "17661044A27741D982897CF15F6EC1C3.txt";
+        private static readonly string PersistentStatePath;
+
+        static Persistent()
+        {
+            PersistentStatePath = HashTools.GetString(SecretUuid.GuidBytes) + ".txt";
+        }
 
         public static bool DebugTrace { get; set; } = false;
 

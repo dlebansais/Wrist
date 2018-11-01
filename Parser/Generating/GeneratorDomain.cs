@@ -89,6 +89,11 @@ namespace Parser
             else
                 Translation = null;
 
+            if (domain.PreprocessorDefine != null)
+                PreprocessorDefine = new GeneratorPreprocessorDefine(domain.PreprocessorDefine);
+            else
+                PreprocessorDefine = null;
+
             HomePage = GeneratorPage.GeneratorPageMap[domain.HomePage];
             SelectedColorTheme = GeneratorColorTheme.GeneratorColorThemeMap[domain.SelectedColorTheme];
             SelectedUnitTest = domain.SelectedUnitTest != null ? GeneratorUnitTest.GeneratorUnitTestMap[domain.SelectedUnitTest] : null;
@@ -108,6 +113,7 @@ namespace Parser
         public List<IGeneratorDynamic> Dynamics { get; private set; }
         public List<IGeneratorUnitTest> UnitTests { get; private set; }
         public IGeneratorTranslation Translation { get; private set; }
+        public IGeneratorPreprocessorDefine PreprocessorDefine { get; private set; }
         public IGeneratorPage HomePage { get; private set; }
         public IGeneratorColorTheme SelectedColorTheme { get; private set; }
         public IGeneratorUnitTest SelectedUnitTest { get; private set; }
@@ -421,6 +427,11 @@ namespace Parser
             foreach (KeyValuePair<ConditionalDefine, bool> Entry in conditionalDefineTable)
                 if (Entry.Value)
                     AdditionalDefines += $";{Entry.Key.Name}";
+
+            if (PreprocessorDefine != null)
+                foreach (KeyValuePair<string, bool> Entry in PreprocessorDefine.PreprocessorDefineTable)
+                    if (Entry.Value)
+                        AdditionalDefines += $";{Entry.Key}";
 
             projectWriter.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             projectWriter.WriteLine("<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">");

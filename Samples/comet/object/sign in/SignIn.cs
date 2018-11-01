@@ -74,7 +74,7 @@ namespace AppCSHtml5
             KeepActiveIndex = -1;
         }
 
-        public void On_SignInNoMethod(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_SignInNoMethod(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             string TempPassword = Password;
             Password = null;
@@ -86,12 +86,12 @@ namespace AppCSHtml5
                 FailSignIn(out destinationPageName);
         }
 
-        public void On_SignInWithMethod1(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_SignInWithMethod1(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             On_SignInWithMethod(SignInMethods.NameOnly, pageName, out destinationPageName);
         }
 
-        public void On_SignInWithMethod2(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_SignInWithMethod2(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             On_SignInWithMethod(SignInMethods.NameAndPassword, pageName, out destinationPageName);
         }

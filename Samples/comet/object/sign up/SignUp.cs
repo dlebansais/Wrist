@@ -180,7 +180,7 @@ namespace AppCSHtml5
             SignInMethod = SignInMethods.None;
         }
 
-        public void On_SignUp(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_SignUp(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             Account NewAccount;
             SignInError Error = ((AccountManager)GetAccountManager).TryAddAccount(Email, SignInMethod, Name, Password, out NewAccount);

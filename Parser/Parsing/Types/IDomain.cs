@@ -18,6 +18,7 @@ namespace Parser
         IFormCollection<IDynamic> Dynamics { get; }
         IFormCollection<IUnitTest> UnitTests { get; }
         ITranslation Translation { get; }
+        IPreprocessorDefine PreprocessorDefine { get; }
         IPage HomePage { get; }
         IColorTheme SelectedColorTheme { get; }
         IUnitTest SelectedUnitTest { get; }

@@ -102,6 +102,16 @@ namespace Parser
             else
                 Translation = null;
 
+            string PreprocessorDefineFile = Path.Combine(inputFolderName, "defines.txt");
+            IPreprocessorDefine PreprocessorDefine;
+            if (File.Exists(PreprocessorDefineFile))
+            {
+                PreprocessorDefine = new PreprocessorDefine(PreprocessorDefineFile);
+                PreprocessorDefine.Process(conditionalDefineTable);
+            }
+            else
+                PreprocessorDefine = null;
+
             IPage HomePage = null;
             foreach (IPage Page in Pages)
                 if (Page.Name == homePageName)
@@ -147,7 +157,8 @@ namespace Parser
                                            Fonts, 
                                            Dynamics,
                                            UnitTests,
-                                           Translation, 
+                                           Translation,
+                                           PreprocessorDefine,
                                            HomePage, 
                                            SelectedColorTheme, 
                                            SelectedUnitTest);

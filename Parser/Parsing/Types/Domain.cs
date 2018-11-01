@@ -19,7 +19,8 @@ namespace Parser
                       IFormCollection<IFont> fonts,
                       IFormCollection<IDynamic> dynamics,
                       IFormCollection<IUnitTest> unitTests,
-                      ITranslation translation, 
+                      ITranslation translation,
+                      IPreprocessorDefine preprocessorDefine,
                       IPage homePage, 
                       IColorTheme selectedColorTheme, 
                       IUnitTest selectedUnitTest)
@@ -37,6 +38,7 @@ namespace Parser
             Dynamics = dynamics;
             UnitTests = unitTests;
             Translation = translation;
+            PreprocessorDefine = preprocessorDefine;
             HomePage = homePage;
             SelectedColorTheme = selectedColorTheme;
             SelectedUnitTest = selectedUnitTest;
@@ -57,6 +59,7 @@ namespace Parser
         public IFormCollection<IDynamic> Dynamics { get; private set; }
         public IFormCollection<IUnitTest> UnitTests { get; private set; }
         public ITranslation Translation { get; private set; }
+        public IPreprocessorDefine PreprocessorDefine { get; private set; }
         public IPage HomePage { get; private set; }
         public IColorTheme SelectedColorTheme { get; private set; }
         public IUnitTest SelectedUnitTest { get; private set; }

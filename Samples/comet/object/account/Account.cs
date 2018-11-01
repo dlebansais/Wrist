@@ -55,7 +55,7 @@ namespace AppCSHtml5
         public bool IsLocationChanged { get; private set; }
         private string _Location;
 
-        public void On_UpdateFullName(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_UpdateFullName(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             IsFullNameChanged = false;
             NotifyPropertyChanged(nameof(IsFullNameChanged));
@@ -63,7 +63,7 @@ namespace AppCSHtml5
             destinationPageName = PageNames.CurrentPage;
         }
 
-        public void On_UpdateLocation(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_UpdateLocation(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             IsLocationChanged = false;
             NotifyPropertyChanged(nameof(IsLocationChanged));

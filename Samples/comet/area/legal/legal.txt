@@ -1,1 +1,2 @@
 ﻿fake 0: text, text=translation.strings[home-title]
+fake 1: text, text=account.username

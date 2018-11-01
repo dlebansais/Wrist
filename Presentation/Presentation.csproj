@@ -70,6 +70,12 @@
     <Compile Include="Popup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NetTools\NetTools.csproj">
+      <Project>{5a9484fa-3316-4e96-9eab-95ac997b40da}</Project>
+      <Name>NetTools</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildProgramFiles32)\MSBuild\CSharpXamlForHtml5\InternalStuff\Targets\CSharpXamlForHtml5.Build.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

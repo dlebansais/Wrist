@@ -124,9 +124,11 @@
     <Compile Include="Generating\Types\Form\IGeneratorBackground.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorFont.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorResource.cs" />
+    <Compile Include="Generating\Types\GeneratorPreprocessorDefine.cs" />
     <Compile Include="Generating\Types\GeneratorTranslation.cs" />
     <Compile Include="Generating\Types\Form\GeneratorUnitTest.cs" />
     <Compile Include="Generating\Types\IGeneratorPageNavigation.cs" />
+    <Compile Include="Generating\Types\IGeneratorPreprocessorDefine.cs" />
     <Compile Include="Generating\Types\IGeneratorTranslation.cs" />
     <Compile Include="Generating\Types\Form\IGeneratorUnitTest.cs" />
     <Compile Include="Generating\Types\Layout\GeneratorBorderDecoration.cs" />
@@ -237,6 +239,7 @@
     <Compile Include="Parsing\Types\IComponentEvent.cs" />
     <Compile Include="Parsing\Types\IComponentProperty.cs" />
     <Compile Include="Parsing\Types\IPageNavigation.cs" />
+    <Compile Include="Parsing\Types\IPreprocessorDefine.cs" />
     <Compile Include="Parsing\Types\ITranslation.cs" />
     <Compile Include="Parsing\Types\Form\IUnitTest.cs" />
     <Compile Include="Parsing\Types\Layout\Control.cs" />
@@ -299,6 +302,7 @@
     <Compile Include="Parsing\Types\ObjectProperty\IObjectPropertyStringDictionary.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyStringList.cs" />
     <Compile Include="Parsing\Types\ObjectProperty\ObjectPropertyStringDictionary.cs" />
+    <Compile Include="Parsing\Types\PreprocessorDefine.cs" />
     <Compile Include="Parsing\Types\Translation.cs" />
     <Compile Include="Parsing\Types\Form\UnitTest.cs" />
     <Compile Include="Parsing\Types\UnitTest\ToggleOperation.cs" />

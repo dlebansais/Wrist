@@ -17,7 +17,7 @@ namespace AppCSHtml5
         public string Text { get; }
         public string Link { get; }
 
-        public void On_Click(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_Click(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             destinationPageName = PageNames.accountPage;
         }

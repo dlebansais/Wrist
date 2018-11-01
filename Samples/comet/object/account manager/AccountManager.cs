@@ -151,7 +151,7 @@ namespace AppCSHtml5
             return false;
         }
 
-        public void On_ChangeEmail(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangeEmail(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (!ClearPasswordAndCompare())
             {
@@ -164,7 +164,7 @@ namespace AppCSHtml5
                 destinationPageName = PageNames.profilePage;
         }
 
-        public void On_ChangePassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangePassword(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (!ClearPasswordAndCompare())
             {
@@ -180,7 +180,7 @@ namespace AppCSHtml5
             }
         }
 
-        public void On_ChangeUsername(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangeUsername(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (IsPasswordRequired && !ClearPasswordAndCompare())
             {
@@ -215,7 +215,7 @@ namespace AppCSHtml5
             NotifyPropertyChanged(nameof(IsPasswordInvalidError));
         }
 
-        public void On_ConfirmDelete(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ConfirmDelete(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (MessageBox.Show("This will delete your account, and cannot be recovered, are you sure?", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 destinationPageName = PageNames.delete_accountPage;
@@ -229,7 +229,7 @@ namespace AppCSHtml5
             MessageBox.Show("Email sent");
         }
 
-        public void On_AddPassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_AddPassword(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (SignedInAccount == null)
                 destinationPageName = PageNames.CurrentPage;
@@ -243,7 +243,7 @@ namespace AppCSHtml5
             }
         }
 
-        public void On_RemovePassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_RemovePassword(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (!ClearPasswordAndCompare())
             {
@@ -261,7 +261,7 @@ namespace AppCSHtml5
             }
         }
 
-        public void On_CreateUsername(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_CreateUsername(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (SignedInAccount == null)
                 destinationPageName = PageNames.CurrentPage;
@@ -275,7 +275,7 @@ namespace AppCSHtml5
             }
         }
 
-        public void On_CreateUsernameAndPassword(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_CreateUsernameAndPassword(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             if (SignedInAccount == null || string.IsNullOrEmpty(NewPassword))
                 destinationPageName = PageNames.CurrentPage;
@@ -289,7 +289,7 @@ namespace AppCSHtml5
             }
         }
 
-        public void On_ChangeCertificate(PageNames pageName, string sourceName, string sourceContent, out PageNames destinationPageName)
+        public void On_ChangeCertificate(PageNames pageName, IObjectBase senderContext, string sourceName, string sourceContent, out PageNames destinationPageName)
         {
             destinationPageName = PageNames.CurrentPage;
         }
