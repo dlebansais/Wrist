@@ -15,8 +15,8 @@ namespace Presentation
 
         static Persistent()
         {
-            string Url = UrlTools.GetBaseUrl();
-            string UrlHash = Hash.SHA1($"File{Url}");
+            string BaseUrl = UrlTools.GetBaseUrl();
+            string UrlHash = Hash.SHA1($"File{BaseUrl}");
             PersistentStatePath = $"{UrlHash}.txt";
         }
 

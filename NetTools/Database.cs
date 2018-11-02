@@ -69,8 +69,8 @@ namespace NetTools
             {
                 foreach (KeyValuePair<string, KeyValuePair<DatabaseOperation, WebClient>> Entry in DownloadClientTable)
                 {
-                    string RootUrl = UrlTools.GetBaseUrl();
-                    string AddressString = $"{RootUrl}{Entry.Key}";
+                    string BaseUrl = UrlTools.GetBaseUrl();
+                    string AddressString = $"{BaseUrl}/{Entry.Key}";
                     DatabaseOperation Operation = Entry.Value.Key;
                     WebClient DownloadClient = Entry.Value.Value;
 
