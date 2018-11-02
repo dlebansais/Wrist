@@ -39,6 +39,9 @@ namespace NetTools
             if (EndIndex >= 0)
                 UrlAsString = UrlAsString.Substring(0, EndIndex);
 
+            while (UrlAsString.EndsWith("/"))
+                UrlAsString = UrlAsString.Substring(0, UrlAsString.Length - 1);
+
             return UrlAsString;
         }
 
