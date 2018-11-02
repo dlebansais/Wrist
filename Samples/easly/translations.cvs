@@ -121,6 +121,7 @@ page-feedback	Feedback	Envoyer votre opinion
 page-download-eeac	Download Easly Editor and Compiler	Télécharger éditeur et compilateur
 page-certification-ie	CAcert root certificates	Certificats racines CAcert
 page-certification-firefox	CAcert root certificates	Certificats racines CAcert
+page-error-404	Error 404	Erreur 404
 home-text-0	Easly is a programming language supporting a rich and complex set of features. Its primary purpose is to protect developers from making mistakes, and it enforces many practices that usually are simple guidelines. Its secondary purpose is to be compatible with a large set of other languages, for a smooth integration in existing development processes. Therefore, Easly is targeted mainly at professional programmers.	Easly est un langage de programmation disposant d'un ensemble de fonctionnalités riches et complexes. Son premier objectif est d'éviter aux développeurs de commettre des erreurs, et pour cela il impose des pratiques de programmation qui en général ne sont que de simples recommandations. Son second objectif est d'être compatible avec un large ensemble de langages, afin de s'intégrer facilement dans les processus de développement déjà en place. Par conséquent, Easly se destine plutôt aux programmeurs professionnels.
 home-text-1	Every tool found at easly.org can be downloaded and tested for free.  All tools are full-featured and do not require registration to be used.  They will not show popup windows or any other annoying reminder about this site.  However, registering gives you additional benefits like obtaining the latest patches and bug fixes.	Chaque outil disponible sur easly.org peut être téléchargé et testé gratuitement. Ils incluent tous toutes les fonctionnalités et ne requièrent pas d'être enregistrés pour pouvoir être utilisés. Ils n'affichent pas de fenêtre intempestive et autres rappels gênants à propos de ce site. Cependant, s'enregistrer vous apporte des avantages supplémentaires tels qu'obtenir les derniers correctifs.
 home-text-2	Please check the release notes of each patch to see if your problem can be corrected, or if the feature you're looking for has been added.	Veuillez consulter les notes d'utilisation à chaque nouvelle version pour vérifier si votre problème est corrigé, ou si la fonctionnalité que vous désirez a été ajoutée.
@@ -191,6 +192,7 @@ instruction-firefox-text-2	Click OK to complete the process.	Cliquez sur OK pour
 instruction-ie-text-1	In Internet Explorer, click View -> Tools -> Internet Options -> Content -> Personal -> Certificates.	Dans Internet Explorer, cliquez Vue -> Outils -> Options Internet -> Contenu -> Informations personnelles -> Certificats.
 instruction-ie-text-2	Choose the Trusted Root Certification Authorities tab.	Choisissez la page 'Autorités principales de confiance'.
 instruction-ie-text-3	Import the certificates you downloaded.	Importez les certificats que vous avez téléchargés.
+error-404-text	Sorry, this page doesn't exist. 	Désolé, cette page n'existe pas.
 login	Login	Connexion
 other-language	French	Anglais
 not-translated	Site translation in progress.	Site en cours de traduction.

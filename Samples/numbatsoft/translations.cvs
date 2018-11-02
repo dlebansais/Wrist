@@ -77,6 +77,7 @@ page-download-uacpt	Download UAC pass-through	Télécharger UAC pass-through
 page-download-eqmlp	Download Everquest Multilog Parser	Télécharger Everquest Multilog Parser
 page-support	Support	Assistance
 page-contact	Contact	Contact
+page-error-404	Error 404	Erreur 404
 home-caps	HOME	ACCUEIL
 login-caps	LOGIN	S'IDENTIFIER
 logout-caps	LOGOUT	QUITTER
@@ -102,6 +103,7 @@ home-text-3	Please check the release notes of each patch to see if your problem 
 last-news-title	Latest news	Dernières nouvelles
 archive-news-title	News archives	Précédement
 read-more	Read more...	En savoir plus...
+error-404-text	Sorry, this page doesn't exist. 	Désolé, cette page n'existe pas.
 login-title	Login information	Informations d'identification
 name-colon	Name:	Nom :
 password-colon	Password:	Mot de passe :
