@@ -34,9 +34,9 @@ namespace AppCSHtml5
             DispatcherTimer DownloadTimer = (DispatcherTimer)sender;
             DownloadTimer.Stop();
 
-            System.Diagnostics.Debug.WriteLine($"Attempting to download {url}");
+            //System.Diagnostics.Debug.WriteLine($"Attempting to download {url}");
 
-            HtmlPage.Window.Navigate(new System.Uri(url, System.UriKind.RelativeOrAbsolute), "_blank");
+            HtmlPage.Window.Navigate(new System.Uri(url, System.UriKind.RelativeOrAbsolute));
         }
 
         #region Implementation of INotifyPropertyChanged
