@@ -25,6 +25,9 @@ namespace AppCSHtml5
 
         public void On_Send(PageNames pageName, string sourceName, string sourceContent)
         {
+            if (string.IsNullOrEmpty(Content))
+                return;
+
             string ContentToSend = Convert.ToBase64String(Encoding.UTF8.GetBytes(Content));
             Content = null;
 
