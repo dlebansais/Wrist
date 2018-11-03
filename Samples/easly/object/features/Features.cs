@@ -61,7 +61,7 @@ namespace AppCSHtml5
         #region Operations
         private void GetAllFeatures(Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("get all feature entries", "query_all_features.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetAllFeaturesCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("get all feature entries", "features/query_all_features.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetAllFeaturesCompleted(sender, e, callback)));
         }
 
         private void OnGetAllFeaturesCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -80,7 +80,7 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("request/query_all_features.php", OnQueryFeature));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}features/query_all_features.php", OnQueryFeature));
         }
 
         private List<IDictionary<string, string>> OnQueryFeature(IDictionary<string, string> parameters)

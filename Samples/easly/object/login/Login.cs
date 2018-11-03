@@ -1524,7 +1524,7 @@ namespace AppCSHtml5
         #region Transactions
         private void QueryCredentialTaken(string username, string email, Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("new credential", "query_credential_taken.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) } }, (object sender, CompletionEventArgs e) => OnQueryCredentialTakenCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("new credential", "credential/query_credential_taken.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) } }, (object sender, CompletionEventArgs e) => OnQueryCredentialTakenCompleted(sender, e, callback)));
         }
 
         private void OnQueryCredentialTakenCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1538,7 +1538,7 @@ namespace AppCSHtml5
 
         private void ChangePassword(string username, string encryptedCurrentPassword, string encryptedCurrentPasswordSettings, string encryptedNewPassword, string encryptedNewPasswordSettings, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("change password", "update_change_password.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, (object sender, CompletionEventArgs e) => OnChangePasswordCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("change password", "credential/update_change_password.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedCurrentPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedCurrentPasswordSettings) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) } }, (object sender, CompletionEventArgs e) => OnChangePasswordCompleted(sender, e, callback)));
         }
 
         private void OnChangePasswordCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1552,7 +1552,7 @@ namespace AppCSHtml5
 
         private void ChangeEmailAddress(string username, string encryptedPassword, string encryptedPasswordSettings, string newEmailAddress, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("change email", "update_change_email_address.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_email_address", HtmlString.PercentEncoded(newEmailAddress) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnChangeEmailAddressCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("change email address", "credential/update_change_email_address.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_email_address", HtmlString.PercentEncoded(newEmailAddress) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnChangeEmailAddressCompleted(sender, e, callback)));
         }
 
         private void OnChangeEmailAddressCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1566,7 +1566,7 @@ namespace AppCSHtml5
 
         private void ChangeUsername(string username, string encryptedPassword, string encryptedPasswordSettings, string newUsername, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("change email", "update_change_username.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_username", HtmlString.PercentEncoded(newUsername) } }, (object sender, CompletionEventArgs e) => OnChangeUsernameCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("change username", "credential/update_change_username.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_username", HtmlString.PercentEncoded(newUsername) } }, (object sender, CompletionEventArgs e) => OnChangeUsernameCompleted(sender, e, callback)));
         }
 
         private void OnChangeUsernameCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1581,7 +1581,7 @@ namespace AppCSHtml5
 #if QACHALLENGE
         private void ChangeChallenge(string username, string encryptedPassword, string encryptedPasswordSettings, string newQuestion, string encryptedNewAnswer, string encryptedNewAnswerSettings, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("change challenge", "update_change_challenge.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_question", HtmlString.PercentEncoded(newQuestion) }, { "new_answer", encryptedNewAnswer }, { "new_answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, (object sender, CompletionEventArgs e) => OnChangeChallengeCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("change challenge", "credential/update_change_challenge.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "new_question", HtmlString.PercentEncoded(newQuestion) }, { "new_answer", encryptedNewAnswer }, { "new_answer_settings", HtmlString.PercentEncoded(encryptedNewAnswerSettings) } }, (object sender, CompletionEventArgs e) => OnChangeChallengeCompleted(sender, e, callback)));
         }
 
         private void OnChangeChallengeCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1597,12 +1597,12 @@ namespace AppCSHtml5
 #if QACHALLENGE
         private void RegisterAndSendEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string email, string question, string encryptedAnswer, string encryptedAnswerSettings, string salt, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRegisterSendEmailCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("start register", "credential/insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "question", HtmlString.PercentEncoded(question) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRegisterSendEmailCompleted(sender, e, callback)));
         }
 #else
         private void RegisterAndSendEmail(string username, string encryptedPassword, string encryptedPasswordSettings, string email, string salt, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("start register", "insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRegisterSendEmailCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("start register", "credential/insert_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "email_address", HtmlString.PercentEncoded(email) }, { "salt", salt }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRegisterSendEmailCompleted(sender, e, callback)));
         }
 #endif
 
@@ -1617,7 +1617,7 @@ namespace AppCSHtml5
 
         private void BeginRecoveryAndSendEmail(string email, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("start recovery", "update_begin_recovery.php", new Dictionary<string, string>() { { "email_address", HtmlString.PercentEncoded(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRecoverySendEmailCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("start recovery", "credential/update_begin_recovery.php", new Dictionary<string, string>() { { "email_address", HtmlString.PercentEncoded(email) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnRecoverySendEmailCompleted(sender, e, callback)));
         }
 
         private void OnRecoverySendEmailCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1632,12 +1632,12 @@ namespace AppCSHtml5
 #if QACHALLENGE
         private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, string transactionCode, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnActivateAccountCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("activate account", "credential/update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnActivateAccountCompleted(sender, e, callback)));
         }
 #else
         private void ActivateAccountAndSendEmail(string username, string email, string encryptedPassword, string encryptedPasswordSettings, string transactionCode, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("activate account", "update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnActivateAccountCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("activate account", "credential/update_activate.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "email_address", HtmlString.PercentEncoded(email) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "transaction_code", transactionCode }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnActivateAccountCompleted(sender, e, callback)));
         }
 #endif
 
@@ -1653,12 +1653,12 @@ namespace AppCSHtml5
 #if QACHALLENGE
         private void RecoverAccount(string username, string encryptedNewPassword, string encryptedNewPasswordSettings, string encryptedAnswer, string encryptedAnswerSettings, string transactionCode, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode } }, (object sender, CompletionEventArgs e) => OnAccountRecoveryCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("recover account", "credential/update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "answer", encryptedAnswer }, { "answer_settings", HtmlString.PercentEncoded(encryptedAnswerSettings) }, { "transaction_code", transactionCode } }, (object sender, CompletionEventArgs e) => OnAccountRecoveryCompleted(sender, e, callback)));
         }
 #else
         private void RecoverAccount(string username, string encryptedNewPassword, string encryptedNewPasswordSettings, string transactionCode, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("recover account", "update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "transaction_code", transactionCode } }, (object sender, CompletionEventArgs e) => OnAccountRecoveryCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("recover account", "credential/update_complete_recovery.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(username) }, { "new_password", encryptedNewPassword }, { "new_password_settings", HtmlString.PercentEncoded(encryptedNewPasswordSettings) }, { "transaction_code", transactionCode } }, (object sender, CompletionEventArgs e) => OnAccountRecoveryCompleted(sender, e, callback)));
         }
 #endif
 
@@ -1673,7 +1673,7 @@ namespace AppCSHtml5
 
         private void GetUserSalt(string identifier, Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("get user salt", "query_salt.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) } }, (object sender, CompletionEventArgs e) => OnGetUserSaltCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("get user salt", "credential/query_salt.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) } }, (object sender, CompletionEventArgs e) => OnGetUserSaltCompleted(sender, e, callback)));
         }
 
         private void OnGetUserSaltCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1687,7 +1687,7 @@ namespace AppCSHtml5
 
         private void SignIn(string identifier, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("sign in", "query_sign_in.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, (object sender, CompletionEventArgs e) => OnSignInCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("sign in", "credential/query_sign_in.php", new Dictionary<string, string>() { { "identifier", HtmlString.PercentEncoded(identifier) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) } }, (object sender, CompletionEventArgs e) => OnSignInCompleted(sender, e, callback)));
         }
 
         private void OnSignInCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1706,7 +1706,7 @@ namespace AppCSHtml5
 
         private void DeleteAccount(string Username, string encryptedPassword, string encryptedPasswordSettings, Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("delete account", "update_delete_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(Username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnDeleteAccountCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("delete account", "credential/update_delete_credential.php", new Dictionary<string, string>() { { "username", HtmlString.PercentEncoded(Username) }, { "password", encryptedPassword }, { "password_settings", HtmlString.PercentEncoded(encryptedPasswordSettings) }, { "language", ((int)GetLanguage.LanguageState).ToString() } }, (object sender, CompletionEventArgs e) => OnDeleteAccountCompleted(sender, e, callback)));
         }
 
         private void OnDeleteAccountCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -1727,20 +1727,20 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("request/query_salt.php", OnQuerySaltRequest));
-            OperationHandler.Add(new OperationHandler("request/insert_credential.php", OnInsertCredentialRequest));
-            OperationHandler.Add(new OperationHandler("request/update_activate.php", OnCompleteSignUpRequest));
-            OperationHandler.Add(new OperationHandler("request/query_sign_in.php", OnSignInRequest));
-            OperationHandler.Add(new OperationHandler("request/update_change_password.php", OnChangePasswordRequest));
-            OperationHandler.Add(new OperationHandler("request/update_change_email_address.php", OnChangeEmailAddressRequest));
-            OperationHandler.Add(new OperationHandler("request/update_change_username.php", OnChangeUsernameRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}credential/query_salt.php", OnQuerySaltRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/insert_credential.php", OnInsertCredentialRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/update_activate.php", OnCompleteSignUpRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}credential/query_sign_in.php", OnSignInRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/update_change_password.php", OnChangePasswordRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/update_change_email_address.php", OnChangeEmailAddressRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/update_change_username.php", OnChangeUsernameRequest));
 #if QACHALLENGE
-            OperationHandler.Add(new OperationHandler("request/update_change_challenge.php", OnChangeChallengeRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/update_change_challenge.php", OnChangeChallengeRequest));
 #endif
-            OperationHandler.Add(new OperationHandler("request/update_begin_recovery.php", OnRecoveryRequest));
-            OperationHandler.Add(new OperationHandler("request/update_complete_recovery.php", OnCompleteRecoveryRequest));
-            OperationHandler.Add(new OperationHandler("request/update_delete_credential.php", OnDeleteAccountRequest));
-            OperationHandler.Add(new OperationHandler("request/query_credential_taken.php", OnQueryCredentialTakenRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/update_begin_recovery.php", OnRecoveryRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/update_complete_recovery.php", OnCompleteRecoveryRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}credential/update_delete_credential.php", OnDeleteAccountRequest));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}credential/query_credential_taken.php", OnQueryCredentialTakenRequest));
 
             InitializeBuiltInItems();
         }

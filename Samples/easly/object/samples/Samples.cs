@@ -279,7 +279,7 @@ namespace AppCSHtml5
         #region Transactions
         private void GetSampleCode(string title, Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("get sample code", "query_sample_code.php", new Dictionary<string, string>() { { "title", HtmlString.PercentEncoded(title) } }, (object sender, CompletionEventArgs e) => OnGetAllSampleCodesCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("get sample code", "features/query_sample_code.php", new Dictionary<string, string>() { { "title", HtmlString.PercentEncoded(title) } }, (object sender, CompletionEventArgs e) => OnGetAllSampleCodesCompleted(sender, e, callback)));
         }
 
         private void OnGetAllSampleCodesCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -307,7 +307,7 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler($"{Database.QueryScriptPath}query_sample_code.php", OnQuerySampleCode));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}features/query_sample_code.php", OnQuerySampleCode));
         }
 
         private List<IDictionary<string, string>> OnQuerySampleCode(IDictionary<string, string> parameters)

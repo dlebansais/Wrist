@@ -34,7 +34,7 @@ namespace AppCSHtml5
         #region Operations
         private void SendFeedback(string content, Action<int, object> callback)
         {
-            Database.Update(new DatabaseUpdateOperation("send feedback", "update_feedback.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, (object sender, CompletionEventArgs e) => OnSendFeedbackCompleted(sender, e, callback)));
+            Database.Update(new DatabaseUpdateOperation("send feedback", "feedback/update_feedback.php", new Dictionary<string, string>() { { "content", HtmlString.PercentEncoded(content) } }, (object sender, CompletionEventArgs e) => OnSendFeedbackCompleted(sender, e, callback)));
         }
 
         private void OnSendFeedbackCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -51,7 +51,7 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("request/update_feedback.php", OnCompleteSendFeedback));
+            OperationHandler.Add(new OperationHandler($"/{Database.UpdateScriptPath}feedback/update_feedback.php", OnCompleteSendFeedback));
         }
 
         private List<IDictionary<string, string>> OnCompleteSendFeedback(IDictionary<string, string> parameters)

@@ -61,7 +61,7 @@ namespace AppCSHtml5
         #region Operations
         private void GetAllStatus(Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("get all status entries", "query_all_status.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetAllStatusCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("get all status entries", "features/query_all_status.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetAllStatusCompleted(sender, e, callback)));
         }
 
         private void OnGetAllStatusCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -80,7 +80,7 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("request/query_all_status.php", OnQueryStatus));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}features/query_all_status.php", OnQueryStatus));
         }
 
         private List<IDictionary<string, string>> OnQueryStatus(IDictionary<string, string> parameters)

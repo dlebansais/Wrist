@@ -175,7 +175,7 @@ namespace AppCSHtml5
         #region Operations
         private void GetReleases(Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("get release notes", "query_all_release_notes.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetReleasesCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("get release notes", "eqmlp/query_all_release_notes.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetReleasesCompleted(sender, e, callback)));
         }
 
         private void OnGetReleasesCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -189,7 +189,7 @@ namespace AppCSHtml5
 
         private void GetBugs(Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("get bugs", "query_all_bugs.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetBugsCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("get bugs", "eqmlp/query_all_bugs.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetBugsCompleted(sender, e, callback)));
         }
 
         private void OnGetBugsCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -203,7 +203,7 @@ namespace AppCSHtml5
 
         private void GetOrganizations(Action<int, object> callback)
         {
-            Database.Query(new DatabaseQueryOperation("get organizations", "query_all_organizations.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetOrganizationsCompleted(sender, e, callback)));
+            Database.Query(new DatabaseQueryOperation("get organizations", "eqmlp/query_all_organizations.php", new Dictionary<string, string>(), (object sender, CompletionEventArgs e) => OnGetOrganizationsCompleted(sender, e, callback)));
         }
 
         private void OnGetOrganizationsCompleted(object sender, CompletionEventArgs e, Action<int, object> callback)
@@ -222,9 +222,9 @@ namespace AppCSHtml5
             if (NetTools.UrlTools.IsUsingRestrictedFeatures)
                 return;
 
-            OperationHandler.Add(new OperationHandler("request/query_all_release_notes.php", OnQueryReleases));
-            OperationHandler.Add(new OperationHandler("request/query_all_bugs.php", OnQueryBugs));
-            OperationHandler.Add(new OperationHandler("request/query_all_organizations.php", OnQueryOrganizations));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}eqmlp/query_all_release_notes.php", OnQueryReleases));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}eqmlp/query_all_bugs.php", OnQueryBugs));
+            OperationHandler.Add(new OperationHandler($"/{Database.QueryScriptPath}eqmlp/query_all_organizations.php", OnQueryOrganizations));
         }
 
         private List<IDictionary<string, string>> OnQueryReleases(IDictionary<string, string> parameters)

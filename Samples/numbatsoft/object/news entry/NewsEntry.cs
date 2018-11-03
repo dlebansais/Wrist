@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace AppCSHtml5
 {
@@ -23,12 +25,12 @@ namespace AppCSHtml5
 
             List<INewsEntryLink> LinkList;
 
-            string EnglishText = Language.ReplaceHtml(enu_text);
+            string EnglishText = Language.ReplaceHtml(Encoding.UTF8.GetString(Convert.FromBase64String(enu_text)));
             EnglishText = ReplaceLinks(EnglishText, out LinkList);
             TextTable.Add(LanguageStates.English, EnglishText);
             LinksTable.Add(LanguageStates.English, new ObservableCollection<INewsEntryLink>(LinkList));
 
-            string FrenchText = Language.ReplaceHtml(fra_text);
+            string FrenchText = Language.ReplaceHtml(Encoding.UTF8.GetString(Convert.FromBase64String(fra_text)));
             FrenchText = ReplaceLinks(FrenchText, out LinkList);
             TextTable.Add(LanguageStates.French, FrenchText);
             LinksTable.Add(LanguageStates.French, new ObservableCollection<INewsEntryLink>(LinkList));
