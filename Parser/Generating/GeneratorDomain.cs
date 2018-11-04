@@ -231,6 +231,9 @@ namespace Parser
 
         private void GenerateAppCSharp(string outputFolderName, string appNamespace, StreamWriter cSharpWriter)
         {
+            DateTime Now = DateTime.UtcNow;
+            string AppVersion = Now.ToString("yyyyMMddHHmmss");
+
             cSharpWriter.WriteLine("using Presentation;");
             cSharpWriter.WriteLine("using System.Collections.Generic;");
             cSharpWriter.WriteLine("using System.ComponentModel;");
@@ -243,9 +246,12 @@ namespace Parser
             cSharpWriter.WriteLine("{");
             cSharpWriter.WriteLine("    public sealed partial class App : Application, INotifyPropertyChanged");
             cSharpWriter.WriteLine("    {");
+            cSharpWriter.WriteLine($"        public static string AppVersion=\"{AppVersion}\";");
+            cSharpWriter.WriteLine();
             cSharpWriter.WriteLine("        public App()");
             cSharpWriter.WriteLine("        {");
             cSharpWriter.WriteLine("            InitializeComponent();");
+            cSharpWriter.WriteLine("            NetTools.DatabaseOperation.VersionParameter = AppVersion;");
             cSharpWriter.WriteLine("            QueryString = NetTools.UrlTools.GetQueryString();");
             cSharpWriter.WriteLine();
             cSharpWriter.WriteLine($"            PageNames StartPage = int.TryParse(Persistent.GetValue(\"page\", \"\"), out int PageIndex) ? (PageNames)PageIndex : PageNames.{HomePage.XamlName};");
