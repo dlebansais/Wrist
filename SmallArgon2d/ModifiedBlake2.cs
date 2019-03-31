@@ -10,24 +10,57 @@ namespace SmallArgon2d
         private static void ModifiedG(ulong[] v, int a, int b, int c, int d)
         {
             ulong t;
+            uint va0, vb0, vc0, vd0;
+            ulong va1, vb1, vc1, vd1;
 
-            t = ((ulong)((uint)v[a])) * ((ulong)((uint)v[b]));
+            va0 = (uint)v[a];
+            va1 = (ulong)va0;
+
+            vb0 = (uint)v[b];
+            vb1 = (ulong)vb0;
+
+            t = va1 * vb1;
+
             v[a] = v[a] + v[b] + 2 * t;
 
             v[d] = Rotate(v[d] ^ v[a], 32);
 
-            t = ((ulong)((uint)v[c])) * ((ulong)((uint)v[d]));
+            vc0 = (uint)v[c];
+            vc1 = (ulong)vc0;
+
+            vd0 = (uint)v[d];
+            vd1 = (ulong)vd0;
+
+            t = vc1 * vd1;
+
+            //t = ((ulong)((uint)v[c])) * ((ulong)((uint)v[d]));
             v[c] = v[c] + v[d] + 2 * t;
 
             v[b] = Rotate(v[b] ^ v[c], 24);
 
-            t = ((ulong)((uint)v[a])) * ((ulong)((uint)v[b]));
+            va0 = (uint)v[a];
+            va1 = (ulong)va0;
+
+            vb0 = (uint)v[b];
+            vb1 = (ulong)vb0;
+
+            t = va1 * vb1;
+
+            //t = ((ulong)((uint)v[a])) * ((ulong)((uint)v[b]));
             v[a] = v[a] + v[b] + 2 * t;
 
 
             v[d] = Rotate(v[d] ^ v[a], 16);
 
-            t = ((ulong)((uint)v[c])) * ((ulong)((uint)v[d]));
+            vc0 = (uint)v[c];
+            vc1 = (ulong)vc0;
+
+            vd0 = (uint)v[d];
+            vd1 = (ulong)vd0;
+
+            t = vc1 * vd1;
+
+            //t = ((ulong)((uint)v[c])) * ((ulong)((uint)v[d]));
             v[c] = v[c] + v[d] + 2 * t;
 
             v[b] = Rotate(v[b] ^ v[c], 63);

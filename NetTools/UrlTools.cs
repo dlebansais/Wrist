@@ -1,6 +1,4 @@
-﻿#if USE_RESTRICTED_FEATURES
-using CSHTML5;
-#endif
+﻿using CSHTML5;
 using System.Collections.Generic;
 
 namespace NetTools
@@ -11,21 +9,13 @@ namespace NetTools
         {
             get
             {
-#if USE_RESTRICTED_FEATURES
                 return true;
-#else
-                return false;
-#endif
             }
         }
 
         public static object GetDocumentUrl()
         {
-#if USE_RESTRICTED_FEATURES
             return Interop.ExecuteJavaScript("document.URL");
-#else
-            return null;
-#endif
         }
 
         public static string GetBaseUrl()

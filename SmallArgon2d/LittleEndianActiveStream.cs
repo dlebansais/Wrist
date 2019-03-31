@@ -157,14 +157,16 @@ namespace SmallArgon2d
 
         private void BufferShort(ushort value)
         {
-            ReserveBuffer(sizeof(ushort));
+//            ReserveBuffer(sizeof(ushort));
+            ReserveBuffer(2);
             _buffer[0] = (byte)value;
             _buffer[1] = (byte)(value >> 8);
         }
 
         private void BufferInt(uint value)
         {
-            ReserveBuffer(sizeof(uint));
+//            ReserveBuffer(sizeof(uint));
+            ReserveBuffer(4);
             _buffer[0] = (byte)value;
             _buffer[1] = (byte)(value >> 8);
             _buffer[2] = (byte)(value >> 16);

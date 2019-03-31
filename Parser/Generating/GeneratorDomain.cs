@@ -124,6 +124,8 @@ namespace Parser
                 Directory.CreateDirectory(outputFolderName);
 
             string AppNamespace = Path.GetFileName(outputFolderName);
+            string AssemblyName = Path.GetFileName(InputFolderName);
+            AssemblyName = AssemblyName.Substring(0, 1).ToUpper() + AssemblyName.Substring(1);
 
             foreach (IGeneratorPage Page in Pages)
                 Page.Generate(this, outputFolderName, AppNamespace, SelectedColorTheme);
@@ -148,8 +150,10 @@ namespace Parser
 
             GenerateAppXaml(outputFolderName, AppNamespace, SelectedColorTheme);
             GenerateAppCSharp(outputFolderName, AppNamespace);
-            GenerateAppProject(outputFolderName, AppNamespace, conditionalDefineTable);
+            GenerateAppProject(outputFolderName, AppNamespace, AssemblyName, conditionalDefineTable);
             CopyAssemblyInfo(outputFolderName);
+            CopySideFiles(outputFolderName, "bridge.json");
+            CopySideFiles(outputFolderName, "packages.config");
             GenerateObjectBaseInterface(outputFolderName, AppNamespace);
             GenerateObjectBase(outputFolderName, AppNamespace);
             GeneratePageNames(outputFolderName, AppNamespace);
@@ -414,7 +418,7 @@ namespace Parser
             cSharpWriter.WriteLine("}");
         }
 
-        private void GenerateAppProject(string outputFolderName, string appNamespace, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
+        private void GenerateAppProject(string outputFolderName, string appNamespace, string assemblyName, IDictionary<ConditionalDefine, bool> conditionalDefineTable)
         {
             string ProjectFileName = Path.Combine(outputFolderName, $"{appNamespace}.csproj");
 
@@ -422,12 +426,12 @@ namespace Parser
             {
                 using (StreamWriter ProjectWriter = new StreamWriter(ProjectFile, Encoding.UTF8))
                 {
-                    GenerateAppProject(outputFolderName, appNamespace, conditionalDefineTable, ProjectWriter);
+                    GenerateAppProject(outputFolderName, appNamespace, assemblyName, conditionalDefineTable, ProjectWriter);
                 }
             }
         }
 
-        private void GenerateAppProject(string outputFolderName, string appNamespace, IDictionary<ConditionalDefine, bool> conditionalDefineTable, StreamWriter projectWriter)
+        private void GenerateAppProject(string outputFolderName, string appNamespace, string assemblyName, IDictionary<ConditionalDefine, bool> conditionalDefineTable, StreamWriter projectWriter)
         {
             string AdditionalDefines = "";
             foreach (KeyValuePair<ConditionalDefine, bool> Entry in conditionalDefineTable)
@@ -449,13 +453,15 @@ namespace Parser
             projectWriter.WriteLine("    <OutputType>Library</OutputType>");
             projectWriter.WriteLine("    <AppDesignerFolder>Properties</AppDesignerFolder>");
             projectWriter.WriteLine($"    <RootNamespace>{appNamespace}</RootNamespace>");
-            projectWriter.WriteLine($"    <AssemblyName>{appNamespace}</AssemblyName>");
+            projectWriter.WriteLine($"    <AssemblyName>{assemblyName}</AssemblyName>");
             projectWriter.WriteLine("    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>");
             projectWriter.WriteLine("    <FileAlignment>512</FileAlignment>");
             projectWriter.WriteLine("    <IsCSharpXamlForHtml5>true</IsCSharpXamlForHtml5>");
             projectWriter.WriteLine("    <CSharpXamlForHtml5OutputType>Application</CSharpXamlForHtml5OutputType>");
+            projectWriter.WriteLine("    <IsCshtml5>true</IsCshtml5>");
+            projectWriter.WriteLine("    <Cshtml5OutputType>Application</Cshtml5OutputType>");
             projectWriter.WriteLine("    <StartAction>Program</StartAction>");
-            projectWriter.WriteLine("    <StartProgram>$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\InternalStuff\\Simulator\\CSharpXamlForHtml5.Simulator.exe</StartProgram>");
+            projectWriter.WriteLine("    <StartProgram/>");
             projectWriter.WriteLine($"    <StartArguments>\"{appNamespace}.dll\"</StartArguments>");
             projectWriter.WriteLine("  </PropertyGroup>");
             projectWriter.WriteLine("  <PropertyGroup Condition=\" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' \">");
@@ -463,41 +469,38 @@ namespace Parser
             projectWriter.WriteLine("    <DebugType>full</DebugType>");
             projectWriter.WriteLine("    <Optimize>false</Optimize>");
             projectWriter.WriteLine("    <OutputPath>bin\\Debug\\</OutputPath>");
-            projectWriter.WriteLine($"    <DefineConstants>DEBUG;TRACE;CSHARP_XAML_FOR_HTML5;CSHTML5{AdditionalDefines}</DefineConstants>");
+            projectWriter.WriteLine($"    <DefineConstants>DEBUG;TRACE;CSHARP_XAML_FOR_HTML5;BRIDGE;CSHTML5{AdditionalDefines}</DefineConstants>");
             projectWriter.WriteLine("    <ErrorReport>prompt</ErrorReport>");
             projectWriter.WriteLine("    <WarningLevel>4</WarningLevel>");
+            projectWriter.WriteLine("    <NoStdLib>true</NoStdLib>");
             projectWriter.WriteLine("  </PropertyGroup>");
             projectWriter.WriteLine("  <PropertyGroup Condition=\" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' \">");
             projectWriter.WriteLine("    <DebugType>pdbonly</DebugType>");
             projectWriter.WriteLine("    <Optimize>true</Optimize>");
             projectWriter.WriteLine("    <OutputPath>bin\\Release\\</OutputPath>");
-            projectWriter.WriteLine($"    <DefineConstants>TRACE;CSHARP_XAML_FOR_HTML5;CSHTML5{AdditionalDefines}</DefineConstants>");
+            projectWriter.WriteLine($"    <DefineConstants>TRACE;CSHARP_XAML_FOR_HTML5;BRIDGE;CSHTML5{AdditionalDefines}</DefineConstants>");
             projectWriter.WriteLine("    <ErrorReport>prompt</ErrorReport>");
             projectWriter.WriteLine("    <WarningLevel>4</WarningLevel>");
+            projectWriter.WriteLine("    <NoStdLib>true</NoStdLib>");
             projectWriter.WriteLine("  </PropertyGroup>");
             projectWriter.WriteLine("  <ItemGroup>");
-            projectWriter.WriteLine("    <Reference Include=\"CSharpXamlForHtml5\">");
-            projectWriter.WriteLine("      <HintPath>$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\AssembliesToReference\\CSharpXamlForHtml5.dll</HintPath>");
-            projectWriter.WriteLine("    </Reference>");
-            projectWriter.WriteLine("    <Reference Include=\"CSharpXamlForHtml5.System.dll\">");
-            projectWriter.WriteLine("      <HintPath>$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\AssembliesToReference\\CSharpXamlForHtml5.System.dll.dll</HintPath>");
-            projectWriter.WriteLine("    </Reference>");
-            projectWriter.WriteLine("    <Reference Include=\"CSharpXamlForHtml5.System.Runtime.Serialization.dll\">");
-            projectWriter.WriteLine("      <HintPath>$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\AssembliesToReference\\CSharpXamlForHtml5.System.Runtime.Serialization.dll.dll</HintPath>");
-            projectWriter.WriteLine("    </Reference>");
-            projectWriter.WriteLine("    <Reference Include=\"CSharpXamlForHtml5.System.ServiceModel.dll\">");
-            projectWriter.WriteLine("      <HintPath>$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\AssembliesToReference\\CSharpXamlForHtml5.System.ServiceModel.dll.dll</HintPath>");
-            projectWriter.WriteLine("    </Reference>");
-            projectWriter.WriteLine("    <Reference Include=\"CSharpXamlForHtml5.System.Xaml.dll\">");
-            projectWriter.WriteLine("      <HintPath>$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\AssembliesToReference\\CSharpXamlForHtml5.System.Xaml.dll.dll</HintPath>");
-            projectWriter.WriteLine("    </Reference>");
-            projectWriter.WriteLine("    <Reference Include=\"CSharpXamlForHtml5.System.Xml.dll\">");
-            projectWriter.WriteLine("      <HintPath>$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\AssembliesToReference\\CSharpXamlForHtml5.System.Xml.dll.dll</HintPath>");
-            projectWriter.WriteLine("    </Reference>");
-            projectWriter.WriteLine("    <Reference Include=\"JSIL.Meta\">");
-            projectWriter.WriteLine("      <HintPath>$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\AssembliesToReference\\JSIL.Meta.dll</HintPath>");
-            projectWriter.WriteLine("    </Reference>");
-            projectWriter.WriteLine("    <Reference Include=\"Microsoft.CSharp\"/>");
+            projectWriter.WriteLine("     <Reference Include=\"Bridge, Version=17.4.0.0, Culture=neutral, processorArchitecture=MSIL\">");
+            projectWriter.WriteLine("       <HintPath>..\\packages\\CSHTML5.2.0.0-alpha23-036\\lib\\net40\\Bridge.dll</HintPath>");
+            projectWriter.WriteLine("       <Private>True</Private>");
+            projectWriter.WriteLine("     </Reference>");
+            projectWriter.WriteLine("     <Reference Include=\"CSHTML5, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL\">");
+            projectWriter.WriteLine("       <HintPath>..\\packages\\CSHTML5.2.0.0-alpha23-036\\lib\\net40\\CSHTML5.dll</HintPath>");
+            projectWriter.WriteLine("       <Private>True</Private>");
+            projectWriter.WriteLine("     </Reference>");
+            projectWriter.WriteLine("     <Reference Include=\"CSHTML5.Stubs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL\">");
+            projectWriter.WriteLine("       <HintPath>..\\packages\\CSHTML5.2.0.0-alpha23-036\\lib\\net40\\CSHTML5.Stubs.dll</HintPath>");
+            projectWriter.WriteLine("       <Private>True</Private>");
+            projectWriter.WriteLine("     </Reference>");
+//            projectWriter.WriteLine("    <Reference Include=\"Microsoft.CSharp\"/>");
+            projectWriter.WriteLine("  </ItemGroup>");
+            projectWriter.WriteLine("  <ItemGroup>");
+            projectWriter.WriteLine("    <None Include=\"bridge.json\" />");
+            projectWriter.WriteLine("    <None Include=\"packages.config\" />");
             projectWriter.WriteLine("  </ItemGroup>");
             projectWriter.WriteLine("  <ItemGroup>");
             projectWriter.WriteLine("    <Compile Include=\"App.xaml.cs\">");
@@ -583,7 +586,7 @@ namespace Parser
             projectWriter.WriteLine("      <Name>SmallArgon2d</Name>");
             projectWriter.WriteLine("    </ProjectReference>");
             projectWriter.WriteLine("  </ItemGroup>");
-            projectWriter.WriteLine("  <Import Project=\"$(MSBuildProgramFiles32)\\MSBuild\\CSharpXamlForHtml5\\InternalStuff\\Targets\\CSharpXamlForHtml5.Build.targets\"/>");
+            projectWriter.WriteLine("  <Import Project=\"..\\packages\\CSHTML5.2.0.0-alpha23-036\\build\\CSHTML5.targets\" Condition=\"Exists('..\\packages\\CSHTML5.2.0.0-alpha23-036\\build\\CSHTML5.targets')\" />");
             projectWriter.WriteLine("</Project>");
         }
 
@@ -840,6 +843,33 @@ namespace Parser
 
             if (InputWriteTime > OutputWriteTime)
                 File.Copy(InputCSharpFileName, OutputCSharpFileName, true);
+        }
+
+        public void CopySideFiles(string outputFolderName, string fileName)
+        {
+            string ObjectsInputFolderName = Path.Combine(InputFolderName, "object");
+            string ObjectsOutputFolderName = outputFolderName;
+
+            if (!Directory.Exists(ObjectsOutputFolderName))
+                Directory.CreateDirectory(ObjectsOutputFolderName);
+
+            string InputFileName = Path.Combine(ObjectsInputFolderName, fileName);
+            string OutputFileName = Path.Combine(ObjectsOutputFolderName, fileName);
+
+            DateTime InputWriteTime;
+            if (File.Exists(InputFileName))
+                InputWriteTime = File.GetLastWriteTimeUtc(InputFileName);
+            else
+                InputWriteTime = DateTime.MinValue;
+
+            DateTime OutputWriteTime;
+            if (File.Exists(OutputFileName))
+                OutputWriteTime = File.GetLastWriteTimeUtc(OutputFileName);
+            else
+                OutputWriteTime = DateTime.MinValue;
+
+            if (InputWriteTime > OutputWriteTime)
+                File.Copy(InputFileName, OutputFileName, true);
         }
 
         public void CopyEnumFile(string outputFolderName, string EnumTypeName)

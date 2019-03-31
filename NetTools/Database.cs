@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System;
-#if USE_RESTRICTED_FEATURES
 using System.Net;
-#else
-#endif
 
 namespace NetTools
 {
