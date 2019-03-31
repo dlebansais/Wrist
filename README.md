@@ -53,3 +53,16 @@ For instance, the concept of signing in can be represented with a login object, 
 
 There is no example of live sites using this framework (yet).
  
+## Building and using the framework
+
+Building steps:
+. Clone or download the repository on your computer.
+. Modify `NetTools/SecretUuid.cs` to use your own id (so you don't mess up with mine). The project will not compile until you have completed this step.
+. If you cloned the project, you can tell Git to ignore your change with the following command: `git update-index --assume-unchanged NetTools/SecretUuid.cs`.
+. Open the `Wrist.sln` solution and compile it. The configuration you select doesn't matter, you'll do this step only once.
+. In the root folder, run WristConsole with arguments to generate the C# project of your site. For example, to generate the Easly site, run `WristConsole/bin/x64/Debug/WristConsole "Samples/easly" "./AppCSHtml5" "home" "default" "QACHALLENGE=1"`.
+. Open the `AppCSHtml5.sln` solution.
+. Build the NetTools project. This will download a required Nuget package.
+. Close and restart Visual Studio for this solution.
+. Build the solution. This step may take some time.
+. Upload the content of `AppCSHtml5/bin/Debug/Output` to your site's root directory on the server.
